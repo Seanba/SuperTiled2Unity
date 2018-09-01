@@ -5,13 +5,20 @@
 
 SuperTiled2Unity Documentation
 ============================================
+.. figure:: img/mega-dad-stand.png
+   :alt: Mega Dad (aka Sean Barton)
 
-SuperTiled2Unity is a collection of Unity scripts that import files from the popular `Tiled Map Editor <https://www.mapeditor.org/>`_ in your Unity projects.
+   By `Sean Barton <http://www.seanba.com>`_
+
+
+**SuperTiled2Unity** is a collection of Unity scripts that import files from the popular `Tiled Map Editor <https://www.mapeditor.org/>`_ in your Unity projects.
 
 The goal of SuperTiled2Unity is that **it just works**. Except for the most specialized cases users should be able to quickly and easily add tile-based 2D content to their Unity projects.
 
 SuperTiled2Unity is currently distibuted as a Unity Package at any price you choose (including free).
-Additional `donations can be made <http://www.seanba.com/donate>`_ and are always appreciated.
+Additional `donations can be made <http://www.seanba.com/donate>`_ and **are always appreciated**.
+
+.. figure:: img/unity-super-metroid.png
 
 .. toctree::
    :maxdepth: 2
