@@ -132,7 +132,7 @@ namespace SuperTiled2Unity.Editor
             {
                 if (!m_MissingSortingLayers.Contains(sortName))
                 {
-                    Debug.LogErrorFormat("Sorting layer name '{0}' not found in Tag Manager. Tiled map layers and objects may be drawn out of order.", sortName);
+                    //Debug.LogWarningFormat("Sorting layer name '{0}' not found in Tag Manager. Tiled map layers and objects may be drawn out of order.", sortName);
                     m_MissingSortingLayers.Add(sortName);
                 }
 
@@ -148,7 +148,7 @@ namespace SuperTiled2Unity.Editor
             {
                 if (!m_MissingLayers.Contains(layerName))
                 {
-                    Debug.LogErrorFormat("Layer name '{0}' not found in Tag Manager. Colliders may not work as expected", layerName);
+                    //Debug.LogWarningFormat("Layer name '{0}' not found in Tag Manager. Colliders may not work as expected", layerName);
                     m_MissingLayers.Add(layerName);
                 }
 
