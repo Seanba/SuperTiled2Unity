@@ -245,14 +245,16 @@ namespace SuperTiled2Unity.Editor
             var goCF = new GameObject();
             goCF.name = string.Format("{0} (CF)", superObject.m_TiledName);
             goTRS.AddChildWithUniqueName(goCF);
-            goCF.transform.localPosition = translateCenter + tileOffset;
+
+            var toCenter = translateCenter + tileOffset;
+            goCF.transform.localPosition = toCenter;
             goCF.transform.localRotation = Quaternion.Euler(0, 0, 0);
             goCF.transform.localScale = new Vector3(flip_h ? -1 : 1, flip_v ? -1 : 1);
 
             // Add another child, putting our coordinates back into the proper place
             var goTile = new GameObject(superObject.m_TiledName);
             goCF.AddChildWithUniqueName(goTile);
-            goTile.transform.localPosition = new Vector3(0, -translateCenter.y, 0);
+            goTile.transform.localPosition = -toCenter;
             goTile.transform.localRotation = Quaternion.Euler(0, 0, 0);
             goTile.transform.localScale = Vector3.one;
 
