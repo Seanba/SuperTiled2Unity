@@ -18,7 +18,7 @@ namespace SuperTiled2Unity.Editor
     {
         public static bool TryGetCustomObjectType(this List<CustomObjectType> list, string type, out CustomObjectType customObjectType)
         {
-            if (list.IsNullOrEmpty())
+            if (list.IsEmpty())
             {
                 customObjectType = null;
                 return false;

@@ -20,6 +20,9 @@ namespace SuperTiled2Unity.Editor
         private SerializedProperty m_TilesAsObjects;
         private readonly GUIContent m_TilesAsObjectsContent = new GUIContent("Tiles as Objects", "Place each tile as separate game object. Uses more resources but gives you more control. This is ignored for Isometric maps that are forced to use game objects.");
 
+        private SerializedProperty m_ImportSorting;
+        private readonly GUIContent m_ImportSortingContent = new GUIContent("Layer/Object Sorting", "Choose the sorting order scheme applied to imported layers and objects.");
+
         private SerializedProperty m_CustomImporterClassName;
 
         private string[] m_CustomImporterNames;
@@ -61,6 +64,8 @@ namespace SuperTiled2Unity.Editor
                 }
             }
 
+            m_ImportSorting.intValue = (int)(ImportSorting)EditorGUILayout.EnumPopup(m_ImportSortingContent, (ImportSorting)m_ImportSorting.intValue);
+
             EditorGUILayout.Space();
             ShowCustomImporterGui();
 
@@ -87,6 +92,9 @@ namespace SuperTiled2Unity.Editor
 
             m_TilesAsObjects = serializedObject.FindProperty("m_TilesAsObjects");
             Assert.IsNotNull(m_TilesAsObjects);
+
+            m_ImportSorting = serializedObject.FindProperty("m_ImportSorting");
+            Assert.IsNotNull(m_ImportSorting);
 
             m_CustomImporterClassName = serializedObject.FindProperty("m_CustomImporterClassName");
             Assert.IsNotNull(m_CustomImporterClassName);

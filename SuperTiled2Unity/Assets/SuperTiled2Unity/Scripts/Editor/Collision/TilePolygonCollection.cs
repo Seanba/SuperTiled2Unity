@@ -91,7 +91,7 @@ namespace SuperTiled2Unity.Editor
 
         private void CollectTilePolygons()
         {
-            if (!m_Tile.m_CollisionObjects.IsNullOrEmpty())
+            if (!m_Tile.m_CollisionObjects.IsEmpty())
             {
                 foreach (var collision in m_Tile.m_CollisionObjects)
                 {

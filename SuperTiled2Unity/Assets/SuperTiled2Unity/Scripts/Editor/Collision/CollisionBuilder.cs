@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Tilemaps;
+using SuperTiled2Unity;
 
 namespace SuperTiled2Unity.Editor
 {
@@ -33,7 +34,7 @@ namespace SuperTiled2Unity.Editor
             pos.y++;
 
             // Do we have any collider objects defined for this tile?
-            if (!tile.m_CollisionObjects.IsNullOrEmpty())
+            if (!tile.m_CollisionObjects.IsEmpty())
             {
                 var polygons = AcquireTilePolygonCollection(tile, tileId);
 

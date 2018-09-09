@@ -7,7 +7,7 @@ namespace SuperTiled2Unity
 {
     public static class EnumerableExtensions
     {
-        public static bool IsEmpty<T>(this T[] array)
+        public static bool IsEmpty<T>(this IEnumerable<T> array)
         {
             if (array == null)
             {

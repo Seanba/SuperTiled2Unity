@@ -56,14 +56,5 @@ namespace SuperTiled2Unity
 
             return opacity;
         }
-
-        private void Start()
-        {
-            var renderer = GetComponentInChildren<SpriteRenderer>();
-            if (renderer != null)
-            {
-                renderer.sortingOrder = -(int)(renderer.sprite.pixelsPerUnit * transform.position.y);
-            }
-        }
     }
 }

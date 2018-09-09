@@ -33,6 +33,10 @@ namespace SuperTiled2Unity.Editor
         public bool TilesAsObjects { get { return m_TilesAsObjects; } }
 
         [SerializeField]
+        private ImportSorting m_ImportSorting = ImportSorting.Stacking;
+        public ImportSorting SortingOrder { get { return m_ImportSorting; } }
+
+        [SerializeField]
         private bool m_IsIsometric = false;
         public bool IsIsometric { get { return m_IsIsometric; } }
 
@@ -80,6 +84,7 @@ namespace SuperTiled2Unity.Editor
 
                 // Create our main grid object and add the layers to it
                 ProcessMapLayers(m_MapComponent.gameObject, xMap);
+                SetLayerSortingOrders();
             }
         }
 
@@ -233,6 +238,48 @@ namespace SuperTiled2Unity.Editor
                 else if (xNode.Name == "imagelayer")
                 {
                     ProcessImageLayer(goParent, xNode);
+                }
+            }
+        }
+
+        private void SetLayerSortingOrders()
+        {
+            // At this point in the importing all renderers are sorted in overhead style by default
+            // If we are stacking sorters instead then change sorting order as needed
+            // If a version of overhead sorting is still being used then make sure additional components are used to keep sorting intact
+
+            if (m_ImportSorting == ImportSorting.Stacking)
+            {
+                // Renderers are sorted so that they stack on top of each other
+                // This resembles the drawing order we see in Tiled but might not work for overhead games
+                int count = 0;
+                var layers = m_MapComponent.GetComponentsInChildren<SuperLayer>().Where(l => l.GetType() != typeof(SuperGroupLayer));
+
+                foreach (var layer in layers)
+                {
+                    var renderers = layer.GetComponentsInChildren<Renderer>().OrderBy(r => r.gameObject.transform.position.y).ThenByDescending(r => r.gameObject.transform.position.x);
+                    foreach (var renderer in renderers)
+                    {
+                        renderer.sortingOrder = count++;
+                    }
+                }
+            }
+            else if (m_ImportSorting == ImportSorting.OverheadStatic)
+            {
+                // All tile objects need to set their sorting on startup
+                var tileObjects = m_MapComponent.GetComponentsInChildren<SuperObject>().Where(so => so.GetComponentInChildren<SpriteRenderer>() != null);
+                foreach (var to in tileObjects)
+                {
+                    to.gameObject.AddComponent<OverheadSorterStatic>();
+                }
+            }
+            else if (m_ImportSorting == ImportSorting.OverheadDynamic)
+            {
+                // All tile objects need to check if they have been moved each frame in order to update their sort ordering
+                var tileObjects = m_MapComponent.GetComponentsInChildren<SuperObject>().Where(so => so.GetComponentInChildren<SpriteRenderer>() != null);
+                foreach (var to in tileObjects)
+                {
+                    to.gameObject.AddComponent<OverheadSorterDynamic>();
                 }
             }
         }

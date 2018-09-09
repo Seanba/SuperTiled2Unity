@@ -251,7 +251,7 @@ namespace SuperTiled2Unity.Editor
                 tileObject.m_Visible = true;
 
                 // Does the tile have any properties?
-                if (!tile.m_CustomProperties.IsNullOrEmpty())
+                if (!tile.m_CustomProperties.IsEmpty())
                 {
                     var component = tileObject.gameObject.AddComponent<SuperCustomProperties>();
                     component.m_Properties = new List<CustomProperty>();

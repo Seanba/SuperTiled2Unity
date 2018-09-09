@@ -15,7 +15,7 @@ namespace SuperTiled2Unity.Editor
             Assert.IsNotNull(goParent);
             Assert.IsNotNull(importContext);
 
-            if (!tile.m_CollisionObjects.IsNullOrEmpty())
+            if (!tile.m_CollisionObjects.IsEmpty())
             {
                 foreach (var collision in tile.m_CollisionObjects)
                 {

@@ -163,6 +163,8 @@ ScriptedImporter:
     11400016: _superAsset
     11400018: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/MonoBehaviour-SuperTiled2Unity.SuperCustomProperties
     11400020: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/Pillar (CF)/Pillar/Object_2/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
+    11400022: _MapPrfab/TestOverhead/OnGround/Pillar (broken) (TRS)/MonoBehaviour-SuperTiled2Unity.OverheadSorterStatic
+    11400024: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/MonoBehaviour-SuperTiled2Unity.OverheadSorterStatic
     11400028: _MapPrfab/TestOverhead/OnGround/Spawn/MonoBehaviour-SuperTiled2Unity.SuperObject
     11400030: _MapPrfab/TestOverhead/OnGround/Spawn/MonoBehaviour-SuperTiled2Unity.SuperCustomProperties
     11400042: _MapPrfab/TestOverhead/Deco/MonoBehaviour-SuperTiled2Unity.SuperTileLayer
@@ -227,6 +229,7 @@ ScriptedImporter:
   edgesPerEllipse: 32
   animationFramerate: 4
   tilesAsObjects: 0
+  importSorting: 1
   isIsometric: 0
   customImporterClassName: 
   internalTilesets: []
