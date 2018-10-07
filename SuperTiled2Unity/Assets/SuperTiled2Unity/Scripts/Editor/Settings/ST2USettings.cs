@@ -129,16 +129,6 @@ namespace SuperTiled2Unity.Editor
                 Debug.LogWarningFormat("SuperTiled2Unity settings asset not found. Was it deleted? Please reinstall Super Tiled2Unity.");
             }
         }
-
-        // This is only invoked by a deployment batch file
-        private static void DeploySuperTiled2Unity()
-        {
-            var settings = ST2USettings.LoadSettings();
-            var path = string.Format("{0}/../../deploy/SuperTiled2Unity.{1}.unitypackage", Application.dataPath, settings.Version);
-
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-            AssetDatabase.ExportPackage("Assets/SuperTiled2Unity", path, ExportPackageOptions.Recurse);
-        }
     }
 }
 
