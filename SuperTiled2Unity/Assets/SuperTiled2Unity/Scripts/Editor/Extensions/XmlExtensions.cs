@@ -104,7 +104,7 @@ namespace SuperTiled2Unity.Editor
                 }
             }
 
-            return (T)Convert.ChangeType(value, typeof(T));
+            return (T)Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture);
         }
 
         public static T GetAttributeAs<T>(this XElement element, string name) where T : IConvertible

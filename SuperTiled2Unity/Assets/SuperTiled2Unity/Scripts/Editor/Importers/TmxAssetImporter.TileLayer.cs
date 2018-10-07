@@ -82,8 +82,9 @@ namespace SuperTiled2Unity.Editor
                     // Possition the chunk
                     Vector3Int int3 = m_MapComponent.TilePositionToGridPosition(chunk.X, chunk.Y);
                     Vector3 translate = SuperImportContext.MakePoint(int3.x, int3.y);
-                    translate.x *= m_MapComponent.CellSize.x;
-                    translate.y *= m_MapComponent.CellSize.y;
+                    translate.x *= m_MapComponent.m_TileWidth;
+                    translate.y *= m_MapComponent.m_TileHeight;
+
                     goChunk.transform.localPosition = translate;
 
                     // Create the tilemap for the layer if needed

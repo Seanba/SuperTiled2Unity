@@ -28,9 +28,6 @@ namespace SuperTiled2Unity.Editor
                 var source = xImage.GetAttributeAs<string>("source");
                 layerComponent.m_ImageFilename = source;
 
-                int width = xImage.GetAttributeAs<int>("width");
-                int height = xImage.GetAttributeAs<int>("height");
-
                 var tex2d = RequestAssetAtPath<Texture2D>(source);
                 if (tex2d == null)
                 {
@@ -40,13 +37,20 @@ namespace SuperTiled2Unity.Editor
                 else
                 {
                     // Create a sprite for the image
-                    var sprite = Sprite.Create(tex2d, new Rect(0, 0, width, height), new Vector2(0, 1.0f), SuperImportContext.Settings.PixelsPerUnit);
-                    SuperImportContext.AddObjectToAsset("_sprite", sprite);
+                    try
+                    {
+                        var sprite = Sprite.Create(tex2d, new Rect(0, 0, tex2d.width, tex2d.height), new Vector2(0, 1.0f), SuperImportContext.Settings.PixelsPerUnit);
+                        SuperImportContext.AddObjectToAsset("_sprite", sprite);
 
-                    var renderer = goLayer.AddComponent<SpriteRenderer>();
-                    renderer.sprite = sprite;
-                    renderer.color = new Color(1, 1, 1, layerComponent.CalculateOpacity());
-                    AssignSortingLayer(renderer, layerComponent.m_SortingLayerName, layerComponent.m_SortingOrder);
+                        var renderer = goLayer.AddComponent<SpriteRenderer>();
+                        renderer.sprite = sprite;
+                        renderer.color = new Color(1, 1, 1, layerComponent.CalculateOpacity());
+                        AssignSortingLayer(renderer, layerComponent.m_SortingLayerName, layerComponent.m_SortingOrder);
+                    }
+                    catch (Exception e)
+                    {
+                        ReportError("Error creating sprite '{0}' for image layer '{1}'\n{2}", source, layerComponent.m_TiledName, e.Message);
+                    }
                 }
             }
 
