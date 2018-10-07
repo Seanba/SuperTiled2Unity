@@ -38,4 +38,4 @@ sysinfo.txt
 
 # Builds
 *.apk
-*.unitypackage
+#*.unitypackage # I want to deploy unity packages
