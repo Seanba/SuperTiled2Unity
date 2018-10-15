@@ -7,11 +7,7 @@
  <image source="water.png" width="192" height="304"/>
  <tile id="0">
   <objectgroup draworder="index">
-   <object id="1" name="TransparentFX fixit" x="0" y="0" width="16" height="16">
-    <properties>
-     <property name="fixit - remove name!" value="remove the name!"/>
-    </properties>
-   </object>
+   <object id="1" x="0" y="0" width="16" height="16"/>
   </objectgroup>
  </tile>
  <tile id="24">
