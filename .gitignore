@@ -9,6 +9,8 @@ docs/_build/
 # My test data that I don't want included in Github
 SuperTiled2Unity/Assets/TestData.meta
 SuperTiled2Unity/Assets/TestData/
+SuperTiled2Unity/Assets/Testing.meta
+SuperTiled2Unity/Assets/Testing
 
 # Visual Studio cache directory
 .vs/
