@@ -22,5 +22,10 @@ namespace SuperTiled2Unity.Editor
         {
             return Mathf.Clamp(value, 6, 256);
         }
+
+        public static int ClampAnimationFramerate(int value)
+        {
+            return Mathf.Clamp(value, 1, 125);
+        }
     }
 }

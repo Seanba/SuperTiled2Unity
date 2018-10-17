@@ -24,6 +24,9 @@ namespace SuperTiled2Unity.Editor
         private SerializedProperty m_EdgesPerEllipse;
         private readonly GUIContent m_EdgesPerEllipseContext = new GUIContent("Default Edges Per Ellipse", "How many edges to use when appromixating ellipse/circle colliders. (Default Setting)");
 
+        private SerializedProperty m_AnimationFramerate;
+        private readonly GUIContent m_AnimationFramerateContext = new GUIContent("Animation Framerate", "How many frames per second for tile animations.");
+
         private SerializedProperty m_ObjectTypesXml;
         private readonly GUIContent m_ObjectTypesXmlContext = new GUIContent("Object Types Xml", "Set to an Object Types Xml file exported from Tiled Object Type Editor.");
 
@@ -64,6 +67,7 @@ namespace SuperTiled2Unity.Editor
             // Set any limits on properties
             m_PixelsPerUnit.floatValue = Clamper.ClampPixelsPerUnit(m_PixelsPerUnit.floatValue);
             m_EdgesPerEllipse.intValue = Clamper.ClampEdgesPerEllipse(m_EdgesPerEllipse.intValue);
+            m_AnimationFramerate.intValue = Clamper.ClampAnimationFramerate(m_AnimationFramerate.intValue);
             base.Apply();
         }
 
@@ -80,6 +84,9 @@ namespace SuperTiled2Unity.Editor
 
             m_EdgesPerEllipse = serializedObject.FindProperty("m_EdgesPerEllipse");
             Assert.IsNotNull(m_EdgesPerEllipse);
+
+            m_AnimationFramerate = serializedObject.FindProperty("m_AnimationFramerate");
+            Assert.IsNotNull(m_AnimationFramerate);
 
             m_ObjectTypesXml = serializedObject.FindProperty("m_ObjectTypesXml");
             Assert.IsNotNull(m_ObjectTypesXml);
@@ -121,6 +128,14 @@ namespace SuperTiled2Unity.Editor
             EditorGUILayout.LabelField("SuperTiled2Unity Settings", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(m_PixelsPerUnit, m_PixelsPerUnitContext);
             EditorGUILayout.PropertyField(m_EdgesPerEllipse, m_EdgesPerEllipseContext);
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Animations", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(m_AnimationFramerate, m_AnimationFramerateContext);
+            EditorGUILayout.HelpBox("In frames-per-second. Note: You will need to reimport all your tilesets after making changes to the animation framerate for tiles.", MessageType.None);
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Object Types", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(m_ObjectTypesXml, m_ObjectTypesXmlContext);
             DoObjectTypesDisplay();
             EditorGUILayout.Space();

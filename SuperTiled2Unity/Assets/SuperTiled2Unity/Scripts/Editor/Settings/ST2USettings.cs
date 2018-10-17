@@ -26,6 +26,10 @@ namespace SuperTiled2Unity.Editor
         public int EdgesPerEllipse { get { return m_EdgesPerEllipse; } }
 
         [SerializeField]
+        private int m_AnimationFramerate = 20;
+        public int AnimationFramerate {  get { return m_AnimationFramerate; } }
+
+        [SerializeField]
         private TextAsset m_ObjectTypesXml = null;
         public TextAsset ObjectTypesXml { get { return m_ObjectTypesXml; } }
 
@@ -43,6 +47,7 @@ namespace SuperTiled2Unity.Editor
             m_PixelsPerUnit = importer.PixelsPerUnit;
             m_EdgesPerEllipse = importer.EdgesPerEllipse;
             m_ObjectTypesXml = importer.ObjectTypesXml;
+            m_AnimationFramerate = importer.AnimationFramerate;
             m_LayerColors = importer.LayerColors;
             FillCustomObjectTypes(importer);
         }
