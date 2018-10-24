@@ -12,6 +12,9 @@ SuperTiled2Unity/Assets/TestData/
 SuperTiled2Unity/Assets/Testing.meta
 SuperTiled2Unity/Assets/Testing
 
+# Ignore deploy logs
+deploy/output.log
+
 # Visual Studio cache directory
 .vs/
 
