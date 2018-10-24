@@ -92,7 +92,7 @@ namespace SuperTiled2Unity.Editor
                     {
                         var tilemap = goChunk.AddComponent<Tilemap>();
                         tilemap.tileAnchor = Vector3.zero;
-                        tilemap.animationFrameRate = AnimationFramerate;
+                        tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
                         tilemap.color = new Color(1, 1, 1, superComp.CalculateOpacity());
 
                         // Create the renderer for the layer
@@ -113,7 +113,7 @@ namespace SuperTiled2Unity.Editor
                 {
                     var tilemap = goLayer.AddComponent<Tilemap>();
                     tilemap.tileAnchor = Vector3.zero;
-                    tilemap.animationFrameRate = AnimationFramerate;
+                    tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
                     tilemap.color = new Color(1, 1, 1, superComp.CalculateOpacity());
 
                     // Create the renderer for the layer
@@ -287,7 +287,7 @@ namespace SuperTiled2Unity.Editor
             if (!tile.m_AnimationSprites.IsEmpty())
             {
                 var tileAnimator = goTRS.AddComponent<TileObjectAnimator>();
-                tileAnimator.m_AnimationFramerate = AnimationFramerate;
+                tileAnimator.m_AnimationFramerate = SuperImportContext.Settings.AnimationFramerate;
                 tileAnimator.m_AnimationSprites = tile.m_AnimationSprites;
             }
 

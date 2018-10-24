@@ -13,10 +13,6 @@ namespace SuperTiled2Unity.Editor
     [CustomEditor(typeof(TmxAssetImporter))]
     class TmxAssetImporterEditor : TiledAssetImporterEditor<TmxAssetImporter>
     {
-        // Serialized properties
-        private SerializedProperty m_AnimationFramerate;
-        private readonly GUIContent m_AnimationFramerateContent = new GUIContent("Animation Frame Rate", "How many frames of tile animation play per second.");
-
         private SerializedProperty m_TilesAsObjects;
         private readonly GUIContent m_TilesAsObjectsContent = new GUIContent("Tiles as Objects", "Place each tile as separate game object. Uses more resources but gives you more control. This is ignored for Isometric maps that are forced to use game objects.");
 
@@ -49,7 +45,6 @@ namespace SuperTiled2Unity.Editor
         protected override void InternalOnInspectorGUI()
         {
             EditorGUILayout.LabelField("Tiled Map Importer Settings", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(m_AnimationFramerate, m_AnimationFramerateContent);
             ShowTiledAssetGui();
 
             EditorGUI.BeginDisabledGroup(TargetAssetImporter.IsIsometric);
@@ -78,18 +73,8 @@ namespace SuperTiled2Unity.Editor
             CacheSerializedProperites();
         }
 
-        protected override void Apply()
-        {
-            // Set any limits on properties
-            m_AnimationFramerate.floatValue = Clamper.ClampAnimationFramerate(m_AnimationFramerate.floatValue);
-            base.Apply();
-        }
-
         private void CacheSerializedProperites()
         {
-            m_AnimationFramerate = serializedObject.FindProperty("m_AnimationFramerate");
-            Assert.IsNotNull(m_AnimationFramerate);
-
             m_TilesAsObjects = serializedObject.FindProperty("m_TilesAsObjects");
             Assert.IsNotNull(m_TilesAsObjects);
 

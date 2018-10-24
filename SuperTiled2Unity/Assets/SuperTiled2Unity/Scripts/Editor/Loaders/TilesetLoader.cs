@@ -198,25 +198,20 @@ namespace SuperTiled2Unity.Editor
 
         private void ProcessAnimationElement(SuperTile tile, XElement xAnimation)
         {
-            // fixit - use the "duration" to add a number of frames
-            Debug.LogFormat("fixit - framerate: {0}", m_Importer.SuperImportContext.Settings.AnimationFramerate);
-
-            // from my notes:
-            /*
-            AddFrames(id, time(secs))
-                numFrames = time * fps
-                numFrames -= remainders from last time
-                realFrames = floor(numFrames)
-                remainder = numFrames - floor(numFrames)
-                Add(f, realFrames)
-            */
+            var fps = m_Importer.SuperImportContext.Settings.AnimationFramerate;
+            var animations = new AnimationBuilder(fps);
 
             var frameSprites = xAnimation.Elements("frame").Select(f => f.GetAttributeAs<int>("tileid")).Select(index => m_TilesetScript.m_Tiles[index].m_Sprite).ToArray();
             var frameDurations = xAnimation.Elements("frame").Select(f => f.GetAttributeAs<int>("duration")).Select(ms => ms / 1000.0f).ToArray();
 
-            // fixit - build an expanded list of sprites taking duration into account
+            for (int i = 0; i < frameSprites.Length; i++)
+            {
+                var sprite = frameSprites[i];
+                var duration = frameDurations[i];
+                animations.AddFrames(sprite, duration);
+            }
 
-            tile.m_AnimationSprites = frameSprites;
+            tile.m_AnimationSprites = animations.Sprites.ToArray();
         }
 
         private void ProcessObjectGroupElement(SuperTile tile, XElement xObjectGroup)

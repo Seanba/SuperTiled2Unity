@@ -13,11 +13,6 @@ namespace SuperTiled2Unity.Editor
             return Mathf.Clamp(value, 0.01f, 2048.0f);
         }
 
-        public static float ClampAnimationFramerate(float value)
-        {
-            return Mathf.Clamp(value, 1 / 512f, 512f);
-        }
-
         public static int ClampEdgesPerEllipse(int value)
         {
             return Mathf.Clamp(value, 6, 256);

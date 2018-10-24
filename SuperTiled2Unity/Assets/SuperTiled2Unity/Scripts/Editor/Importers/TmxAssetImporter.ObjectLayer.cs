@@ -13,7 +13,7 @@ namespace SuperTiled2Unity.Editor
         {
             // Have our super object layer loader take care of things
             var loader = new SuperObjectLayerLoader(xObjectLayer);
-            loader.AnimationFramerate = AnimationFramerate;
+            loader.AnimationFramerate = SuperImportContext.Settings.AnimationFramerate;
             loader.ColliderFactory = CreateColliderFactory();
             loader.Importer = this;
             loader.GlobalTileDatabase = m_GlobalTileDatabase;

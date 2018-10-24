@@ -5,22 +5,23 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace SuperTiled2UnityEditor
+namespace SuperTiled2Unity.Editor
 {
     public class AnimationBuilder
     {
         private float m_Fps;
         private float m_Remainder;
-        private List<Sprite> m_Sprites = new List<Sprite>();
 
         public AnimationBuilder(float fps)
         {
             m_Fps = fps;
+            Sprites = new List<Sprite>();
         }
+
+        public List<Sprite> Sprites { get; private set; }
 
         public void AddFrames(Sprite sprite, float duration)
         {
-            // fixit - this needs to be tested
             Assert.IsFalse(duration <= 0);
 
             // We may have time left over from the last time we added frames
@@ -40,8 +41,11 @@ namespace SuperTiled2UnityEditor
                 float fNumFrames = duration * m_Fps;
                 int iNumFrames = Mathf.CeilToInt(fNumFrames);
 
-                m_Sprites.AddRange(Enumerable.Repeat(sprite, iNumFrames));
-                m_Remainder = (iNumFrames - fNumFrames) / m_Fps; // fixit - is this right?
+                Sprites.AddRange(Enumerable.Repeat(sprite, iNumFrames));
+
+                // What duration is left over from the addition of last frame?
+                float partial = iNumFrames - fNumFrames;
+                m_Remainder = partial / m_Fps;
             }
         }
     }

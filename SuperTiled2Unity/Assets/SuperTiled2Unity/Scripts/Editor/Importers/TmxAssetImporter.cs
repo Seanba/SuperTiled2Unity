@@ -23,11 +23,6 @@ namespace SuperTiled2Unity.Editor
         private int m_ObjectIdCounter = 0;
         private LayerSorterHelper m_LayerSorterHelper;
 
-        // Serialized data to be used in the import process
-        [SerializeField]
-        private float m_AnimationFramerate = 1.0f;
-        public float AnimationFramerate { get { return m_AnimationFramerate; } }
-
         [SerializeField]
         private bool m_TilesAsObjects = false;
         public bool TilesAsObjects { get { return m_TilesAsObjects; } }
