@@ -22,13 +22,6 @@ Additional `donations can be made <http://www.seanba.com/donate>`_ and **are alw
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
-
-
-
-User Manual
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   :caption: User Manual
+   
+   manual/custom-properties

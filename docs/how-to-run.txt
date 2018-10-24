@@ -1,0 +1,7 @@
+How to run these documents locally (because I keep forgetting it)
+
+Make sure sphinx-autobuild is installed
+> pip install sphinx-autobuild
+
+Then run this command
+> sphinx-autobuild . .\_build
