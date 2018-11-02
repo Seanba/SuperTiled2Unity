@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using UnityEngine;
+using Ionic.Zlib; // fixit - if this works then put it into a custom namespace to avoid collisions
 
 namespace SuperTiled2Unity.Editor
 {
@@ -25,8 +26,9 @@ namespace SuperTiled2Unity.Editor
 
             // Now, decompress the bytes
             using (MemoryStream streamDecompressed = new MemoryStream())
-            using (GZipStream deflateStream = new GZipStream(streamCompressed, CompressionMode.Decompress))
+            using (GZipStream deflateStream = new GZipStream(streamCompressed, Ionic.Zlib.CompressionMode.Decompress))
             {
+                Debug.Log("fixit - using gzip");
                 deflateStream.CopyTo(streamDecompressed);
                 return streamDecompressed.ToArray();
             }
@@ -42,8 +44,9 @@ namespace SuperTiled2Unity.Editor
 
             // Now, decompress the bytes
             using (MemoryStream streamDecompressed = new MemoryStream())
-            using (DeflateStream deflateStream = new DeflateStream(streamCompressed, CompressionMode.Decompress))
+            using (DeflateStream deflateStream = new DeflateStream(streamCompressed, Ionic.Zlib.CompressionMode.Decompress))
             {
+                Debug.Log("fixit - using zlib");
                 deflateStream.CopyTo(streamDecompressed);
                 return streamDecompressed.ToArray();
             }
