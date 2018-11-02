@@ -169,7 +169,7 @@ namespace SuperTiled2Unity.Editor
             if (tileset == null)
             {
                 // Tileset is either missing or is not yet ready
-                ReportError("Missing tileset asset: {0}", this.assetPath);
+                ReportError("Missing tileset asset: {0}", source);
                 return false;
             }
             else
