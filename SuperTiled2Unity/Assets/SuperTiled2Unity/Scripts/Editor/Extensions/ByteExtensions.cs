@@ -28,7 +28,6 @@ namespace SuperTiled2Unity.Editor
             using (MemoryStream streamDecompressed = new MemoryStream())
             using (GZipStream deflateStream = new GZipStream(streamCompressed, Ionic.Zlib.CompressionMode.Decompress))
             {
-                Debug.Log("fixit - using gzip");
                 deflateStream.CopyTo(streamDecompressed);
                 return streamDecompressed.ToArray();
             }
@@ -46,7 +45,6 @@ namespace SuperTiled2Unity.Editor
             using (MemoryStream streamDecompressed = new MemoryStream())
             using (DeflateStream deflateStream = new DeflateStream(streamCompressed, Ionic.Zlib.CompressionMode.Decompress))
             {
-                Debug.Log("fixit - using zlib");
                 deflateStream.CopyTo(streamDecompressed);
                 return streamDecompressed.ToArray();
             }
