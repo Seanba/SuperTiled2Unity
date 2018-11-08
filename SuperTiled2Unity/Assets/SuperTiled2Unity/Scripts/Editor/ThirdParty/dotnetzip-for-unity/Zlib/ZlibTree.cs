@@ -63,6 +63,8 @@
 
 using System;
 
+// Seanba: Changed name of file so it won't collide with Unity built-in type
+
 namespace Ionic.Zlib
 {
     sealed class Tree
