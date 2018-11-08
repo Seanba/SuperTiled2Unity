@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ionic.Zip
+namespace SuperTiled2Unity.Ionic.Zip
 {
     /// <summary>
     ///   Delegate in which the application writes the <c>ZipEntry</c> content for the named entry.

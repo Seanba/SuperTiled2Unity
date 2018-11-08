@@ -25,7 +25,7 @@
 
 using System;
 
-namespace Ionic.Zip
+namespace SuperTiled2Unity.Ionic.Zip
 {
   static class ZipConstants
   {      

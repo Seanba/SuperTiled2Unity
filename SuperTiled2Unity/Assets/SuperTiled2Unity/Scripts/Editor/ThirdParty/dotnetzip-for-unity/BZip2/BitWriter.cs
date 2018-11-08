@@ -83,7 +83,7 @@
 using System;
 using System.IO;
 
-namespace Ionic.BZip2
+namespace SuperTiled2Unity.Ionic.BZip2
 {
 
     internal class BitWriter

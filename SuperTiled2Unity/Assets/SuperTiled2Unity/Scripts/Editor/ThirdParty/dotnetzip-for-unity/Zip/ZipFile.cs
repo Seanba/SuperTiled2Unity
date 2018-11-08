@@ -44,7 +44,7 @@ using System.Collections.Generic;
 using Interop = System.Runtime.InteropServices;
 
 
-namespace Ionic.Zip
+namespace SuperTiled2Unity.Ionic.Zip
 {
     /// <summary>
     ///   The ZipFile type represents a zip archive file.

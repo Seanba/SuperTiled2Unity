@@ -133,7 +133,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Ionic.BZip2
+namespace SuperTiled2Unity.Ionic.BZip2
 {
     internal class WorkItem
     {

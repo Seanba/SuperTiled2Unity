@@ -89,7 +89,7 @@ using System.IO;
 
 // flymake: csc.exe /t:module BZip2InputStream.cs BZip2OutputStream.cs Rand.cs BCRC32.cs @@FILE@@
 
-namespace Ionic.BZip2
+namespace SuperTiled2Unity.Ionic.BZip2
 {
     internal class BZip2Compressor
     {

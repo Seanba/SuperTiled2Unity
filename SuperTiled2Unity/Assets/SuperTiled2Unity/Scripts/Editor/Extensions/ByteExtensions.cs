@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using Ionic.Zlib; // fixit - if this works then put it into a custom namespace to avoid collisions
+using SuperTiled2Unity.Ionic.Zlib;
 
 namespace SuperTiled2Unity.Editor
 {

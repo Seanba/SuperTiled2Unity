@@ -69,7 +69,7 @@
 
 using System;
 
-namespace Ionic.Zlib
+namespace SuperTiled2Unity.Ionic.Zlib
 {
 
     internal enum BlockState

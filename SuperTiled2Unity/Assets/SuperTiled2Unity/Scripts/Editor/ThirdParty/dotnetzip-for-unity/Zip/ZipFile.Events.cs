@@ -27,7 +27,7 @@
 using System;
 using System.IO;
 
-namespace Ionic.Zip
+namespace SuperTiled2Unity.Ionic.Zip
 {
     public partial class ZipFile
     {

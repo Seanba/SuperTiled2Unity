@@ -63,7 +63,7 @@
 
 using System;
 
-namespace Ionic.Zlib
+namespace SuperTiled2Unity.Ionic.Zlib
 {
     /// <summary>
     /// A bunch of constants used in the Zlib interface.

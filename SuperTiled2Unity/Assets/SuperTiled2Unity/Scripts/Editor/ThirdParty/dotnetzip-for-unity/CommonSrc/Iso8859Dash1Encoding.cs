@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ionic.Encoding
+namespace SuperTiled2Unity.Ionic.Encoding
 {
     /// <summary>
     /// Provides a text encoder for the iso-8859-1 encoding, aka Latin1 encoding,

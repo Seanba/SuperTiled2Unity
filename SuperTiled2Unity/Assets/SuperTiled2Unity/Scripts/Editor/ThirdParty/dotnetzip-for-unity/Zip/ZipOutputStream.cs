@@ -46,9 +46,9 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 using System.IO;
-using Ionic.Zip;
+//using Ionic.Zip;
 
-namespace Ionic.Zip
+namespace SuperTiled2Unity.Ionic.Zip
 {
     /// <summary>
     ///   Provides a stream metaphor for generating zip files.

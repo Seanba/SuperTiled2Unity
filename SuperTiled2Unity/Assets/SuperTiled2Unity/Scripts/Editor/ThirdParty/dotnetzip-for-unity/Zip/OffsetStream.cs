@@ -29,7 +29,7 @@
 using System;
 using System.IO;
 
-namespace Ionic.Zip
+namespace SuperTiled2Unity.Ionic.Zip
 {
     internal class OffsetStream : System.IO.Stream, System.IDisposable
     {

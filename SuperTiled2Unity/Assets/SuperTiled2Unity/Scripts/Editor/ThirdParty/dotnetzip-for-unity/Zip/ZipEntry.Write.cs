@@ -30,7 +30,7 @@ using System;
 using System.IO;
 using RE = System.Text.RegularExpressions;
 
-namespace Ionic.Zip
+namespace SuperTiled2Unity.Ionic.Zip
 {
     public partial class ZipEntry
     {

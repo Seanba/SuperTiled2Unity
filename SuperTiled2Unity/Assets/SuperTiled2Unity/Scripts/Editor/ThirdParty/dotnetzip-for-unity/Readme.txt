@@ -1,3 +1,7 @@
+Seanba Note: Weds, 07 Nov 2018 23:24
+  - Ionic namespace replaced with SuperTiled2Unity.Ionic so that we don't collide with other libraries using DotNetZip
+  - Other, smaller edits to compile with Unity
+
 Mon, 11 Jul 2011  20:10
 
 

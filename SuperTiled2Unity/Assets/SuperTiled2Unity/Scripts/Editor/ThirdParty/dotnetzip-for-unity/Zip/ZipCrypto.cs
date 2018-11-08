@@ -27,7 +27,7 @@
 
 using System;
 
-namespace Ionic.Zip
+namespace SuperTiled2Unity.Ionic.Zip
 {
     /// <summary>
     ///   This class implements the "traditional" or "classic" PKZip encryption,

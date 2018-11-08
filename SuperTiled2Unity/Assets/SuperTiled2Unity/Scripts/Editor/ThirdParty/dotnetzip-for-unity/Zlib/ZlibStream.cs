@@ -28,7 +28,7 @@
 using System;
 using System.IO;
 
-namespace Ionic.Zlib
+namespace SuperTiled2Unity.Ionic.Zlib
 {
 
     /// <summary>

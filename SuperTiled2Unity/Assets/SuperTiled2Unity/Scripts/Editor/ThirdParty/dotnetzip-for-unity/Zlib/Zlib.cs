@@ -91,7 +91,7 @@
 using System;
 using Interop=System.Runtime.InteropServices;
 
-namespace Ionic.Zlib
+namespace SuperTiled2Unity.Ionic.Zlib
 {
 
     /// <summary>

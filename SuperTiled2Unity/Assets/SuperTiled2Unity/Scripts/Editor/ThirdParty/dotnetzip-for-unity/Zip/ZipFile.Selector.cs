@@ -36,7 +36,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-namespace Ionic.Zip
+namespace SuperTiled2Unity.Ionic.Zip
 {
 
     partial class ZipFile
@@ -1243,7 +1243,7 @@ namespace Ionic.Zip
 
 
 
-namespace Ionic
+namespace SuperTiled2Unity.Ionic
 {
     internal abstract partial class SelectionCriterion
     {

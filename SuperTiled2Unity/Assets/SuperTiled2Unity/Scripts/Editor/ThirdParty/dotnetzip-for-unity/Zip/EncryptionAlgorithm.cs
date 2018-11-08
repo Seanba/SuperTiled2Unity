@@ -25,7 +25,7 @@
 // ------------------------------------------------------------------
 
 
-namespace Ionic.Zip
+namespace SuperTiled2Unity.Ionic.Zip
 {
     /// <summary>
     /// An enum that provides the various encryption algorithms supported by this

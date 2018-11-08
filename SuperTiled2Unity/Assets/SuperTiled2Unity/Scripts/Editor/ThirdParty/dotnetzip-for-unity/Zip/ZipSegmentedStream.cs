@@ -28,7 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Ionic.Zip
+namespace SuperTiled2Unity.Ionic.Zip
 {
     internal class ZipSegmentedStream : System.IO.Stream
     {

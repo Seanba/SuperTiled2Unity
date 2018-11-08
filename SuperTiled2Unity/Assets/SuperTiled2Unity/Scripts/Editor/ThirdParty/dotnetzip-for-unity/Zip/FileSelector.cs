@@ -60,7 +60,7 @@ using System.Linq;
 #endif
 #endif
 
-namespace Ionic
+namespace SuperTiled2Unity.Ionic
 {
 
     /// <summary>

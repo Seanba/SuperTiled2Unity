@@ -30,7 +30,7 @@ using System;
 using System.IO;
 using Interop = System.Runtime.InteropServices;
 
-namespace Ionic.Zip
+namespace SuperTiled2Unity.Ionic.Zip
 {
     /// <summary>
     /// Represents a single entry in a ZipFile. Typically, applications get a ZipEntry

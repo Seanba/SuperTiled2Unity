@@ -1,4 +1,4 @@
-// ZipInputStream.cs
+// ZipInputStream.cs 
 //
 // ------------------------------------------------------------------
 //
@@ -33,9 +33,9 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 using System.IO;
-using Ionic.Zip;
+//using Ionic.Zip;
 
-namespace  Ionic.Zip
+namespace SuperTiled2Unity.Ionic.Zip
 {
     /// <summary>
     ///   Provides a stream metaphor for reading zip files.

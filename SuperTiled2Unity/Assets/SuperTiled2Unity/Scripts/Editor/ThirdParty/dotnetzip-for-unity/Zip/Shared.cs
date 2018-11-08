@@ -27,7 +27,7 @@ using System;
 using System.IO;
 using System.Security.Permissions;
 
-namespace Ionic.Zip
+namespace SuperTiled2Unity.Ionic.Zip
 {
     /// <summary>
     /// Collects general purpose utility methods.

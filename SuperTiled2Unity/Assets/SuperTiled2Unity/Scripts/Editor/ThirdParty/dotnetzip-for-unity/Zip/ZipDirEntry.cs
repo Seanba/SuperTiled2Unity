@@ -30,7 +30,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Ionic.Zip
+namespace SuperTiled2Unity.Ionic.Zip
 {
 
     partial class ZipEntry
