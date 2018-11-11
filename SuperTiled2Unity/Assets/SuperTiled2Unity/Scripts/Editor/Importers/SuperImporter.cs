@@ -47,6 +47,7 @@ namespace SuperTiled2Unity.Editor
             m_SuperAsset = null;
             AssetImportContext = ctx;
 
+#if UNITY_2018_2_OR_NEWER
             try
             {
                 InternalOnImportAsset();
@@ -55,7 +56,7 @@ namespace SuperTiled2Unity.Editor
             {
                 // Exceptions that SuperTiled2Unity is aware of
                 // These are the kind of errors a user should be able to fix
-                this.m_Errors.Add(tiled.Message);
+                m_Errors.Add(tiled.Message);
             }
             catch (XmlException xml)
             {
@@ -71,6 +72,9 @@ namespace SuperTiled2Unity.Editor
                 m_Errors.Add(ex.Message);
                 Debug.LogErrorFormat("Unknown error of type {0}: {1}\nStack Trace:\n{2}", ex.GetType(), ex.Message, ex.StackTrace);
             }
+#else
+            ReportUnityVersionError();
+#endif
         }
 
         public void AddAssetPathDependency(string assetPath)
@@ -166,5 +170,12 @@ namespace SuperTiled2Unity.Editor
         }
 
         protected abstract void InternalOnImportAsset();
+
+        private void ReportUnityVersionError()
+        {
+            string error = string.Format("SuperTiled2Unity requires Unity 2018.2 or later. You are using {0}", Application.unityVersion);
+            ReportError(error);
+            Debug.LogError(error);
+        }
     }
 }

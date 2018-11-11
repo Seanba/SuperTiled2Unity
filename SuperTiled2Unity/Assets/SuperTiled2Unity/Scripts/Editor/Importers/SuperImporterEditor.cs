@@ -248,5 +248,44 @@ namespace SuperTiled2Unity.Editor
             string assetPath = asset.ToString();
             AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
         }
+
+        // Conitional compiles
+#if UNITY_2018_1_OR_NEWER
+        protected void EditorGUILayout_ColorFieldNoEdit(GUIContent label, Color color)
+        {
+            EditorGUILayout.ColorField(label, color, false, true, false);
+        }
+#else
+        private static ColorPickerHDRConfig m_DummyHDRConfig = new ColorPickerHDRConfig(0, 0, 0, 0);
+
+        protected void EditorGUILayout_ColorFieldNoEdit(GUIContent label, Color color)
+        {
+            EditorGUILayout.ColorField(label, color, false, true, false, m_DummyHDRConfig);
+        }
+
+        protected UnityEngine.Object assetTarget
+        {
+            get
+            {
+                if (assetEditor != null)
+                {
+                    return assetEditor.target;
+                }
+                return null;
+            }
+        }
+
+        protected UnityEngine.Object[] assetTargets
+        {
+            get
+            {
+                if (assetEditor != null)
+                {
+                    return assetEditor.targets;
+                }
+                return null;
+            }
+        }
+#endif
     }
 }

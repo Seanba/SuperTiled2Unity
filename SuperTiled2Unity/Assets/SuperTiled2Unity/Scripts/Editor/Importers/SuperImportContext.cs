@@ -64,7 +64,9 @@ namespace SuperTiled2Unity.Editor
 
         public Vector2 MakePoint(Vector2 pt)
         {
-            return pt * NegateY * Settings.InversePPU;
+            pt.x *= NegateY.x;
+            pt.y *= NegateY.y;
+            return pt * Settings.InversePPU;
         }
 
         public Vector2[] MakePoints(Vector2[] points)

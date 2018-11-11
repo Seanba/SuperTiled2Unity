@@ -160,8 +160,7 @@ namespace SuperTiled2Unity.Editor
                         {
                             var objectTip = string.Format("Object type '{0}' described in '{1}' Xml file.", objectType.m_Name, m_ObjectTypesXml);
                             var objectContent = new GUIContent(objectType.m_Name, objectTip);
-
-                            EditorGUILayout.ColorField(objectContent, objectType.m_Color, false, true, false);
+                            EditorGUILayout_ColorFieldNoEdit(objectContent, objectType.m_Color);
 
                             // Display custom properties
                             using (new GuiScopedIndent())

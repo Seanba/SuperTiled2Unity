@@ -17,7 +17,7 @@ namespace SuperTiled2Unity.Editor
                 // Give the imported texture better defaults than provided by stock Unity
                 TextureImporter textureImporter = this.assetImporter as TextureImporter;
                 textureImporter.textureType = TextureImporterType.Sprite;
-                textureImporter.spriteImportMode = SpriteImportMode.Single;
+                //textureImporter.spriteImportMode = SpriteImportMode.Single;
                 textureImporter.mipmapEnabled = false;
                 textureImporter.filterMode = FilterMode.Point;
                 textureImporter.textureCompression = TextureImporterCompression.Uncompressed;
