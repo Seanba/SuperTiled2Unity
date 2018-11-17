@@ -37,7 +37,7 @@ First, select :code:`Export Object Types...` from the :code:`File` menu item.
    
    Select **Export Object Types** from the File menu item
 
-This will bring up the save file dialog. Save your object types Xml file someone within your Unity project.
+This will bring up the save file dialog. Save your object types Xml file somewhere within your Unity project.
 
 .. figure:: img/objects-xml/export-save-dialog.png
    :alt: Save Dialog
