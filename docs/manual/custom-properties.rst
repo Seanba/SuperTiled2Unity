@@ -1,7 +1,7 @@
 Custom Properties Support
 =========================
 
-The `Tiled Map Editor <https://www.mapeditor.org/>`__ as support for `Custom Properties <http://doc.mapeditor.org/en/stable/manual/custom-properties/>`__
+The `Tiled Map Editor <https://www.mapeditor.org/>`__ has support for `Custom Properties <http://doc.mapeditor.org/en/stable/manual/custom-properties/>`__
 that allow you to include custom data or information along with components of your map.
 
 .. figure:: img/objects-xml/props-tiled.png
@@ -37,7 +37,7 @@ First, select :code:`Export Object Types...` from the :code:`File` menu item.
    
    Select **Export Object Types** from the File menu item
 
-This will bring up the save file dialog. Save your object types Xml file someone within your Unity project.
+This will bring up the save file dialog. Save your object types Xml file somewhere within your Unity project.
 
 .. figure:: img/objects-xml/export-save-dialog.png
    :alt: Save Dialog

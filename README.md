@@ -1,3 +1,13 @@
+![](https://raw.githubusercontent.com/Seanba/seanba.github.io/master/assets/images/st2u-bar-wide.png)
+
+Download SuperTiled2Unity on itch.io
+-------------------------------------------------------------------------------
+The depolyed SuperTiled2Unity Unity Package [is available for download at itch.io](https://seanba.itch.io/supertiled2unity).
+
+This package is available under the **free or name your price** model. [Donations or a kind word](https://seanba.com/donate) are always appreciated!
+
+![](https://raw.githubusercontent.com/Seanba/seanba.github.io/master/assets/images/overhead-in-unity.png)
+
 About SuperTiled2Unity
 -------------------------------------------------------------------------------
 
