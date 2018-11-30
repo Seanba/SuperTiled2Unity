@@ -235,7 +235,7 @@ namespace SuperTiled2Unity.Editor
             var tileOffset = new Vector3(tile.m_TileOffsetX * inversePPU, -tile.m_TileOffsetY * inversePPU);
             var translateCenter = new Vector3(tile.m_Width * 0.5f * inversePPU, tile.m_Height * 0.5f * inversePPU);
 
-            // Our root object with contain the translation, rotation, and scale of the tile object
+            // Our root object will contain the translation, rotation, and scale of the tile object
             var goTRS = superObject.gameObject;
             goTRS.transform.localScale = scale;
 

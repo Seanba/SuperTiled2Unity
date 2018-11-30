@@ -313,10 +313,8 @@ namespace SuperTiled2Unity.Editor
                 }
                 catch (Exception e)
                 {
-                    ReportError("Customm importer '{0}' through an exception. Message = '{0}'", e.Message);
+                    ReportError("Custom importer '{0}' threw an exception. Message = '{1}', Stack:\n{2}", customImporter.GetType().Name, e.Message, e.StackTrace);
                 }
-                
-
             }
         }
     }
