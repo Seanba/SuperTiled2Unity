@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="25" height="15" tilewidth="16" tileheight="16" infinite="0" nextobjectid="8">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="25" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="8">
  <tileset firstgid="1" source="Zoria Tileset/water.tsx"/>
  <tileset firstgid="229" source="Zoria Tileset/tiles.tsx"/>
  <tileset firstgid="709" source="Zoria Tileset/scraps.tsx"/>
  <tileset firstgid="1189" source="Zoria Tileset/overhead-objects.tsx"/>
- <layer name="Ground" width="25" height="15">
+ <layer id="1" name="Ground" width="25" height="15">
   <data encoding="base64" compression="zlib">
    eJyLYGJgiATiKCA+SiQuBeIyHLgciA8yoOIKoNhMIK6isR2Vo3bQzI6pQDwNB54OxGcZUDE5doCwJFCvFJGYXDtUgXoZicTk2mHECMGEzFejoz9IzYMgbAjUW43D3dQKK5g9RjjswmWHBCi94MFSJPoJW1hZQO3Dha3I9FMEE6LchbFxYZCaYiAOw4FLkOxCxgByWrud
   </data>
  </layer>
- <layer name="Trim" width="25" height="15">
+ <layer id="2" name="Trim" width="25" height="15">
   <data encoding="base64" compression="zlib">
    eJxjYEAATyYGvMALKO9NQA0hMFzs8Afq52ZE8DmhbC4obQCU16WCHciAkxFTjS8N7EDHtLADG9+AAnuQ44Mb6m4YX40JM37ItQMZYAsrGKbUDm4KzCDGjgAg/sCIG1MKQHmMEIb5lZI4IQTQ44yXDLv4kdIRCHwC4s9QDALvaRSGlAIApZYamQ==
   </data>
  </layer>
- <layer name="Deco" width="25" height="15">
+ <layer id="3" name="Deco" width="25" height="15">
   <data encoding="base64" compression="zlib">
    eJzt1MkNQEAUgOFHC9qxU4adMiyxlKFMBfgPxFHChMv8yZd3meUyGZEr2xBx4MKDjwAhIsSGPM469ibMFBlyFChRoUbz4o6zljM69BiwmiIjc8KMRcEdm6I1Ot3X6Xd5n6Xgj/i7HY3ZDV0=
   </data>
  </layer>
- <objectgroup name="OnGround">
+ <objectgroup id="4" name="OnGround">
   <properties>
    <property name="unity:sortingLayerName" value="OnGround"/>
   </properties>

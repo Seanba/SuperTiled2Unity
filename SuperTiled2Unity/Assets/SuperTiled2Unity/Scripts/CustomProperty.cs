@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace SuperTiled2Unity
 {
@@ -30,22 +31,6 @@ namespace SuperTiled2Unity
             }
 
             property = null;
-            return false;
-        }
-
-        // Matches "1" or "True" for truth. All other values are assumed false
-        public static bool GetValueAsBool(this CustomProperty property)
-        {
-            if (property.m_Value.Equals("1"))
-            {
-                return true;
-            }
-
-            if (property.m_Value.Equals("true", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
             return false;
         }
     }

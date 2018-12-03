@@ -10,6 +10,72 @@ namespace SuperTiled2Unity.Editor
 {
     public static class GameObjectExtensions
     {
+        public static float GetSuperPropertyValueFloat(this GameObject go, string propName, float defaultValue)
+        {
+            CustomProperty property;
+            if (go.TryGetCustomPropertySafe(propName, out property))
+            {
+                return property.GetValueAsFloat();
+            }
+
+            return defaultValue;
+        }
+
+        public static int GetSuperPropertyValueInt(this GameObject go, string propName, int defaultValue)
+        {
+            CustomProperty property;
+            if (go.TryGetCustomPropertySafe(propName, out property))
+            {
+                return property.GetValueAsInt();
+            }
+
+            return defaultValue;
+        }
+
+        public static bool GetSuperPropertyValueBool(this GameObject go, string propName, bool defaultValue)
+        {
+            CustomProperty property;
+            if (go.TryGetCustomPropertySafe(propName, out property))
+            {
+                return property.GetValueAsBool();
+            }
+
+            return defaultValue;
+        }
+
+        public static Color GetSuperPropertyValueColor(this GameObject go, string propName, Color defaultValue)
+        {
+            CustomProperty property;
+            if (go.TryGetCustomPropertySafe(propName, out property))
+            {
+                return property.GetValueAsColor();
+            }
+
+            return defaultValue;
+        }
+
+        public static T GetSuperPropertyValueEnum<T>(this GameObject go, string propName, T defaultValue)
+        {
+            CustomProperty property;
+            if (go.TryGetCustomPropertySafe(propName, out property))
+            {
+                return property.GetValueAsEnum<T>();
+            }
+
+            return defaultValue;
+        }
+
+        public static string GetSuperPropertyValueString(this GameObject go, string propName, string defaultValue)
+        {
+            CustomProperty property;
+            if (go.TryGetCustomPropertySafe(propName, out property))
+            {
+                return property.GetValueAsString();
+            }
+
+            return defaultValue;
+        }
+
         public static void AddChildWithUniqueName(this GameObject go, GameObject child)
         {
             if (go == null)
