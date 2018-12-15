@@ -94,6 +94,7 @@ namespace SuperTiled2Unity.Editor
 
             child.name = name;
             child.transform.SetParent(go.transform, false);
+            child.layer = go.layer;
         }
 
         // Creates a new object, attached to the parent, with a specialized layer component
