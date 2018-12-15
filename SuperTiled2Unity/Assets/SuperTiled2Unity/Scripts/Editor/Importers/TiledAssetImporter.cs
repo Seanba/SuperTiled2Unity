@@ -50,6 +50,7 @@ namespace SuperTiled2Unity.Editor
 
             AssignUnityTag(component);
             AssignUnityLayer(component);
+            AssignUnityTrigger(component);
         }
 
         public void AssignSortingLayer(Renderer renderer, string sortName, int sortOrder)
@@ -116,6 +117,19 @@ namespace SuperTiled2Unity.Editor
                 if (parent != null)
                 {
                     properties.gameObject.layer = parent.gameObject.layer;
+                }
+            }
+        }
+
+        protected void AssignUnityTrigger(SuperCustomProperties properties)
+        {
+            CustomProperty prop;
+            if (properties.TryGetCustomProperty("unity:isTrigger", out prop))
+            {
+                var collider = properties.gameObject.GetComponent<BoxCollider2D>();
+                if (collider)
+                {
+                    collider.isTrigger = prop.GetValueAsBool();
                 }
             }
         }
