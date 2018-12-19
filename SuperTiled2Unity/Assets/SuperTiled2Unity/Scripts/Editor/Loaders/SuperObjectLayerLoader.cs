@@ -70,6 +70,9 @@ namespace SuperTiled2Unity.Editor
 
             // Take care of properties
             Importer.AddSuperCustomProperties(superObject.gameObject, xObject.Element("properties"), superObject.m_SuperTile, superObject.m_Type);
+
+            // Post processing after custom properties have been set
+            PostProcessObject(superObject.gameObject);
         }
 
         private void ApplyTemplate(XElement xObject)
@@ -318,6 +321,22 @@ namespace SuperTiled2Unity.Editor
             var height = xObject.GetAttributeAs("height", 0f);
             ColliderFactory.MakeBox(goObject, width, height);
             goObject.AddComponent<SuperColliderComponent>();
+        }
+
+        // fixit - note that this doesn't cover collisions within tile objects. (I wonder if that should be ignored)
+        private void PostProcessObject(GameObject go)
+        {
+            var properties = go.GetComponent<SuperCustomProperties>();
+            var collider = go.GetComponent<Collider2D>();
+
+            if (collider != null)
+            {
+                CustomProperty isTrigger;
+                if (properties.TryGetCustomProperty("unity:isTrigger", out isTrigger))
+                {
+                    collider.isTrigger = isTrigger.GetValueAsBool();
+                }
+            }
         }
     }
 }

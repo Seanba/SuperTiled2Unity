@@ -30,6 +30,13 @@ namespace SuperTiled2Unity.Editor
                 AddBoxCollider(go, collision, tile, importContext);
             }
 
+            // Additional settings on the collider that was just added
+            var addedCollider = go.GetComponent<Collider2D>();
+            if (addedCollider != null)
+            {
+                addedCollider.isTrigger = collision.m_IsTrigger;
+            }
+
             goParent.AddChildWithUniqueName(go);
         }
 

@@ -19,6 +19,8 @@ namespace SuperTiled2Unity.Editor
             {
                 foreach (var collision in tile.m_CollisionObjects)
                 {
+                    // fixit - here is a good place to add custom properties
+                    //collision.m_CustomProperties
                     collision.AddCollider(tile, goParent, importContext);
                 }
             }
