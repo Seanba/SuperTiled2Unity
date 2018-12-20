@@ -323,7 +323,6 @@ namespace SuperTiled2Unity.Editor
             goObject.AddComponent<SuperColliderComponent>();
         }
 
-        // fixit - note that this doesn't cover collisions within tile objects. (I wonder if that should be ignored)
         private void PostProcessObject(GameObject go)
         {
             var properties = go.GetComponent<SuperCustomProperties>();
@@ -337,6 +336,10 @@ namespace SuperTiled2Unity.Editor
                     collider.isTrigger = isTrigger.GetValueAsBool();
                 }
             }
+
+            // Make sure all children have the same physics layer
+            // This is needed for Tile objects in particular that have their colliders in child objects
+            go.AssignChildLayers();
         }
     }
 }

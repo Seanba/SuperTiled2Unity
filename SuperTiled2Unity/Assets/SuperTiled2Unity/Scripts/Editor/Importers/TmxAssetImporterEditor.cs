@@ -25,6 +25,8 @@ namespace SuperTiled2Unity.Editor
         private string[] m_CustomImporterTypes;
         private int m_SelectedCustomImporter;
 
+        private bool m_ShowAutoImporters;
+
         protected override string EditorLabel
         {
             get { return "Tiled Map Importer (.tmx files)"; }
@@ -90,8 +92,13 @@ namespace SuperTiled2Unity.Editor
             var importerNames = new List<string>();
             var importerTypes = new List<string>();
 
+            // Enumerate all CustomTmxImporter classes that *do not* have the auto importer attribute on them
             var baseType = typeof(CustomTmxImporter);
-            var customTypes = Assembly.GetAssembly(baseType).GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(baseType)).OrderBy(t => t.GetDisplayName());
+            var customTypes = Assembly.GetAssembly(baseType).
+                GetTypes().
+                Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(baseType)).
+                Where(t => t.GetCustomAttributes(typeof(AutoCustomTmxImporterAttribute), true).Length == 0).
+                OrderBy(t => t.GetDisplayName());
 
             foreach (var t in customTypes)
             {
@@ -115,6 +122,7 @@ namespace SuperTiled2Unity.Editor
 
         private void ShowCustomImporterGui()
         {
+            // Show the user-selected custom importer
             EditorGUILayout.LabelField("Custom Importer Settings", EditorStyles.boldLabel);
             var selected = EditorGUILayout.Popup("Custom Importer", m_SelectedCustomImporter, m_CustomImporterNames);
 
@@ -125,6 +133,26 @@ namespace SuperTiled2Unity.Editor
             }
 
             EditorGUILayout.HelpBox("Custom Importers are an advanced feature that require scripting. Create a class inherited from CustomTmxImporter and select it from the list above.", MessageType.None);
+
+            // List all the automatically applied custom importers
+            using (new GuiScopedIndent())
+            {
+                var importers = AutoCustomTmxImporterAttribute.GetOrderedAutoImportersTypes();
+                var title = string.Format("Auto Importers ({0})", importers.Count());
+                var tip = "This custom importers will be automatically applied to your import process.";
+                var content = new GUIContent(title, tip);
+
+                m_ShowAutoImporters = EditorGUILayout.Foldout(m_ShowAutoImporters, content);
+                if (m_ShowAutoImporters)
+                {
+                    foreach (var t in importers)
+                    {
+                        EditorGUILayout.LabelField(t.GetDisplayName());
+                    }
+
+                    EditorGUILayout.HelpBox("Auto Importers are custom importers that run on automatically on every exported Tiled map. Order is controlled by the AutoCustomImporterAttribute.", MessageType.None);
+                }
+            }
         }
     }
 }

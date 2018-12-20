@@ -48,5 +48,32 @@ namespace MyNamespace
             Debug.LogFormat("Map '{0}' has {1} layers.", map.name, layers.Length);
         }
     }
+
+    [AutoCustomTmxImporter()]
+    public class MyOrderedTmxImporter : CustomTmxImporter
+    {
+        public override void TmxAssetImported(TmxAssetImportedArgs args)
+        {
+            Debug.Log("MyOrderedTmxImporter importer");
+        }
+    }
+
+    [AutoCustomTmxImporter(1)]
+    public class MyOrderedTmxImporter1 : CustomTmxImporter
+    {
+        public override void TmxAssetImported(TmxAssetImportedArgs args)
+        {
+            Debug.Log("MyOrderedTmxImporter1 importer");
+        }
+    }
+
+    [AutoCustomTmxImporter(2)]
+    public class MyOrderedTmxImporter2 : CustomTmxImporter
+    {
+        public override void TmxAssetImported(TmxAssetImportedArgs args)
+        {
+            Debug.Log("MyOrderedTmxImporter2 importer");
+        }
+    }
 }
 */
