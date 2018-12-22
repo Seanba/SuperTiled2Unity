@@ -265,6 +265,7 @@ namespace SuperTiled2Unity.Editor
             var renderer = goTile.AddComponent<SpriteRenderer>();
             renderer.sprite = tile.m_Sprite;
             renderer.color = new Color(1, 1, 1, superObject.CalculateOpacity());
+            Importer.AssignMaterial(renderer);
             Importer.AssignSortingLayer(renderer, m_ObjectLayer.m_SortingLayerName, (int)superObject.m_Y);
 
             // Add the animator if needed

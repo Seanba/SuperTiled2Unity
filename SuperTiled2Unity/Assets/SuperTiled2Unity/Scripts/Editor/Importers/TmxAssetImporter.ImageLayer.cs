@@ -45,6 +45,7 @@ namespace SuperTiled2Unity.Editor
                         var renderer = goLayer.AddComponent<SpriteRenderer>();
                         renderer.sprite = sprite;
                         renderer.color = new Color(1, 1, 1, layerComponent.CalculateOpacity());
+                        AssignMaterial(renderer);
                         AssignSortingLayer(renderer, layerComponent.m_SortingLayerName, layerComponent.m_SortingOrder);
                     }
                     catch (Exception e)

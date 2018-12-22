@@ -27,6 +27,9 @@ namespace SuperTiled2Unity.Editor
         private SerializedProperty m_AnimationFramerate;
         private readonly GUIContent m_AnimationFramerateContext = new GUIContent("Animation Framerate", "How many frames per second for tile animations.");
 
+        private SerializedProperty m_DefaultMaterial;
+        private readonly GUIContent m_DefaultMaterialContext = new GUIContent("Default Material", "Set to the material you want to use for sprites and tiles imported by SuperTiled2Unity. Leave empy to use built-in sprite material.");
+
         private SerializedProperty m_ObjectTypesXml;
         private readonly GUIContent m_ObjectTypesXmlContext = new GUIContent("Object Types Xml", "Set to an Object Types Xml file exported from Tiled Object Type Editor.");
 
@@ -88,6 +91,9 @@ namespace SuperTiled2Unity.Editor
             m_AnimationFramerate = serializedObject.FindProperty("m_AnimationFramerate");
             Assert.IsNotNull(m_AnimationFramerate);
 
+            m_DefaultMaterial = serializedObject.FindProperty("m_DefaultMaterial");
+            Assert.IsNotNull(m_DefaultMaterial);
+
             m_ObjectTypesXml = serializedObject.FindProperty("m_ObjectTypesXml");
             Assert.IsNotNull(m_ObjectTypesXml);
         }
@@ -128,6 +134,7 @@ namespace SuperTiled2Unity.Editor
             EditorGUILayout.LabelField("SuperTiled2Unity Settings", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(m_PixelsPerUnit, m_PixelsPerUnitContext);
             EditorGUILayout.PropertyField(m_EdgesPerEllipse, m_EdgesPerEllipseContext);
+            EditorGUILayout.PropertyField(m_DefaultMaterial, m_DefaultMaterialContext);
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Animations", EditorStyles.boldLabel);

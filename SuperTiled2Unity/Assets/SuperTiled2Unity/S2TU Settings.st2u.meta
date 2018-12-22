@@ -14,10 +14,11 @@ ScriptedImporter:
   warnings: []
   missingSortingLayers: []
   missingLayers: []
-  version: 1.0.1
+  version: 1.1.5
   pixelsPerUnit: 100
   edgesPerEllipse: 32
   animationFramerate: 20
+  defaultMaterial: {instanceID: 0}
   objectTypesXml: {instanceID: 0}
   layerColors:
   - {r: 0.88073844, g: 0.8962264, b: 0.25787643, a: 1}

@@ -59,6 +59,15 @@ namespace SuperTiled2Unity.Editor
             renderer.sortingOrder = sortOrder;
         }
 
+        public void AssignMaterial(Renderer renderer)
+        {
+            // Has the user chosen to override the material used for our tilemaps and sprite objects?
+            if (SuperImportContext.Settings.DefaultMaterial != null)
+            {
+                renderer.material = SuperImportContext.Settings.DefaultMaterial;
+            }
+        }
+
         protected override void InternalOnImportAsset()
         {
             WrapImportContext(AssetImportContext);

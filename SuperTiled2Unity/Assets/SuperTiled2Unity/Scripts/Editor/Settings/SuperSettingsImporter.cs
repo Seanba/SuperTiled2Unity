@@ -32,6 +32,10 @@ namespace SuperTiled2Unity.Editor
         public int AnimationFramerate { get { return m_AnimationFramerate; } }
 
         [SerializeField]
+        private Material m_DefaultMaterial = null;
+        public Material DefaultMaterial { get { return m_DefaultMaterial; } }
+
+        [SerializeField]
         private TextAsset m_ObjectTypesXml = null;
         public TextAsset ObjectTypesXml { get { return m_ObjectTypesXml; } }
 
