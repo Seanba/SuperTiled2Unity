@@ -214,7 +214,8 @@ namespace SuperTiled2Unity.Editor
             EditorGUILayout.LabelField("Reimport Assets", EditorStyles.boldLabel);
             EditorGUILayout.HelpBox(@"You may want to reimport all Tiled assets after making changes to settings." +
                                 @" Be aware this may take a few minutes if you have a lot of Tiled assets." +
-                                @" This will force import tilesets, templates, and maps.",
+                                @" This will force import tilesets, templates, and maps." +
+                                @" Note that some assets may be reimported multiple times because of dependencies.",
                                 MessageType.Info);
             if (GUILayout.Button("Reimport Tiled Assets"))
             {
