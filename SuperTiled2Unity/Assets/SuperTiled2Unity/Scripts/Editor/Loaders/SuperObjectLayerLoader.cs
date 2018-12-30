@@ -228,7 +228,7 @@ namespace SuperTiled2Unity.Editor
             bool flip_h = tileId.HasHorizontalFlip;
             bool flip_v = tileId.HasVerticalFlip;
 
-            var scale = Vector2.one;
+            var scale = Vector3.one;
             scale.x = xObject.GetAttributeAs("width", 1.0f);
             scale.y = xObject.GetAttributeAs("height", 1.0f);
 
@@ -252,7 +252,7 @@ namespace SuperTiled2Unity.Editor
             var toCenter = translateCenter + tileOffset;
             goCF.transform.localPosition = toCenter;
             goCF.transform.localRotation = Quaternion.Euler(0, 0, 0);
-            goCF.transform.localScale = new Vector3(flip_h ? -1 : 1, flip_v ? -1 : 1);
+            goCF.transform.localScale = new Vector3(flip_h ? -1 : 1, flip_v ? -1 : 1, 1);
 
             // Add another child, putting our coordinates back into the proper place
             var goTile = new GameObject(superObject.m_TiledName);

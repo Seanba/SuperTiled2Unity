@@ -148,14 +148,14 @@ namespace SuperTiled2Unity
                 case FlipFlags._VH:
                     trans = new Vector3(width, height, 0);
                     rot = Vector3.zero;
-                    scale = new Vector3(-1, -1, 0);
+                    scale = new Vector3(-1, -1, 1);
                     break;
 
                 // horizontal
                 case FlipFlags.__H:
                     trans = new Vector3(width, 0, 0);
                     rot = Vector3.zero;
-                    scale = new Vector3(-1, 1, 0);
+                    scale = new Vector3(-1, 1, 1);
                     break;
 
                 default:
