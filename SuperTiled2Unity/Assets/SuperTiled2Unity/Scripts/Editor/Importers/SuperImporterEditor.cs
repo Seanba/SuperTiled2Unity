@@ -80,15 +80,16 @@ namespace SuperTiled2Unity.Editor
             {
                 if (TargetAssetImporter.Errors.Any())
                 {
-                    EditorGUILayout.LabelField("There were errors importing " + this.TargetAssetImporter.assetPath, EditorStyles.boldLabel);
-                    EditorGUILayout.HelpBox(string.Join("\n\n", this.TargetAssetImporter.Errors.Take(10).ToArray()), MessageType.Error);
+                    var asset = Path.GetFileName(TargetAssetImporter.assetPath);
+                    EditorGUILayout.LabelField("There were errors importing " + asset, EditorStyles.boldLabel);
+                    EditorGUILayout.HelpBox(string.Join("\n\n", TargetAssetImporter.Errors.Take(10).ToArray()), MessageType.Error);
                     EditorGUILayout.Separator();
                 }
 
                 if (TargetAssetImporter.Warnings.Any())
                 {
-                    EditorGUILayout.LabelField("There were warnings importing " + this.TargetAssetImporter.assetPath, EditorStyles.boldLabel);
-                    EditorGUILayout.HelpBox(string.Join("\n\n", this.TargetAssetImporter.Warnings.Take(10).ToArray()), MessageType.Warning);
+                    EditorGUILayout.LabelField("There were warnings importing " + TargetAssetImporter.assetPath, EditorStyles.boldLabel);
+                    EditorGUILayout.HelpBox(string.Join("\n\n", TargetAssetImporter.Warnings.Take(10).ToArray()), MessageType.Warning);
                     EditorGUILayout.Separator();
                 }
             }
