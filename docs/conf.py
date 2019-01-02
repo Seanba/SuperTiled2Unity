@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'SuperTiled2Unity'
-copyright = '2018, Seanba'
+copyright = '2019, Seanba'
 author = 'Seanba'
 
 # The short X.Y version
