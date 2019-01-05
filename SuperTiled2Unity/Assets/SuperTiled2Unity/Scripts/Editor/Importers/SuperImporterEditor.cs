@@ -39,8 +39,19 @@ namespace SuperTiled2Unity.Editor
             }
             else
             {
-                // Force Unity to stop OnGUI calls for this editor
-                GUIUtility.ExitGUI();
+                ForceDeselectAndExit();
+            }
+        }
+
+        protected override void OnHeaderGUI()
+        {
+            if (assetTarget != null)
+            {
+                base.OnHeaderGUI();
+            }
+            else
+            {
+                ForceDeselectAndExit();
             }
         }
 
@@ -203,7 +214,7 @@ namespace SuperTiled2Unity.Editor
                             var current = Event.current;
                             if (clickArea.Contains(current.mousePosition) && current.type == EventType.ContextClick)
                             {
-                                var text = string.Format("Remport '{0}'", Path.GetFileName(asset));
+                                var text = string.Format("Reimport '{0}'", Path.GetFileName(asset));
 
                                 var menu = new GenericMenu();
                                 menu.AddItem(new GUIContent(text), false, MenuCallbackReimport, asset);
@@ -262,6 +273,14 @@ namespace SuperTiled2Unity.Editor
         {
             string assetPath = asset.ToString();
             AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
+        }
+
+        private void ForceDeselectAndExit()
+        {
+            // Force Unity to null out select and stop OnGUI calls for this editor
+            // This is unfortunate but necessary under re-import edge conditions
+            Selection.objects = new UnityEngine.Object[0];
+            GUIUtility.ExitGUI();
         }
 
         // Conitional compiles

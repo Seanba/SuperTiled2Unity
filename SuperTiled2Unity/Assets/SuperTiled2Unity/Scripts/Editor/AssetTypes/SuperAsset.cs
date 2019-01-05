@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
+
 
 namespace SuperTiled2Unity.Editor
 {
@@ -13,10 +15,11 @@ namespace SuperTiled2Unity.Editor
         private List<string> m_AssetDependencies = new List<string>();
         public List<String> AssetDependencies { get { return m_AssetDependencies; } }
 
-        public void AddDependency(string assetPath)
+        public void AddDependency(AssetImportContext context, string assetPath)
         {
             if (!m_AssetDependencies.Contains(assetPath))
             {
+                context.DependsOnSourceAsset(assetPath);
                 m_AssetDependencies.Add(assetPath);
             }
         }

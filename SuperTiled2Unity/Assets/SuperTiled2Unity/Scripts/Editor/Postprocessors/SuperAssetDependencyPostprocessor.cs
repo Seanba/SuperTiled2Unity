@@ -15,22 +15,6 @@ namespace SuperTiled2Unity.Editor
             {
                 TiledAssetDependencies.Instance.TrackDependencies(assetPath);
             }
-
-            foreach (var source in importedAssets)
-            {
-                // Reimport all the assets that reference us
-                AssetDependencies depends;
-                if (TiledAssetDependencies.Instance.GetAssetDependencies(source, out depends))
-                {
-                    foreach (var reference in depends.References)
-                    {
-                        if (!importedAssets.Contains(reference, StringComparer.OrdinalIgnoreCase))
-                        {
-                            AssetDatabase.ImportAsset(reference, ImportAssetOptions.ForceUpdate);
-                        }
-                    }
-                }
-            }
         }
     }
 }
