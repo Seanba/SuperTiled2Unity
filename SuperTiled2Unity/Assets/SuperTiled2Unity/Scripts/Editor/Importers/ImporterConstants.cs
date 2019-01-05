@@ -8,9 +8,9 @@ namespace SuperTiled2Unity.Editor
     public static class ImporterConstants
     {
         public const int SettingsVersion = 3;
-        public const int TilesetVersion = 4;
+        public const int TilesetVersion = 5;
         public const int TemplateVersion = 3;
-        public const int MapVersion = 5;
+        public const int MapVersion = 6;
 
         public const string SettingsExtension = "st2u";
         public const string TilesetExtension = "tsx";
