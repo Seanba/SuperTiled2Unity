@@ -183,6 +183,8 @@ namespace SuperTiled2Unity.Editor
 
             using (new GuiScopedIndent())
             {
+                DisplayObjectCount();
+
                 using (new GuiScopedIndent())
                 {
                     var title = string.Format("Dependencies ({0})", depends.Dependencies.Count());
@@ -227,6 +229,18 @@ namespace SuperTiled2Unity.Editor
                         }
                     }
                 }
+            }
+        }
+
+        private void DisplayObjectCount()
+        {
+            var numberOfObjectsProperty = serializedObject.FindProperty("m_NumberOfObjectsImported");
+            if (numberOfObjectsProperty != null)
+            {
+                var title = string.Format("Object Count: {0}", numberOfObjectsProperty.intValue);
+                var tip = "The number of objects imported into this asset.";
+                var content = new GUIContent(title, tip);
+                EditorGUILayout.LabelField(content, EditorStyles.label);
             }
         }
 

@@ -18,6 +18,10 @@ namespace SuperTiled2Unity.Editor
         [SerializeField] private float m_PixelsPerUnit = 0.0f;
         [SerializeField] private int m_EdgesPerEllipse = 0;
 
+#pragma warning disable 414
+        [SerializeField] private int m_NumberOfObjectsImported = 0;
+#pragma warning restore 414
+
         public SuperImportContext SuperImportContext { get; private set; }
 
         public void AddSuperCustomProperties(GameObject go, XElement xProperties)
@@ -71,6 +75,11 @@ namespace SuperTiled2Unity.Editor
         protected override void InternalOnImportAsset()
         {
             WrapImportContext(AssetImportContext);
+        }
+
+        protected override void InternalOnImportAssetCompleted()
+        {
+            m_NumberOfObjectsImported = SuperImportContext.GetNumberOfObjects();
         }
 
         protected void AssignUnityTag(SuperCustomProperties properties)

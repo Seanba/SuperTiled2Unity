@@ -18,13 +18,13 @@ namespace SuperTiled2Unity.Editor
 
         // Serialized properties
         private SerializedProperty m_UseSpriteAtlas;
-        private readonly GUIContent m_UseSpriteAtlasContext = new GUIContent("Use Sprite Atlas for Tiles", "Let SuperTiled2Unity create atlas textures to hold your tiles. This will remove visual seams and bands but at the cost of memory.");
+        private readonly GUIContent m_UseSpriteAtlasContent = new GUIContent("Use Sprite Atlas for Tiles", "Let SuperTiled2Unity create atlas textures to hold your tiles. This will remove visual seams and bands but at the cost of memory.");
 
         private SerializedProperty m_AtlasWidth;
-        private readonly GUIContent m_AtlasWidthContext = new GUIContent("Sprite Atlas Width", "Pixel width of sprite atlas used for packing tiles.");
+        private readonly GUIContent m_AtlasWidthContent = new GUIContent("Sprite Atlas Width", "Pixel width of sprite atlas used for packing tiles.");
 
         private SerializedProperty m_AtlasHeight;
-        private readonly GUIContent m_AtlasHeightContext = new GUIContent("Sprite Atlas Height", "Pixel height of sprite atlas used for packing tiles.");
+        private readonly GUIContent m_AtlasHeightContent = new GUIContent("Sprite Atlas Height", "Pixel height of sprite atlas used for packing tiles.");
 
         public override bool showImportedObject { get { return false; } }
 
@@ -87,15 +87,15 @@ namespace SuperTiled2Unity.Editor
         private void InspectorGUIForAtlasSettings()
         {
             ShowTiledAssetGui();
-            ToggleFromInt(this.m_UseSpriteAtlas, this.m_UseSpriteAtlasContext);
+            ToggleFromInt(this.m_UseSpriteAtlas, this.m_UseSpriteAtlasContent);
             m_ShowAtlasSettings.target = (m_UseSpriteAtlas.boolValue && !m_UseSpriteAtlas.hasMultipleDifferentValues);
             if (EditorGUILayout.BeginFadeGroup(m_ShowAtlasSettings.faded))
             {
                 using (new GuiScopedIndent())
                 {
                     // This is ugly but C# does not allow generic constraints on enum types
-                    m_AtlasWidth.intValue = (int)(AtlasSize)EditorGUILayout.EnumPopup(m_AtlasWidthContext, (AtlasSize)m_AtlasWidth.intValue);
-                    m_AtlasHeight.intValue = (int)(AtlasSize)EditorGUILayout.EnumPopup(m_AtlasHeightContext, (AtlasSize)m_AtlasHeight.intValue);
+                    m_AtlasWidth.intValue = (int)(AtlasSize)EditorGUILayout.EnumPopup(m_AtlasWidthContent, (AtlasSize)m_AtlasWidth.intValue);
+                    m_AtlasHeight.intValue = (int)(AtlasSize)EditorGUILayout.EnumPopup(m_AtlasHeightContent, (AtlasSize)m_AtlasHeight.intValue);
 
                     EditorGUILayout.HelpBox("SuperTiled2Unity can automate the creation of sprite atlas used to package tiles.\n" +
                         "This will eliminate visual artifacts like seams from your maps but some users may wish to handle sprite atlases themselves.\n" +

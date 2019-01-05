@@ -19,19 +19,19 @@ namespace SuperTiled2Unity.Editor
 
         // Serialized properties
         private SerializedProperty m_PixelsPerUnit;
-        private readonly GUIContent m_PixelsPerUnitContext = new GUIContent("Default Pixels Per Unit", "How many pixels in the sprite correspond to one unit in the world. (Default Setting)");
+        private readonly GUIContent m_PixelsPerUnitContent = new GUIContent("Default Pixels Per Unit", "How many pixels in the sprite correspond to one unit in the world. (Default Setting)");
 
         private SerializedProperty m_EdgesPerEllipse;
-        private readonly GUIContent m_EdgesPerEllipseContext = new GUIContent("Default Edges Per Ellipse", "How many edges to use when appromixating ellipse/circle colliders. (Default Setting)");
+        private readonly GUIContent m_EdgesPerEllipseContent = new GUIContent("Default Edges Per Ellipse", "How many edges to use when appromixating ellipse/circle colliders. (Default Setting)");
 
         private SerializedProperty m_AnimationFramerate;
-        private readonly GUIContent m_AnimationFramerateContext = new GUIContent("Animation Framerate", "How many frames per second for tile animations.");
+        private readonly GUIContent m_AnimationFramerateContent = new GUIContent("Animation Framerate", "How many frames per second for tile animations.");
 
         private SerializedProperty m_DefaultMaterial;
-        private readonly GUIContent m_DefaultMaterialContext = new GUIContent("Default Material", "Set to the material you want to use for sprites and tiles imported by SuperTiled2Unity. Leave empy to use built-in sprite material.");
+        private readonly GUIContent m_DefaultMaterialContent = new GUIContent("Default Material", "Set to the material you want to use for sprites and tiles imported by SuperTiled2Unity. Leave empy to use built-in sprite material.");
 
         private SerializedProperty m_ObjectTypesXml;
-        private readonly GUIContent m_ObjectTypesXmlContext = new GUIContent("Object Types Xml", "Set to an Object Types Xml file exported from Tiled Object Type Editor.");
+        private readonly GUIContent m_ObjectTypesXmlContent = new GUIContent("Object Types Xml", "Set to an Object Types Xml file exported from Tiled Object Type Editor.");
 
         private ST2USettings m_ST2USettings;
         private bool m_ShowObjectTypes;
@@ -132,18 +132,18 @@ namespace SuperTiled2Unity.Editor
         private void DoGuiSettings()
         {
             EditorGUILayout.LabelField("SuperTiled2Unity Settings", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(m_PixelsPerUnit, m_PixelsPerUnitContext);
-            EditorGUILayout.PropertyField(m_EdgesPerEllipse, m_EdgesPerEllipseContext);
-            EditorGUILayout.PropertyField(m_DefaultMaterial, m_DefaultMaterialContext);
+            EditorGUILayout.PropertyField(m_PixelsPerUnit, m_PixelsPerUnitContent);
+            EditorGUILayout.PropertyField(m_EdgesPerEllipse, m_EdgesPerEllipseContent);
+            EditorGUILayout.PropertyField(m_DefaultMaterial, m_DefaultMaterialContent);
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Animations", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(m_AnimationFramerate, m_AnimationFramerateContext);
+            EditorGUILayout.PropertyField(m_AnimationFramerate, m_AnimationFramerateContent);
             EditorGUILayout.HelpBox("In frames-per-second. Note: You will need to reimport all your tilesets after making changes to the animation framerate for tiles.", MessageType.None);
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Object Types", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(m_ObjectTypesXml, m_ObjectTypesXmlContext);
+            EditorGUILayout.PropertyField(m_ObjectTypesXml, m_ObjectTypesXmlContent);
             DoObjectTypesDisplay();
             EditorGUILayout.Space();
         }

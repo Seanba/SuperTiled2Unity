@@ -33,6 +33,10 @@ namespace SuperTiled2Unity.Editor
             ProcessTemplate(xTemplate);
         }
 
+        protected override void InternalOnImportAssetCompleted()
+        {
+        }
+
         private void ProcessTemplate(XElement xTemplate)
         {
             // Do we have a tileset?

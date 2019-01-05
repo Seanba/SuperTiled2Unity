@@ -38,6 +38,13 @@ namespace SuperTiled2Unity.Editor
             m_Context.SetMainObject(obj);
         }
 
+        public int GetNumberOfObjects()
+        {
+            var objects = new List<UnityEngine.Object>();
+            m_Context.GetObjects(objects);
+            return objects.Count;
+        }
+
         // Math/space transform functions
         // Points in Tiled have (0, 0) at top left corner of map (+y goes down)
         // Our Unity projects have +y going up and points are transformed by a Pixels Per Unity constant
