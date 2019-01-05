@@ -44,3 +44,4 @@ sysinfo.txt
 # Builds
 *.apk
 #*.unitypackage # I want to deploy unity packages
+SuperTiled2Unity/Logs/Packages-Update.log
