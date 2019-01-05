@@ -51,6 +51,7 @@ namespace SuperTiled2Unity.Editor
             try
             {
                 InternalOnImportAsset();
+                InternalOnImportAssetCompleted();
             }
             catch (TiledException tiled)
             {
@@ -170,6 +171,7 @@ namespace SuperTiled2Unity.Editor
         }
 
         protected abstract void InternalOnImportAsset();
+        protected abstract void InternalOnImportAssetCompleted();
 
         private void ReportUnityVersionError()
         {

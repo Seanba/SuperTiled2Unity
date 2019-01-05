@@ -86,6 +86,10 @@ namespace SuperTiled2Unity.Editor
             DoImportSettings();
         }
 
+        protected override void InternalOnImportAssetCompleted()
+        {
+        }
+
         private void DoImportIcons()
         {
             m_SuperIcons = ScriptableObject.CreateInstance<SuperIcons>();
