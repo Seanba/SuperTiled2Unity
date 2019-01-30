@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
+using UnityEditor.Experimental.UIElements;
 using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
@@ -163,7 +164,11 @@ namespace SuperTiled2Unity.Editor
             {
                 if (GUILayout.Button("Open Tag Manager"))
                 {
+#if UNITY_2018_3_OR_NEWER
+                    SettingsService.OpenProjectSettings("Project/Tags and Layers");
+#else
                     EditorApplication.ExecuteMenuItem("Edit/Project Settings/Tags and Layers");
+#endif
                 }
 
                 if (GUILayout.Button("Reimport"))

@@ -143,7 +143,7 @@ namespace SuperTiled2Unity.Editor
             var tileIds = ReadTileIdsFromChunk(chunk);
             PlaceTiles(goTilemap, chunk, tileIds);
 
-            m_CurrentCollisionBuilder.Build();
+            m_CurrentCollisionBuilder.Build(this);
             m_CurrentCollisionBuilder = null;
         }
 

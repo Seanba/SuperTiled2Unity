@@ -69,7 +69,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        public void Build()
+        public void Build(SuperImporter importer)
         {
             // Excute our clippers and add game objects with their solution polygons
             foreach (var pair in m_CollisionClippers)
@@ -82,7 +82,12 @@ namespace SuperTiled2Unity.Editor
                 if (clipper.ClosedPaths.Any() || clipper.OpenPaths.Any())
                 {
                     var layerId = key.LayerId;
-                    
+
+                    if (!importer.CheckLayerName(key.LayerName))
+                    {
+                        layerId = 0;
+                    }
+
                     if (layerId == 0)
                     {
                         // In this context, default means inherit from tilemap layer
@@ -90,7 +95,7 @@ namespace SuperTiled2Unity.Editor
                     }
 
                     var layerName = LayerMask.LayerToName(layerId);
-                    GameObject goCollider = new GameObject("Collision_" + layerName);
+                    var goCollider = new GameObject("Collision_" + layerName);
                     goCollider.layer = layerId;
                     m_TilemapGameObject.AddChildWithUniqueName(goCollider);
 

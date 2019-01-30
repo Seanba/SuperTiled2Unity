@@ -97,6 +97,7 @@ namespace SuperTiled2Unity.Editor
                 {
                     var tilePoly = new TilePolygon();
                     tilePoly.IsClosed = collision.IsClosed;
+                    tilePoly.ColliderLayerName = collision.m_PhysicsLayer;
                     tilePoly.ColliderLayerId = LayerMask.NameToLayer(collision.m_PhysicsLayer);
                     tilePoly.IsTrigger = collision.m_IsTrigger;
 
