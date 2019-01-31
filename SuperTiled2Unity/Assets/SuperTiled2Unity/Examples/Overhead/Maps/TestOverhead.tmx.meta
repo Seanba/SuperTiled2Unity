@@ -14,14 +14,22 @@ ScriptedImporter:
     100012: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)
     100014: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/Pillar (CF)
     100016: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/Pillar (CF)/Pillar
+    100018: _MapPrfab/TestOverhead/Deco/Collision_Default
+    100020: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon
+    100022: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (1)
     100024: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/Pillar (CF)/Pillar/Object_2
     100026: _MapPrfab/TestOverhead/OnGround/Spawn
+    100028: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (2)
+    100030: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (3)
+    100032: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (13)
+    100034: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (14)
+    100036: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (15)
     100038: _MapPrfab/TestOverhead/Deco
-    100040: _MapPrfab/TestOverhead/Deco/Collision_Default
-    100042: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon
-    100044: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (1)
-    100046: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (2)
-    100048: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (3)
+    100040: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (16)
+    100042: _MapPrfab/TestOverhead/Trim/Collision_Default
+    100044: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon
+    100046: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (1)
+    100048: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (2)
     100050: _MapPrfab/TestOverhead/Ground
     100052: _MapPrfab/TestOverhead/Ground/Collision_Default
     100054: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon
@@ -37,10 +45,6 @@ ScriptedImporter:
     100074: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (10)
     100076: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (11)
     100078: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (12)
-    100080: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (13)
-    100082: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (14)
-    100084: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (15)
-    100086: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (16)
     100088: _MapPrfab/TestOverhead/Ground/Collision_Water
     100090: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon
     100092: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (1)
@@ -51,10 +55,6 @@ ScriptedImporter:
     100102: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (6)
     100104: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (7)
     100106: _MapPrfab/TestOverhead/Trim
-    100108: _MapPrfab/TestOverhead/Trim/Collision_Default
-    100110: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon
-    100112: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (1)
-    100114: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (2)
     400000: _MapPrfab/TestOverhead/Transform
     400002: _MapPrfab/TestOverhead/OnGround/Transform
     400004: _MapPrfab/TestOverhead/OnGround/Pillar (broken) (TRS)/Transform
@@ -67,14 +67,22 @@ ScriptedImporter:
     400012: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/Transform
     400014: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/Pillar (CF)/Transform
     400016: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/Pillar (CF)/Pillar/Transform
+    400018: _MapPrfab/TestOverhead/Deco/Collision_Default/Transform
+    400020: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon/Transform
+    400022: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (1)/Transform
     400024: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/Pillar (CF)/Pillar/Object_2/Transform
     400026: _MapPrfab/TestOverhead/OnGround/Spawn/Transform
+    400028: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (2)/Transform
+    400030: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (3)/Transform
+    400032: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (13)/Transform
+    400034: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (14)/Transform
+    400036: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (15)/Transform
     400038: _MapPrfab/TestOverhead/Deco/Transform
-    400040: _MapPrfab/TestOverhead/Deco/Collision_Default/Transform
-    400042: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon/Transform
-    400044: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (1)/Transform
-    400046: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (2)/Transform
-    400048: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (3)/Transform
+    400040: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (16)/Transform
+    400042: _MapPrfab/TestOverhead/Trim/Collision_Default/Transform
+    400044: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon/Transform
+    400046: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (1)/Transform
+    400048: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (2)/Transform
     400050: _MapPrfab/TestOverhead/Ground/Transform
     400052: _MapPrfab/TestOverhead/Ground/Collision_Default/Transform
     400054: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon/Transform
@@ -90,10 +98,6 @@ ScriptedImporter:
     400074: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (10)/Transform
     400076: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (11)/Transform
     400078: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (12)/Transform
-    400080: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (13)/Transform
-    400082: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (14)/Transform
-    400084: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (15)/Transform
-    400086: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (16)/Transform
     400088: _MapPrfab/TestOverhead/Ground/Collision_Water/Transform
     400090: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon/Transform
     400092: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (1)/Transform
@@ -104,18 +108,15 @@ ScriptedImporter:
     400102: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (6)/Transform
     400104: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (7)/Transform
     400106: _MapPrfab/TestOverhead/Trim/Transform
-    400108: _MapPrfab/TestOverhead/Trim/Collision_Default/Transform
-    400110: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon/Transform
-    400112: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (1)/Transform
-    400114: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (2)/Transform
-    5000002: _MapPrfab/TestOverhead/Deco/Collision_Default/Rigidbody2D
+    5000000: _MapPrfab/TestOverhead/Deco/Collision_Default/Rigidbody2D
+    5000002: _MapPrfab/TestOverhead/Trim/Collision_Default/Rigidbody2D
     5000004: _MapPrfab/TestOverhead/Ground/Collision_Default/Rigidbody2D
     5000006: _MapPrfab/TestOverhead/Ground/Collision_Water/Rigidbody2D
-    5000008: _MapPrfab/TestOverhead/Trim/Collision_Default/Rigidbody2D
-    6000002: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon/PolygonCollider2D
-    6000004: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (1)/PolygonCollider2D
-    6000006: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (2)/PolygonCollider2D
-    6000008: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (3)/PolygonCollider2D
+    6000000: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon/PolygonCollider2D
+    6000002: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (1)/PolygonCollider2D
+    6000004: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (2)/PolygonCollider2D
+    6000006: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (3)/PolygonCollider2D
+    6000008: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (13)/PolygonCollider2D
     6000010: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon/PolygonCollider2D
     6000012: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (1)/PolygonCollider2D
     6000014: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (2)/PolygonCollider2D
@@ -129,10 +130,10 @@ ScriptedImporter:
     6000030: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (10)/PolygonCollider2D
     6000032: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (11)/PolygonCollider2D
     6000034: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (12)/PolygonCollider2D
-    6000036: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (13)/PolygonCollider2D
-    6000038: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (14)/PolygonCollider2D
-    6000040: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (15)/PolygonCollider2D
-    6000042: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (16)/PolygonCollider2D
+    6000036: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (14)/PolygonCollider2D
+    6000038: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (15)/PolygonCollider2D
+    6000040: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (16)/PolygonCollider2D
+    6000042: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon/PolygonCollider2D
     6000044: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon/PolygonCollider2D
     6000046: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (1)/PolygonCollider2D
     6000048: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (2)/PolygonCollider2D
@@ -141,16 +142,15 @@ ScriptedImporter:
     6000054: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (5)/PolygonCollider2D
     6000056: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (6)/PolygonCollider2D
     6000058: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (7)/PolygonCollider2D
-    6000060: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon/PolygonCollider2D
-    6000062: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (1)/PolygonCollider2D
-    6000064: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (2)/PolygonCollider2D
+    6000060: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (1)/PolygonCollider2D
+    6000062: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (2)/PolygonCollider2D
     6100000: _MapPrfab/TestOverhead/OnGround/Pillar (broken) (TRS)/Pillar (broken)
       (CF)/Pillar (broken)/Object_1/BoxCollider2D
     6100002: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/Pillar (CF)/Pillar/Object_2/BoxCollider2D
-    6600002: _MapPrfab/TestOverhead/Deco/Collision_Default/CompositeCollider2D
+    6600000: _MapPrfab/TestOverhead/Deco/Collision_Default/CompositeCollider2D
+    6600002: _MapPrfab/TestOverhead/Trim/Collision_Default/CompositeCollider2D
     6600004: _MapPrfab/TestOverhead/Ground/Collision_Default/CompositeCollider2D
     6600006: _MapPrfab/TestOverhead/Ground/Collision_Water/CompositeCollider2D
-    6600008: _MapPrfab/TestOverhead/Trim/Collision_Default/CompositeCollider2D
     11400000: _MapPrfab/TestOverhead/MonoBehaviour-SuperTiled2Unity.SuperMap
     11400002: _MapPrfab/TestOverhead/MonoBehaviour-SuperTiled2Unity.SuperCustomProperties
     11400004: _MapPrfab/TestOverhead/OnGround/MonoBehaviour-SuperTiled2Unity.SuperObjectLayer
@@ -165,14 +165,20 @@ ScriptedImporter:
     11400020: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/Pillar (CF)/Pillar/Object_2/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400022: _MapPrfab/TestOverhead/OnGround/Pillar (broken) (TRS)/MonoBehaviour-SuperTiled2Unity.OverheadSorterStatic
     11400024: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/MonoBehaviour-SuperTiled2Unity.OverheadSorterStatic
+    11400026: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400028: _MapPrfab/TestOverhead/OnGround/Spawn/MonoBehaviour-SuperTiled2Unity.SuperObject
     11400030: _MapPrfab/TestOverhead/OnGround/Spawn/MonoBehaviour-SuperTiled2Unity.SuperCustomProperties
+    11400032: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (1)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
+    11400034: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (2)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
+    11400036: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (3)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
+    11400038: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (13)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
+    11400040: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (14)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400042: _MapPrfab/TestOverhead/Deco/MonoBehaviour-SuperTiled2Unity.SuperTileLayer
     11400044: _MapPrfab/TestOverhead/Deco/MonoBehaviour-SuperTiled2Unity.SuperCustomProperties
-    11400046: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
-    11400048: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (1)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
-    11400050: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (2)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
-    11400052: _MapPrfab/TestOverhead/Deco/Collision_Default/Polygon (3)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
+    11400046: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (15)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
+    11400048: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (16)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
+    11400050: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
+    11400052: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (1)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400054: _MapPrfab/TestOverhead/Ground/MonoBehaviour-SuperTiled2Unity.SuperTileLayer
     11400056: _MapPrfab/TestOverhead/Ground/MonoBehaviour-SuperTiled2Unity.SuperCustomProperties
     11400058: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
@@ -188,10 +194,7 @@ ScriptedImporter:
     11400078: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (10)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400080: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (11)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400082: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (12)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
-    11400084: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (13)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
-    11400086: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (14)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
-    11400088: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (15)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
-    11400090: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (16)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
+    11400084: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (2)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400092: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400094: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (1)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400096: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (2)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
@@ -202,9 +205,6 @@ ScriptedImporter:
     11400106: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (7)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400108: _MapPrfab/TestOverhead/Trim/MonoBehaviour-SuperTiled2Unity.SuperTileLayer
     11400110: _MapPrfab/TestOverhead/Trim/MonoBehaviour-SuperTiled2Unity.SuperCustomProperties
-    11400112: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
-    11400114: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (1)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
-    11400116: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (2)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     21200000: _MapPrfab/TestOverhead/OnGround/Pillar (broken) (TRS)/Pillar (broken)
       (CF)/Pillar (broken)/SpriteRenderer
     21200002: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/Pillar (CF)/Pillar/SpriteRenderer
@@ -227,7 +227,7 @@ ScriptedImporter:
   missingLayers: []
   pixelsPerUnit: 1
   edgesPerEllipse: 32
-  animationFramerate: 4
+  numberOfObjectsImported: 2
   tilesAsObjects: 0
   importSorting: 1
   isIsometric: 0

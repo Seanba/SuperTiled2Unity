@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 namespace SuperTiled2Unity.Editor
 {
@@ -40,6 +38,9 @@ namespace SuperTiled2Unity.Editor
 
         [ReadOnly]
         public List<SuperTile> m_Tiles = new List<SuperTile>();
+
+        [ReadOnly]
+        public bool m_HasErrors;
 
         public bool TryGetTile(int tileId, out SuperTile tile)
         {

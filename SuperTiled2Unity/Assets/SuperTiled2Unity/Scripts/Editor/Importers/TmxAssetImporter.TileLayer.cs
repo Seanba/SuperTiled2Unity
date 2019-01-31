@@ -201,7 +201,7 @@ namespace SuperTiled2Unity.Editor
                     }
                     else if (!badTiles.Contains(tileId.JustTileId))
                     {
-                        ReportError("Could not find tile {0}. Your imported map will have holes until this is fixed.", tileId.JustTileId);
+                        ReportError("Could not find tile {0}. Make sure the tilesets were successfully imported.", tileId.JustTileId);
                         badTiles.Add(tileId.JustTileId);
                     }
                 }

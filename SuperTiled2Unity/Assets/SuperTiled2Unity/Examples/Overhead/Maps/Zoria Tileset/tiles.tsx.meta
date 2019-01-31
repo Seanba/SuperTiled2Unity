@@ -976,6 +976,7 @@ ScriptedImporter:
   missingLayers: []
   pixelsPerUnit: 1
   edgesPerEllipse: 32
+  numberOfObjectsImported: 963
   useSpriteAtlas: 1
   atlasWidth: 512
   atlasHeight: 512

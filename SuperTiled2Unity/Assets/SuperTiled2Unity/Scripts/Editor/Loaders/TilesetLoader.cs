@@ -33,6 +33,7 @@ namespace SuperTiled2Unity.Editor
             if (xTileset.Attribute("tilecount") == null || xTileset.Attribute("columns") == null)
             {
                 m_Importer.ReportError("Old file format detected. You must save this file with a newer verion of Tiled.");
+                m_TilesetScript.m_HasErrors = true;
                 return false;
             }
 
@@ -93,6 +94,7 @@ namespace SuperTiled2Unity.Editor
 
             XElement xImage = xTileset.Element("image");
             string textureAssetPath = xImage.GetAttributeAs<string>("source");
+            int textureWidth = xImage.GetAttributeAs<int>("width");
             int textureHeight = xImage.GetAttributeAs<int>("height");
 
             // Load the texture. We will make sprites and tiles out of this image.
@@ -101,6 +103,16 @@ namespace SuperTiled2Unity.Editor
             {
                 // Texture was not found so report the error to the importer UI and bail
                 m_Importer.ReportError("Missing texture asset: {0}", textureAssetPath);
+                m_TilesetScript.m_HasErrors = true;
+                return;
+            }
+
+            if (tex2d.width < textureWidth || tex2d.height < textureHeight)
+            {
+                // Texture was not imported into Unity correctly
+                var max = Mathf.Max(textureWidth, textureHeight);
+                m_Importer.ReportError("Texture was imported at a smaller size. Make sure 'Max Size' on '{0}' is at least '{1}'", textureAssetPath, max);
+                m_TilesetScript.m_HasErrors = true;
                 return;
             }
 
@@ -141,6 +153,8 @@ namespace SuperTiled2Unity.Editor
                 if (xImage != null)
                 {
                     string textureAssetPath = xImage.GetAttributeAs<string>("source");
+                    int textureWidth = xImage.GetAttributeAs<int>("width");
+                    int textureHeight = xImage.GetAttributeAs<int>("height");
 
                     // Load the texture. We will make sprites and tiles out of this image.
                     var tex2d = m_Importer.RequestAssetAtPath<Texture2D>(textureAssetPath);
@@ -148,6 +162,16 @@ namespace SuperTiled2Unity.Editor
                     {
                         // Texture was not found yet so report the error to the importer UI and bail
                         m_Importer.ReportError("Missing texture asset for tile {0}: {1}", tileIndex, textureAssetPath);
+                        m_TilesetScript.m_HasErrors = true;
+                        return;
+                    }
+
+                    if (tex2d.width < textureWidth || tex2d.height < textureHeight)
+                    {
+                        // Texture was not imported into Unity correctly
+                        var max = Mathf.Max(textureWidth, textureHeight);
+                        m_Importer.ReportError("Texture was imported at a smaller size. Make sure 'Max Size' on '{0}' is at least '{1}'", textureAssetPath, max);
+                        m_TilesetScript.m_HasErrors = true;
                         return;
                     }
 
@@ -271,10 +295,12 @@ namespace SuperTiled2Unity.Editor
                         if (collision.m_Size.x == 0)
                         {
                             m_Importer.ReportError("Invalid ellipse object Id '{0}' in tileset '{1}' has zero width", collision.m_ObjectId, m_TilesetScript.name);
+                            m_TilesetScript.m_HasErrors = true;
                         }
                         else if (collision.m_Size.y == 0)
                         {
                             m_Importer.ReportError("Invalid ellipse object Id '{0}' in tileset '{1}' has zero height", collision.m_ObjectId, m_TilesetScript.name);
+                            m_TilesetScript.m_HasErrors = true;
                         }
                         else
                         {
@@ -287,10 +313,12 @@ namespace SuperTiled2Unity.Editor
                         if (collision.m_Size.x == 0)
                         {
                             m_Importer.ReportError("Invalid rectangle object Id '{0}' in tileset '{1}' has zero width", collision.m_ObjectId, m_TilesetScript.name);
+                            m_TilesetScript.m_HasErrors = true;
                         }
                         else if (collision.m_Size.y == 0)
                         {
                             m_Importer.ReportError("Invalid rectangle object Id '{0}' in tileset '{1}' has zero height", collision.m_ObjectId, m_TilesetScript.name);
+                            m_TilesetScript.m_HasErrors = true;
                         }
                         else
                         {

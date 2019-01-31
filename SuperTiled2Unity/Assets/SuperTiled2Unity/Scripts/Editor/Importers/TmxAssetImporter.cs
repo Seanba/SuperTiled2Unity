@@ -174,6 +174,11 @@ namespace SuperTiled2Unity.Editor
             }
             else
             {
+                if (tileset.m_HasErrors)
+                {
+                    ReportError("Errors detected in tileset '{0}'. Check the tileset inspector for more details. Your map may be broken until these are fixed.", source);
+                }
+
                 // Register all the tiles with the tile database for this map
                 m_GlobalTileDatabase.RegisterTileset(firstId, tileset);
             }
