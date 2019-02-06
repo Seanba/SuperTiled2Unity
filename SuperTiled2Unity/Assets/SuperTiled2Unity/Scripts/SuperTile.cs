@@ -175,8 +175,12 @@ namespace SuperTiled2Unity
             tileData.flags = TileFlags.LockAll;
             tileData.sprite = m_Sprite;
 
-            var flags = (FlipFlags)position.z;
-            tileData.transform = GetTransformMatrix(flags);
+            var data = tilemap.GetComponent<TilemapData>();
+            if (data != null)
+            {
+                var flags = data.GetFlipFlags(position);
+                tileData.transform = GetTransformMatrix(flags);
+            }
         }
 
         public override bool GetTileAnimationData(Vector3Int position, ITilemap tilemap, ref TileAnimationData tileAnimationData)

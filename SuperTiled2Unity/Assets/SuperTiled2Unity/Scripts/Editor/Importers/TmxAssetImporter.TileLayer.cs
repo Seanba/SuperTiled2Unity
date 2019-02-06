@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -90,6 +89,7 @@ namespace SuperTiled2Unity.Editor
                     // Create the tilemap for the layer if needed
                     if (!tilesAsObjects)
                     {
+                        goChunk.AddComponent<TilemapData>();
                         var tilemap = goChunk.AddComponent<Tilemap>();
                         tilemap.tileAnchor = Vector3.zero;
                         tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
@@ -112,6 +112,7 @@ namespace SuperTiled2Unity.Editor
                 // Add the tilemap components if needed
                 if (!tilesAsObjects)
                 {
+                    goLayer.AddComponent<TilemapData>();
                     var tilemap = goLayer.AddComponent<Tilemap>();
                     tilemap.tileAnchor = Vector3.zero;
                     tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
@@ -213,13 +214,10 @@ namespace SuperTiled2Unity.Editor
             // We're either placing tiles or objects as tiles
             Assert.IsTrue(m_TilesAsObjects || m_MapComponent.m_Orientation == MapOrientation.Isometric || goTilemap.GetComponent<Tilemap>() != null);
 
-            // Bake transform flags into the z component (for flipped/rotated tiles)
-            pos3.z = tileId.PlacementZ;
-
             bool tilesAsObjects = m_MapComponent.m_Orientation == MapOrientation.Isometric || m_TilesAsObjects;
             if (tilesAsObjects)
             {
-                PlaceTileAsObject(goTilemap, tile, cx, cy, pos3);
+                PlaceTileAsObject(goTilemap, tile, cx, cy, tileId, pos3);
             }
             else
             {
@@ -227,7 +225,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private void PlaceTileAsObject(GameObject goTilemap, SuperTile tile, int cx, int cy, Vector3Int pos3)
+        private void PlaceTileAsObject(GameObject goTilemap, SuperTile tile, int cx, int cy, TileIdMath tileId, Vector3Int pos3)
         {
             Assert.IsNotNull(goTilemap.GetComponentInParent<SuperMap>());
             Assert.IsNotNull(goTilemap.GetComponentInParent<SuperLayer>());
@@ -263,7 +261,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             Vector3 translate, rotate, scale;
-            tile.GetTRS((FlipFlags)pos3.z, out translate, out rotate, out scale);
+            tile.GetTRS(tileId.FlipFlags, out translate, out rotate, out scale);
 
             translate.x += pos3.x * superMap.CellSize.x;
             translate.y += pos3.y * superMap.CellSize.y;
@@ -300,6 +298,11 @@ namespace SuperTiled2Unity.Editor
 
         private void PlaceTileAsTile(GameObject goTilemap, SuperTile tile, TileIdMath tileId, Vector3Int pos3)
         {
+            // Set the flip data
+            var tilemapData = goTilemap.GetComponent<TilemapData>();
+            tilemapData.SetFlipFlags(pos3, tileId.FlipFlags);
+
+            // Set the tile
             var tilemap = goTilemap.GetComponent<Tilemap>();
             tilemap.SetTile(pos3, tile);
 
