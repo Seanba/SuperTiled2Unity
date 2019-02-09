@@ -58,9 +58,18 @@ namespace SuperTiled2Unity.Editor
             if (m_ST2USettings != null)
             {
                 DoGuiHeader();
+                AddSeperator();
+
                 DoGuiSettings();
+                AddSeperator();
+
+                DoObjectTypesDisplay();
+                AddSeperator();
+
                 DoGuiLayerColors();
                 ApplyRevertGUI();
+
+                AddSeperator();
                 DoGuiReimportAssets();
             }
         }
@@ -126,7 +135,6 @@ namespace SuperTiled2Unity.Editor
         {
             EditorGUILayout.LabelField("Version: " + m_ST2USettings.Version);
             EditorGUILayout.Space();
-            EditorGUILayout.TextArea("", GUI.skin.horizontalSlider);
         }
 
         private void DoGuiSettings()
@@ -140,19 +148,19 @@ namespace SuperTiled2Unity.Editor
             EditorGUILayout.LabelField("Animations", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(m_AnimationFramerate, m_AnimationFramerateContent);
             EditorGUILayout.HelpBox("In frames-per-second. Note: You will need to reimport all your tilesets after making changes to the animation framerate for tiles.", MessageType.None);
-
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Object Types", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(m_ObjectTypesXml, m_ObjectTypesXmlContent);
-            DoObjectTypesDisplay();
-            EditorGUILayout.Space();
         }
 
         private void DoObjectTypesDisplay()
         {
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Object Types", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(m_ObjectTypesXml, m_ObjectTypesXmlContent);
+
+            DoDisplayPrefabReplacements();
+
             using (new GuiScopedIndent())
             {
-                var title = string.Format("Custom Object Types ({0})", m_ST2USettings.CustomObjectTypes.Count());
+                var title = string.Format("Custom Object Types Properties ({0})", m_ST2USettings.CustomObjectTypes.Count());
                 var tip = "These are the objects created in the Object Types Editor in Tiled.";
                 var content = new GUIContent(title, tip);
 
@@ -162,9 +170,10 @@ namespace SuperTiled2Unity.Editor
                 {
                     using (new GuiScopedIndent())
                     {
-                        GUI.enabled = false;
                         foreach (var objectType in m_ST2USettings.CustomObjectTypes)
                         {
+                            // Display color for custom property
+                            GUI.enabled = false;
                             var objectTip = string.Format("Object type '{0}' described in '{1}' Xml file.", objectType.m_Name, m_ObjectTypesXml);
                             var objectContent = new GUIContent(objectType.m_Name, objectTip);
                             EditorGUILayout_ColorFieldNoEdit(objectContent, objectType.m_Color);
@@ -176,12 +185,48 @@ namespace SuperTiled2Unity.Editor
                                 {
                                     EditorGUILayout.TextField(customProperty.m_Name, customProperty.m_Value);
                                 }
+
                             }
+                            GUI.enabled = true;
                         }
-                        GUI.enabled = true;
                     }
                 }
             }
+
+            EditorGUILayout.Space();
+        }
+
+        private void DoDisplayPrefabReplacements()
+        {
+            EditorGUILayout.Space();
+
+            // Display the prefab replacements for our Object Types
+            {
+                var title = "Prefab Replacements";
+                var tip = "These prefabs will replace Tiled type objects during import.";
+                var content = new GUIContent(title, tip);
+                EditorGUILayout.LabelField(content, EditorStyles.boldLabel);
+            }
+
+            using (new GuiScopedIndent())
+            {
+                SerializedProperty listProperty = serializedObject.FindProperty("m_PrefabReplacements");
+
+                for (int i = 0; i < listProperty.arraySize; i++)
+                {
+                    var soRep = listProperty.GetArrayElementAtIndex(i);
+                    var soTypeName = soRep.FindPropertyRelative("m_TypeName");
+                    var soPrefab = soRep.FindPropertyRelative("m_Prefab");
+
+                    var label = soTypeName.stringValue;
+                    var tip = string.Format("Replace Tile Objects named '{0}' with this prefab instance.", label);
+                    var content = new GUIContent(label, tip);
+
+                    EditorGUILayout.PropertyField(soPrefab, content);
+                }
+            }
+
+            EditorGUILayout.Space();
         }
 
         private void DoGuiLayerColors()
@@ -210,7 +255,6 @@ namespace SuperTiled2Unity.Editor
 
         private void DoGuiReimportAssets()
         {
-            EditorGUILayout.TextArea("", GUI.skin.horizontalSlider);
             EditorGUILayout.LabelField("Reimport Assets", EditorStyles.boldLabel);
             EditorGUILayout.HelpBox(@"You may want to reimport all Tiled assets after making changes to settings." +
                                 @" Be aware this may take a few minutes if you have a lot of Tiled assets." +
@@ -221,6 +265,11 @@ namespace SuperTiled2Unity.Editor
             {
                 ReimportTiledAssets();
             }
+        }
+
+        private void AddSeperator()
+        {
+            EditorGUILayout.TextArea("", GUI.skin.horizontalSlider);
         }
     }
 }

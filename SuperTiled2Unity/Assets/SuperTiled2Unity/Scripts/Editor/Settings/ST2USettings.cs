@@ -45,6 +45,10 @@ namespace SuperTiled2Unity.Editor
         private List<CustomObjectType> m_CustomObjectTypes;
         public List<CustomObjectType> CustomObjectTypes { get { return m_CustomObjectTypes; } }
 
+        [SerializeField]
+        private List<TypePrefabReplacement> m_PrefabReplacements = new List<TypePrefabReplacement>();
+        public List<TypePrefabReplacement> PrefabReplacements { get { return m_PrefabReplacements; } }
+
         public void AssignSettings(SuperSettingsImporter importer)
         {
             m_Version = importer.Version;
@@ -55,6 +59,7 @@ namespace SuperTiled2Unity.Editor
             m_DefaultMaterial = importer.DefaultMaterial;
             m_LayerColors = importer.LayerColors;
             FillCustomObjectTypes(importer);
+            AssignPrefabReplacements(importer);
         }
 
         public void DefaultOrOverride_PixelsPerUnit(ref float ppu)
@@ -109,6 +114,38 @@ namespace SuperTiled2Unity.Editor
                     m_CustomObjectTypes.Add(cot);
                 }
             }
+        }
+
+        public void AssignPrefabReplacements(SuperSettingsImporter importer)
+        {
+            // Clean up the importer settings
+            // Remove any prefab replacements for types that don't exist anymore
+            importer.PrefabReplacements.RemoveAll(r => !m_CustomObjectTypes.Any(t => r.m_TypeName == t.m_Name));
+
+            // Add prefab replacements for missing object types
+            foreach (var cot in m_CustomObjectTypes)
+            {
+                if (!importer.PrefabReplacements.Any(r => cot.m_Name == r.m_TypeName))
+                {
+                    var rep = new TypePrefabReplacement();
+                    rep.m_TypeName = cot.m_Name;
+                    importer.PrefabReplacements.Add(rep);
+                }
+            }
+
+            // Assign our own list of prefab replacements
+            m_PrefabReplacements = importer.PrefabReplacements;
+        }
+
+        public GameObject GetPrefabReplacement(string type)
+        {
+            var replacement = PrefabReplacements.FirstOrDefault(r => r.m_TypeName == type);
+            if (replacement != null)
+            {
+                return replacement.m_Prefab;
+            }
+
+            return null;
         }
 
         public static ST2USettings LoadSettings()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Xml.Linq;
 using UnityEngine;
@@ -130,6 +131,49 @@ namespace SuperTiled2Unity.Editor
             foreach (Transform child in trans)
             {
                 child.ChangeLayersRecursively(layer);
+            }
+        }
+
+        public static void BroadcastProperty(this GameObject go, CustomProperty property)
+        {
+            object objValue = null;
+
+            if (property.m_Type == "bool")
+            {
+                objValue = property.GetValueAsBool();
+            }
+            else if (property.m_Type == "color")
+            {
+                objValue = property.GetValueAsColor();
+            }
+            else if (property.m_Type == "float")
+            {
+                objValue = property.GetValueAsFloat();
+            }
+            else if (property.m_Type == "int")
+            {
+                objValue = property.GetValueAsInt();
+            }
+            else
+            {
+                objValue = property.GetValueAsString();
+            }
+
+            // Use properties on all types in hierary that inherit from MonoBehaviour
+            var components = go.GetComponentsInChildren<MonoBehaviour>();
+            foreach (var comp in components)
+            {
+                // Property must be public and instanced and writable
+                var csprop = comp.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(
+                    info => info.CanWrite &&
+                    info.Name == property.m_Name &&
+                    info.PropertyType == objValue.GetType()
+                    ).FirstOrDefault();
+
+                if (csprop != null)
+                {
+                    csprop.SetValue(comp, objValue);
+                }
             }
         }
     }

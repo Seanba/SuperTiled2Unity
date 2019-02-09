@@ -53,6 +53,7 @@ namespace SuperTiled2Unity.Editor
                 ProcessMap(xMap);
             }
 
+            DoPrefabReplacements();
             DoCustomImporting();
         }
 
@@ -280,6 +281,37 @@ namespace SuperTiled2Unity.Editor
                 foreach (var to in tileObjects)
                 {
                     to.gameObject.AddComponent<OverheadSorterDynamic>();
+                }
+            }
+        }
+
+        private void DoPrefabReplacements()
+        {
+            // Should any of our objects (from Tiled) be replaced by instanciated prefabs?
+            var supers = m_MapComponent.GetComponentsInChildren<SuperObject>();
+            foreach (var so in supers)
+            {
+                var prefab = SuperImportContext.Settings.GetPrefabReplacement(so.m_Type);
+                if (prefab != null)
+                {
+                    // Replace the super object with the instantiated prefab
+                    var instance = Instantiate(prefab, so.transform.position, so.transform.rotation);
+                    instance.transform.SetParent(so.transform.parent);
+
+                    // Apply custom properties as messages to the instanced prefab
+                    var props = so.GetComponent<SuperCustomProperties>();
+                    if (props != null)
+                    {
+                        foreach (var p in props.m_Properties)
+                        {
+                            instance.gameObject.BroadcastProperty(p);
+                        }
+                    }
+
+                    // Keep the name from Tiled.
+                    string name = so.gameObject.name;
+                    DestroyImmediate(so.gameObject);
+                    instance.name = name;
                 }
             }
         }

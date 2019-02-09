@@ -79,6 +79,10 @@ namespace SuperTiled2Unity.Editor
         };
         public List<Color> LayerColors { get { return m_LayerColors; } }
 
+        [SerializeField]
+        private List<TypePrefabReplacement> m_PrefabReplacements = new List<TypePrefabReplacement>();
+        public List<TypePrefabReplacement> PrefabReplacements { get { return m_PrefabReplacements; } }
+
         protected override sealed void InternalOnImportAsset()
         {
             AddSuperAsset<SuperAssetSettings>();
