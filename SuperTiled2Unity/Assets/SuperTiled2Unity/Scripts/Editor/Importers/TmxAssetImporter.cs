@@ -126,6 +126,20 @@ namespace SuperTiled2Unity.Editor
             var grid = m_MapComponent.gameObject.AddComponent<Grid>();
             grid.cellSize = m_MapComponent.CellSize;
 
+            switch (m_MapComponent.m_Orientation)
+            {
+                case MapOrientation.Isometric:
+                    // fixit - isometric or isometric ZasY?
+                    grid.cellLayout = GridLayout.CellLayout.Isometric;
+                    break;
+
+                    // fixit - what about staggerred and hex?
+
+                default:
+                    grid.cellLayout = GridLayout.CellLayout.Rectangle;
+                    break;
+            }
+
             m_IsIsometric = m_MapComponent.m_Orientation == MapOrientation.Isometric;
             return true;
         }

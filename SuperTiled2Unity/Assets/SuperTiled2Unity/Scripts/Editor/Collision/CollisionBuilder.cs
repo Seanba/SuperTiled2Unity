@@ -40,12 +40,22 @@ namespace SuperTiled2Unity.Editor
 
                 foreach (var poly in polygons.Polygons)
                 {
-                    // Offset the polygon so that it is in the location of the tile
+                    float cell_w = m_Tilemap.cellSize.x; // fixit - left off here
+                    float cell_h = m_Tilemap.cellSize.y;
+                    float halfCell_w = cell_w * 0.5f;
+                    float halfCell_h = cell_h * 0.5f;
+
+                    // Offset the polygon so that it is in the location of the tile // fixit - need a fix for isometric position, ffs
                     var tileHeight = m_ImportContext.MakeScalar(tile.m_Height);
                     var tileDiff = m_Tilemap.cellSize.y - tileHeight;
-                    var offset = new Vector2(pos.x * m_Tilemap.cellSize.x, pos.y * m_Tilemap.cellSize.y - tileDiff);
-                    var points = poly.Points.Select(pt => pt + offset).ToArray();
 
+                    // fixit - how do we transform offset from orthogrphic to isometric coordinates?
+                    //var offset = new Vector2(pos.x * cell_w, pos.y * cell_h - tileDiff);
+                    var x = (pos.x - pos.y) * halfCell_w;
+                    var y = (pos.x + pos.y) * halfCell_h;
+                    var offset = new Vector2(x + halfCell_w, y - tileDiff);
+
+                    var points = poly.Points.Select(pt => pt + offset).ToArray();
 
                     CollisionClipperKey key = poly.MakeKey();
                     CollisionClipper clipper;
