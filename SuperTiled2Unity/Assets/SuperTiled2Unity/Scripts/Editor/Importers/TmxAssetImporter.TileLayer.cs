@@ -296,7 +296,7 @@ namespace SuperTiled2Unity.Editor
             tilemap.SetTile(pos3, tile);
 
             // Do we have any colliders on the tile to be gathered?
-            m_CurrentCollisionBuilder.PlaceTileColliders(tile, tileId, pos3);
+            m_CurrentCollisionBuilder.PlaceTileColliders(m_MapComponent, tile, tileId, pos3);
         }
 
         private void ReadTileIds_Xml(XElement xElement, ref List<uint> tileIds)

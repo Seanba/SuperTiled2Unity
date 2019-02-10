@@ -26,7 +26,7 @@ namespace SuperTiled2Unity.Editor
             m_ImportContext = importContext;
         }
 
-        public void PlaceTileColliders(SuperTile tile, TileIdMath tileId, Vector3Int pos)
+        public void PlaceTileColliders(SuperMap map, SuperTile tile, TileIdMath tileId, Vector3Int pos)
         {
             Assert.IsNotNull(m_Tilemap, "Need a Tilemap component if we are going to gather tile colliders");
 
@@ -38,22 +38,30 @@ namespace SuperTiled2Unity.Editor
             {
                 var polygons = AcquireTilePolygonCollection(tile, tileId);
 
+                float cell_w = m_Tilemap.cellSize.x;
+                float cell_h = m_Tilemap.cellSize.y;
+                float halfCell_w = m_Tilemap.cellSize.x * 0.5f;
+                float halfCell_h = m_Tilemap.cellSize.y * 0.5f;
+
                 foreach (var poly in polygons.Polygons)
                 {
-                    float cell_w = m_Tilemap.cellSize.x; // fixit - left off here
-                    float cell_h = m_Tilemap.cellSize.y;
-                    float halfCell_w = cell_w * 0.5f;
-                    float halfCell_h = cell_h * 0.5f;
-
-                    // Offset the polygon so that it is in the location of the tile // fixit - need a fix for isometric position, ffs
+                    // Offset the polygon so that it is in the location of the tile
                     var tileHeight = m_ImportContext.MakeScalar(tile.m_Height);
                     var tileDiff = m_Tilemap.cellSize.y - tileHeight;
 
-                    // fixit - how do we transform offset from orthogrphic to isometric coordinates?
-                    //var offset = new Vector2(pos.x * cell_w, pos.y * cell_h - tileDiff);
-                    var x = (pos.x - pos.y) * halfCell_w;
-                    var y = (pos.x + pos.y) * halfCell_h;
-                    var offset = new Vector2(x + halfCell_w, y - tileDiff);
+                    var offset = Vector2.zero;
+
+                    // Our offset depends on map orientation. Isometric is such a pain in the ass.
+                    if (map.m_Orientation == MapOrientation.Isometric)
+                    {
+                        var x = (pos.x - pos.y) * halfCell_w;
+                        var y = (pos.x + pos.y) * halfCell_h;
+                        offset = new Vector2(x + halfCell_w, y - tileDiff);
+                    }
+                    else
+                    {
+                        offset = new Vector2(pos.x * cell_w, pos.y * cell_h - tileDiff);
+                    }
 
                     var points = poly.Points.Select(pt => pt + offset).ToArray();
 
