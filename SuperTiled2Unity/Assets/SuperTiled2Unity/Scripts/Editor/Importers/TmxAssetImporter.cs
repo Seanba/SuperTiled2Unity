@@ -127,6 +127,18 @@ namespace SuperTiled2Unity.Editor
             var grid = m_MapComponent.gameObject.AddComponent<Grid>();
             grid.cellSize = m_MapComponent.CellSize;
 
+            // Todo: figure out what to do about staggered and hex and Y-As-Z isometric
+            switch (m_MapComponent.m_Orientation)
+            {
+                case MapOrientation.Isometric:
+                    grid.cellLayout = GridLayout.CellLayout.Isometric;
+                    break;
+
+                default:
+                    grid.cellLayout = GridLayout.CellLayout.Rectangle;
+                    break;
+            }
+
             m_IsIsometric = m_MapComponent.m_Orientation == MapOrientation.Isometric;
             return true;
         }

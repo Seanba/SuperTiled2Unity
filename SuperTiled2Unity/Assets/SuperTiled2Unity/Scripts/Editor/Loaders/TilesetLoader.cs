@@ -62,6 +62,16 @@ namespace SuperTiled2Unity.Editor
                 m_TilesetScript.m_TileOffset = new Vector2(x, y);
             }
 
+            var xGrid = xTileset.Element("grid");
+            if (xGrid != null)
+            {
+                m_TilesetScript.m_GridOrientation = xGrid.GetAttributeAs<MapOrientation>("orientation");
+
+                var w = xGrid.GetAttributeAs<float>("width", 0.0f);
+                var h = xGrid.GetAttributeAs<float>("height", 0.0f);
+                m_TilesetScript.m_GridSize = new Vector2(w, h);
+            }
+
             m_TilesetScript.m_CustomProperties = CustomPropertyLoader.LoadCustomPropertyList(xTileset.Element("properties"));
         }
 
@@ -330,6 +340,8 @@ namespace SuperTiled2Unity.Editor
                     if (!collision.Points.IsEmpty())
                     {
                         AssignCollisionObjectProperties(collision, tile);
+
+                        collision.RenderPoints(tile, m_TilesetScript.m_GridOrientation, m_TilesetScript.m_GridSize);
                         tile.m_CollisionObjects.Add(collision);
                     }
                 }

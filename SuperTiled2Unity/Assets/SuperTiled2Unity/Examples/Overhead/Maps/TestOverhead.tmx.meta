@@ -195,6 +195,7 @@ ScriptedImporter:
     11400080: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (11)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400082: _MapPrfab/TestOverhead/Ground/Collision_Default/Polygon (12)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400084: _MapPrfab/TestOverhead/Trim/Collision_Default/Polygon (2)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
+    11400086: _MapPrfab/TestOverhead/Deco/MonoBehaviour-SuperTiled2Unity.TilemapData
     11400092: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400094: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (1)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400096: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (2)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
@@ -205,6 +206,8 @@ ScriptedImporter:
     11400106: _MapPrfab/TestOverhead/Ground/Collision_Water/Polygon (7)/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400108: _MapPrfab/TestOverhead/Trim/MonoBehaviour-SuperTiled2Unity.SuperTileLayer
     11400110: _MapPrfab/TestOverhead/Trim/MonoBehaviour-SuperTiled2Unity.SuperCustomProperties
+    11400126: _MapPrfab/TestOverhead/Ground/MonoBehaviour-SuperTiled2Unity.TilemapData
+    11400264: _MapPrfab/TestOverhead/Trim/MonoBehaviour-SuperTiled2Unity.TilemapData
     21200000: _MapPrfab/TestOverhead/OnGround/Pillar (broken) (TRS)/Pillar (broken)
       (CF)/Pillar (broken)/SpriteRenderer
     21200002: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/Pillar (CF)/Pillar/SpriteRenderer

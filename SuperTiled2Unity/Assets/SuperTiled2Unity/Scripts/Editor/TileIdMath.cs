@@ -13,35 +13,29 @@ namespace SuperTiled2Unity.Editor
         private const uint TiledVerticalFlipFlag = 0x40000000;
         private const uint TiledHorizontalFlipFlag = 0x80000000;
 
-        // Placement flip flags that get baked into z position of placed tile
-        private const int PlacementDiagonalFlipFlag = 0x00000001;
-        private const int PlacementVerticalFlipFlag = 0x00000002;
-        private const int PlacementHorizontalFlipFlag = 0x00000004;
-
         private uint m_ImportedTileId;
-        private int m_PlacementZ;
+        private FlipFlags m_FlipFlags;
 
         public TileIdMath(uint importedTileId)
         {
             m_ImportedTileId = importedTileId;
 
-            m_PlacementZ = 0;
-            m_PlacementZ |= HasHorizontalFlip ? PlacementHorizontalFlipFlag : 0;
-            m_PlacementZ |= HasVerticalFlip ? PlacementVerticalFlipFlag : 0;
-            m_PlacementZ |= HasDiagonalFlip ? PlacementDiagonalFlipFlag : 0;
+            m_FlipFlags = 0;
+            m_FlipFlags |= HasHorizontalFlip ? FlipFlags.Horizontal : 0;
+            m_FlipFlags |= HasVerticalFlip ? FlipFlags.Vertical : 0;
+            m_FlipFlags |= HasDiagonalFlip ? FlipFlags.Diagonal : 0;
         }
 
         // The tileId with baked in flip flags
         public uint ImportedlTileId { get { return m_ImportedTileId; } }
 
-        // Just the raw tileId (now flip flags)
+        // Just the raw tileId (no flip flags)
         public int JustTileId
         {
             get { return (int)(m_ImportedTileId & ~(TiledHorizontalFlipFlag | TiledVerticalFlipFlag | TiledDiagonalFlipFlag)); }
         }
 
-        // The z-component of tile placement
-        public int PlacementZ { get { return m_PlacementZ; } }
+        public FlipFlags FlipFlags { get { return m_FlipFlags; } }
 
         public bool HasHorizontalFlip
         {

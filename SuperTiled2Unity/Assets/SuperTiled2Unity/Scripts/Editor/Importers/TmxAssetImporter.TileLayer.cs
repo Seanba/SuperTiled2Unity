@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -61,8 +60,6 @@ namespace SuperTiled2Unity.Editor
             chunk.Encoding = xData.GetAttributeAs<DataEncoding>("encoding");
             chunk.Compression = xData.GetAttributeAs<DataCompression>("compression");
 
-            bool tilesAsObjects = m_MapComponent.m_Orientation == MapOrientation.Isometric || m_TilesAsObjects;
-
             // Are we reading in data in smaller chunks (for infinite maps) or one big chunk (the full map)
             var xChunks = xData.Elements("chunk");
             if (xChunks.Any())
@@ -79,19 +76,18 @@ namespace SuperTiled2Unity.Editor
                     GameObject goChunk = new GameObject(string.Format("Chunk ({0},{1})", chunk.X, chunk.Y));
                     goLayer.AddChildWithUniqueName(goChunk);
 
-                    // Possition the chunk
-                    Vector3Int int3 = m_MapComponent.TilePositionToGridPosition(chunk.X, chunk.Y);
-                    Vector3 translate = SuperImportContext.MakePoint(int3.x, int3.y);
-                    translate.x *= m_MapComponent.m_TileWidth;
-                    translate.y *= m_MapComponent.m_TileHeight;
+                    // Position the chunk
+                    Vector2 translate = m_MapComponent.MapCoordinatesToPosition(chunk.X, chunk.Y);
+                    translate = SuperImportContext.MakePoint(translate);
 
                     goChunk.transform.localPosition = translate;
 
                     // Create the tilemap for the layer if needed
-                    if (!tilesAsObjects)
+                    if (!m_TilesAsObjects)
                     {
+                        goChunk.AddComponent<TilemapData>();
                         var tilemap = goChunk.AddComponent<Tilemap>();
-                        tilemap.tileAnchor = Vector3.zero;
+                        tilemap.tileAnchor = m_MapComponent.GetTileAnchor();
                         tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
                         tilemap.color = new Color(1, 1, 1, superComp.CalculateOpacity());
 
@@ -110,10 +106,11 @@ namespace SuperTiled2Unity.Editor
                 // Regular maps only have one chunk with the Tilemap and TileRenderer being on the layer object
 
                 // Add the tilemap components if needed
-                if (!tilesAsObjects)
+                if (!m_TilesAsObjects)
                 {
+                    goLayer.AddComponent<TilemapData>();
                     var tilemap = goLayer.AddComponent<Tilemap>();
-                    tilemap.tileAnchor = Vector3.zero;
+                    tilemap.tileAnchor = m_MapComponent.GetTileAnchor();
                     tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
                     tilemap.color = new Color(1, 1, 1, superComp.CalculateOpacity());
 
@@ -189,10 +186,7 @@ namespace SuperTiled2Unity.Editor
                     cx += chunk.X;
                     cy += chunk.Y;
 
-                    // Y position is tricky. We want the origin to be the top-left corner
-                    Vector3Int int3 = m_MapComponent.TileIndexToGridPosition(i, chunk.Width);
-                    int3.y = -int3.y;
-                    int3.y -= 1;
+                    Vector3Int int3 = m_MapComponent.TiledIndexToGridCell(i, chunk.Width);
 
                     SuperTile tile;
                     if (m_GlobalTileDatabase.TryGetTile(tileId.JustTileId, out tile))
@@ -210,16 +204,9 @@ namespace SuperTiled2Unity.Editor
 
         private void PlaceTile(GameObject goTilemap, int cx, int cy, SuperTile tile, Vector3Int pos3, TileIdMath tileId)
         {
-            // We're either placing tiles or objects as tiles
-            Assert.IsTrue(m_TilesAsObjects || m_MapComponent.m_Orientation == MapOrientation.Isometric || goTilemap.GetComponent<Tilemap>() != null);
-
-            // Bake transform flags into the z component (for flipped/rotated tiles)
-            pos3.z = tileId.PlacementZ;
-
-            bool tilesAsObjects = m_MapComponent.m_Orientation == MapOrientation.Isometric || m_TilesAsObjects;
-            if (tilesAsObjects)
+            if (m_TilesAsObjects)
             {
-                PlaceTileAsObject(goTilemap, tile, cx, cy, pos3);
+                PlaceTileAsObject(goTilemap, tile, cx, cy, tileId, pos3);
             }
             else
             {
@@ -227,7 +214,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private void PlaceTileAsObject(GameObject goTilemap, SuperTile tile, int cx, int cy, Vector3Int pos3)
+        private void PlaceTileAsObject(GameObject goTilemap, SuperTile tile, int cx, int cy, TileIdMath tileId, Vector3Int pos3)
         {
             Assert.IsNotNull(goTilemap.GetComponentInParent<SuperMap>());
             Assert.IsNotNull(goTilemap.GetComponentInParent<SuperLayer>());
@@ -263,15 +250,15 @@ namespace SuperTiled2Unity.Editor
             }
 
             Vector3 translate, rotate, scale;
-            tile.GetTRS((FlipFlags)pos3.z, out translate, out rotate, out scale);
+            tile.GetTRS(tileId.FlipFlags, out translate, out rotate, out scale);
 
-            translate.x += pos3.x * superMap.CellSize.x;
-            translate.y += pos3.y * superMap.CellSize.y;
+            var cellPos = superMap.MapCoordinatesToPosition(pos3.x, pos3.y);
+            translate.x += cellPos.x;
+            translate.y += cellPos.y;
 
             // If this is an isometric map than we have an additional translate to consider to place the tile
             if (m_MapComponent.m_Orientation == MapOrientation.Isometric)
             {
-                translate.x -= m_MapComponent.m_TileWidth * 0.5f * SuperImportContext.Settings.InversePPU;
                 translate.y -= m_MapComponent.m_TileHeight * 0.5f * SuperImportContext.Settings.InversePPU;
             }
 
@@ -300,11 +287,16 @@ namespace SuperTiled2Unity.Editor
 
         private void PlaceTileAsTile(GameObject goTilemap, SuperTile tile, TileIdMath tileId, Vector3Int pos3)
         {
+            // Set the flip data
+            var tilemapData = goTilemap.GetComponent<TilemapData>();
+            tilemapData.SetFlipFlags(pos3, tileId.FlipFlags);
+
+            // Set the tile
             var tilemap = goTilemap.GetComponent<Tilemap>();
             tilemap.SetTile(pos3, tile);
 
             // Do we have any colliders on the tile to be gathered?
-            m_CurrentCollisionBuilder.PlaceTileColliders(tile, tileId, pos3);
+            m_CurrentCollisionBuilder.PlaceTileColliders(m_MapComponent, tile, tileId, pos3);
         }
 
         private void ReadTileIds_Xml(XElement xElement, ref List<uint> tileIds)

@@ -52,17 +52,20 @@ namespace SuperTiled2Unity
 
         public Vector3 CellSize { get; set; }
 
-        // Grid position takes the map orientation into account
-        // This is how we fake isometric and staggered maps into a traditional grid
-        public Vector3Int TileIndexToGridPosition(int index, int stride)
+        public Vector3Int TiledIndexToGridCell(int index, int stride)
         {
             int x = index % stride;
             int y = index / stride;
 
-            return TilePositionToGridPosition(x, y);
+            // Always off by one because tile positions start at bottom of the cell in Tiled
+            y += 1;
+            var pos3 = TiledCellToGridCell(x, y);
+            pos3.y = -pos3.y;
+
+            return pos3;
         }
 
-        public Vector3Int TilePositionToGridPosition(int x, int y)
+        private Vector3Int TiledCellToGridCell(int x, int y)
         {
             // Orthogonal maps are easy
             Vector3Int grid = new Vector3Int(x, y, 0);
@@ -85,11 +88,7 @@ namespace SuperTiled2Unity
 
         public Vector3 CalculateCellSize()
         {
-            if (m_Orientation == MapOrientation.Isometric || m_Orientation == MapOrientation.Staggered)
-            {
-                return new Vector3(m_TileWidth * 0.5f, m_TileHeight * 0.5f, 0);
-            }
-            else if (m_Orientation == MapOrientation.Hexagonal)
+            if (m_Orientation == MapOrientation.Hexagonal)
             {
                 var cell = new Vector3(m_TileWidth * 0.5f, m_TileHeight * 0.5f, 0);
                 if (m_StaggerAxis == StaggerAxis.X)
@@ -103,21 +102,13 @@ namespace SuperTiled2Unity
 
                 return cell;
             }
-            else if (m_Orientation != MapOrientation.Orthogonal)
-            {
-                Debug.LogErrorFormat("Unsupported map orientation: {0}", m_Orientation);
-            }
 
             return new Vector3(m_TileWidth, m_TileHeight, 0);
         }
 
         private Vector3Int OrthoToIsometric(int x, int y)
         {
-            var iso = new Vector3Int();
-
-            iso.x = x - y;
-            iso.y = x + y;
-
+            var iso = new Vector3Int(-y, x, 0);
             return iso;
         }
 
