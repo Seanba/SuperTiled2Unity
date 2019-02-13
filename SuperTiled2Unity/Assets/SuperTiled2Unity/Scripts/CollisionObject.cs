@@ -98,6 +98,12 @@ namespace SuperTiled2Unity
                 {
                     m_Points[i] = IsometricTransform(m_Points[i], tile, gridSize);
                 }
+
+                // Also, we are forced to use polygon colliders for isometric projection
+                if (m_CollisionShapeType == CollisionShapeType.Ellipse || m_CollisionShapeType == CollisionShapeType.Rectangle)
+                {
+                    m_CollisionShapeType = CollisionShapeType.Polygon;
+                }
             }
 
             ApplyRotationToPoints();

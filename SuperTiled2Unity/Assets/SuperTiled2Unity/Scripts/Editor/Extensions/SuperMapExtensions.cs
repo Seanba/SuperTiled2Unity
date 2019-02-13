@@ -33,11 +33,11 @@ namespace SuperTiled2Unity.Editor
             {
                 var x = (cx - cy) * w * 0.5f;
                 var y = (cx + cy) * h * 0.5f;
-                return new Vector2(x, y);
+                return new Vector2(x, -y);
             }
             else
             {
-                return new Vector2(cx * w, cy * h);
+                return new Vector2(cx * w, -cy * h);
             }
         }
     }
