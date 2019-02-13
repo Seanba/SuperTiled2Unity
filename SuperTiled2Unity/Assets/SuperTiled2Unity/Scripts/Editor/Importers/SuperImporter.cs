@@ -97,7 +97,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             // The path is either relative to our asset path or is absolute
-            using (new ChDir(this.assetPath))
+            using (new ChDir(assetPath))
             {
                 path = Path.GetFullPath(path);
                 if (AssetPath.TryAbsoluteToAsset(ref path))

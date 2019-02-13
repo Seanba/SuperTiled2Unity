@@ -77,9 +77,7 @@ namespace SuperTiled2Unity.Editor
                     goLayer.AddChildWithUniqueName(goChunk);
 
                     // Position the chunk
-                    Vector2 translate = m_MapComponent.MapCoordinatesToPosition(chunk.X, chunk.Y);
-                    translate = SuperImportContext.MakePoint(translate);
-
+                    Vector2 translate = m_MapComponent.MapCoordinatesToPositionPPU(chunk.X, -chunk.Y); // fixit - make sure negative makes sense here (noticed was wrong with PPU of 100 when it wasn't negative in otrho maps)
                     goChunk.transform.localPosition = translate;
 
                     // Create the tilemap for the layer if needed
@@ -252,7 +250,7 @@ namespace SuperTiled2Unity.Editor
             Vector3 translate, rotate, scale;
             tile.GetTRS(tileId.FlipFlags, out translate, out rotate, out scale);
 
-            var cellPos = superMap.MapCoordinatesToPosition(pos3.x, pos3.y);
+            var cellPos = superMap.MapCoordinatesToPositionPPU(pos3.x, pos3.y);
             translate.x += cellPos.x;
             translate.y += cellPos.y;
 

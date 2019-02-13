@@ -24,7 +24,7 @@ namespace SuperTiled2Unity.Editor
             return Vector2.zero;
         }
 
-        public static Vector2 MapCoordinatesToPosition(this SuperMap superMap, int cx, int cy)
+        public static Vector2 MapCoordinatesToPositionPPU(this SuperMap superMap, int cx, int cy)
         {
             float w = superMap.CellSize.x;
             float h = superMap.CellSize.y;

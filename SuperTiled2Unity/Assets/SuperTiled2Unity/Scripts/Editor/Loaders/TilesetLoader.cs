@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using SuperTiled2Unity.Editor.Diablo404;
 using UnityEditor;
 using UnityEngine;
 
@@ -117,6 +119,18 @@ namespace SuperTiled2Unity.Editor
                 return;
             }
 
+            // This is annoying but a tileset may have recently changed but Tiled hasn't been updated on the status yet
+            var texAssetPath = AssetDatabase.GetAssetPath(tex2d);
+            var texFullPath = Path.GetFullPath(texAssetPath);
+            var imgHeaderDims = ImageHeader.GetDimensions(texFullPath);
+            if (imgHeaderDims.x != textureWidth || imgHeaderDims.y != textureHeight)
+            {
+                // Tileset needs to be resaved in Tiled
+                m_Importer.ReportError("Mismatching width/height detected. Tileset = ({0}, {1}), image = {2}. This may happen when a tileset image has been resized. Open map and tileset in Tiled Map Editor and resave.", textureWidth, textureHeight, imgHeaderDims);
+                m_TilesetScript.m_HasErrors = true;
+                return;
+            }
+
             if (tex2d.width < textureWidth || tex2d.height < textureHeight)
             {
                 // Texture was not imported into Unity correctly
@@ -144,6 +158,12 @@ namespace SuperTiled2Unity.Editor
 
                 // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
                 srcy = (textureHeight - srcy) - m_TilesetScript.m_TileHeight;
+
+                if (srcy < 0)
+                {
+                    // This is an edge condition in Tiled if a tileset's texture may have been resized
+                    break;
+                }
 
                 // Add the tile to our atlas
                 Rect rcSource = new Rect(srcx, srcy, m_TilesetScript.m_TileWidth, m_TilesetScript.m_TileHeight);
