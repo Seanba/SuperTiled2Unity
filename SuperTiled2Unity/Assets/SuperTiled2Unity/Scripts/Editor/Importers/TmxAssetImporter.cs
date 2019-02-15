@@ -214,7 +214,7 @@ namespace SuperTiled2Unity.Editor
 
             // In the case of internal tilesets, only use an atlas if it will help with seams
             bool useAtlas = xTileset.Element("image") != null;
-            var loader = new TilesetLoader(tileset, this, useAtlas, 1024, 1024);
+            var loader = new TilesetLoader(tileset, this, useAtlas, 2048, 2048);
 
             if (loader.LoadFromXml(xTileset))
             {
