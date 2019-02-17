@@ -11,5 +11,6 @@ namespace SuperTiled2Unity.Editor
         Stacking = 0,
         OverheadStatic,
         OverheadDynamic,
+        CustomSortAxis,
     }
 }

@@ -90,8 +90,7 @@ namespace SuperTiled2Unity.Editor
                         tilemap.color = new Color(1, 1, 1, superComp.CalculateOpacity());
 
                         // Create the renderer for the layer
-                        var renderer = goChunk.AddComponent<TilemapRenderer>();
-                        renderer.sortOrder = MapRenderConverter.Tiled2Unity(m_MapComponent.m_RenderOrder);
+                        var renderer = AddTilemapRendererComponent(goChunk);
                         AssignMaterial(renderer);
                         AssignSortingLayer(renderer, superComp.m_SortingLayerName, superComp.m_SortingOrder);
                     }
@@ -113,8 +112,7 @@ namespace SuperTiled2Unity.Editor
                     tilemap.color = new Color(1, 1, 1, superComp.CalculateOpacity());
 
                     // Create the renderer for the layer
-                    var renderer = goLayer.AddComponent<TilemapRenderer>();
-                    renderer.sortOrder = MapRenderConverter.Tiled2Unity(m_MapComponent.m_RenderOrder);
+                    var renderer = AddTilemapRendererComponent(goLayer);
                     AssignMaterial(renderer);
                     AssignSortingLayer(renderer, superComp.m_SortingLayerName, superComp.m_SortingOrder);
                 }
@@ -128,6 +126,23 @@ namespace SuperTiled2Unity.Editor
 
                 ProcessLayerDataChunk(goLayer, chunk);
             }
+        }
+
+        private TilemapRenderer AddTilemapRendererComponent(GameObject go)
+        {
+            var renderer = go.AddComponent<TilemapRenderer>();
+            renderer.sortOrder = MapRenderConverter.Tiled2Unity(m_MapComponent.m_RenderOrder);
+
+            if (m_ImportSorting == ImportSorting.CustomSortAxis)
+            {
+                renderer.mode = TilemapRenderer.Mode.Individual;
+            }
+            else
+            {
+                renderer.mode = TilemapRenderer.Mode.Chunk;
+            }
+
+            return renderer;
         }
 
         private void ProcessLayerDataChunk(GameObject goTilemap, Chunk chunk)

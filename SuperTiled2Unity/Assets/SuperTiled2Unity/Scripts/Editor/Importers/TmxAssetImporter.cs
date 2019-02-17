@@ -295,6 +295,24 @@ namespace SuperTiled2Unity.Editor
                     to.gameObject.AddComponent<OverheadSorterDynamic>();
                 }
             }
+            else if (m_ImportSorting == ImportSorting.CustomSortAxis)
+            {
+                // Do not perform any sorting. It is in the hands of the sort axis on the camera now.
+                var layers = m_MapComponent.GetComponentsInChildren<SuperLayer>().Where(l => l.GetType() != typeof(SuperGroupLayer));
+
+                foreach (var layer in layers)
+                {
+                    var renderers = layer.GetComponentsInChildren<Renderer>();
+                    foreach (var renderer in renderers)
+                    {
+                        renderer.sortingOrder = 0;
+                    }
+                }
+            }
+            else
+            {
+                ReportError("Unsupported layer/object sorting mode: {0}", m_ImportSorting);
+            }
         }
 
         private void DoPrefabReplacements()
