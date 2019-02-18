@@ -146,6 +146,7 @@ namespace SuperTiled2Unity.Editor
             var renderer = go.AddComponent<TilemapRenderer>();
             renderer.sortOrder = MapRenderConverter.Tiled2Unity(m_MapComponent.m_RenderOrder);
 
+#if UNITY_2018_3_OR_NEWER
             if (m_ImportSorting == ImportSorting.CustomSortAxis)
             {
                 renderer.mode = TilemapRenderer.Mode.Individual;
@@ -154,7 +155,7 @@ namespace SuperTiled2Unity.Editor
             {
                 renderer.mode = TilemapRenderer.Mode.Chunk;
             }
-
+#endif
             return renderer;
         }
 

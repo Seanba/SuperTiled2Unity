@@ -132,10 +132,11 @@ namespace SuperTiled2Unity.Editor
             // Todo: figure out what to do about staggered and hex and Y-As-Z isometric
             switch (m_MapComponent.m_Orientation)
             {
+#if UNITY_2018_3_OR_NEWER
                 case MapOrientation.Isometric:
                     grid.cellLayout = GridLayout.CellLayout.Isometric;
                     break;
-
+#endif
                 default:
                     grid.cellLayout = GridLayout.CellLayout.Rectangle;
                     break;
