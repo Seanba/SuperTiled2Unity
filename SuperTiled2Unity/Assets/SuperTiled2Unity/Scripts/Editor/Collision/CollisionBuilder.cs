@@ -21,7 +21,7 @@ namespace SuperTiled2Unity.Editor
         public CollisionBuilder(GameObject goTilemap, Dictionary<uint, TilePolygonCollection> tilePolygonDatabase, SuperImportContext importContext)
         {
             m_TilemapGameObject = goTilemap;
-            m_Tilemap = m_TilemapGameObject.GetComponent<Tilemap>();
+            m_Tilemap = m_TilemapGameObject.GetComponentInParent<Tilemap>();
             m_TilePolygonDatabase = tilePolygonDatabase;
             m_ImportContext = importContext;
         }

@@ -10,8 +10,12 @@ namespace SuperTiled2Unity.Editor
         {
             var cellSize = superMap.CalculateCellSize();
 
-            // The cell size has to take pixels per unit into account
-            superMap.CellSize = importContext.MakeSize(cellSize);
+            // The cell size has to take pixels per unit into account for x and y
+            // z is always 1 so we can use Transparency Sort Axis
+            float x = importContext.MakeScalar(cellSize.x);
+            float y = importContext.MakeScalar(cellSize.y);
+            float z = 1.0f;
+            superMap.CellSize = new Vector3(x, y, z);
         }
 
         public static Vector2 GetTileAnchor(this SuperMap superMap)

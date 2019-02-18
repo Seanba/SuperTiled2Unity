@@ -21,6 +21,7 @@ namespace SuperTiled2Unity.Editor
         private GlobalTileDatabase m_GlobalTileDatabase;
         private Dictionary<uint, TilePolygonCollection> m_TilePolygonDatabase;
         private int m_ObjectIdCounter = 0;
+        private int m_TileLayerCounter = 0;
         private LayerSorterHelper m_LayerSorterHelper;
 
         [SerializeField]
@@ -65,6 +66,7 @@ namespace SuperTiled2Unity.Editor
 
             m_TilePolygonDatabase = new Dictionary<uint, TilePolygonCollection>();
             m_ObjectIdCounter = 0;
+            m_TileLayerCounter = 0;
             m_LayerSorterHelper = new LayerSorterHelper();
 
             // Create our map and fill it out
@@ -140,6 +142,16 @@ namespace SuperTiled2Unity.Editor
             }
 
             m_IsIsometric = m_MapComponent.m_Orientation == MapOrientation.Isometric;
+
+            if (m_ImportSorting == ImportSorting.CustomSortAxis)
+            {
+                // We are going to use only one Tilemap for all tile layers
+                // This requires users to set up a Transparency Sort Axis in their graphics setting
+                // This is they way Unity prefers to handle tilemaps but it does mean some Tiled features are not supported (like layer offsets)
+                // However, for applications where sprites interact visually with the environment this may be the only way forward
+                GetOrAddTilemapComponent(m_MapComponent.gameObject, null);
+            }
+
             return true;
         }
 

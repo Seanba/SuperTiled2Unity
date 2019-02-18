@@ -90,7 +90,7 @@ namespace SuperTiled2Unity
         {
             if (m_Orientation == MapOrientation.Hexagonal)
             {
-                var cell = new Vector3(m_TileWidth * 0.5f, m_TileHeight * 0.5f, 0);
+                var cell = new Vector3(m_TileWidth * 0.5f, m_TileHeight * 0.5f, 1);
                 if (m_StaggerAxis == StaggerAxis.X)
                 {
                     cell.x += m_HexSideLength * 0.5f;
@@ -103,7 +103,7 @@ namespace SuperTiled2Unity
                 return cell;
             }
 
-            return new Vector3(m_TileWidth, m_TileHeight, 0);
+            return new Vector3(m_TileWidth, m_TileHeight, 1);
         }
 
         private Vector3Int OrthoToIsometric(int x, int y)

@@ -45,6 +45,7 @@ namespace SuperTiled2Unity.Editor
                 ProcessLayerData(layerComponent.gameObject, xData);
             }
 
+            m_TileLayerCounter++;
             return layerComponent.gameObject;
         }
 
@@ -83,16 +84,7 @@ namespace SuperTiled2Unity.Editor
                     // Create the tilemap for the layer if needed
                     if (!m_TilesAsObjects)
                     {
-                        goChunk.AddComponent<TilemapData>();
-                        var tilemap = goChunk.AddComponent<Tilemap>();
-                        tilemap.tileAnchor = m_MapComponent.GetTileAnchor();
-                        tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
-                        tilemap.color = new Color(1, 1, 1, superComp.CalculateOpacity());
-
-                        // Create the renderer for the layer
-                        var renderer = AddTilemapRendererComponent(goChunk);
-                        AssignMaterial(renderer);
-                        AssignSortingLayer(renderer, superComp.m_SortingLayerName, superComp.m_SortingOrder);
+                        GetOrAddTilemapComponent(goChunk, superComp);
                     }
 
                     ProcessLayerDataChunk(goChunk, chunk);
@@ -105,16 +97,7 @@ namespace SuperTiled2Unity.Editor
                 // Add the tilemap components if needed
                 if (!m_TilesAsObjects)
                 {
-                    goLayer.AddComponent<TilemapData>();
-                    var tilemap = goLayer.AddComponent<Tilemap>();
-                    tilemap.tileAnchor = m_MapComponent.GetTileAnchor();
-                    tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
-                    tilemap.color = new Color(1, 1, 1, superComp.CalculateOpacity());
-
-                    // Create the renderer for the layer
-                    var renderer = AddTilemapRendererComponent(goLayer);
-                    AssignMaterial(renderer);
-                    AssignSortingLayer(renderer, superComp.m_SortingLayerName, superComp.m_SortingOrder);
+                    GetOrAddTilemapComponent(goLayer, superComp);
                 }
 
                 // For regular maps the 'chunk' is the same as the layer data
@@ -126,6 +109,36 @@ namespace SuperTiled2Unity.Editor
 
                 ProcessLayerDataChunk(goLayer, chunk);
             }
+        }
+
+        private Tilemap GetOrAddTilemapComponent(GameObject go, SuperTileLayer layer)
+        {
+            // If we already have a Tilemap component up our ancesters then we are using a format that does not support separate tilemaps
+            var parentTilemap = go.GetComponentInParent<Tilemap>();
+
+            if (parentTilemap == null)
+            {
+                // Need tilemap data if we're going to have tilemap for flips and rotations
+                go.AddComponent<TilemapData>();
+
+                var tilemap = go.AddComponent<Tilemap>();
+                tilemap.tileAnchor = m_MapComponent.GetTileAnchor();
+                tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
+
+                // Create the renderer for the layer
+                var renderer = AddTilemapRendererComponent(go);
+                AssignMaterial(renderer);
+
+                if (layer != null)
+                {
+                    tilemap.color = new Color(1, 1, 1, layer.CalculateOpacity());
+                    AssignSortingLayer(renderer, layer.m_SortingLayerName, layer.m_SortingOrder);
+                }
+
+                return tilemap;
+            }
+
+            return parentTilemap;
         }
 
         private TilemapRenderer AddTilemapRendererComponent(GameObject go)
@@ -300,12 +313,16 @@ namespace SuperTiled2Unity.Editor
 
         private void PlaceTileAsTile(GameObject goTilemap, SuperTile tile, TileIdMath tileId, Vector3Int pos3)
         {
+            // Burn our layer index into the z component of the tile position
+            // This is needed for when using a custom sort axis
+            pos3.z = m_TileLayerCounter;
+
             // Set the flip data
-            var tilemapData = goTilemap.GetComponent<TilemapData>();
+            var tilemapData = goTilemap.GetComponentInParent<TilemapData>();
             tilemapData.SetFlipFlags(pos3, tileId.FlipFlags);
 
             // Set the tile
-            var tilemap = goTilemap.GetComponent<Tilemap>();
+            var tilemap = goTilemap.GetComponentInParent<Tilemap>();
             tilemap.SetTile(pos3, tile);
 
             // Do we have any colliders on the tile to be gathered?
