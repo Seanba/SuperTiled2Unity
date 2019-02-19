@@ -172,7 +172,7 @@ namespace SuperTiled2Unity.Editor
 
                 if (csprop != null)
                 {
-                    csprop.SetValue(comp, objValue);
+                    csprop.SetValue(comp, objValue, null);
                 }
             }
         }
