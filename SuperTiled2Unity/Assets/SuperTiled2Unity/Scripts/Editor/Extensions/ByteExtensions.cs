@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using SuperTiled2Unity.Ionic.Zlib;
 
 namespace SuperTiled2Unity.Editor
 {
@@ -26,7 +26,7 @@ namespace SuperTiled2Unity.Editor
 
             // Now, decompress the bytes
             using (MemoryStream streamDecompressed = new MemoryStream())
-            using (GZipStream deflateStream = new GZipStream(streamCompressed, Ionic.Zlib.CompressionMode.Decompress))
+            using (GZipStream deflateStream = new GZipStream(streamCompressed, CompressionMode.Decompress))
             {
                 deflateStream.CopyTo(streamDecompressed);
                 return streamDecompressed.ToArray();
@@ -43,7 +43,7 @@ namespace SuperTiled2Unity.Editor
 
             // Now, decompress the bytes
             using (MemoryStream streamDecompressed = new MemoryStream())
-            using (DeflateStream deflateStream = new DeflateStream(streamCompressed, Ionic.Zlib.CompressionMode.Decompress))
+            using (DeflateStream deflateStream = new DeflateStream(streamCompressed, CompressionMode.Decompress))
             {
                 deflateStream.CopyTo(streamDecompressed);
                 return streamDecompressed.ToArray();
