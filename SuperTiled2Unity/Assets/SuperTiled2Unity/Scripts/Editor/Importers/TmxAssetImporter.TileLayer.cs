@@ -370,11 +370,27 @@ namespace SuperTiled2Unity.Editor
             }
             else if (compression == DataCompression.Gzip)
             {
-                tileIds = data.Base64ToBytes().GzipDecompress().ToUInts().ToList();
+                try
+                {
+                    tileIds = data.Base64ToBytes().GzipDecompress().ToUInts().ToList();
+                }
+                catch
+                {
+                    tileIds.Clear();
+                    ReportError("Gzip compression is not supported on your development platform. Change Tile Layer Format to another type in Tiled.");
+                }
             }
             else if (compression == DataCompression.Zlib)
             {
-                tileIds = data.Base64ToBytes().ZlibDeflate().ToUInts().ToList();
+                try
+                {
+                    tileIds = data.Base64ToBytes().ZlibDeflate().ToUInts().ToList();
+                }
+                catch
+                {
+                    tileIds.Clear();
+                    ReportError("zlib compression is not supported on your development platform. Change Tile Layer Format to another type in Tiled.");
+                }
             }
             else
             {

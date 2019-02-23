@@ -255,14 +255,16 @@ namespace SuperTiled2Unity.Editor
             var fps = m_Importer.SuperImportContext.Settings.AnimationFramerate;
             var animations = new AnimationBuilder(fps);
 
-            var frameSprites = xAnimation.Elements("frame").Select(f => f.GetAttributeAs<int>("tileid")).Select(index => m_TilesetScript.m_Tiles[index].m_Sprite).ToArray();
-            var frameDurations = xAnimation.Elements("frame").Select(f => f.GetAttributeAs<int>("duration")).Select(ms => ms / 1000.0f).ToArray();
-
-            for (int i = 0; i < frameSprites.Length; i++)
+            foreach (var xFrame in xAnimation.Elements("frame"))
             {
-                var sprite = frameSprites[i];
-                var duration = frameDurations[i];
-                animations.AddFrames(sprite, duration);
+                var frameId = xFrame.GetAttributeAs<int>("tileid");
+                var frameDuration = xFrame.GetAttributeAs<int>("duration") / 1000.0f;
+
+                SuperTile frame;
+                if (m_TilesetScript.TryGetTile(frameId, out frame))
+                {
+                    animations.AddFrames(frame.m_Sprite, frameDuration);
+                }
             }
 
             tile.m_AnimationSprites = animations.Sprites.ToArray();
