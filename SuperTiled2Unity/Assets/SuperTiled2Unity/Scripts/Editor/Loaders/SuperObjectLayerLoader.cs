@@ -212,7 +212,7 @@ namespace SuperTiled2Unity.Editor
 
                 if (tile == null)
                 {
-                    Importer.ReportError("Missing tile '{0}' from on tile object '{1}'", justTileId, template, superObject.name);
+                    Importer.ReportError("Missing tile '{0}' on tile object '{1}'", justTileId, template, superObject.name);
                     return;
                 }
             }
@@ -237,6 +237,8 @@ namespace SuperTiled2Unity.Editor
 
             var tileOffset = new Vector3(tile.m_TileOffsetX * inversePPU, -tile.m_TileOffsetY * inversePPU);
             var translateCenter = new Vector3(tile.m_Width * 0.5f * inversePPU, tile.m_Height * 0.5f * inversePPU);
+
+            // fixit - how to position for isometric tile objects? (ref-point is bottom center) (make sure flipping still works)
 
             // Our root object will contain the translation, rotation, and scale of the tile object
             var goTRS = superObject.gameObject;
