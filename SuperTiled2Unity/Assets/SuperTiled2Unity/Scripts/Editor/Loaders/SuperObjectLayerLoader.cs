@@ -22,6 +22,7 @@ namespace SuperTiled2Unity.Editor
         public TiledAssetImporter Importer { get; set; }
         public ColliderFactory ColliderFactory { get; set; }
         public GlobalTileDatabase GlobalTileDatabase { get; set; }
+        public SuperMap SuperMap { get; set; }
 
         public float AnimationFramerate
         {
@@ -238,8 +239,6 @@ namespace SuperTiled2Unity.Editor
             var tileOffset = new Vector3(tile.m_TileOffsetX * inversePPU, -tile.m_TileOffsetY * inversePPU);
             var translateCenter = new Vector3(tile.m_Width * 0.5f * inversePPU, tile.m_Height * 0.5f * inversePPU);
 
-            // fixit - how to position for isometric tile objects? (ref-point is bottom center) (make sure flipping still works)
-
             // Our root object will contain the translation, rotation, and scale of the tile object
             var goTRS = superObject.gameObject;
             goTRS.transform.localScale = scale;
@@ -256,10 +255,19 @@ namespace SuperTiled2Unity.Editor
             goCF.transform.localRotation = Quaternion.Euler(0, 0, 0);
             goCF.transform.localScale = new Vector3(flip_h ? -1 : 1, flip_v ? -1 : 1, 1);
 
+            // Note: We may not want to put the tile "back into place" depending on our coordinate system
+            var fromCenter = -toCenter;
+
+            // Isometric maps referece tile objects by bottom center
+            if (SuperMap.m_Orientation == MapOrientation.Isometric)
+            {
+                fromCenter.x -= Importer.SuperImportContext.MakeScalar(tile.m_Width * 0.5f);
+            }
+
             // Add another child, putting our coordinates back into the proper place
             var goTile = new GameObject(superObject.m_TiledName);
             goCF.AddChildWithUniqueName(goTile);
-            goTile.transform.localPosition = -toCenter;
+            goTile.transform.localPosition = fromCenter;
             goTile.transform.localRotation = Quaternion.Euler(0, 0, 0);
             goTile.transform.localScale = Vector3.one;
 

@@ -18,6 +18,14 @@ namespace SuperTiled2Unity.Editor
             // Create the game object that contains the layer and add it to the grid parent
             var layerComponent = goParent.AddSuperLayerGameObject<SuperImageLayer>(new SuperImageLayerLoader(xLayer), SuperImportContext);
             var goLayer = layerComponent.gameObject;
+
+            // This sucks but we have to correct for isometric orientation for image layers
+            if (m_MapComponent.m_Orientation == MapOrientation.Isometric)
+            {
+                float dx = SuperImportContext.MakeScalar(m_MapComponent.m_Width * m_MapComponent.m_TileWidth * 0.5f);
+                goLayer.transform.Translate(-dx, 0, 0);
+            }
+
             AddSuperCustomProperties(goLayer, xLayer.Element("properties"));
 
             m_LayerSorterHelper.SortNewLayer(layerComponent);

@@ -15,6 +15,7 @@ namespace SuperTiled2Unity.Editor
             var loader = new SuperObjectLayerLoader(xObjectLayer);
             loader.AnimationFramerate = SuperImportContext.Settings.AnimationFramerate;
             loader.ColliderFactory = CreateColliderFactory();
+            loader.SuperMap = m_MapComponent;
             loader.Importer = this;
             loader.GlobalTileDatabase = m_GlobalTileDatabase;
 
