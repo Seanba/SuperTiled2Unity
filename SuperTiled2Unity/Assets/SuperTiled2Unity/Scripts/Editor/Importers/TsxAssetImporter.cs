@@ -21,14 +21,6 @@ namespace SuperTiled2Unity.Editor
         private bool m_UseSpriteAtlas = true;
         public bool UseSpriteAtlas { get { return m_UseSpriteAtlas; } }
 
-        [SerializeField]
-        private AtlasSize m_AtlasWidth = AtlasSize._2048;
-        public int AtlasWidth { get { return (int)m_AtlasWidth; } }
-
-        [SerializeField]
-        private AtlasSize m_AtlasHeight = AtlasSize._2048;
-        public int AtlasHeight { get { return (int)m_AtlasHeight; } }
-
         public SuperTileset Tileset { get; private set; }
 
         protected override void InternalOnImportAsset()
@@ -60,7 +52,7 @@ namespace SuperTiled2Unity.Editor
             SuperImportContext.AddObjectToAsset("_TilesetScriptObject", Tileset, SuperImportContext.Icons.TsxIcon);
             SuperImportContext.SetMainObject(this.Tileset);
 
-            var loader = new TilesetLoader(this.Tileset, this, m_UseSpriteAtlas, (int)m_AtlasWidth, (int)m_AtlasHeight);
+            var loader = new TilesetLoader(this.Tileset, this);
             loader.LoadFromXml(xTileset);
         }
     }

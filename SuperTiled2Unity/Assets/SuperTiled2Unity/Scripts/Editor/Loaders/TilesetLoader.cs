@@ -16,17 +16,11 @@ namespace SuperTiled2Unity.Editor
     {
         private SuperTileset m_TilesetScript;
         private TiledAssetImporter m_Importer;
-        private bool m_UseSpriteAtlas;
-        private int m_AtlasWidth;
-        private int m_AtlasHeight;
 
-        public TilesetLoader(SuperTileset tileset, TiledAssetImporter importer, bool useAtlas, int atlasWidth, int atlasHeight)
+        public TilesetLoader(SuperTileset tileset, TiledAssetImporter importer)
         {
             m_TilesetScript = tileset;
             m_Importer = importer;
-            m_UseSpriteAtlas = useAtlas;
-            m_AtlasWidth = atlasWidth;
-            m_AtlasHeight = atlasHeight;
         }
 
         public bool LoadFromXml(XElement xTileset)
@@ -84,10 +78,13 @@ namespace SuperTiled2Unity.Editor
             // 1) From one image broken down into parts (many tiles in one image)
             // 2) From a collection of images (one tile per image)
 
-            var atlas = new AtlasBuilder(m_Importer, m_UseSpriteAtlas, (int)m_AtlasWidth, (int)m_AtlasHeight, m_TilesetScript);
+            // fixit - I don't want to build atlases anymore (have user set an atlas)
+            // fixit - and I don't want a bunch of transparent tiles either (make it a setting and use transparent color key when possible)
+            var atlas = new AtlasBuilder(m_Importer, m_TilesetScript);
 
             if (xTileset.Element("image") != null)
             {
+                // fixit - not interested in tiles that are completely transparent
                 BuildTilesetFromImage(xTileset, atlas);
             }
             else
@@ -108,6 +105,7 @@ namespace SuperTiled2Unity.Editor
             string textureAssetPath = xImage.GetAttributeAs<string>("source");
             int textureWidth = xImage.GetAttributeAs<int>("width");
             int textureHeight = xImage.GetAttributeAs<int>("height");
+            var transparent = xImage.GetAttributeAsColor("trans", Color.clear);
 
             // Load the texture. We will make sprites and tiles out of this image.
             var tex2d = m_Importer.RequestAssetAtPath<Texture2D>(textureAssetPath);
@@ -140,34 +138,39 @@ namespace SuperTiled2Unity.Editor
                 return;
             }
 
-            for (int i = 0; i < m_TilesetScript.m_TileCount; i++)
+            // fixit - get the source texture for reading pixels
+            using (var reader = new TexturePixelReader(tex2d))
             {
-                // Get grid x,y coords
-                int x = i % m_TilesetScript.m_TileColumns;
-                int y = i / m_TilesetScript.m_TileColumns;
-
-                // Get x source on texture
-                int srcx = x * m_TilesetScript.m_TileWidth;
-                srcx += x * m_TilesetScript.m_Spacing;
-                srcx += m_TilesetScript.m_Margin;
-
-                // Get y source on texture
-                int srcy = y * m_TilesetScript.m_TileHeight;
-                srcy += y * m_TilesetScript.m_Spacing;
-                srcy += m_TilesetScript.m_Margin;
-
-                // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
-                srcy = (textureHeight - srcy) - m_TilesetScript.m_TileHeight;
-
-                if (srcy < 0)
+                for (int i = 0; i < m_TilesetScript.m_TileCount; i++)
                 {
-                    // This is an edge condition in Tiled if a tileset's texture may have been resized
-                    break;
-                }
+                    // Get grid x,y coords
+                    int x = i % m_TilesetScript.m_TileColumns;
+                    int y = i / m_TilesetScript.m_TileColumns;
 
-                // Add the tile to our atlas
-                Rect rcSource = new Rect(srcx, srcy, m_TilesetScript.m_TileWidth, m_TilesetScript.m_TileHeight);
-                atlas.AddTile(i, tex2d, rcSource);
+                    // Get x source on texture
+                    int srcx = x * m_TilesetScript.m_TileWidth;
+                    srcx += x * m_TilesetScript.m_Spacing;
+                    srcx += m_TilesetScript.m_Margin;
+
+                    // Get y source on texture
+                    int srcy = y * m_TilesetScript.m_TileHeight;
+                    srcy += y * m_TilesetScript.m_Spacing;
+                    srcy += m_TilesetScript.m_Margin;
+
+                    // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
+                    srcy = (textureHeight - srcy) - m_TilesetScript.m_TileHeight;
+
+                    if (srcy < 0)
+                    {
+                        // This is an edge condition in Tiled if a tileset's texture may have been resized
+                        break;
+                    }
+
+                    // Add the tile to our atlas
+                    Rect rcSource = new Rect(srcx, srcy, m_TilesetScript.m_TileWidth, m_TilesetScript.m_TileHeight);
+                    bool isTransparent = reader.GetPixels(rcSource).All(p => p == transparent);
+                    atlas.AddTile(i, tex2d, rcSource, isTransparent);
+                }
             }
         }
 
@@ -206,7 +209,7 @@ namespace SuperTiled2Unity.Editor
                     }
 
                     var rcSource = new Rect(0, 0, tex2d.width, tex2d.height);
-                    atlas.AddTile(tileIndex, tex2d, rcSource);
+                    atlas.AddTile(tileIndex, tex2d, rcSource, false);
                 }
             }
         }

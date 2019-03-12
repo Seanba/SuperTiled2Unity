@@ -14,17 +14,9 @@ namespace SuperTiled2Unity.Editor
     [CustomEditor(typeof(TsxAssetImporter))]
     public class TsxAssetImporterEditor : TiledAssetImporterEditor<TsxAssetImporter>
     {
-        private readonly AnimBool m_ShowAtlasSettings = new AnimBool();
-
         // Serialized properties
-        private SerializedProperty m_UseSpriteAtlas;
-        private readonly GUIContent m_UseSpriteAtlasContent = new GUIContent("Use Sprite Atlas for Tiles", "Let SuperTiled2Unity create atlas textures to hold your tiles. This will remove visual seams and bands but at the cost of memory.");
-
-        private SerializedProperty m_AtlasWidth;
-        private readonly GUIContent m_AtlasWidthContent = new GUIContent("Sprite Atlas Width", "Pixel width of sprite atlas used for packing tiles.");
-
-        private SerializedProperty m_AtlasHeight;
-        private readonly GUIContent m_AtlasHeightContent = new GUIContent("Sprite Atlas Height", "Pixel height of sprite atlas used for packing tiles.");
+        //private SerializedProperty m_UseSpriteAtlas; // fixit - provided sprite atlas
+        //private readonly GUIContent m_UseSpriteAtlasContent = new GUIContent("Use Sprite Atlas for Tiles", "Let SuperTiled2Unity create atlas textures to hold your tiles. This will remove visual seams and bands but at the cost of memory.");
 
         public override bool showImportedObject { get { return false; } }
 
@@ -52,21 +44,12 @@ namespace SuperTiled2Unity.Editor
             base.OnEnable();
 
             CacheSerializedProperites();
-
-            m_ShowAtlasSettings.valueChanged.AddListener(Repaint);
-            m_ShowAtlasSettings.value = m_UseSpriteAtlas.boolValue;
         }
 
         private void CacheSerializedProperites()
         {
-            m_UseSpriteAtlas = this.serializedObject.FindProperty("m_UseSpriteAtlas");
-            Assert.IsNotNull(m_UseSpriteAtlas);
-
-            m_AtlasWidth = this.serializedObject.FindProperty("m_AtlasWidth");
-            Assert.IsNotNull(m_AtlasWidth);
-
-            m_AtlasHeight = this.serializedObject.FindProperty("m_AtlasHeight");
-            Assert.IsNotNull(m_AtlasHeight);
+            //m_UseSpriteAtlas = this.serializedObject.FindProperty("m_UseSpriteAtlas"); // fixit
+            //Assert.IsNotNull(m_UseSpriteAtlas);
         }
 
         protected override void ResetValues()
@@ -87,26 +70,27 @@ namespace SuperTiled2Unity.Editor
         private void InspectorGUIForAtlasSettings()
         {
             ShowTiledAssetGui();
-            ToggleFromInt(this.m_UseSpriteAtlas, this.m_UseSpriteAtlasContent);
-            m_ShowAtlasSettings.target = (m_UseSpriteAtlas.boolValue && !m_UseSpriteAtlas.hasMultipleDifferentValues);
-            if (EditorGUILayout.BeginFadeGroup(m_ShowAtlasSettings.faded))
-            {
-                using (new GuiScopedIndent())
-                {
-                    // This is ugly but C# does not allow generic constraints on enum types
-                    m_AtlasWidth.intValue = (int)(AtlasSize)EditorGUILayout.EnumPopup(m_AtlasWidthContent, (AtlasSize)m_AtlasWidth.intValue);
-                    m_AtlasHeight.intValue = (int)(AtlasSize)EditorGUILayout.EnumPopup(m_AtlasHeightContent, (AtlasSize)m_AtlasHeight.intValue);
 
-                    EditorGUILayout.HelpBox("SuperTiled2Unity can automate the creation of sprite atlas used to package tiles.\n" +
-                        "This will eliminate visual artifacts like seams from your maps but some users may wish to handle sprite atlases themselves.\n" +
-                        "It is best practice to reuse tilesets so that multiple atlases containing the same tiles are created.\n" +
-                        "Seams can also be avoided by constraining the game camera. This reduces memory but can be difficult to achieve.",
-                        MessageType.None);
-                    EditorGUILayout.Space();
+            //ToggleFromInt(this.m_UseSpriteAtlas, this.m_UseSpriteAtlasContent); // fixit
+            //m_ShowAtlasSettings.target = (m_UseSpriteAtlas.boolValue && !m_UseSpriteAtlas.hasMultipleDifferentValues);
+            //if (EditorGUILayout.BeginFadeGroup(m_ShowAtlasSettings.faded))
+            //{
+            //    using (new GuiScopedIndent())
+            //    {
+            //        // This is ugly but C# does not allow generic constraints on enum types
+            //        m_AtlasWidth.intValue = (int)(AtlasSize)EditorGUILayout.EnumPopup(m_AtlasWidthContent, (AtlasSize)m_AtlasWidth.intValue);
+            //        m_AtlasHeight.intValue = (int)(AtlasSize)EditorGUILayout.EnumPopup(m_AtlasHeightContent, (AtlasSize)m_AtlasHeight.intValue);
 
-                }
-            }
-            EditorGUILayout.EndFadeGroup();
+            //        EditorGUILayout.HelpBox("SuperTiled2Unity can automate the creation of sprite atlas used to package tiles.\n" +
+            //            "This will eliminate visual artifacts like seams from your maps but some users may wish to handle sprite atlases themselves.\n" +
+            //            "It is best practice to reuse tilesets so that multiple atlases containing the same tiles are created.\n" +
+            //            "Seams can also be avoided by constraining the game camera. This reduces memory but can be difficult to achieve.",
+            //            MessageType.None);
+            //        EditorGUILayout.Space();
+
+            //    }
+            //}
+            //EditorGUILayout.EndFadeGroup();
         }
     }
 }

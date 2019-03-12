@@ -225,10 +225,7 @@ namespace SuperTiled2Unity.Editor
             string assetName = string.Format("_TilesetScriptObjectInternal_{0}", m_InternalTilesets.Count);
             SuperImportContext.AddObjectToAsset(assetName, tileset);
 
-            // In the case of internal tilesets, only use an atlas if it will help with seams
-            bool useAtlas = xTileset.Element("image") != null;
-            var loader = new TilesetLoader(tileset, this, useAtlas, 2048, 2048);
-
+            var loader = new TilesetLoader(tileset, this);
             if (loader.LoadFromXml(xTileset))
             {
                 m_GlobalTileDatabase.RegisterTileset(firstId, tileset);
