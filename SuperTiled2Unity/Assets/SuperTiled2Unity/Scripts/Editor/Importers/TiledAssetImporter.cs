@@ -89,15 +89,8 @@ namespace SuperTiled2Unity.Editor
             if (properties.TryGetCustomProperty("unity:tag", out prop))
             {
                 string tag = prop.m_Value;
-                if (!UnityEditorInternal.InternalEditorUtility.tags.Contains(tag))
-                {
-                    string report = string.Format("Tag '{0}' is not defined in the Tags and Layers settings.", tag);
-                    ReportError(report);
-                }
-                else
-                {
-                    properties.gameObject.tag = tag;
-                }
+                CheckTagName(tag);
+                properties.gameObject.tag = tag;
             }
         }
 

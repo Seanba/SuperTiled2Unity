@@ -111,8 +111,9 @@ namespace SuperTiled2Unity.Editor
         {
             bool missingSortingLayers = TargetAssetImporter.MissingSortingLayers.Any();
             bool missingLayers = TargetAssetImporter.MissingLayers.Any();
+            bool missingTags = TargetAssetImporter.MissingTags.Any();
 
-            if (!missingSortingLayers && !missingLayers)
+            if (!missingSortingLayers && !missingLayers && !missingTags)
             {
                 return;
             }
@@ -153,6 +154,25 @@ namespace SuperTiled2Unity.Editor
                         foreach (var layer in TargetAssetImporter.MissingLayers)
                         {
                             message.AppendFormat("    {0}\n", layer);
+                        }
+
+                        EditorGUILayout.HelpBox(message.ToString(), MessageType.Warning);
+                    }
+                }
+
+                if (missingTags)
+                {
+                    EditorGUILayout.LabelField("Missing Tags!", EditorStyles.boldLabel);
+
+                    using (new GuiScopedIndent())
+                    {
+                        StringBuilder message = new StringBuilder("Tags are missing in your project settings. Open the Tag Manager, add these missing tags, and reimport:");
+                        message.AppendLine();
+                        message.AppendLine();
+
+                        foreach (var tag in TargetAssetImporter.MissingTags)
+                        {
+                            message.AppendFormat("    {0}\n", tag);
                         }
 
                         EditorGUILayout.HelpBox(message.ToString(), MessageType.Warning);

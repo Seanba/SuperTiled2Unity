@@ -29,6 +29,10 @@ namespace SuperTiled2Unity.Editor
         private List<string> m_MissingLayers = new List<string>();
         public IEnumerable<string> MissingLayers { get { return m_MissingLayers; } }
 
+        [SerializeField]
+        private List<string> m_MissingTags = new List<string>();
+        public IEnumerable<string> MissingTags { get { return m_MissingTags; } }
+
         // Keep track of loaded database objects by type
         private Dictionary<KeyValuePair<string, Type>, UnityEngine.Object> m_CachedDatabase = new Dictionary<KeyValuePair<string, Type>, UnityEngine.Object>();
 
@@ -44,6 +48,7 @@ namespace SuperTiled2Unity.Editor
             m_Warnings.Clear();
             m_MissingSortingLayers.Clear();
             m_MissingLayers.Clear();
+            m_MissingTags.Clear();
             m_SuperAsset = null;
             AssetImportContext = ctx;
 
@@ -155,6 +160,21 @@ namespace SuperTiled2Unity.Editor
                 {
                     //Debug.LogWarningFormat("Layer name '{0}' not found in Tag Manager. Colliders may not work as expected", layerName);
                     m_MissingLayers.Add(layerName);
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool CheckTagName(string tagName)
+        {
+            if (!UnityEditorInternal.InternalEditorUtility.tags.Contains(tagName))
+            {
+                if (!m_MissingTags.Contains(tagName))
+                {
+                    m_MissingTags.Add(tagName);
                 }
 
                 return false;
