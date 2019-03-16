@@ -20,7 +20,7 @@ namespace SuperTiled2Unity
     }
 
     // Helper extension methods
-    public static class CustomPropertyExtensions
+    public static class CustomPropertyListExtensions
     {
         public static bool TryGetProperty(this List<CustomProperty> list, string propertyName, out CustomProperty property)
         {
