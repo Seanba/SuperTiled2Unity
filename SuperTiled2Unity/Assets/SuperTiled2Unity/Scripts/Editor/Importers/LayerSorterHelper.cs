@@ -19,7 +19,10 @@ namespace SuperTiled2Unity.Editor
 
             foreach (var sort in SortingLayer.layers)
             {
-                m_SortingLayers.Add(sort.name, 0);
+                if (!m_SortingLayers.ContainsKey(sort.name))
+                {
+                    m_SortingLayers.Add(sort.name, 0);
+                }
             }
 
             Assert.IsTrue(m_SortingLayers.ContainsKey(DefaultLayerName));

@@ -228,6 +228,7 @@ ScriptedImporter:
   warnings: []
   missingSortingLayers: []
   missingLayers: []
+  missingTags: []
   pixelsPerUnit: 1
   edgesPerEllipse: 32
   numberOfObjectsImported: 2
