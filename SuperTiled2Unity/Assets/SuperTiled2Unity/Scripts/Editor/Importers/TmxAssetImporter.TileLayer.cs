@@ -111,9 +111,10 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
+        // fixit - figure this out for grouping and custom sort axis
         private Tilemap GetOrAddTilemapComponent(GameObject go, SuperTileLayer layer)
         {
-            // If we already have a Tilemap component up our ancesters then we are using a format that does not support separate tilemaps
+            // If we already have a Tilemap component on one of our ancestors then use it
             var parentTilemap = go.GetComponentInParent<Tilemap>();
 
             if (parentTilemap == null)
@@ -315,7 +316,7 @@ namespace SuperTiled2Unity.Editor
         private void PlaceTileAsTile(GameObject goTilemap, SuperTile tile, TileIdMath tileId, Vector3Int pos3)
         {
             // Burn our layer index into the z component of the tile position
-            // This is needed for when using a custom sort axis
+            // This is needed for cases where we collapse multiple Tile layers onto the same Tilemap (like for use with Custom Sorted Axis)
             pos3.z = m_TileLayerCounter;
 
             // Set the flip data

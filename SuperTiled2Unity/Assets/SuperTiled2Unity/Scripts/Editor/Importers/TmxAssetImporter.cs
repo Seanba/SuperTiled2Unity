@@ -144,6 +144,7 @@ namespace SuperTiled2Unity.Editor
 
             m_IsIsometric = m_MapComponent.m_Orientation == MapOrientation.Isometric;
 
+            // fixit - figure out how to best handle multiple tilemaps even in custom sort axis mode
             if (m_ImportSorting == ImportSorting.CustomSortAxis)
             {
                 // We are going to use only one Tilemap for all tile layers
