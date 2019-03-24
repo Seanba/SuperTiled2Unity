@@ -28,6 +28,7 @@ namespace SuperTiled2Unity.Editor
             if (assetTarget != null)
             {
                 // If we have importer errors then they should be front and center
+                DisplayMissingFileErrors();
                 DisplayErrorsAndWarnings();
                 DisplayTagManagerErrors();
 
@@ -85,23 +86,68 @@ namespace SuperTiled2Unity.Editor
 
         protected abstract void InternalOnInspectorGUI();
 
+        private void DisplayMissingFileErrors()
+        {
+            using (new GuiScopedBackgroundColor(Color.magenta))
+            {
+                if (TargetAssetImporter.MissingFiles.Any())
+                {
+                    var asset = Path.GetFileName(TargetAssetImporter.assetPath);
+                    EditorGUILayout.LabelField("Missing or misplaced assets!", EditorStyles.boldLabel);
+
+                    var msg = new StringBuilder();
+                    msg.AppendLine("This asset is dependent on other files that cannot be found.");
+                    msg.AppendLine("Note that all Tiled assets must be imported to Unity in folder locations that keep their relative paths intact.\n");
+                    msg.AppendFormat("Tip: Try opening {0} in Tiled to resolve location of missing assets.\n\n", asset);
+
+                    msg.AppendLine(string.Join("\n", TargetAssetImporter.MissingFiles));
+
+                    EditorGUILayout.HelpBox(msg.ToString(), MessageType.Error);
+
+                    if (GUILayout.Button("Copy Missing Files Message to Clipboard"))
+                    {
+                        msg.ToString().CopyToClipboard();
+                    }
+
+                    EditorGUILayout.Separator();
+                }
+            }
+        }
+
         private void DisplayErrorsAndWarnings()
         {
-            var background = GetBackgroundColor();
-            using (new GuiScopedBackgroundColor(background))
+            var asset = Path.GetFileName(TargetAssetImporter.assetPath);
+
+            using (new GuiScopedBackgroundColor(Color.red))
             {
                 if (TargetAssetImporter.Errors.Any())
                 {
-                    var asset = Path.GetFileName(TargetAssetImporter.assetPath);
                     EditorGUILayout.LabelField("There were errors importing " + asset, EditorStyles.boldLabel);
-                    EditorGUILayout.HelpBox(string.Join("\n\n", TargetAssetImporter.Errors.Take(10).ToArray()), MessageType.Error);
+                    var msg = string.Join("\n\n", TargetAssetImporter.Errors.Take(10).ToArray());
+                    EditorGUILayout.HelpBox(msg, MessageType.Error);
+
+                    if (GUILayout.Button("Copy Error Message to Clipboard"))
+                    {
+                        msg.ToString().CopyToClipboard();
+                    }
+
                     EditorGUILayout.Separator();
                 }
+            }
 
+            using (new GuiScopedBackgroundColor(Color.yellow))
+            {
                 if (TargetAssetImporter.Warnings.Any())
                 {
-                    EditorGUILayout.LabelField("There were warnings importing " + TargetAssetImporter.assetPath, EditorStyles.boldLabel);
-                    EditorGUILayout.HelpBox(string.Join("\n\n", TargetAssetImporter.Warnings.Take(10).ToArray()), MessageType.Warning);
+                    EditorGUILayout.LabelField("There were warnings importing " + asset, EditorStyles.boldLabel);
+                    var msg = string.Join("\n\n", TargetAssetImporter.Warnings.Take(10).ToArray());
+                    EditorGUILayout.HelpBox(msg, MessageType.Warning);
+
+                    if (GUILayout.Button("Copy Warning Message to Clipboard"))
+                    {
+                        msg.ToString().CopyToClipboard();
+                    }
+
                     EditorGUILayout.Separator();
                 }
             }
@@ -278,20 +324,6 @@ namespace SuperTiled2Unity.Editor
                 var content = new GUIContent(title, tip);
                 EditorGUILayout.LabelField(content, EditorStyles.label);
             }
-        }
-
-        private Color GetBackgroundColor()
-        {
-            if (TargetAssetImporter.Errors.Any())
-            {
-                return Color.red;
-            }
-            else if (TargetAssetImporter.Warnings.Any())
-            {
-                return Color.yellow;
-            }
-
-            return GUI.backgroundColor;
         }
 
         private void MenuCallbackReimport(object asset)

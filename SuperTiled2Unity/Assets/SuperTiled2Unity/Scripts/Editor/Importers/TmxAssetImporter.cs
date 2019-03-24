@@ -330,7 +330,7 @@ namespace SuperTiled2Unity.Editor
 
         private void DoPrefabReplacements()
         {
-            // Should any of our objects (from Tiled) be replaced by instanciated prefabs?
+            // Should any of our objects (from Tiled) be replaced by instantiated prefabs?
             var supers = m_MapComponent.GetComponentsInChildren<SuperObject>();
             foreach (var so in supers)
             {
