@@ -14,6 +14,10 @@ namespace SuperTiled2Unity.Editor
     public abstract class SuperImporter : ScriptedImporter
     {
         [SerializeField]
+        private List<string> m_MissingFiles = new List<string>();
+        public IEnumerable<string> MissingFiles { get { return m_MissingFiles; } }
+
+        [SerializeField]
         private List<string> m_Errors = new List<string>();
         public IEnumerable<string> Errors { get { return m_Errors; } }
 
@@ -44,6 +48,7 @@ namespace SuperTiled2Unity.Editor
         public override sealed void OnImportAsset(AssetImportContext ctx)
         {
             m_CachedDatabase.Clear();
+            m_MissingFiles.Clear();
             m_Errors.Clear();
             m_Warnings.Clear();
             m_MissingSortingLayers.Clear();
@@ -118,10 +123,19 @@ namespace SuperTiled2Unity.Editor
                         m_CachedDatabase[key] = asset;
                         return asset;
                     }
+                    else
+                    {
+                        ReportMissingFile(path);
+                    }
                 }
             }
 
             return null;
+        }
+
+        public void ReportMissingFile(string path)
+        {
+            m_MissingFiles.Add(path);
         }
 
         public void ReportError(string fmt, params object[] args)
