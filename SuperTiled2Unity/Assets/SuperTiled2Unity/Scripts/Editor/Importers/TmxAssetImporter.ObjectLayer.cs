@@ -23,7 +23,7 @@ namespace SuperTiled2Unity.Editor
             var objectLayer = goParent.AddSuperLayerGameObject<SuperObjectLayer>(loader, SuperImportContext);
             AddSuperCustomProperties(objectLayer.gameObject, xObjectLayer.Element("properties"));
 
-            m_LayerSorterHelper.SortNewLayer(objectLayer);
+            RendererSorter.EnterObjectLayer(objectLayer);
 
             loader.CreateObjects();
 

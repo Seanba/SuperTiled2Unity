@@ -22,6 +22,9 @@ namespace SuperTiled2Unity.Editor
         [SerializeField] private int m_NumberOfObjectsImported = 0;
 #pragma warning restore 414
 
+        private RendererSorter m_RendererSorter;
+        public RendererSorter RendererSorter { get { return m_RendererSorter; } }
+
         public SuperImportContext SuperImportContext { get; private set; }
 
         public void AddSuperCustomProperties(GameObject go, XElement xProperties)
@@ -56,11 +59,10 @@ namespace SuperTiled2Unity.Editor
             AssignUnityLayer(component);
         }
 
-        public void AssignSortingLayer(Renderer renderer, string sortName, int sortOrder)
+        public void AssignSorting(Renderer renderer)
         {
-            CheckSortingLayerName(sortName);
-            renderer.sortingLayerName = sortName;
-            renderer.sortingOrder = sortOrder;
+            var sortLayerName = m_RendererSorter.AssignSort(renderer);
+            CheckSortingLayerName(sortLayerName);
         }
 
         public void AssignMaterial(Renderer renderer)
@@ -74,11 +76,13 @@ namespace SuperTiled2Unity.Editor
 
         protected override void InternalOnImportAsset()
         {
+            m_RendererSorter = new RendererSorter();
             WrapImportContext(AssetImportContext);
         }
 
         protected override void InternalOnImportAssetCompleted()
         {
+            m_RendererSorter = null;
             m_NumberOfObjectsImported = SuperImportContext.GetNumberOfObjects();
         }
 

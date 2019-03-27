@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SuperTiled2Unity.Editor
 {
-    public enum ImportSorting
+    public enum ImportSorting // fixit - rename this and get rid of overhead ones
     {
         Stacking = 0,
         OverheadStatic,

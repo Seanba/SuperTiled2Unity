@@ -28,8 +28,6 @@ namespace SuperTiled2Unity.Editor
 
             AddSuperCustomProperties(goLayer, xLayer.Element("properties"));
 
-            m_LayerSorterHelper.SortNewLayer(layerComponent);
-
             var xImage = xLayer.Element("image");
             if (xImage != null)
             {
@@ -54,7 +52,7 @@ namespace SuperTiled2Unity.Editor
                         renderer.sprite = sprite;
                         renderer.color = new Color(1, 1, 1, layerComponent.CalculateOpacity());
                         AssignMaterial(renderer);
-                        AssignSortingLayer(renderer, layerComponent.m_SortingLayerName, layerComponent.m_SortingOrder);
+                        // fixit - sorting
                     }
                     catch (Exception e)
                     {

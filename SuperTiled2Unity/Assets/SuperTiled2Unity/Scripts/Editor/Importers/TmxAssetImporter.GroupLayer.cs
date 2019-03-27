@@ -14,8 +14,6 @@ namespace SuperTiled2Unity.Editor
             var groupLayerComponent = goParent.AddSuperLayerGameObject<SuperGroupLayer>(new SuperGroupLayerLoader(xGroup), SuperImportContext);
             AddSuperCustomProperties(groupLayerComponent.gameObject, xGroup.Element("properties"));
 
-            m_LayerSorterHelper.SortNewLayer(groupLayerComponent);
-
             // Group layers can contain other layers
             ProcessMapLayers(groupLayerComponent.gameObject, xGroup);
 
