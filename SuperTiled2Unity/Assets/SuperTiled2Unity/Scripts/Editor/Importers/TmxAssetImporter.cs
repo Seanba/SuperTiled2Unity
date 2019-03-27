@@ -2,15 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Xml;
 using System.Xml.Linq;
-using SuperTiled2Unity;
-using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Tilemaps;
 
 namespace SuperTiled2Unity.Editor
 {
@@ -21,8 +16,8 @@ namespace SuperTiled2Unity.Editor
         private GlobalTileDatabase m_GlobalTileDatabase;
         private Dictionary<uint, TilePolygonCollection> m_TilePolygonDatabase;
         private int m_ObjectIdCounter = 0;
-        private int m_TileLayerCounter = 0;
-        private LayerSorterHelper m_LayerSorterHelper;
+        private LayerSorterHelper m_LayerSorterHelper; // fixit - get rid of this
+        private RendererSorting m_RendererSorting;
 
         [SerializeField]
         private bool m_TilesAsObjects = false;
@@ -66,8 +61,9 @@ namespace SuperTiled2Unity.Editor
 
             m_TilePolygonDatabase = new Dictionary<uint, TilePolygonCollection>();
             m_ObjectIdCounter = 0;
-            m_TileLayerCounter = 0;
+
             m_LayerSorterHelper = new LayerSorterHelper();
+            m_RendererSorting = new RendererSorting(this);
 
             // Create our map and fill it out
             bool success = true;
@@ -82,7 +78,7 @@ namespace SuperTiled2Unity.Editor
 
                 // Create our main grid object and add the layers to it
                 ProcessMapLayers(m_MapComponent.gameObject, xMap);
-                SetLayerSortingOrders();
+                //SetLayerSortingOrders(); // fixit - get rid of this and sort as we go
             }
         }
 
@@ -143,17 +139,6 @@ namespace SuperTiled2Unity.Editor
             }
 
             m_IsIsometric = m_MapComponent.m_Orientation == MapOrientation.Isometric;
-
-            // fixit - figure out how to best handle multiple tilemaps even in custom sort axis mode
-            if (m_ImportSorting == ImportSorting.CustomSortAxis)
-            {
-                // We are going to use only one Tilemap for all tile layers
-                // This requires users to set up a Transparency Sort Axis in their graphics setting
-                // This is they way Unity prefers to handle tilemaps but it does mean some Tiled features are not supported (like layer offsets)
-                // However, for applications where sprites interact visually with the environment this may be the only way forward
-                GetOrAddTilemapComponent(m_MapComponent.gameObject, null);
-            }
-
             return true;
         }
 
@@ -269,7 +254,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private void SetLayerSortingOrders()
+        private void SetLayerSortingOrders() // fixit - make so we don't have to call this?
         {
             // At this point in the importing all renderers are sorted in overhead style by default
             // If we are stacking sorters instead then change sorting order as needed

@@ -7,7 +7,7 @@ using UnityEngine.Assertions;
 
 namespace SuperTiled2Unity.Editor
 {
-    public class LayerSorterHelper
+    public class LayerSorterHelper // fixit - maybe do away with this and go with something a lot simpler?
     {
         private const string DefaultLayerName = "Default";
 
@@ -30,6 +30,9 @@ namespace SuperTiled2Unity.Editor
 
         public void SortNewLayer(SuperLayer layer)
         {
+            // fixit  - disable this (and get rid of it)
+
+            /*
             // Determine sorting layer using our own data
             bool sorted = SortNewLayerFromSource(layer, layer);
 
@@ -44,6 +47,7 @@ namespace SuperTiled2Unity.Editor
                 // Just sort with the default sorting layer
                 SortWithName(layer, DefaultLayerName);
             }
+            */
         }
 
         private bool SortNewLayerFromSource(SuperLayer source, SuperLayer target)

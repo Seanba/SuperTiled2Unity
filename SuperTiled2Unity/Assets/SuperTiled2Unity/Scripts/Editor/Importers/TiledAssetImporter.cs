@@ -56,11 +56,11 @@ namespace SuperTiled2Unity.Editor
             AssignUnityLayer(component);
         }
 
-        public void AssignSortingLayer(Renderer renderer, string sortName, int sortOrder)
+        public void AssignSortingLayer(Renderer renderer, string sortName, int sortOrder) // fixit - get rid of this function
         {
-            CheckSortingLayerName(sortName);
-            renderer.sortingLayerName = sortName;
-            renderer.sortingOrder = sortOrder;
+            //CheckSortingLayerName(sortName); // fixit - make sure sorting names are checked for missing, however
+            //renderer.sortingLayerName = sortName;
+            //renderer.sortingOrder = sortOrder;
         }
 
         public void AssignMaterial(Renderer renderer)

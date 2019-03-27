@@ -24,11 +24,11 @@ namespace SuperTiled2Unity
         public bool m_Visible;
 
         [ReadOnly]
-        public string m_SortingLayerName;
+        public string m_SortingLayerName; // fixit - maybe don't need this?
 
         [ReadOnly]
         // Note: This in not necessarily the sorting order used by the layer. It is the "layered" index of this layer "on top of" a layer with the same name, however.
-        public int m_SortingOrder;
+        public int m_SortingOrder; // fixit - maybe don't need this either?
 
         public float CalculateOpacity()
         {

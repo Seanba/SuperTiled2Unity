@@ -45,7 +45,6 @@ namespace SuperTiled2Unity.Editor
                 ProcessLayerData(layerComponent.gameObject, xData);
             }
 
-            m_TileLayerCounter++;
             return layerComponent.gameObject;
         }
 
@@ -54,8 +53,6 @@ namespace SuperTiled2Unity.Editor
             Assert.IsNotNull(goLayer);
             Assert.IsNotNull(goLayer.GetComponent<SuperTileLayer>());
             Assert.IsNotNull(xData);
-
-            SuperTileLayer superComp = goLayer.GetComponent<SuperTileLayer>();
 
             var chunk = new Chunk();
             chunk.Encoding = xData.GetAttributeAs<DataEncoding>("encoding");
@@ -84,7 +81,7 @@ namespace SuperTiled2Unity.Editor
                     // Create the tilemap for the layer if needed
                     if (!m_TilesAsObjects)
                     {
-                        GetOrAddTilemapComponent(goChunk, superComp);
+                        GetOrAddTilemapComponent(goChunk);
                     }
 
                     ProcessLayerDataChunk(goChunk, chunk);
@@ -97,7 +94,7 @@ namespace SuperTiled2Unity.Editor
                 // Add the tilemap components if needed
                 if (!m_TilesAsObjects)
                 {
-                    GetOrAddTilemapComponent(goLayer, superComp);
+                    GetOrAddTilemapComponent(goLayer);
                 }
 
                 // For regular maps the 'chunk' is the same as the layer data
@@ -111,35 +108,88 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        // fixit - figure this out for grouping and custom sort axis
-        private Tilemap GetOrAddTilemapComponent(GameObject go, SuperTileLayer layer)
+        private Tilemap GetOrAddTilemapComponent(GameObject go)
         {
-            // If we already have a Tilemap component on one of our ancestors then use it
-            var parentTilemap = go.GetComponentInParent<Tilemap>();
-
-            if (parentTilemap == null)
+            if (m_ImportSorting == ImportSorting.CustomSortAxis)
             {
-                // Need tilemap data if we're going to have tilemap for flips and rotations
-                go.AddComponent<TilemapData>();
+                return GetOrAddTilemapComponent_CustomSortAxis(go);
+            }
+            else
+            {
+                return GetOrAddTilemapComponent_Default(go);
+            }
+        }
 
-                var tilemap = go.AddComponent<Tilemap>();
-                tilemap.tileAnchor = m_MapComponent.GetTileAnchor();
-                tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
+        private Tilemap GetOrAddTilemapComponent_Default(GameObject go)
+        {
+            // Default tilemap creation for layers in maps
+            Debug.LogError("fixit - GetOrAddTilemapComponent_Default");
+            return null;
+        }
 
-                // Create the renderer for the layer
-                var renderer = AddTilemapRendererComponent(go);
-                AssignMaterial(renderer);
+        private Tilemap GetOrAddTilemapComponent_CustomSortAxis(GameObject go)
+        {
+            // Grouping is an important part of sorting when using the Custom Sort Axis
+            // If grouping isn't used then everything goes on one master Tilemap
+            var groupLayer = go.GetComponentInParent<SuperGroupLayer>();
 
-                if (layer != null)
-                {
-                    tilemap.color = new Color(1, 1, 1, layer.CalculateOpacity());
-                    AssignSortingLayer(renderer, layer.m_SortingLayerName, layer.m_SortingOrder);
-                }
+            if (groupLayer != null)
+            {
+                return GetOrAddTilemapComponent_CustomSortAxis_Grouped(go, groupLayer);
+            }
+            else
+            {
+                return GetOrAddTilemapComponent_CustomSortAxis_Ungrouped();
+            }
+        }
 
+        private Tilemap GetOrAddTilemapComponent_CustomSortAxis_Grouped(GameObject go, SuperGroupLayer groupLayer)
+        {
+            // We expect our group to have a Tilemap that is shared by our siblings in the group
+            var tilemap = groupLayer.GetComponent<Tilemap>();
+
+            if (tilemap != null)
+            {
+                // Tilemap has already been created
                 return tilemap;
             }
 
-            return parentTilemap;
+            // Add the tilemap to our parent group
+            return CreateTilemapOnGameObject(groupLayer.gameObject);
+        }
+
+        private Tilemap GetOrAddTilemapComponent_CustomSortAxis_Ungrouped()
+        {
+            // If we're not using groups with custom axis sorting then everything goes unto one master tilemap
+            var go = m_MapComponent.gameObject;
+            var tilemap = go.GetComponent<Tilemap>();
+
+            if (tilemap != null)
+            {
+                return tilemap;
+            }
+
+            return CreateTilemapOnGameObject(go);
+        }
+
+        private Tilemap CreateTilemapOnGameObject(GameObject go)
+        {
+            // Need tilemap data if we're going to have tilemap for flips and rotations
+            go.AddComponent<TilemapData>();
+
+            // Add the tilemap
+            var tilemap = go.AddComponent<Tilemap>();
+            tilemap.tileAnchor = m_MapComponent.GetTileAnchor();
+            tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
+
+            // Create the renderer for tilemap
+            var renderer = AddTilemapRendererComponent(go);
+            AssignMaterial(renderer);
+
+            // Make sure the renderer is sorted
+            m_RendererSorting.SortNewTilemapRenderer(renderer);
+
+            return tilemap;
         }
 
         private TilemapRenderer AddTilemapRendererComponent(GameObject go)
@@ -317,7 +367,7 @@ namespace SuperTiled2Unity.Editor
         {
             // Burn our layer index into the z component of the tile position
             // This is needed for cases where we collapse multiple Tile layers onto the same Tilemap (like for use with Custom Sorted Axis)
-            pos3.z = m_TileLayerCounter;
+            pos3.z = 0; // fixit - put something sensible here (was layer index within group)
 
             // Set the flip data
             var tilemapData = goTilemap.GetComponentInParent<TilemapData>();
