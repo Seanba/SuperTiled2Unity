@@ -37,12 +37,16 @@ namespace SuperTiled2Unity.Editor
             // Add properties then sort the layer
             AddSuperCustomProperties(layerComponent.gameObject, xLayer.Element("properties"));
 
+            RendererSorter.BeginTileLayer(layerComponent);
+
             // Process the data for the layer
             var xData = xLayer.Element("data");
             if (xData != null)
             {
                 ProcessLayerData(layerComponent.gameObject, xData);
             }
+
+            RendererSorter.EndTileLayer(layerComponent);
 
             return layerComponent.gameObject;
         }
@@ -139,7 +143,7 @@ namespace SuperTiled2Unity.Editor
             AssignSorting(renderer);
 
 #if UNITY_2018_3_OR_NEWER
-            if (m_ImportSorting == ImportSorting.CustomSortAxis)
+            if (m_SortingMode == SortingMode.CustomSortAxis)
             {
                 renderer.mode = TilemapRenderer.Mode.Individual;
             }

@@ -193,12 +193,10 @@ ScriptedImporter:
     11400078: _MapPrfab/TestOverhead/OnGround/MonoBehaviour-SuperTiled2Unity.SuperCustomProperties
     11400080: _MapPrfab/TestOverhead/OnGround/Pillar (broken) (TRS)/MonoBehaviour-SuperTiled2Unity.SuperObject
     11400082: _MapPrfab/TestOverhead/OnGround/Pillar (broken) (TRS)/MonoBehaviour-SuperTiled2Unity.SuperCustomProperties
-    11400084: _MapPrfab/TestOverhead/OnGround/Pillar (broken) (TRS)/MonoBehaviour-SuperTiled2Unity.OverheadSorterStatic
     11400086: _MapPrfab/TestOverhead/OnGround/Pillar (broken) (TRS)/Pillar (broken)
       (CF)/Pillar (broken)/Object_1/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400088: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/MonoBehaviour-SuperTiled2Unity.SuperObject
     11400090: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/MonoBehaviour-SuperTiled2Unity.SuperCustomProperties
-    11400092: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/MonoBehaviour-SuperTiled2Unity.OverheadSorterStatic
     11400094: _MapPrfab/TestOverhead/OnGround/Pillar (TRS)/Pillar (CF)/Pillar/Object_2/MonoBehaviour-SuperTiled2Unity.SuperColliderComponent
     11400096: _MapPrfab/TestOverhead/OnGround/Spawn/MonoBehaviour-SuperTiled2Unity.SuperObject
     11400098: _MapPrfab/TestOverhead/OnGround/Spawn/MonoBehaviour-SuperTiled2Unity.SuperCustomProperties
@@ -234,7 +232,7 @@ ScriptedImporter:
   edgesPerEllipse: 32
   numberOfObjectsImported: 2
   tilesAsObjects: 0
-  importSorting: 1
+  sortingMode: 1
   isIsometric: 0
   customImporterClassName: 
   internalTilesets: []

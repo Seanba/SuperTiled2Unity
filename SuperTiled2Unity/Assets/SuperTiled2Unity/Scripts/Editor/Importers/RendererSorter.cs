@@ -12,10 +12,53 @@ namespace SuperTiled2Unity.Editor
 
         private string m_CurrentSortLayerName = DefaultSortLayerName;
         private int m_CurrentSortOrder = 0;
+        private int m_InsideGroupCounter = 0;
 
-        public void EnterObjectLayer(SuperObjectLayer layer)
+        public SortingMode SortingMode { get; set; }
+
+        public void BeginTileLayer(SuperTileLayer layer)
         {
+            if (m_InsideGroupCounter == 0)
+            {
+                SortingLayerCheck(layer.gameObject);
+            }
+        }
+
+        public void EndTileLayer(SuperTileLayer layer)
+        {
+            if (SortingMode == SortingMode.CustomSortAxis)
+            {
+                m_CurrentSortOrder++;
+            }
+        }
+
+        public void BeginObjectLayer(SuperObjectLayer layer)
+        {
+            if (m_InsideGroupCounter == 0)
+            {
+                SortingLayerCheck(layer.gameObject);
+            }
+        }
+
+        public void EndObjectLayer(SuperObjectLayer layer)
+        {
+            if (SortingMode == SortingMode.CustomSortAxis)
+            {
+                m_CurrentSortOrder++;
+            }
+        }
+
+        public void BeginGroupLayer(SuperGroupLayer layer) // fixit - figure out grouping when non-grouped custom axis is working
+        {
+            m_InsideGroupCounter++;
             SortingLayerCheck(layer.gameObject);
+        }
+
+        public void EndGroupLayer()
+        {
+            m_InsideGroupCounter--;
+
+            // fixit - modify sort order? Under which conditions?
         }
 
         public string AssignSort(Renderer renderer)
@@ -24,7 +67,13 @@ namespace SuperTiled2Unity.Editor
 
             SortingLayerCheck(go);
             renderer.sortingLayerName = m_CurrentSortLayerName;
-            renderer.sortingOrder = m_CurrentSortOrder++; // fixit - but not if in a group
+            renderer.sortingOrder = m_CurrentSortOrder;
+
+            // fixit - not sure about the logic
+            if (m_InsideGroupCounter == 0 && SortingMode != SortingMode.CustomSortAxis)
+            {
+                m_CurrentSortOrder++;
+            }
 
             return m_CurrentSortLayerName;
         }

@@ -27,8 +27,8 @@ namespace SuperTiled2Unity.Editor
         public bool TilesAsObjects { get { return m_TilesAsObjects; } }
 
         [SerializeField]
-        private ImportSorting m_ImportSorting = ImportSorting.Stacking;
-        public ImportSorting SortingOrder { get { return m_ImportSorting; } }
+        private SortingMode m_SortingMode = SortingMode.Stacked;
+        public SortingMode SortingMode { get { return m_SortingMode; } }
 
         [SerializeField]
         private bool m_IsIsometric = false;
@@ -64,6 +64,7 @@ namespace SuperTiled2Unity.Editor
 
             m_TilePolygonDatabase = new Dictionary<uint, TilePolygonCollection>();
             m_ObjectIdCounter = 0;
+            RendererSorter.SortingMode = m_SortingMode;
 
             // Create our map and fill it out
             bool success = true;

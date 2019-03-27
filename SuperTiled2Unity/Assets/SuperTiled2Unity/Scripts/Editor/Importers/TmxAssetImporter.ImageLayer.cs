@@ -52,7 +52,7 @@ namespace SuperTiled2Unity.Editor
                         renderer.sprite = sprite;
                         renderer.color = new Color(1, 1, 1, layerComponent.CalculateOpacity());
                         AssignMaterial(renderer);
-                        // fixit - sorting
+                        AssignSorting(renderer);
                     }
                     catch (Exception e)
                     {
