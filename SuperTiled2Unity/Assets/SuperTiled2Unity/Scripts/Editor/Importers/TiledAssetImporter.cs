@@ -9,6 +9,7 @@ using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Tilemaps;
 
 // All tiled assets we want imported should use this class
 namespace SuperTiled2Unity.Editor
@@ -59,9 +60,15 @@ namespace SuperTiled2Unity.Editor
             AssignUnityLayer(component);
         }
 
-        public void AssignSorting(Renderer renderer)
+        public void AssignTilemapSorting(TilemapRenderer renderer)
         {
-            var sortLayerName = m_RendererSorter.AssignSort(renderer);
+            var sortLayerName = m_RendererSorter.AssignTilemapSort(renderer);
+            CheckSortingLayerName(sortLayerName);
+        }
+
+        public void AssignSpriteSorting(SpriteRenderer renderer)
+        {
+            var sortLayerName = m_RendererSorter.AssignSpriteSort(renderer);
             CheckSortingLayerName(sortLayerName);
         }
 

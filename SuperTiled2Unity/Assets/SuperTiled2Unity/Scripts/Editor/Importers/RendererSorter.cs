@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace SuperTiled2Unity.Editor
 {
@@ -12,56 +13,37 @@ namespace SuperTiled2Unity.Editor
 
         private string m_CurrentSortLayerName = DefaultSortLayerName;
         private int m_CurrentSortOrder = 0;
-        private int m_InsideGroupCounter = 0;
 
         public SortingMode SortingMode { get; set; }
 
         public void BeginTileLayer(SuperTileLayer layer)
         {
-            if (m_InsideGroupCounter == 0)
-            {
-                SortingLayerCheck(layer.gameObject);
-            }
+            SortingLayerCheck(layer.gameObject);
         }
 
         public void EndTileLayer(SuperTileLayer layer)
         {
-            if (SortingMode == SortingMode.CustomSortAxis)
-            {
-                m_CurrentSortOrder++;
-            }
         }
 
         public void BeginObjectLayer(SuperObjectLayer layer)
         {
-            if (m_InsideGroupCounter == 0)
-            {
-                SortingLayerCheck(layer.gameObject);
-            }
+            SortingLayerCheck(layer.gameObject);
         }
 
         public void EndObjectLayer(SuperObjectLayer layer)
         {
-            if (SortingMode == SortingMode.CustomSortAxis)
-            {
-                m_CurrentSortOrder++;
-            }
         }
 
-        public void BeginGroupLayer(SuperGroupLayer layer) // fixit - figure out grouping when non-grouped custom axis is working
+        public void BeginGroupLayer(SuperGroupLayer layer)
         {
-            m_InsideGroupCounter++;
-            SortingLayerCheck(layer.gameObject);
+            //SortingLayerCheck(layer.gameObject); // fixit - get general case working first
         }
 
         public void EndGroupLayer()
         {
-            m_InsideGroupCounter--;
-
-            // fixit - modify sort order? Under which conditions?
         }
 
-        public string AssignSort(Renderer renderer)
+        public string AssignTilemapSort(TilemapRenderer renderer)
         {
             var go = renderer.gameObject;
 
@@ -69,8 +51,22 @@ namespace SuperTiled2Unity.Editor
             renderer.sortingLayerName = m_CurrentSortLayerName;
             renderer.sortingOrder = m_CurrentSortOrder;
 
-            // fixit - not sure about the logic
-            if (m_InsideGroupCounter == 0 && SortingMode != SortingMode.CustomSortAxis)
+            // fixit - for grouping we will not advance
+            m_CurrentSortOrder++;
+
+            return m_CurrentSortLayerName;
+        }
+
+        public string AssignSpriteSort(SpriteRenderer renderer)
+        {
+            var go = renderer.gameObject;
+
+            SortingLayerCheck(go);
+            renderer.sortingLayerName = m_CurrentSortLayerName;
+            renderer.sortingOrder = m_CurrentSortOrder;
+
+            // Sprites will either have a specfic sort order or they will be sorted by a custom axis
+            if (SortingMode == SortingMode.Stacked)
             {
                 m_CurrentSortOrder++;
             }

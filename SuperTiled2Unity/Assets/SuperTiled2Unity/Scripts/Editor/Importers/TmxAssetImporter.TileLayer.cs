@@ -105,12 +105,16 @@ namespace SuperTiled2Unity.Editor
 
         private Tilemap GetOrAddTilemapComponent(GameObject go)
         {
+            // fixit - make sure this works for infinite maps too
+            // fixit - Get general case working first
+            /*
             var grouping = go.GetComponentInParent<SuperGroupLayer>();
             if (grouping != null)
             {
                 // The Tilemap will go onto the group layer
                 go = grouping.gameObject;
             }
+            */
 
             // If we already have a Tilemap component then use it
             var tilemap = go.GetComponent<Tilemap>();
@@ -140,7 +144,7 @@ namespace SuperTiled2Unity.Editor
             var renderer = go.AddComponent<TilemapRenderer>();
             renderer.sortOrder = MapRenderConverter.Tiled2Unity(m_MapComponent.m_RenderOrder);
             AssignMaterial(renderer);
-            AssignSorting(renderer);
+            AssignTilemapSorting(renderer);
 
 #if UNITY_2018_3_OR_NEWER
             if (m_SortingMode == SortingMode.CustomSortAxis)
@@ -295,7 +299,7 @@ namespace SuperTiled2Unity.Editor
             renderer.sprite = tile.m_Sprite;
             renderer.color = color;
             AssignMaterial(renderer);
-            AssignSorting(renderer);
+            AssignSpriteSorting(renderer);
 
             if (!tile.m_AnimationSprites.IsEmpty())
             {
@@ -312,7 +316,7 @@ namespace SuperTiled2Unity.Editor
         {
             // Burn our layer index into the z component of the tile position
             // This is needed for when using a custom sort axis
-            pos3.z = 0; // fixit - need helper to know which z-value to use for grouped layers
+            pos3.z = 0; // fixit - depending on grouping
 
             // Set the flip data
             var tilemapData = goTilemap.GetComponentInParent<TilemapData>();
