@@ -16,6 +16,8 @@ namespace SuperTiled2Unity.Editor
 {
     public abstract class TiledAssetImporter : SuperImporter
     {
+        static private string m_ReportedVersion = string.Empty;
+
         [SerializeField] private float m_PixelsPerUnit = 0.0f;
         [SerializeField] private int m_EdgesPerEllipse = 0;
 
@@ -79,6 +81,17 @@ namespace SuperTiled2Unity.Editor
             {
                 renderer.material = SuperImportContext.Settings.DefaultMaterial;
             }
+        }
+
+        public override string GetReportHeader()
+        {
+            string version = m_ReportedVersion;
+            if (string.IsNullOrEmpty(version))
+            {
+                version = "unknown";
+            }
+
+            return string.Format("SuperTiled2Unity version: {0}, Unity version: {1}", version, Application.unityVersion);
         }
 
         protected override void InternalOnImportAsset()
@@ -151,6 +164,7 @@ namespace SuperTiled2Unity.Editor
             settings = GameObject.Instantiate<ST2USettings>(settings);
             OverrideSettings(settings);
 
+            m_ReportedVersion = settings.Version;
             SuperImportContext = new SuperImportContext(ctx, settings, icons);
         }
 

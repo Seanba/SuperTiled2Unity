@@ -150,6 +150,11 @@ namespace SuperTiled2Unity.Editor
             m_Warnings.Add(warning);
         }
 
+        public virtual string GetReportHeader()
+        {
+            return string.Format("Unity version: {0}", Application.unityVersion);
+        }
+
         public bool CheckSortingLayerName(string sortName)
         {
             if (!sortName.Equals("Default", StringComparison.OrdinalIgnoreCase) && SortingLayer.NameToID(sortName) == 0)

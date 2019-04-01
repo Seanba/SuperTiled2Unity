@@ -96,17 +96,27 @@ namespace SuperTiled2Unity.Editor
                     EditorGUILayout.LabelField("Missing or misplaced assets!", EditorStyles.boldLabel);
 
                     var msg = new StringBuilder();
+                    msg.AppendLine(TargetAssetImporter.GetReportHeader());
                     msg.AppendLine("This asset is dependent on other files that cannot be found.");
-                    msg.AppendLine("Note that all Tiled assets must be imported to Unity in folder locations that keep their relative paths intact.\n");
+                    msg.AppendLine("Note that all Tiled assets must be imported to Unity in folder locations that keep their relative paths intact.");
+                    msg.AppendLine("Reimport this asset once fixes are made.\n");
                     msg.AppendFormat("Tip: Try opening {0} in Tiled to resolve location of missing assets.\n\n", asset);
 
                     msg.AppendLine(string.Join("\n", TargetAssetImporter.MissingFiles));
 
                     EditorGUILayout.HelpBox(msg.ToString(), MessageType.Error);
 
-                    if (GUILayout.Button("Copy Missing Files Message to Clipboard"))
+                    using (new GuiScopedHorizontal())
                     {
-                        msg.ToString().CopyToClipboard();
+                        if (GUILayout.Button("Copy Message to Clipboard"))
+                        {
+                            msg.ToString().CopyToClipboard();
+                        }
+
+                        if (GUILayout.Button("Reimport"))
+                        {
+                            ApplyAndImport();
+                        }
                     }
 
                     EditorGUILayout.Separator();
@@ -123,8 +133,12 @@ namespace SuperTiled2Unity.Editor
                 if (TargetAssetImporter.Errors.Any())
                 {
                     EditorGUILayout.LabelField("There were errors importing " + asset, EditorStyles.boldLabel);
-                    var msg = string.Join("\n\n", TargetAssetImporter.Errors.Take(10).ToArray());
-                    EditorGUILayout.HelpBox(msg, MessageType.Error);
+
+                    var msg = new StringBuilder();
+                    msg.AppendLine(TargetAssetImporter.GetReportHeader());
+                    msg.AppendLine(string.Join("\n", TargetAssetImporter.Errors.Take(10).ToArray()));
+
+                    EditorGUILayout.HelpBox(msg.ToString(), MessageType.Error);
 
                     if (GUILayout.Button("Copy Error Message to Clipboard"))
                     {
