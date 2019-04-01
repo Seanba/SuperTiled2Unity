@@ -12,9 +12,12 @@ namespace SuperTiled2Unity.Editor
         private const string DefaultSortLayerName = "Default";
 
         private string m_CurrentSortLayerName = DefaultSortLayerName;
-        private int m_CurrentSortOrder = 0;
+        private int m_CurrentSortOrder;
+        private int m_GroupDepth;
 
         public SortingMode SortingMode { get; set; }
+
+        public int CurrentTileZ { get; private set; }
 
         public void BeginTileLayer(SuperTileLayer layer)
         {
@@ -23,6 +26,15 @@ namespace SuperTiled2Unity.Editor
 
         public void EndTileLayer(SuperTileLayer layer)
         {
+            if (IsInGroup())
+            {
+                CurrentTileZ++;
+            }
+            else
+            {
+                // Next tilemap will render on top of the this one
+                m_CurrentSortOrder++;
+            }
         }
 
         public void BeginObjectLayer(SuperObjectLayer layer)
@@ -36,11 +48,15 @@ namespace SuperTiled2Unity.Editor
 
         public void BeginGroupLayer(SuperGroupLayer layer)
         {
-            //SortingLayerCheck(layer.gameObject); // fixit - get general case working first
+            CurrentTileZ = 0;
+            m_GroupDepth++;
+            SortingLayerCheck(layer.gameObject);
         }
 
         public void EndGroupLayer()
         {
+            m_GroupDepth--;
+            m_CurrentSortOrder++;
         }
 
         public string AssignTilemapSort(TilemapRenderer renderer)
@@ -50,9 +66,6 @@ namespace SuperTiled2Unity.Editor
             SortingLayerCheck(go);
             renderer.sortingLayerName = m_CurrentSortLayerName;
             renderer.sortingOrder = m_CurrentSortOrder;
-
-            // fixit - for grouping we will not advance
-            m_CurrentSortOrder++;
 
             return m_CurrentSortLayerName;
         }
@@ -65,13 +78,24 @@ namespace SuperTiled2Unity.Editor
             renderer.sortingLayerName = m_CurrentSortLayerName;
             renderer.sortingOrder = m_CurrentSortOrder;
 
-            // Sprites will either have a specfic sort order or they will be sorted by a custom axis
-            if (SortingMode == SortingMode.Stacked)
+            // Sprites will either have a specfic sort order or they will be sorted by a custom axis or group
+            if (SortingMode == SortingMode.Stacked && !IsInGroup())
             {
                 m_CurrentSortOrder++;
             }
 
             return m_CurrentSortLayerName;
+        }
+
+        public bool IsUsingGroups()
+        {
+            // Grouping depends on custom sort axis sorting mode
+            return SortingMode == SortingMode.CustomSortAxis;
+        }
+
+        private bool IsInGroup()
+        {
+            return IsUsingGroups() && m_GroupDepth > 0;
         }
 
         private void SortingLayerCheck(GameObject go)

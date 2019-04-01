@@ -15,7 +15,9 @@ namespace SuperTiled2Unity.Editor
             AddSuperCustomProperties(groupLayerComponent.gameObject, xGroup.Element("properties"));
 
             // Group layers can contain other layers
+            RendererSorter.BeginGroupLayer(groupLayerComponent);
             ProcessMapLayers(groupLayerComponent.gameObject, xGroup);
+            RendererSorter.EndGroupLayer();
 
             return groupLayerComponent.gameObject;
         }

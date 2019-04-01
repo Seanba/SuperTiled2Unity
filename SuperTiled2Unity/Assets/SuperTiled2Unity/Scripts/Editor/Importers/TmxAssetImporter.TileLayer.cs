@@ -105,16 +105,16 @@ namespace SuperTiled2Unity.Editor
 
         private Tilemap GetOrAddTilemapComponent(GameObject go)
         {
-            // fixit - make sure this works for infinite maps too
-            // fixit - Get general case working first
-            /*
-            var grouping = go.GetComponentInParent<SuperGroupLayer>();
-            if (grouping != null)
+            if (RendererSorter.IsUsingGroups())
             {
-                // The Tilemap will go onto the group layer
-                go = grouping.gameObject;
+                // If we have a group layer parent then use it instead as we are grouping tiles on the same tilemap (using the z-component of the tile location)
+                var grouping = go.GetComponentInParent<SuperGroupLayer>();
+                if (grouping != null)
+                {
+                    // The Tilemap will go onto the group layer
+                    go = grouping.gameObject;
+                }
             }
-            */
 
             // If we already have a Tilemap component then use it
             var tilemap = go.GetComponent<Tilemap>();
@@ -315,8 +315,8 @@ namespace SuperTiled2Unity.Editor
         private void PlaceTileAsTile(GameObject goTilemap, SuperTile tile, TileIdMath tileId, Vector3Int pos3)
         {
             // Burn our layer index into the z component of the tile position
-            // This is needed for when using a custom sort axis
-            pos3.z = 0; // fixit - depending on grouping
+            // This allows us to support Tilemaps being shared by groups
+            pos3.z = RendererSorter.CurrentTileZ;
 
             // Set the flip data
             var tilemapData = goTilemap.GetComponentInParent<TilemapData>();
