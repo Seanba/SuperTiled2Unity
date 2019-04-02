@@ -21,16 +21,14 @@ namespace SuperTiled2Unity.Editor
         private GlobalTileDatabase m_GlobalTileDatabase;
         private Dictionary<uint, TilePolygonCollection> m_TilePolygonDatabase;
         private int m_ObjectIdCounter = 0;
-        private int m_TileLayerCounter = 0;
-        private LayerSorterHelper m_LayerSorterHelper;
 
         [SerializeField]
         private bool m_TilesAsObjects = false;
         public bool TilesAsObjects { get { return m_TilesAsObjects; } }
 
         [SerializeField]
-        private ImportSorting m_ImportSorting = ImportSorting.Stacking;
-        public ImportSorting SortingOrder { get { return m_ImportSorting; } }
+        private SortingMode m_SortingMode = SortingMode.Stacked;
+        public SortingMode SortingMode { get { return m_SortingMode; } }
 
         [SerializeField]
         private bool m_IsIsometric = false;
@@ -66,8 +64,7 @@ namespace SuperTiled2Unity.Editor
 
             m_TilePolygonDatabase = new Dictionary<uint, TilePolygonCollection>();
             m_ObjectIdCounter = 0;
-            m_TileLayerCounter = 0;
-            m_LayerSorterHelper = new LayerSorterHelper();
+            RendererSorter.SortingMode = m_SortingMode;
 
             // Create our map and fill it out
             bool success = true;
@@ -82,7 +79,6 @@ namespace SuperTiled2Unity.Editor
 
                 // Create our main grid object and add the layers to it
                 ProcessMapLayers(m_MapComponent.gameObject, xMap);
-                SetLayerSortingOrders();
             }
         }
 
@@ -143,16 +139,6 @@ namespace SuperTiled2Unity.Editor
             }
 
             m_IsIsometric = m_MapComponent.m_Orientation == MapOrientation.Isometric;
-
-            if (m_ImportSorting == ImportSorting.CustomSortAxis)
-            {
-                // We are going to use only one Tilemap for all tile layers
-                // This requires users to set up a Transparency Sort Axis in their graphics setting
-                // This is they way Unity prefers to handle tilemaps but it does mean some Tiled features are not supported (like layer offsets)
-                // However, for applications where sprites interact visually with the environment this may be the only way forward
-                GetOrAddTilemapComponent(m_MapComponent.gameObject, null);
-            }
-
             return true;
         }
 
@@ -265,66 +251,6 @@ namespace SuperTiled2Unity.Editor
                 {
                     ProcessImageLayer(goParent, xNode);
                 }
-            }
-        }
-
-        private void SetLayerSortingOrders()
-        {
-            // At this point in the importing all renderers are sorted in overhead style by default
-            // If we are stacking sorters instead then change sorting order as needed
-            // If a version of overhead sorting is still being used then make sure additional components are used to keep sorting intact
-
-            if (m_ImportSorting == ImportSorting.Stacking)
-            {
-                // Renderers are sorted so that they stack on top of each other
-                // This resembles the drawing order we see in Tiled but might not work for overhead games
-                int count = 0;
-                var layers = m_MapComponent.GetComponentsInChildren<SuperLayer>().Where(l => l.GetType() != typeof(SuperGroupLayer));
-
-                foreach (var layer in layers)
-                {
-                    var renderers = layer.GetComponentsInChildren<Renderer>().OrderBy(r => r.gameObject.transform.position.y).ThenByDescending(r => r.gameObject.transform.position.x);
-                    foreach (var renderer in renderers)
-                    {
-                        renderer.sortingOrder = count++;
-                    }
-                }
-            }
-            else if (m_ImportSorting == ImportSorting.OverheadStatic)
-            {
-                // All tile objects need to set their sorting on startup
-                var tileObjects = m_MapComponent.GetComponentsInChildren<SuperObject>().Where(so => so.GetComponentInChildren<SpriteRenderer>() != null);
-                foreach (var to in tileObjects)
-                {
-                    to.gameObject.AddComponent<OverheadSorterStatic>();
-                }
-            }
-            else if (m_ImportSorting == ImportSorting.OverheadDynamic)
-            {
-                // All tile objects need to check if they have been moved each frame in order to update their sort ordering
-                var tileObjects = m_MapComponent.GetComponentsInChildren<SuperObject>().Where(so => so.GetComponentInChildren<SpriteRenderer>() != null);
-                foreach (var to in tileObjects)
-                {
-                    to.gameObject.AddComponent<OverheadSorterDynamic>();
-                }
-            }
-            else if (m_ImportSorting == ImportSorting.CustomSortAxis)
-            {
-                // Do not perform any sorting. It is in the hands of the sort axis on the camera now.
-                var layers = m_MapComponent.GetComponentsInChildren<SuperLayer>().Where(l => l.GetType() != typeof(SuperGroupLayer));
-
-                foreach (var layer in layers)
-                {
-                    var renderers = layer.GetComponentsInChildren<Renderer>();
-                    foreach (var renderer in renderers)
-                    {
-                        renderer.sortingOrder = 0;
-                    }
-                }
-            }
-            else
-            {
-                ReportError("Unsupported layer/object sorting mode: {0}", m_ImportSorting);
             }
         }
 
