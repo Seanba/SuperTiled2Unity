@@ -9,7 +9,7 @@ At the map import level, SuperTiled2Unity has two options for sorting the layers
 
 .. csv-table::
 
-   "Stacked", "Default sorting. Mathces the rendering order of layers and objects in Tiled."
+   "Stacked", "Default sorting. Matches the rendering order of layers and objects in Tiled."
    "Custom Sort Axis", "Sorting is performed with the help of a Custom Sort Axis (a setting in Unity)."
 
 :code:`Stacked` is a good default for side-scroller games where players and other game objects do not move about the map in ways that change their rendering order.
