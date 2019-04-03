@@ -24,4 +24,5 @@ Additional `donations can be made <http://www.seanba.com/donate>`_ and **are alw
    :maxdepth: 2
    :caption: User Manual
    
+   manual/sorting
    manual/custom-properties
