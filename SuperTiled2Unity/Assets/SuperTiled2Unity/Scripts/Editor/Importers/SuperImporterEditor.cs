@@ -294,15 +294,18 @@ namespace SuperTiled2Unity.Editor
                         {
                             EditorGUILayout.LabelField(asset);
 
-                            // We can reimport a dependency with right click
+                            // Context menu items for dependencies
                             var clickArea = GUILayoutUtility.GetLastRect();
                             var current = Event.current;
                             if (clickArea.Contains(current.mousePosition) && current.type == EventType.ContextClick)
                             {
-                                var text = string.Format("Reimport '{0}'", Path.GetFileName(asset));
+                                var assetName = Path.GetFileName(asset);
+                                var selectText = string.Format("Select '{0}'", assetName);
+                                var reimportText = string.Format("Reimport '{0}'", assetName);
 
                                 var menu = new GenericMenu();
-                                menu.AddItem(new GUIContent(text), false, MenuCallbackReimport, asset);
+                                menu.AddItem(new GUIContent(selectText), false, MenuCallbackSelect, asset);
+                                menu.AddItem(new GUIContent(reimportText), false, MenuCallbackReimport, asset);
                                 menu.ShowAsContext();
                                 current.Use();
                             }
@@ -322,6 +325,20 @@ namespace SuperTiled2Unity.Editor
                         foreach (var asset in depends.References)
                         {
                             EditorGUILayout.LabelField(asset);
+
+                            // Context menu items for dependencies
+                            var clickArea = GUILayoutUtility.GetLastRect();
+                            var current = Event.current;
+                            if (clickArea.Contains(current.mousePosition) && current.type == EventType.ContextClick)
+                            {
+                                var assetName = Path.GetFileName(asset);
+                                var selectText = string.Format("Select '{0}'", assetName);
+
+                                var menu = new GenericMenu();
+                                menu.AddItem(new GUIContent(selectText), false, MenuCallbackSelect, asset);
+                                menu.ShowAsContext();
+                                current.Use();
+                            }
                         }
                     }
                 }
@@ -338,6 +355,15 @@ namespace SuperTiled2Unity.Editor
                 var content = new GUIContent(title, tip);
                 EditorGUILayout.LabelField(content, EditorStyles.label);
             }
+        }
+
+        private void MenuCallbackSelect(object asset)
+        {
+            string assetPath = asset.ToString();
+            var assetObject = AssetDatabase.LoadMainAssetAtPath(assetPath);
+            Selection.activeObject = assetObject;
+            EditorUtility.FocusProjectWindow();
+            EditorGUIUtility.PingObject(assetObject);
         }
 
         private void MenuCallbackReimport(object asset)
