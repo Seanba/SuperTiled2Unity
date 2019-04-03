@@ -57,6 +57,7 @@ namespace SuperTiled2Unity.Editor
         {
             m_GroupDepth--;
             m_CurrentSortOrder++;
+            CurrentTileZ = 0;
         }
 
         public string AssignTilemapSort(TilemapRenderer renderer)
