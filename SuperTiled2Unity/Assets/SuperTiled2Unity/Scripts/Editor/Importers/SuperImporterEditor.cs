@@ -97,7 +97,7 @@ namespace SuperTiled2Unity.Editor
 
                     var msg = new StringBuilder();
                     msg.AppendLine(TargetAssetImporter.GetReportHeader());
-                    msg.AppendLine("This asset is dependent on other files that cannot be found.");
+                    msg.AppendLine("This asset is dependent on other files that either cannot be found or they failed to be imported.");
                     msg.AppendLine("Note that all Tiled assets must be imported to Unity in folder locations that keep their relative paths intact.");
                     msg.AppendLine("Reimport this asset once fixes are made.\n");
                     msg.AppendFormat("Tip: Try opening {0} in Tiled to resolve location of missing assets.\n\n", asset);
