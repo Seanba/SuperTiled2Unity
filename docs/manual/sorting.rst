@@ -57,4 +57,6 @@ You may wish to use yet another :code:`unity:SortingLayer` for clouds to make it
 
 .. figure:: img/sort/tiled-custom-prop-sky.png
 
+Now the cloud tiles will be rendered in order but on a sorting layer that is more aptly named for them and other tiles that may always appear above our map.
+
 .. figure:: img/sort/default-player-sky-sorting.png
