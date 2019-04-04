@@ -102,7 +102,7 @@ namespace SuperTiled2Unity.Editor
                     msg.AppendLine("Reimport this asset once fixes are made.\n");
                     msg.AppendFormat("Tip: Try opening {0} in Tiled to resolve location of missing assets.\n\n", asset);
 
-                    msg.AppendLine(string.Join("\n", TargetAssetImporter.MissingFiles));
+                    msg.AppendLine(string.Join("\n", TargetAssetImporter.MissingFiles.ToArray()));
 
                     EditorGUILayout.HelpBox(msg.ToString(), MessageType.Error);
 
