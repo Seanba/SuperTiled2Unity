@@ -53,7 +53,7 @@ This will result in our :code:`Objects` tile layer breaking the chain of :code:`
 .. figure:: img/sort/default-player-sorting.png
 
 Note that the :code:`Clouds` layer will still be rendered on top of the :code:`Objects` layer.
-Users may wish to use yet another :code:`unity:SortingLayer` for clouds to make it more explicit that these objects are drawn on top of other tiles and sprites.
+You may wish to use yet another :code:`unity:SortingLayer` for clouds to make it more explicit that these tiles are drawn on top of other tiles and sprites.
 
 .. figure:: img/sort/tiled-custom-prop-sky.png
 
