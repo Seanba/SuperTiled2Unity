@@ -40,13 +40,12 @@ namespace MegaDad
             m_Animator.SetFloat("Dir_y", m_Facing.y);
 
             m_Renderer = gameObject.GetComponentInChildren<SpriteRenderer>();
-            var sortingLayerId = SortingLayer.NameToID("OnGround");
-            Assert.IsFalse(sortingLayerId == 0, "Add sorting layer 'On Ground' to Tags and Layers. Sprite will not sort correctly without it.");
-            m_Renderer.sortingLayerID = sortingLayerId;
         }
 
         private void Start()
         {
+            SetOverheadCamera();
+
             // Find the position on the game map we're supposed to spawn at
             var spawner = FindObjectsOfType<SuperTiled2Unity.SuperObject>().FirstOrDefault(s => s.m_TiledName == "Spawn");
             if (spawner != null)
@@ -199,6 +198,15 @@ namespace MegaDad
             // We're done. Go back to waiting for input.
             m_Renderer.enabled = true;
             m_State = State.WaitingForInput;
+        }
+
+        private void SetOverheadCamera()
+        {
+            // This example requires a sort axis for sorting
+            // (This could be set globablly for all cameras in the project settings)
+            var camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+            camera.transparencySortMode = TransparencySortMode.CustomAxis;
+            camera.transparencySortAxis = Vector3.up;
         }
     }
 }

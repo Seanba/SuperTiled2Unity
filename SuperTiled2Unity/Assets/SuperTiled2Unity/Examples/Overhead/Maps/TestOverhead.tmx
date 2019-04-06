@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="25" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="8">
+<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="25" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="15">
  <tileset firstgid="1" source="Zoria Tileset/water.tsx"/>
  <tileset firstgid="229" source="Zoria Tileset/tiles.tsx"/>
  <tileset firstgid="709" source="Zoria Tileset/scraps.tsx"/>
@@ -19,12 +19,12 @@
    eJzt1MkNQEAUgOFHC9qxU4adMiyxlKFMBfgPxFHChMv8yZd3meUyGZEr2xBx4MKDjwAhIsSGPM469ibMFBlyFChRoUbz4o6zljM69BiwmiIjc8KMRcEdm6I1Ot3X6Xd5n6Xgj/i7HY3ZDV0=
   </data>
  </layer>
- <objectgroup id="4" name="OnGround">
-  <properties>
-   <property name="unity:sortingLayerName" value="OnGround"/>
-  </properties>
-  <object id="1" name="Pillar" gid="1189" x="80" y="128" width="16" height="48"/>
-  <object id="2" name="Pillar (broken)" gid="1190" x="144" y="128" width="16" height="32"/>
+ <layer id="5" name="OnTopOfGround" width="25" height="15">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2D4gKUsqPxlLNjVjYJRMNwBAARUAVQ=
+  </data>
+ </layer>
+ <objectgroup id="4" name="Objects">
   <object id="3" name="Spawn" x="120" y="128">
    <point/>
   </object>

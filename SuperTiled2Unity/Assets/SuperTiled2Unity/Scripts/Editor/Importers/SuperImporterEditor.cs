@@ -28,6 +28,7 @@ namespace SuperTiled2Unity.Editor
             if (assetTarget != null)
             {
                 // If we have importer errors then they should be front and center
+                DisplayMissingFileErrors();
                 DisplayErrorsAndWarnings();
                 DisplayTagManagerErrors();
 
@@ -85,23 +86,82 @@ namespace SuperTiled2Unity.Editor
 
         protected abstract void InternalOnInspectorGUI();
 
+        private void DisplayMissingFileErrors()
+        {
+            using (new GuiScopedBackgroundColor(Color.magenta))
+            {
+                if (TargetAssetImporter.MissingFiles.Any())
+                {
+                    var asset = Path.GetFileName(TargetAssetImporter.assetPath);
+                    EditorGUILayout.LabelField("Missing or misplaced assets!", EditorStyles.boldLabel);
+
+                    var msg = new StringBuilder();
+                    msg.AppendLine(TargetAssetImporter.GetReportHeader());
+                    msg.AppendLine("This asset is dependent on other files that either cannot be found or they failed to be imported.");
+                    msg.AppendLine("Note that all Tiled assets must be imported to Unity in folder locations that keep their relative paths intact.");
+                    msg.AppendLine("Reimport this asset once fixes are made.\n");
+                    msg.AppendFormat("Tip: Try opening {0} in Tiled to resolve location of missing assets.\n\n", asset);
+
+                    msg.AppendLine(string.Join("\n", TargetAssetImporter.MissingFiles.ToArray()));
+
+                    EditorGUILayout.HelpBox(msg.ToString(), MessageType.Error);
+
+                    using (new GuiScopedHorizontal())
+                    {
+                        if (GUILayout.Button("Copy Message to Clipboard"))
+                        {
+                            msg.ToString().CopyToClipboard();
+                        }
+
+                        if (GUILayout.Button("Reimport"))
+                        {
+                            ApplyAndImport();
+                        }
+                    }
+
+                    EditorGUILayout.Separator();
+                }
+            }
+        }
+
         private void DisplayErrorsAndWarnings()
         {
-            var background = GetBackgroundColor();
-            using (new GuiScopedBackgroundColor(background))
+            var asset = Path.GetFileName(TargetAssetImporter.assetPath);
+
+            using (new GuiScopedBackgroundColor(Color.red))
             {
                 if (TargetAssetImporter.Errors.Any())
                 {
-                    var asset = Path.GetFileName(TargetAssetImporter.assetPath);
                     EditorGUILayout.LabelField("There were errors importing " + asset, EditorStyles.boldLabel);
-                    EditorGUILayout.HelpBox(string.Join("\n\n", TargetAssetImporter.Errors.Take(10).ToArray()), MessageType.Error);
+
+                    var msg = new StringBuilder();
+                    msg.AppendLine(TargetAssetImporter.GetReportHeader());
+                    msg.AppendLine(string.Join("\n", TargetAssetImporter.Errors.Take(10).ToArray()));
+
+                    EditorGUILayout.HelpBox(msg.ToString(), MessageType.Error);
+
+                    if (GUILayout.Button("Copy Error Message to Clipboard"))
+                    {
+                        msg.ToString().CopyToClipboard();
+                    }
+
                     EditorGUILayout.Separator();
                 }
+            }
 
+            using (new GuiScopedBackgroundColor(Color.yellow))
+            {
                 if (TargetAssetImporter.Warnings.Any())
                 {
-                    EditorGUILayout.LabelField("There were warnings importing " + TargetAssetImporter.assetPath, EditorStyles.boldLabel);
-                    EditorGUILayout.HelpBox(string.Join("\n\n", TargetAssetImporter.Warnings.Take(10).ToArray()), MessageType.Warning);
+                    EditorGUILayout.LabelField("There were warnings importing " + asset, EditorStyles.boldLabel);
+                    var msg = string.Join("\n\n", TargetAssetImporter.Warnings.Take(10).ToArray());
+                    EditorGUILayout.HelpBox(msg, MessageType.Warning);
+
+                    if (GUILayout.Button("Copy Warning Message to Clipboard"))
+                    {
+                        msg.ToString().CopyToClipboard();
+                    }
+
                     EditorGUILayout.Separator();
                 }
             }
@@ -234,15 +294,18 @@ namespace SuperTiled2Unity.Editor
                         {
                             EditorGUILayout.LabelField(asset);
 
-                            // We can reimport a dependency with right click
+                            // Context menu items for dependencies
                             var clickArea = GUILayoutUtility.GetLastRect();
                             var current = Event.current;
                             if (clickArea.Contains(current.mousePosition) && current.type == EventType.ContextClick)
                             {
-                                var text = string.Format("Reimport '{0}'", Path.GetFileName(asset));
+                                var assetName = Path.GetFileName(asset);
+                                var selectText = string.Format("Select '{0}'", assetName);
+                                var reimportText = string.Format("Reimport '{0}'", assetName);
 
                                 var menu = new GenericMenu();
-                                menu.AddItem(new GUIContent(text), false, MenuCallbackReimport, asset);
+                                menu.AddItem(new GUIContent(selectText), false, MenuCallbackSelect, asset);
+                                menu.AddItem(new GUIContent(reimportText), false, MenuCallbackReimport, asset);
                                 menu.ShowAsContext();
                                 current.Use();
                             }
@@ -262,6 +325,20 @@ namespace SuperTiled2Unity.Editor
                         foreach (var asset in depends.References)
                         {
                             EditorGUILayout.LabelField(asset);
+
+                            // Context menu items for dependencies
+                            var clickArea = GUILayoutUtility.GetLastRect();
+                            var current = Event.current;
+                            if (clickArea.Contains(current.mousePosition) && current.type == EventType.ContextClick)
+                            {
+                                var assetName = Path.GetFileName(asset);
+                                var selectText = string.Format("Select '{0}'", assetName);
+
+                                var menu = new GenericMenu();
+                                menu.AddItem(new GUIContent(selectText), false, MenuCallbackSelect, asset);
+                                menu.ShowAsContext();
+                                current.Use();
+                            }
                         }
                     }
                 }
@@ -280,18 +357,13 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private Color GetBackgroundColor()
+        private void MenuCallbackSelect(object asset)
         {
-            if (TargetAssetImporter.Errors.Any())
-            {
-                return Color.red;
-            }
-            else if (TargetAssetImporter.Warnings.Any())
-            {
-                return Color.yellow;
-            }
-
-            return GUI.backgroundColor;
+            string assetPath = asset.ToString();
+            var assetObject = AssetDatabase.LoadMainAssetAtPath(assetPath);
+            Selection.activeObject = assetObject;
+            EditorUtility.FocusProjectWindow();
+            EditorGUIUtility.PingObject(assetObject);
         }
 
         private void MenuCallbackReimport(object asset)

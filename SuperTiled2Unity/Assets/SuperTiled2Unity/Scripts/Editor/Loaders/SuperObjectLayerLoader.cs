@@ -37,15 +37,24 @@ namespace SuperTiled2Unity.Editor
             Assert.IsNotNull(Importer);
             Assert.IsNotNull(ColliderFactory);
 
-            foreach (var xObject in m_Xml.Elements("object"))
+            var xObjects = m_Xml.Elements("object");
+            var drawOrder = m_Xml.GetAttributeAs<DrawOrder>("draworder", DrawOrder.TopDown);
+
+            if (drawOrder == DrawOrder.TopDown)
+            {
+                // xObjects need to be ordered by y-value
+                xObjects = xObjects.OrderBy(x => x.GetAttributeAs<float>("y", 0.0f));
+            }
+
+            foreach (var xObj in xObjects)
             {
                 // Ignore invisible objects
-                if (!xObject.GetAttributeAs<bool>("visible", true))
+                if (!xObj.GetAttributeAs<bool>("visible", true))
                 {
                     continue;
                 }
 
-                CreateObject(xObject);
+                CreateObject(xObj);
             }
         }
 
@@ -276,7 +285,7 @@ namespace SuperTiled2Unity.Editor
             renderer.sprite = tile.m_Sprite;
             renderer.color = new Color(1, 1, 1, superObject.CalculateOpacity());
             Importer.AssignMaterial(renderer);
-            Importer.AssignSortingLayer(renderer, m_ObjectLayer.m_SortingLayerName, (int)superObject.m_Y);
+            Importer.AssignSpriteSorting(renderer);
 
             // Add the animator if needed
             if (!tile.m_AnimationSprites.IsEmpty())

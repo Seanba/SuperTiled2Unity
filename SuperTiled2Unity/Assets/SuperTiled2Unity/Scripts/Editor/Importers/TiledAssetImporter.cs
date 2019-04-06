@@ -9,18 +9,24 @@ using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Tilemaps;
 
 // All tiled assets we want imported should use this class
 namespace SuperTiled2Unity.Editor
 {
     public abstract class TiledAssetImporter : SuperImporter
     {
+        static private string m_ReportedVersion = string.Empty;
+
         [SerializeField] private float m_PixelsPerUnit = 0.0f;
         [SerializeField] private int m_EdgesPerEllipse = 0;
 
 #pragma warning disable 414
         [SerializeField] private int m_NumberOfObjectsImported = 0;
 #pragma warning restore 414
+
+        private RendererSorter m_RendererSorter;
+        public RendererSorter RendererSorter { get { return m_RendererSorter; } }
 
         public SuperImportContext SuperImportContext { get; private set; }
 
@@ -56,11 +62,16 @@ namespace SuperTiled2Unity.Editor
             AssignUnityLayer(component);
         }
 
-        public void AssignSortingLayer(Renderer renderer, string sortName, int sortOrder)
+        public void AssignTilemapSorting(TilemapRenderer renderer)
         {
-            CheckSortingLayerName(sortName);
-            renderer.sortingLayerName = sortName;
-            renderer.sortingOrder = sortOrder;
+            var sortLayerName = m_RendererSorter.AssignTilemapSort(renderer);
+            CheckSortingLayerName(sortLayerName);
+        }
+
+        public void AssignSpriteSorting(SpriteRenderer renderer)
+        {
+            var sortLayerName = m_RendererSorter.AssignSpriteSort(renderer);
+            CheckSortingLayerName(sortLayerName);
         }
 
         public void AssignMaterial(Renderer renderer)
@@ -72,13 +83,26 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
+        public override string GetReportHeader()
+        {
+            string version = m_ReportedVersion;
+            if (string.IsNullOrEmpty(version))
+            {
+                version = "unknown";
+            }
+
+            return string.Format("SuperTiled2Unity version: {0}, Unity version: {1}", version, Application.unityVersion);
+        }
+
         protected override void InternalOnImportAsset()
         {
+            m_RendererSorter = new RendererSorter();
             WrapImportContext(AssetImportContext);
         }
 
         protected override void InternalOnImportAssetCompleted()
         {
+            m_RendererSorter = null;
             m_NumberOfObjectsImported = SuperImportContext.GetNumberOfObjects();
         }
 
@@ -140,6 +164,7 @@ namespace SuperTiled2Unity.Editor
             settings = GameObject.Instantiate<ST2USettings>(settings);
             OverrideSettings(settings);
 
+            m_ReportedVersion = settings.Version;
             SuperImportContext = new SuperImportContext(ctx, settings, icons);
         }
 
