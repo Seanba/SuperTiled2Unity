@@ -31,9 +31,6 @@ and `Tilemap Renderer <https://docs.unity3d.com/Manual/class-TilemapRenderer.htm
    "Sorting Layer", "Name of sorting layer. See the `Tag Manager <https://docs.unity3d.com/Manual/class-TagManager.html>`__ to manage these."
    "Order in Layer", "How the renderer is sorted in the named layer."
 
-.. tip::
-   Objects to be dynamically sorted by a Custom Sort Axis will need to have the same :code:`Sorting Layer` and :code:`Order in Layer` values of the tiles they are sorting against.
-
 SuperTiled2Unity performs sorting almost primarily through manipulating the :code:`Order in Layer` setting of the prefab components it creates during import.
 By default, all tile layers use the Unity's built-in :code:`Default` sorting layer with ever increasing :code:`Order in Layer` values.
 
@@ -60,3 +57,49 @@ You may wish to use yet another :code:`unity:SortingLayer` for clouds to make it
 Now the cloud tiles will be rendered in order but on a sorting layer that is more aptly named for them and other tiles that may always appear above our map.
 
 .. figure:: img/sort/default-player-sky-sorting.png
+
+.. tip::
+   It takes a bit of work but in general it is a good idea to be explicit about what layers (in Tiled) are assigned to which sort layer (in Unity).
+   Using the :code:`unity:SortingLayer` in concert with Unity Sorting Layers *early* makes it easier to make sweeping sorting changes *later*.
+
+Tile Objects and Sorting
+------------------------
+Tiled allows you to place tiles in a an `object layer <http://doc.mapeditor.org/en/stable/manual/layers/#object-layers>`__ as separate tile objects.
+During import, Tiled2Unity turns these tile objects into sprites that are not part of any :code:`Tilemap`.
+If you import your map with the :code:`Stacked` sorting mode then these sprites will also be assigned a sort order.
+
+.. figure:: img/sort/sort-tile-objects.png
+
+This may make it difficult to predict what sorting order is assigned to the layer that comes after :code:`TileObjects` as it depends on the number of objects in that group.
+Using a custom property to set the sorting layer name on the next layer will help.
+(Note that for the :code:`Custom Sort Axis` sort mode that each imported sprite is not assigned an incrememted sorting order as they will be sorted by their y-position instead.)
+
+Dynamic Sorting with a Custom Sort Axis
+---------------------------------------
+Games with an overhead view often have sprites that need to alter their rendering order with tile maps as they move around.
+The classic example is a sprite that may appear either in-front-of or behind a column based on their y-position.
+
+.. figure:: img/sort/overhead-example-anim.gif
+   
+   The :code:`overhead` scene included with SuperTiled2Unity may serve as a useful guide for others trying to achieve this effect.
+
+In order to use custom axis sorting follow these three steps:
+
+* Import your map with the :code:`Custom Sort Axis` sort mode
+* Modify :code:`Transparency Sort Mode` and :code:`Transparency Sort Axis` in your Unity Project Settings to sort against an axis with increasing y-value.
+* Make sure your sprites (Unity) and tiles (Tiled) *that you want to sort dynamically* are assigned the same :code:`Sorting Layer` and :code:`Order in Layer` values. (This is the most common source of errors.)
+
+.. figure:: img/sort/unity-importer-csa.png
+
+.. figure:: img/sort/unity-settings-csa.png
+
+.. tip::
+   Objects to be dynamically sorted by a Custom Sort Axis will need to have the same :code:`Sorting Layer` and :code:`Order in Layer` values of the tiles they are sorting against.
+
+Note that you can also set the :code:`Transparency Sort Axis` in script if you wish.
+
+.. code:: C#
+
+   var camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+   camera.transparencySortMode = TransparencySortMode.CustomAxis;
+   camera.transparencySortAxis = Vector3.up;
