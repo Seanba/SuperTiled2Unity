@@ -43,9 +43,10 @@ namespace SuperTiled2Unity.Editor
         protected override void InternalOnImportAsset()
         {
             base.InternalOnImportAsset();
+            ImporterVersion = ImporterConstants.MapVersion;
             AddSuperAsset<SuperAssetMap>();
 
-            XDocument doc = XDocument.Load(this.assetPath);
+            XDocument doc = XDocument.Load(assetPath);
             if (doc != null)
             {
                 var xMap = doc.Element("map");

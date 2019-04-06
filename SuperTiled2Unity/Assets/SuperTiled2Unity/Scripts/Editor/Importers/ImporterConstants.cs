@@ -22,5 +22,9 @@ namespace SuperTiled2Unity.Editor
         public const int TilesetImportOrder = 10;
         public const int TemplateImportOrder = 11;
         public const int MapImportOrder = 12;
+
+        // Special makers for import versions we may care about
+        // These are, regrettably, magic numbers
+        public const int TilesetVersion_BeforeUnitySpriteAtlasFeature = 7;
     }
 }

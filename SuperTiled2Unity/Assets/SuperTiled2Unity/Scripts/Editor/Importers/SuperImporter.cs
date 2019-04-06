@@ -37,6 +37,15 @@ namespace SuperTiled2Unity.Editor
         private List<string> m_MissingTags = new List<string>();
         public IEnumerable<string> MissingTags { get { return m_MissingTags; } }
 
+        // Keep track of our importer version so that we may handle converions from old imports
+        [SerializeField]
+        private int m_ImporterVersion = 0;
+        public int ImporterVersion
+        {
+            get { return m_ImporterVersion; }
+            protected set { m_ImporterVersion = value; }
+        }
+
         // Keep track of loaded database objects by type
         private Dictionary<KeyValuePair<string, Type>, UnityEngine.Object> m_CachedDatabase = new Dictionary<KeyValuePair<string, Type>, UnityEngine.Object>();
 
