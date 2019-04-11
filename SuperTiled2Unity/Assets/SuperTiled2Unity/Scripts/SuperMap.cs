@@ -67,10 +67,12 @@ namespace SuperTiled2Unity
             }
         }
 
-        public Vector3Int TiledIndexToGridCell(int index, int stride)
+        public Vector3Int TiledIndexToGridCell(int index, int offset_x, int offset_y, int stride)
         {
             int x = index % stride;
             int y = index / stride;
+            x += offset_x;
+            y += offset_y;
 
             // Always off by one because tile positions start at bottom of the cell in Tiled
             y += 1;

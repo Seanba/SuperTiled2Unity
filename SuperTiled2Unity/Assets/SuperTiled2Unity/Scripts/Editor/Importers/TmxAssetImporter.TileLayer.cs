@@ -207,17 +207,17 @@ namespace SuperTiled2Unity.Editor
                 {
                     var tileId = new TileIdMath(utId);
 
-                    var cx = i % chunk.Width;
-                    var cy = i / chunk.Width;
-
-                    cx += chunk.X;
-                    cy += chunk.Y;
-
-                    Vector3Int int3 = m_MapComponent.TiledIndexToGridCell(i, chunk.Width);
+                    Vector3Int int3 = m_MapComponent.TiledIndexToGridCell(i, chunk.X, chunk.Y, chunk.Width);
 
                     SuperTile tile;
                     if (m_GlobalTileDatabase.TryGetTile(tileId.JustTileId, out tile))
                     {
+                        var cx = i % chunk.Width;
+                        var cy = i / chunk.Width;
+
+                        cx += chunk.X;
+                        cy += chunk.Y;
+
                         PlaceTile(goTilemap, cx, cy, tile, int3, tileId);
                     }
                     else if (!badTiles.Contains(tileId.JustTileId))
