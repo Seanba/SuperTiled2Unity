@@ -10,7 +10,7 @@ namespace SuperTiled2Unity.Editor
         public const int SettingsVersion = 3;
         public const int TilesetVersion = 7;
         public const int TemplateVersion = 3;
-        public const int MapVersion = 11;
+        public const int MapVersion = 12;
 
         public const string SettingsExtension = "st2u";
         public const string TilesetExtension = "tsx";

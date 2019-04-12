@@ -83,10 +83,6 @@ namespace SuperTiled2Unity.Editor
                     GameObject goChunk = new GameObject(string.Format("Chunk ({0},{1})", chunk.X, chunk.Y));
                     goLayer.AddChildWithUniqueName(goChunk);
 
-                    // Position the chunk
-                    Vector2 translate = m_MapComponent.MapCoordinatesToPositionPPU(chunk.X, chunk.Y);
-                    goChunk.transform.localPosition = translate;
-
                     ProcessLayerDataChunk(goChunk, chunk);
                 }
             }
