@@ -26,6 +26,9 @@ namespace SuperTiled2Unity.Editor
         protected override void InternalOnImportAsset()
         {
             base.InternalOnImportAsset();
+
+            ImporterVersion = ImporterConstants.TilesetVersion;
+
             AddSuperAsset<SuperAssetTileset>();
             ImportTsxFile();
         }
