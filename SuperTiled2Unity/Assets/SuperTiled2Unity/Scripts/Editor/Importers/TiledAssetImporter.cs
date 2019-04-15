@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Xml;
 using System.Xml.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Tilemaps;
+using UnityEngine.U2D;
 
 // All tiled assets we want imported should use this class
 namespace SuperTiled2Unity.Editor
@@ -21,12 +19,15 @@ namespace SuperTiled2Unity.Editor
         [SerializeField] private float m_PixelsPerUnit = 0.0f;
         [SerializeField] private int m_EdgesPerEllipse = 0;
 
+        [SerializeField]
+        private SpriteAtlasPacker m_SpriteAtlasPacker = new SpriteAtlasPacker();
+        public SpriteAtlasPacker SpriteAtlasPacker { get { return m_SpriteAtlasPacker; } }
+
 #pragma warning disable 414
         [SerializeField] private int m_NumberOfObjectsImported = 0;
 #pragma warning restore 414
 
-        private RendererSorter m_RendererSorter;
-        public RendererSorter RendererSorter { get { return m_RendererSorter; } }
+        public RendererSorter RendererSorter { get; private set; }
 
         public SuperImportContext SuperImportContext { get; private set; }
 
@@ -64,13 +65,13 @@ namespace SuperTiled2Unity.Editor
 
         public void AssignTilemapSorting(TilemapRenderer renderer)
         {
-            var sortLayerName = m_RendererSorter.AssignTilemapSort(renderer);
+            var sortLayerName = RendererSorter.AssignTilemapSort(renderer);
             CheckSortingLayerName(sortLayerName);
         }
 
         public void AssignSpriteSorting(SpriteRenderer renderer)
         {
-            var sortLayerName = m_RendererSorter.AssignSpriteSort(renderer);
+            var sortLayerName = RendererSorter.AssignSpriteSort(renderer);
             CheckSortingLayerName(sortLayerName);
         }
 
@@ -96,13 +97,13 @@ namespace SuperTiled2Unity.Editor
 
         protected override void InternalOnImportAsset()
         {
-            m_RendererSorter = new RendererSorter();
+            RendererSorter = new RendererSorter();
             WrapImportContext(AssetImportContext);
         }
 
         protected override void InternalOnImportAssetCompleted()
         {
-            m_RendererSorter = null;
+            RendererSorter = null;
             m_NumberOfObjectsImported = SuperImportContext.GetNumberOfObjects();
         }
 

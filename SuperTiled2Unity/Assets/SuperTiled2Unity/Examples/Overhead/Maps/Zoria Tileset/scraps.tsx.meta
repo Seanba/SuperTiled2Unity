@@ -2,7 +2,6 @@ fileFormatVersion: 2
 guid: 28ab63655fc26f245b3526f40d569f26
 ScriptedImporter:
   fileIDToRecycleName:
-    2800000: Atlas_scraps_1
     11400000: _TilesetScriptObject
     11400002: _superAsset
     11400004: Tile_scraps_1
@@ -856,7 +855,6 @@ ScriptedImporter:
     21300736: Sprite_scraps_369
     21300738: Sprite_scraps_370
     21300740: Sprite_scraps_371
-    21300742: Sprite_scraps_372
     21300744: Sprite_scraps_373
     21300746: Sprite_scraps_374
     21300748: Sprite_scraps_375
@@ -866,8 +864,6 @@ ScriptedImporter:
     21300756: Sprite_scraps_379
     21300758: Sprite_scraps_380
     21300760: Sprite_scraps_381
-    21300762: Sprite_scraps_382
-    21300764: Sprite_scraps_383
     21300766: Sprite_scraps_384
     21300768: Sprite_scraps_385
     21300770: Sprite_scraps_386
@@ -877,13 +873,10 @@ ScriptedImporter:
     21300778: Sprite_scraps_390
     21300780: Sprite_scraps_391
     21300782: Sprite_scraps_392
-    21300784: Sprite_scraps_393
     21300786: Sprite_scraps_394
     21300788: Sprite_scraps_395
-    21300790: Sprite_scraps_396
     21300792: Sprite_scraps_397
     21300794: Sprite_scraps_398
-    21300796: Sprite_scraps_399
     21300798: Sprite_scraps_400
     21300800: Sprite_scraps_401
     21300802: Sprite_scraps_402
@@ -899,8 +892,6 @@ ScriptedImporter:
     21300822: Sprite_scraps_412
     21300824: Sprite_scraps_413
     21300826: Sprite_scraps_414
-    21300828: Sprite_scraps_415
-    21300830: Sprite_scraps_416
     21300832: Sprite_scraps_417
     21300834: Sprite_scraps_418
     21300836: Sprite_scraps_419
@@ -965,17 +956,20 @@ ScriptedImporter:
     21300954: Sprite_scraps_478
     21300956: Sprite_scraps_479
     21300958: Sprite_scraps_480
+    21300960: Sprite_scraps_trans
   externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: cc34d0f3dc257a442819830b408c5322, type: 3}
+  missingFiles: []
   errors: []
   warnings: []
   missingSortingLayers: []
   missingLayers: []
+  missingTags: []
+  importerVersion: 8
   pixelsPerUnit: 1
   edgesPerEllipse: 32
+  numberOfObjectsImported: 955
   useSpriteAtlas: 1
-  atlasWidth: 512
-  atlasHeight: 512

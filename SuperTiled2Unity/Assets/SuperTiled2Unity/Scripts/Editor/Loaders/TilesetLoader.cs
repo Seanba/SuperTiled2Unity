@@ -78,26 +78,22 @@ namespace SuperTiled2Unity.Editor
             // 1) From one image broken down into parts (many tiles in one image)
             // 2) From a collection of images (one tile per image)
 
-            // fixit - I don't want to build atlases anymore (have user set an atlas)
-            // fixit - and I don't want a bunch of transparent tiles either (make it a setting and use transparent color key when possible)
-            var atlas = new AtlasBuilder(m_Importer, m_TilesetScript);
+            var builder = new TilesetBuilder(m_Importer, m_TilesetScript);
 
             if (xTileset.Element("image") != null)
             {
-                // fixit - not interested in tiles that are completely transparent
-                BuildTilesetFromImage(xTileset, atlas);
+                BuildTilesetFromImage(xTileset, builder);
             }
             else
             {
-                BuildTilesetFromCollection(xTileset, atlas);
+                BuildTilesetFromCollection(xTileset, builder);
             }
 
-            // We're done collecting all the tile data. Build our atlas.
-            // (Note that we call build even if we are not using texture atlases)
-            atlas.Build();
+            // We're done collecting all the tile data. Build our tileset.
+            builder.Build();
         }
 
-        private void BuildTilesetFromImage(XElement xTileset, AtlasBuilder atlas)
+        private void BuildTilesetFromImage(XElement xTileset, TilesetBuilder builder)
         {
             m_TilesetScript.m_IsImageCollection = false;
 
@@ -138,7 +134,6 @@ namespace SuperTiled2Unity.Editor
                 return;
             }
 
-            // fixit - get the source texture for reading pixels
             using (var reader = new TexturePixelReader(tex2d))
             {
                 for (int i = 0; i < m_TilesetScript.m_TileCount; i++)
@@ -166,15 +161,15 @@ namespace SuperTiled2Unity.Editor
                         break;
                     }
 
-                    // Add the tile to our atlas
+                    // Add the tile to our tileset builder
                     Rect rcSource = new Rect(srcx, srcy, m_TilesetScript.m_TileWidth, m_TilesetScript.m_TileHeight);
                     bool isTransparent = reader.GetPixels(rcSource).All(p => p == transparent);
-                    atlas.AddTile(i, tex2d, rcSource, isTransparent);
+                    builder.AddTile(i, tex2d, rcSource, isTransparent);
                 }
             }
         }
 
-        private void BuildTilesetFromCollection(XElement xTileset, AtlasBuilder atlas)
+        private void BuildTilesetFromCollection(XElement xTileset, TilesetBuilder builder)
         {
             m_TilesetScript.m_IsImageCollection = true;
 
@@ -209,7 +204,7 @@ namespace SuperTiled2Unity.Editor
                     }
 
                     var rcSource = new Rect(0, 0, tex2d.width, tex2d.height);
-                    atlas.AddTile(tileIndex, tex2d, rcSource, false);
+                    builder.AddTile(tileIndex, tex2d, rcSource, false);
                 }
             }
         }

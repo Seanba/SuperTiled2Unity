@@ -37,6 +37,9 @@ namespace SuperTiled2Unity
         [ReadOnly]
         public float m_TileOffsetY;
 
+        [ReadOnly]
+        public bool m_IsTransparent;
+
         public List<CustomProperty> m_CustomProperties;
 
         public List<CollisionObject> m_CollisionObjects;
@@ -180,6 +183,11 @@ namespace SuperTiled2Unity
             {
                 var flags = data.GetFlipFlags(position);
                 tileData.transform = GetTransformMatrix(flags);
+
+                if (m_IsTransparent && m_AnimationSprites.Length == 0)
+                {
+                    tileData.color = Color.clear;
+                }
             }
         }
 

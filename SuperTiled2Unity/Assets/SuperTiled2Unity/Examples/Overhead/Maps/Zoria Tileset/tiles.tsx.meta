@@ -2,7 +2,6 @@ fileFormatVersion: 2
 guid: 8bab38e08aad5fa4fbb603f5d9dbe190
 ScriptedImporter:
   fileIDToRecycleName:
-    2800000: Atlas_tiles_1
     11400000: _TilesetScriptObject
     11400002: _superAsset
     11400004: Tile_tiles_1
@@ -660,7 +659,6 @@ ScriptedImporter:
     21300344: Sprite_tiles_173
     21300346: Sprite_tiles_174
     21300348: Sprite_tiles_175
-    21300350: Sprite_tiles_176
     21300352: Sprite_tiles_177
     21300354: Sprite_tiles_178
     21300356: Sprite_tiles_179
@@ -727,7 +725,6 @@ ScriptedImporter:
     21300478: Sprite_tiles_240
     21300480: Sprite_tiles_241
     21300482: Sprite_tiles_242
-    21300484: Sprite_tiles_243
     21300486: Sprite_tiles_244
     21300488: Sprite_tiles_245
     21300490: Sprite_tiles_246
@@ -835,7 +832,6 @@ ScriptedImporter:
     21300694: Sprite_tiles_348
     21300696: Sprite_tiles_349
     21300698: Sprite_tiles_350
-    21300700: Sprite_tiles_351
     21300702: Sprite_tiles_352
     21300704: Sprite_tiles_353
     21300706: Sprite_tiles_354
@@ -956,7 +952,6 @@ ScriptedImporter:
     21300936: Sprite_tiles_469
     21300938: Sprite_tiles_470
     21300940: Sprite_tiles_471
-    21300942: Sprite_tiles_472
     21300944: Sprite_tiles_473
     21300946: Sprite_tiles_474
     21300948: Sprite_tiles_475
@@ -965,18 +960,20 @@ ScriptedImporter:
     21300954: Sprite_tiles_478
     21300956: Sprite_tiles_479
     21300958: Sprite_tiles_480
+    21300960: Sprite_tiles_trans
   externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: cc34d0f3dc257a442819830b408c5322, type: 3}
+  missingFiles: []
   errors: []
   warnings: []
   missingSortingLayers: []
   missingLayers: []
+  missingTags: []
+  importerVersion: 8
   pixelsPerUnit: 1
   edgesPerEllipse: 32
-  numberOfObjectsImported: 963
+  numberOfObjectsImported: 959
   useSpriteAtlas: 1
-  atlasWidth: 512
-  atlasHeight: 512

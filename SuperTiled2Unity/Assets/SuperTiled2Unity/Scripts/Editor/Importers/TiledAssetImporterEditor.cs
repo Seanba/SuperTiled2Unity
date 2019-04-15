@@ -9,7 +9,7 @@ using UnityEngine.Assertions;
 
 namespace SuperTiled2Unity.Editor
 {
-    public abstract class TiledAssetImporterEditor<T> : SuperImporterEditor<T> where T : SuperImporter
+    public abstract class TiledAssetImporterEditor<T> : SuperImporterEditor<T> where T : TiledAssetImporter
     {
         private SerializedProperty m_PixelsPerUnit;
         private readonly GUIContent m_PixelsPerUnitContent = new GUIContent("Pixels Per Unit", "How many pixels in the sprite correspond to one unit in the world.");
@@ -27,6 +27,7 @@ namespace SuperTiled2Unity.Editor
         {
             EditorGUILayout.PropertyField(m_PixelsPerUnit, m_PixelsPerUnitContent);
             EditorGUILayout.PropertyField(m_EdgesPerEllipse, m_EdgesPerEllipseContent);
+            SpriteAtlasPacker.ShowEditorGui(serializedObject);
         }
 
         protected override void Apply()
