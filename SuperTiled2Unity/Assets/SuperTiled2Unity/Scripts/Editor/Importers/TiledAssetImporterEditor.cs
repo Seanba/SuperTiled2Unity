@@ -27,14 +27,20 @@ namespace SuperTiled2Unity.Editor
         {
             EditorGUILayout.PropertyField(m_PixelsPerUnit, m_PixelsPerUnitContent);
             EditorGUILayout.PropertyField(m_EdgesPerEllipse, m_EdgesPerEllipseContent);
-            SpriteAtlasPacker.ShowEditorGui(serializedObject);
+
+            SpriteAtlasPacker.Editor_ShowEditorGui(serializedObject);
         }
 
         protected override void Apply()
         {
             m_PixelsPerUnit.floatValue = Clamper.ClampPixelsPerUnit(m_PixelsPerUnit.floatValue);
             m_EdgesPerEllipse.intValue = Clamper.ClampEdgesPerEllipse(m_EdgesPerEllipse.intValue);
+
+            TargetAssetImporter.SpriteAtlasPacker.Editor_PreApply(); // fixit - does this work
+
             base.Apply();
+
+            TargetAssetImporter.SpriteAtlasPacker.Editor_PostApply(); // fixit - does this work
         }
 
         protected override void ResetValues()

@@ -213,6 +213,9 @@ namespace SuperTiled2Unity.Editor
 
         protected void AddSuperAsset<T>() where T : SuperAsset
         {
+            // fixit - can we load the previous instance? (yes, appears so)
+            //var old = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+
             m_SuperAsset = ScriptableObject.CreateInstance<T>();
             m_SuperAsset.name = Path.GetFileNameWithoutExtension(assetPath);
             AssetImportContext.AddObjectToAsset("_superAsset", m_SuperAsset);

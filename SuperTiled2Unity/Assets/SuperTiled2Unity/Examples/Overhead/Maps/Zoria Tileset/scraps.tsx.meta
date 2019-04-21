@@ -971,5 +971,8 @@ ScriptedImporter:
   importerVersion: 8
   pixelsPerUnit: 1
   edgesPerEllipse: 32
+  spriteAtlasPacker:
+    removeFromAtlas: {instanceID: 0}
+    addToAtlas: {instanceID: 0}
+    userChanged: 1
   numberOfObjectsImported: 955
-  useSpriteAtlas: 1

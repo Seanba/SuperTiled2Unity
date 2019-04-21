@@ -12,7 +12,7 @@ using UnityEngine.U2D;
 // All tiled assets we want imported should use this class
 namespace SuperTiled2Unity.Editor
 {
-    public abstract class TiledAssetImporter : SuperImporter
+    public abstract class TiledAssetImporter : SuperImporter, IHasSpriteAtlasPacker
     {
         static private string m_ReportedVersion = string.Empty;
 
@@ -97,6 +97,8 @@ namespace SuperTiled2Unity.Editor
 
         protected override void InternalOnImportAsset()
         {
+            //this.SpriteAtlasPacker.m_UserChanged = true; // fixit - does this help?
+
             RendererSorter = new RendererSorter();
             WrapImportContext(AssetImportContext);
         }

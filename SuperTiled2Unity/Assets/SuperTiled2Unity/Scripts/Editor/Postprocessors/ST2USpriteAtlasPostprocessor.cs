@@ -9,6 +9,9 @@ using UnityEngine.U2D;
 
 namespace SuperTiled2Unity.Editor
 {
+    // fixit - need a command to empty atlas? (Just in general)
+    // fixit - maybe start from scratch on another file (and remove the IHasSpriteAtlasPacker crap)
+
     // This file contains the work-arounds needed to support sprite atlases for our custom assets
 
     public interface IHasSpriteAtlasPacker
@@ -16,6 +19,7 @@ namespace SuperTiled2Unity.Editor
         SpriteAtlasPacker SpriteAtlasPacker { get; }
     }
 
+    // fixit - this is such a ginormous pain in the ass and now I'm wondering if a scritable object saved with the asset is not best, ffs
     [Serializable]
     public class SpriteAtlasPacker
     {
@@ -32,37 +36,77 @@ namespace SuperTiled2Unity.Editor
         public bool m_UserChanged;
 
         // fixit - first-time gets default sprite atlas (can that go in constructor?)
-
-        public void AddAndRemoveSprites(string spriteSourcePath)
+        // Should be called by our postprocessor only
+        public void OnPreprocessAsset_AddAndRemoveSprites(string spriteSourcePath)
         {
+            //EditorGUILayout.ObjectField
+
+            /* // fixit - clean this up
             var sprites = AssetDatabase.LoadAllAssetsAtPath(spriteSourcePath).OfType<Sprite>().ToArray();
 
             if (sprites.Any())
             {
-                // Removes our (old) sprites from the (old) atlas
+                // Removes our sprites and marker from old
                 if (m_RemoveFromAtlas != null)
                 {
                     m_RemoveFromAtlas.Remove(sprites);
+                    AddSpriteAtlasMarker(); // fixit - how do we do this?
                 }
 
-                // Adds our (new) sprites to the (new) atlas. Also need the sprite atlas marker.
+                // Add our sprites and marker to new (and re-import marker)
                 if (m_AddToAtlas != null)
                 {
                     m_AddToAtlas.Add(sprites);
                     AddSpriteAtlasMarker();
                 }
             }
+            */
+        }
+
+        // Should be called by custom Editor class only before base.Apply
+        public void Editor_PreApply()
+        {
+            Debug.LogWarningFormat("fixit - pre apply add: {0}, remove: {1}, userChanged = {2}", m_AddToAtlas, m_RemoveFromAtlas, m_UserChanged);
+        }
+
+        public void Editor_PostApply()
+        {
+            Debug.LogWarningFormat("fixit - post apply add: {0}, remove: {1}, userChanged = {2}", m_AddToAtlas, m_RemoveFromAtlas, m_UserChanged);
         }
 
         // fixit - need UI stuff
-        public static void ShowEditorGui(SerializedObject serializedObject)
+        // Should be invoked by the asset editor only
+        public static void Editor_ShowEditorGui(SerializedObject serializedObject)
         {
             // This makes some big naming assumptions
             var packerProperty = serializedObject.FindProperty("m_SpriteAtlasPacker");
-            Assert.IsNotNull(packerProperty, "Importer requires a SpriteAtlasPacker field named m_SpriteAtlasPacker");
+            Assert.IsNotNull(packerProperty);
 
-            //var 
+            var addToProperty = packerProperty.FindPropertyRelative("m_AddToAtlas");
+            Assert.IsNotNull(addToProperty);
 
+            var removeFromProperty = packerProperty.FindPropertyRelative("m_RemoveFromAtlas");
+            Assert.IsNotNull(removeFromProperty);
+
+            var userChangeProperty = packerProperty.FindPropertyRelative("m_UserChanged");
+            Assert.IsNotNull(userChangeProperty);
+
+            // Keep track of old // fixit - does this work? (No, but getting close, I think)
+            var oldAddToPropertyObject = addToProperty.objectReferenceValue;
+
+            EditorGUILayout.PropertyField(removeFromProperty); // fixit - do not edit this (testing only)
+            EditorGUILayout.PropertyField(userChangeProperty); // fixit - do not edit this (testing only)
+
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(addToProperty, m_SpriteAtlasContent);
+            if (EditorGUI.EndChangeCheck())
+            {
+                // The user initiated this change to keep track of that so the default sprite atlas is not assigned again.
+                // (This allows user to select 'None' and have that choice stick)
+                // fixit - we cannot do this here. We must do this on apply only.
+                removeFromProperty.objectReferenceValue = null;
+                userChangeProperty.boolValue = false;
+            }
         }
 
         private void AddSpriteAtlasMarker()
@@ -70,7 +114,7 @@ namespace SuperTiled2Unity.Editor
             var marker = FindSpriteAtlasMarker();
             if (marker != null)
             {
-                m_AddToAtlas.Add(new Sprite[1] { marker });
+                m_AddToAtlas.Add(marker.Yield().ToArray());
 
                 // The marker must be re-imported. This is the trick that foces our sprite atlas to be updated.
                 var markerPath = AssetDatabase.GetAssetPath(marker);
@@ -136,7 +180,7 @@ namespace SuperTiled2Unity.Editor
             }
             else if (assetImporter is IHasSpriteAtlasPacker)
             {
-                (assetImporter as IHasSpriteAtlasPacker).SpriteAtlasPacker.AddAndRemoveSprites(assetPath);
+                (assetImporter as IHasSpriteAtlasPacker).SpriteAtlasPacker.OnPreprocessAsset_AddAndRemoveSprites(assetPath);
             }
         }
     }

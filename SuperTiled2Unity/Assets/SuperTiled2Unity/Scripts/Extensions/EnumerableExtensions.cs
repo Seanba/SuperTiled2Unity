@@ -16,5 +16,15 @@ namespace SuperTiled2Unity
 
             return !array.Any();
         }
+
+        public static IEnumerable<T> Yield<T>(this T obj)
+        {
+            if (obj == null)
+            {
+                yield break;
+            }
+
+            yield return obj;
+        }
     }
 }
