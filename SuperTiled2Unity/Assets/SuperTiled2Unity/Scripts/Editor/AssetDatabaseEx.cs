@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using UnityEngine;
 using UnityEditor;
 
 namespace SuperTiled2Unity.Editor
@@ -19,6 +18,23 @@ namespace SuperTiled2Unity.Editor
             }
 
             return null;
+        }
+
+        public static string GetCurrentFolder()
+        {
+            string path = AssetDatabase.GetAssetPath(Selection.activeObject);
+
+            if (path == "")
+            {
+                path = "Assets";
+            }
+            else if (Path.GetExtension(path) != "")
+            {
+                path = path.Replace(Path.GetFileName(AssetDatabase.GetAssetPath(Selection.activeObject)), "");
+            }
+
+            path.TrimEnd('/', '\\');
+            return path;
         }
     }
 }

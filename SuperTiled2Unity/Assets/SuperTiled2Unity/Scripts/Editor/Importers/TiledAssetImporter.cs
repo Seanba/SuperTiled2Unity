@@ -12,16 +12,13 @@ using UnityEngine.U2D;
 // All tiled assets we want imported should use this class
 namespace SuperTiled2Unity.Editor
 {
-    public abstract class TiledAssetImporter : SuperImporter, IHasSpriteAtlasPacker
+    public abstract class TiledAssetImporter : SuperImporter
     {
         static private string m_ReportedVersion = string.Empty;
 
         [SerializeField] private float m_PixelsPerUnit = 0.0f;
         [SerializeField] private int m_EdgesPerEllipse = 0;
-
-        [SerializeField]
-        private SpriteAtlasPacker m_SpriteAtlasPacker = new SpriteAtlasPacker();
-        public SpriteAtlasPacker SpriteAtlasPacker { get { return m_SpriteAtlasPacker; } }
+        [SerializeField] private SpriteAtlas m_SpriteAtlas = null;
 
 #pragma warning disable 414
         [SerializeField] private int m_NumberOfObjectsImported = 0;
@@ -97,7 +94,8 @@ namespace SuperTiled2Unity.Editor
 
         protected override void InternalOnImportAsset()
         {
-            //this.SpriteAtlasPacker.m_UserChanged = true; // fixit - does this help?
+            // Remove (old) sprites from (old) sprite atlas
+            //SpriteAtlasUserAsset.RemoveSpritesFromAtlas(assetPath);
 
             RendererSorter = new RendererSorter();
             WrapImportContext(AssetImportContext);
@@ -105,6 +103,21 @@ namespace SuperTiled2Unity.Editor
 
         protected override void InternalOnImportAssetCompleted()
         {
+            // fixit - are we adding a sprite atlas user for the first time? If so it should start off with the Default sprite atlas.
+            var atlasUser = SpriteAtlasUserAsset.GetAsset(assetPath);
+            if (atlasUser == null)
+            {
+                m_SpriteAtlas = SpriteAtlasUserAsset.FindDefaultSpriteAtlas();
+            }
+            else
+            {
+                SpriteAtlasUserAsset.RemoveSpritesFromAtlas(assetPath);
+            }
+
+            // Add sprites to sprite atlas (or more correctly, add the scritable object that will add the sprites when import completes)
+            var spriteAtlasUser = SpriteAtlasUserAsset.CreateSpriteAtlasUserAsset(m_SpriteAtlas);
+            SuperImportContext.AddObjectToAsset("__atlas", spriteAtlasUser);
+
             RendererSorter = null;
             m_NumberOfObjectsImported = SuperImportContext.GetNumberOfObjects();
         }

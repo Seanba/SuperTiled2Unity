@@ -17,6 +17,9 @@ namespace SuperTiled2Unity.Editor
         private SerializedProperty m_EdgesPerEllipse;
         private readonly GUIContent m_EdgesPerEllipseContent = new GUIContent("Edges Per Ellipse", "How many edges to use when appromixating ellipse/circle colliders.");
 
+        private SerializedProperty m_SpriteAtlas;
+        private readonly GUIContent m_SpriteAtlasContent = new GUIContent("Sprite Atlas", "The use of a sprite atlas removes visual artifacts like seams and improves runtime performance");
+
         public override void OnEnable()
         {
             CacheSerializedProperites();
@@ -27,20 +30,14 @@ namespace SuperTiled2Unity.Editor
         {
             EditorGUILayout.PropertyField(m_PixelsPerUnit, m_PixelsPerUnitContent);
             EditorGUILayout.PropertyField(m_EdgesPerEllipse, m_EdgesPerEllipseContent);
-
-            SpriteAtlasPacker.Editor_ShowEditorGui(serializedObject);
+            EditorGUILayout.PropertyField(m_SpriteAtlas, m_SpriteAtlasContent);
         }
 
         protected override void Apply()
         {
             m_PixelsPerUnit.floatValue = Clamper.ClampPixelsPerUnit(m_PixelsPerUnit.floatValue);
             m_EdgesPerEllipse.intValue = Clamper.ClampEdgesPerEllipse(m_EdgesPerEllipse.intValue);
-
-            TargetAssetImporter.SpriteAtlasPacker.Editor_PreApply(); // fixit - does this work
-
             base.Apply();
-
-            TargetAssetImporter.SpriteAtlasPacker.Editor_PostApply(); // fixit - does this work
         }
 
         protected override void ResetValues()
@@ -56,6 +53,9 @@ namespace SuperTiled2Unity.Editor
 
             m_EdgesPerEllipse = serializedObject.FindProperty("m_EdgesPerEllipse");
             Assert.IsNotNull(m_EdgesPerEllipse);
+
+            m_SpriteAtlas = serializedObject.FindProperty("m_SpriteAtlas");
+            Assert.IsNotNull(m_SpriteAtlas);
         }
     }
 }
