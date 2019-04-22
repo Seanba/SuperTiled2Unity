@@ -188,7 +188,7 @@ namespace SuperTiled2Unity.Editor
 
                     using (new GuiScopedIndent())
                     {
-                        StringBuilder message = new StringBuilder("Sorting Layers are missing in your project settings. Open the Tag Manager, add these missing sorting layer, and reimport:");
+                        StringBuilder message = new StringBuilder("Sorting Layers are missing in your project settings. Open the Tag Manager, add these missing sorting layers, and reimport:");
                         message.AppendLine();
                         message.AppendLine();
 
