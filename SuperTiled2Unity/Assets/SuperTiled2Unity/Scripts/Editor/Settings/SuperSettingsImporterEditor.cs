@@ -19,19 +19,19 @@ namespace SuperTiled2Unity.Editor
 
         // Serialized properties
         private SerializedProperty m_PixelsPerUnit;
-        private readonly GUIContent m_PixelsPerUnitContent = new GUIContent("Default Pixels Per Unit", "How many pixels in the sprite correspond to one unit in the world. (Default Setting)");
-
         private SerializedProperty m_EdgesPerEllipse;
-        private readonly GUIContent m_EdgesPerEllipseContent = new GUIContent("Default Edges Per Ellipse", "How many edges to use when appromixating ellipse/circle colliders. (Default Setting)");
-
         private SerializedProperty m_AnimationFramerate;
-        private readonly GUIContent m_AnimationFramerateContent = new GUIContent("Animation Framerate", "How many frames per second for tile animations.");
-
         private SerializedProperty m_DefaultMaterial;
-        private readonly GUIContent m_DefaultMaterialContent = new GUIContent("Default Material", "Set to the material you want to use for sprites and tiles imported by SuperTiled2Unity. Leave empy to use built-in sprite material.");
-
         private SerializedProperty m_ObjectTypesXml;
-        private readonly GUIContent m_ObjectTypesXmlContent = new GUIContent("Object Types Xml", "Set to an Object Types Xml file exported from Tiled Object Type Editor.");
+
+        public static class SettingsContent
+        {
+            public static readonly GUIContent m_PixelsPerUnitContent = new GUIContent("Default Pixels Per Unit", "How many pixels in the sprite correspond to one unit in the world. (Default Setting)");
+            public static readonly GUIContent m_EdgesPerEllipseContent = new GUIContent("Default Edges Per Ellipse", "How many edges to use when appromixating ellipse/circle colliders. (Default Setting)");
+            public static readonly GUIContent m_AnimationFramerateContent = new GUIContent("Animation Framerate", "How many frames per second for tile animations.");
+            public static readonly GUIContent m_DefaultMaterialContent = new GUIContent("Default Material", "Set to the material you want to use for sprites and tiles imported by SuperTiled2Unity. Leave empy to use built-in sprite material.");
+            public static readonly GUIContent m_ObjectTypesXmlContent = new GUIContent("Object Types Xml", "Set to an Object Types Xml file exported from Tiled Object Type Editor.");
+        }
 
         private ST2USettings m_ST2USettings;
         private bool m_ShowObjectTypes;
@@ -140,13 +140,13 @@ namespace SuperTiled2Unity.Editor
         private void DoGuiSettings()
         {
             EditorGUILayout.LabelField("SuperTiled2Unity Settings", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(m_PixelsPerUnit, m_PixelsPerUnitContent);
-            EditorGUILayout.PropertyField(m_EdgesPerEllipse, m_EdgesPerEllipseContent);
-            EditorGUILayout.PropertyField(m_DefaultMaterial, m_DefaultMaterialContent);
+            EditorGUILayout.PropertyField(m_PixelsPerUnit, SettingsContent.m_PixelsPerUnitContent);
+            EditorGUILayout.PropertyField(m_EdgesPerEllipse, SettingsContent.m_EdgesPerEllipseContent);
+            EditorGUILayout.PropertyField(m_DefaultMaterial, SettingsContent.m_DefaultMaterialContent);
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Animations", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(m_AnimationFramerate, m_AnimationFramerateContent);
+            EditorGUILayout.PropertyField(m_AnimationFramerate, SettingsContent.m_AnimationFramerateContent);
             EditorGUILayout.HelpBox("In frames-per-second. Note: You will need to reimport all your tilesets after making changes to the animation framerate for tiles.", MessageType.None);
         }
 
@@ -154,7 +154,7 @@ namespace SuperTiled2Unity.Editor
         {
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Object Types", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(m_ObjectTypesXml, m_ObjectTypesXmlContent);
+            EditorGUILayout.PropertyField(m_ObjectTypesXml, SettingsContent.m_ObjectTypesXmlContent);
 
             DoDisplayPrefabReplacements();
 
