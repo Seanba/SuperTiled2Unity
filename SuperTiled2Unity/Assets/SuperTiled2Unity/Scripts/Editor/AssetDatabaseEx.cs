@@ -20,5 +20,22 @@ namespace SuperTiled2Unity.Editor
 
             return null;
         }
+
+        public static T LoadFirstAssetByFilterAndExtension<T>(string filter, string extension) where T : UnityEngine.Object
+        {
+            var guids = AssetDatabase.FindAssets(filter);
+            foreach (var guid in guids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+
+                if (path.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
+                {
+                    return AssetDatabase.LoadAssetAtPath<T>(path);
+                }
+            }
+
+            return null;
+
+        }
     }
 }

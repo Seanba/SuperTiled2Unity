@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
 {
+    // fixit - this clamper thing sucks
     public static class Clamper
     {
         public static float ClampPixelsPerUnit(float value)

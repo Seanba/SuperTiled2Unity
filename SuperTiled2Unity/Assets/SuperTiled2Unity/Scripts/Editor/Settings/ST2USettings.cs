@@ -49,7 +49,27 @@ namespace SuperTiled2Unity.Editor
         private List<TypePrefabReplacement> m_PrefabReplacements = new List<TypePrefabReplacement>();
         public List<TypePrefabReplacement> PrefabReplacements { get { return m_PrefabReplacements; } }
 
-        public void AssignSettings(SuperSettingsImporter importer)
+        internal static ST2USettings GetOrCreateSettings()
+        {
+            var settings = AssetDatabaseEx.LoadFirstAssetByFilterAndExtension<ST2USettings>("t: ST2USettings", "asset");
+
+            Debug.LogFormat("fixit - found: {0}", AssetDatabase.GetAssetPath(settings));
+
+
+            if (settings == null)
+            {
+                settings = CreateInstance<ST2USettings>();
+                AssetDatabase.CreateAsset(settings, "Assets/SuperTiled2Unity/ST2U Settings.asset");
+                AssetDatabase.SaveAssets();
+            }
+
+            return null;
+        }
+
+
+        // I think everything below can go or change
+
+        public void AssignSettings(SuperSettingsImporter importer) // fixit - this bites
         {
             m_Version = importer.Version;
             m_PixelsPerUnit = importer.PixelsPerUnit;
@@ -58,8 +78,8 @@ namespace SuperTiled2Unity.Editor
             m_AnimationFramerate = importer.AnimationFramerate;
             m_DefaultMaterial = importer.DefaultMaterial;
             m_LayerColors = importer.LayerColors;
-            FillCustomObjectTypes(importer);
-            AssignPrefabReplacements(importer);
+            FillCustomObjectTypes(importer); // fixit - get rid of this
+            AssignPrefabReplacements(importer); // fixit - get rid of this
         }
 
         public void DefaultOrOverride_PixelsPerUnit(ref float ppu)
@@ -162,7 +182,7 @@ namespace SuperTiled2Unity.Editor
         }
 
         [MenuItem("Edit/Project Settings/SuperTiled2Unity Settings", false)]
-        private static void SelectProjectSettings()
+        private static void SelectProjectSettings() // fixit - open in project settings instead of this monstrosity
         {
             var asset = LoadSettings();
             if (asset != null)
@@ -175,16 +195,6 @@ namespace SuperTiled2Unity.Editor
             {
                 Debug.LogWarningFormat("SuperTiled2Unity settings asset not found. Was it deleted? Please reinstall Super Tiled2Unity.");
             }
-        }
-
-        // This is only invoked by a deployment batch file
-        private static void DeploySuperTiled2Unity()
-        {
-            var settings = ST2USettings.LoadSettings();
-            var path = string.Format("{0}/../../deploy/SuperTiled2Unity.{1}.unitypackage", Application.dataPath, settings.Version);
-
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-            AssetDatabase.ExportPackage("Assets/SuperTiled2Unity", path, ExportPackageOptions.Recurse);
         }
     }
 }

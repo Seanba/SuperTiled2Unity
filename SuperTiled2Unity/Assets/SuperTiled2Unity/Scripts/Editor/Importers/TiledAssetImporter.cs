@@ -148,6 +148,8 @@ namespace SuperTiled2Unity.Editor
 
         private void WrapImportContext(AssetImportContext ctx)
         {
+            ST2USettings.GetOrCreateSettings(); // fixit
+
             var settings = ST2USettings.LoadSettings();
             if (settings == null)
             {
