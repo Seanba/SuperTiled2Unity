@@ -98,12 +98,6 @@ namespace SuperTiled2Unity.Editor
             return settings;
         }
 
-        internal static SerializedObject GetSerializedSettings()
-        {
-            return new SerializedObject(GetOrCreateSettings());
-        }
-
-
         // I think almost everything below can go or change // fixit
 
         public void AssignSettings(SuperSettingsImporter importer) // fixit - this bites

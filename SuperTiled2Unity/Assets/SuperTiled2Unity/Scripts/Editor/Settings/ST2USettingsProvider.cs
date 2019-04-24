@@ -9,6 +9,7 @@ namespace SuperTiled2Unity.Editor
 {
     public class ST2USettingsProvider : SettingsProvider
     {
+        private ST2USettings m_ST2USettings;
         private SerializedObject m_S2TUSettingsObject;
 
         public class SettingsContent
@@ -27,17 +28,27 @@ namespace SuperTiled2Unity.Editor
         public override void OnActivate(string searchContext, VisualElement rootElement)
         {
             base.OnActivate(searchContext, rootElement);
-            m_S2TUSettingsObject = ST2USettings.GetSerializedSettings();
+
+            m_ST2USettings = ST2USettings.GetOrCreateSettings();
+            m_S2TUSettingsObject = new SerializedObject(m_ST2USettings);
         }
 
         public override void OnGUI(string searchContext)
         {
-            // fixit - consider (small) donation plea (maybe patreon)
+            m_S2TUSettingsObject.Update();
+
             DoGuiVersion();
+            EditorGUILayout.Space();
             EditorGUILayout.Space();
 
             DoGuiSettings();
             EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            DoObjectTypesSettings();
+            EditorGUILayout.Space();
+
+            m_S2TUSettingsObject.ApplyModifiedProperties();
         }
 
         public override void OnTitleBarGUI()
@@ -91,6 +102,14 @@ namespace SuperTiled2Unity.Editor
             }
 
             EditorGUILayout.HelpBox("In frames-per-second. Note: You will need to reimport all your tilesets after making changes to the animation framerate for tiles.", MessageType.None);
+        }
+
+        private void DoObjectTypesSettings()
+        {
+            var xmlProperty = m_S2TUSettingsObject.FindProperty("m_ObjectTypesXml");
+
+            EditorGUILayout.LabelField("Object Types", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(xmlProperty, SettingsContent.m_ObjectTypesXmlContent);
         }
 
         [SettingsProvider]

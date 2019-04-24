@@ -13,7 +13,7 @@ namespace SuperTiled2Unity.Editor
 
         // Do not submit this enabled. For testing only.
         [MenuItem("Assets/SuperTiled2Unity/Get Settings")]
-        private static void CreateInitialSettings()
+        private static void CreateInitialSettings() // fixit - remove this
         {
             ST2USettings.GetOrCreateSettings();
         }
