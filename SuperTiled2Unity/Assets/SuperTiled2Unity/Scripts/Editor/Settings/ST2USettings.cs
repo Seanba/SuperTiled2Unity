@@ -13,7 +13,7 @@ namespace SuperTiled2Unity.Editor
     public class ST2USettings : ScriptableObject
     {
         [SerializeField]
-        private string m_Version = "unknown";
+        private string m_Version = "get_rid_of_this"; // fixit - version should not be in data, right?
         public string Version { get { return m_Version; } }
 
         [SerializeField]
@@ -38,7 +38,42 @@ namespace SuperTiled2Unity.Editor
         public TextAsset ObjectTypesXml { get { return m_ObjectTypesXml; } }
 
         [SerializeField]
-        private List<Color> m_LayerColors = new List<Color>(Enumerable.Repeat(NamedColors.LightSteelBlue, 32));
+        private List<Color> m_LayerColors = new List<Color>()
+        {
+            NamedColors.SteelBlue,          // Builtin - Default
+            NamedColors.Tomato,             // Builtin - TransparentFX
+            NamedColors.AliceBlue,          // Builtin - Ignore Raycast
+            NamedColors.MediumPurple,
+            NamedColors.PowderBlue,         // Builtin - Water
+            NamedColors.DarkSeaGreen,       // Builtin - UI
+            NamedColors.Khaki,
+            NamedColors.IndianRed,
+            NamedColors.LightGray,
+            NamedColors.Yellow,
+            NamedColors.SpringGreen,
+            NamedColors.PaleGoldenrod,
+            NamedColors.Bisque,
+            NamedColors.LightSteelBlue,
+            NamedColors.PeachPuff,
+            NamedColors.MistyRose,
+            NamedColors.MintCream,
+            NamedColors.DarkRed,
+            NamedColors.Silver,
+            NamedColors.Orchid,
+            NamedColors.DarkOrchid,
+            NamedColors.DarkOliveGreen,
+            NamedColors.DodgerBlue,
+            NamedColors.WhiteSmoke,
+            NamedColors.Honeydew,
+            NamedColors.LightPink,
+            NamedColors.Plum,
+            NamedColors.GreenYellow,
+            NamedColors.Snow,
+            NamedColors.Orange,
+            NamedColors.Cyan,
+            NamedColors.RosyBrown,
+        };
+
         public List<Color> LayerColors { get { return m_LayerColors; } }
 
         [SerializeField]
@@ -52,22 +87,24 @@ namespace SuperTiled2Unity.Editor
         internal static ST2USettings GetOrCreateSettings()
         {
             var settings = AssetDatabaseEx.LoadFirstAssetByFilterAndExtension<ST2USettings>("t: ST2USettings", "asset");
-
-            Debug.LogFormat("fixit - found: {0}", AssetDatabase.GetAssetPath(settings));
-
-
             if (settings == null)
             {
+                // This shouldn't often happen but we need settings in case they get deleted
                 settings = CreateInstance<ST2USettings>();
                 AssetDatabase.CreateAsset(settings, "Assets/SuperTiled2Unity/ST2U Settings.asset");
                 AssetDatabase.SaveAssets();
             }
 
-            return null;
+            return settings;
+        }
+
+        internal static SerializedObject GetSerializedSettings()
+        {
+            return new SerializedObject(GetOrCreateSettings());
         }
 
 
-        // I think everything below can go or change
+        // I think almost everything below can go or change // fixit
 
         public void AssignSettings(SuperSettingsImporter importer) // fixit - this bites
         {

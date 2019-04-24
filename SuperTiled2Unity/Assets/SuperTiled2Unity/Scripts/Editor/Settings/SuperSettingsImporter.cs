@@ -13,7 +13,7 @@ namespace SuperTiled2Unity.Editor
 {
     // Note: Our settings is set to be imported first
     [ScriptedImporter(ImporterConstants.SettingsVersion, ImporterConstants.SettingsExtension, ImporterConstants.SettingsImportOrder)]
-    public class SuperSettingsImporter : SuperImporter
+    public class SuperSettingsImporter : SuperImporter // fixit - may deprecate this whole class
     {
         [SerializeField]
         private string m_Version;

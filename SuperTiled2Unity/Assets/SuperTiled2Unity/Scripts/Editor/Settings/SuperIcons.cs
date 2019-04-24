@@ -7,7 +7,7 @@ using UnityEngine;
 namespace SuperTiled2Unity.Editor
 {
     // Collection of icons to be used with SuperTiled2Unity assets
-    public class SuperIcons : ScriptableObject
+    public class SuperIcons : ScriptableObject // fixit - do we need this? (deprecated)
     {
         [SerializeField]
         private Texture2D m_SettingsIcon;
