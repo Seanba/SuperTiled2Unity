@@ -10,6 +10,7 @@ using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
 {
+    // fixit - need a custom editor to this that just takes us to the project settings
     public class ST2USettings : ScriptableObject
     {
         [SerializeField]
@@ -84,15 +85,13 @@ namespace SuperTiled2Unity.Editor
         private List<TypePrefabReplacement> m_PrefabReplacements = new List<TypePrefabReplacement>();
         public List<TypePrefabReplacement> PrefabReplacements { get { return m_PrefabReplacements; } }
 
-        internal static ST2USettings GetOrCreateSettings()
+        internal static ST2USettings GetOrCreateST2USettings()
         {
             var settings = AssetDatabaseEx.LoadFirstAssetByFilterAndExtension<ST2USettings>("t: ST2USettings", "asset");
             if (settings == null)
             {
-                // This shouldn't often happen but we need settings in case they get deleted
-                settings = CreateInstance<ST2USettings>();
-                AssetDatabase.CreateAsset(settings, "Assets/SuperTiled2Unity/ST2U Settings.asset");
-                AssetDatabase.SaveAssets();
+                // This shouldn't often happen but we need settings in case they get deleted on us
+                settings = SuperTiled2Unity_Config.CreateDefaultSettings();
             }
 
             return settings;

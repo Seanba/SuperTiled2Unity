@@ -37,5 +37,19 @@ namespace SuperTiled2Unity.Editor
             return null;
 
         }
+
+        // Note this returns the first match so be careful if you have multiple scripts with the same class name
+        public static string GetFirstPathOfScriptAsset<T>()
+        {
+            var name = typeof(T).Name;
+            var guids = AssetDatabase.FindAssets("t: script " + name);
+
+            if (guids.Any())
+            { 
+                return AssetDatabase.GUIDToAssetPath(guids[0]);
+            }
+
+            return string.Empty;
+        }
     }
 }
