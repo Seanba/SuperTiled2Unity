@@ -17,7 +17,7 @@ MonoBehaviour:
   m_EdgesPerEllipse: 32
   m_AnimationFramerate: 20
   m_DefaultMaterial: {fileID: 0}
-  m_ObjectTypesXml: {fileID: 0}
+  m_ObjectTypesXml: {fileID: 4900000, guid: 1f7d046f4dea670498fd699b32a70322, type: 3}
   m_LayerColors:
   - {r: 0.2901961, g: 0.41198432, b: 0.78431374, a: 1}
   - {r: 1, g: 0.3882353, b: 0.2784314, a: 1}

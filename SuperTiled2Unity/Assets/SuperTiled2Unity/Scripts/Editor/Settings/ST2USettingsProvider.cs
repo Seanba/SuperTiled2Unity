@@ -79,11 +79,7 @@ namespace SuperTiled2Unity.Editor
                 DoGuiReimportAssets();
             }
 
-            if (m_S2TUSettingsObject.ApplyModifiedProperties())
-            {
-                Debug.LogFormat("fixit - updated?");
-
-            }
+            m_S2TUSettingsObject.ApplyModifiedProperties();
         }
 
         public override void OnTitleBarGUI()
@@ -189,6 +185,8 @@ namespace SuperTiled2Unity.Editor
 
             EditorGUILayout.LabelField("Custom Property Settings", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(xmlProperty, SettingsContent.m_ObjectTypesXmlContent);
+
+            // fixit - put a button for showing the custom properties in a specialized form
         }
 
         private void DoGuiReimportAssets()
