@@ -4,7 +4,14 @@ using System.Linq;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+
+#if UNITY_2019_1_OR_NEWER
+using UnityEngine.UIElements;
+
+#elif UNITY_2018_3_OR_NEWER
 using UnityEngine.Experimental.UIElements;
+
+#endif
 
 #if UNITY_2018_3_OR_NEWER
 namespace SuperTiled2Unity.Editor

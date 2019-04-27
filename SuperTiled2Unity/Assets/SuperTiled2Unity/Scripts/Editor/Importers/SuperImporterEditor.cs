@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
-using UnityEditor.Experimental.UIElements;
 using UnityEngine;
 
 namespace SuperTiled2Unity.Editor

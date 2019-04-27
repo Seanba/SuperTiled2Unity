@@ -16,7 +16,7 @@ MonoBehaviour:
   m_EdgesPerEllipse: 32
   m_AnimationFramerate: 20
   m_DefaultMaterial: {fileID: 0}
-  m_ObjectTypesXml: {fileID: 4900000, guid: ebda228f77df7bb48a401890873fcc7e, type: 3}
+  m_ObjectTypesXml: {fileID: 0}
   m_ParseXmlError: 
   m_LayerColors:
   - {r: 0.2901961, g: 0.41198432, b: 0.78431374, a: 1}
@@ -51,33 +51,5 @@ MonoBehaviour:
   - {r: 1, g: 0.64705884, b: 0, a: 1}
   - {r: 0, g: 1, b: 1, a: 1}
   - {r: 0.7372549, g: 0.56078434, b: 0.56078434, a: 1}
-  m_CustomObjectTypes:
-  - m_Name: AppearingBlock
-    m_Color: {r: 0, g: 1, b: 0.49803922, a: 1}
-    m_CustomProperties:
-    - m_Name: GroupNumber
-      m_Type: int
-      m_Value: 0
-  - m_Name: LotsaProps
-    m_Color: {r: 0.6431373, g: 0.08235294, b: 0.29803923, a: 1}
-    m_CustomProperties:
-    - m_Name: BoolProp
-      m_Type: bool
-      m_Value: true
-    - m_Name: IntProp
-      m_Type: int
-      m_Value: 1337
-    - m_Name: StringProp
-      m_Type: string
-      m_Value: Hello
-  - m_Name: MyObject
-    m_Color: {r: 0, g: 0.6666667, b: 1, a: 1}
-    m_CustomProperties:
-    - m_Name: MyProperty
-      m_Type: string
-      m_Value: MyValue
-  m_PrefabReplacements:
-  - m_TypeName: 
-    m_Prefab: {fileID: 0}
-  - m_TypeName: 
-    m_Prefab: {fileID: 0}
+  m_CustomObjectTypes: []
+  m_PrefabReplacements: []
