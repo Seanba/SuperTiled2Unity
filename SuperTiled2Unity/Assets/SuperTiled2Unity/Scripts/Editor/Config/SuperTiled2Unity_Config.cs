@@ -28,9 +28,7 @@ namespace SuperTiled2Unity.Editor
         // This is only invoked by a deployment batch file
         private static void DeploySuperTiled2Unity()
         {
-            var settings = ST2USettings.LoadSettings();
-            var path = string.Format("{0}/../../deploy/SuperTiled2Unity.{1}.unitypackage", Application.dataPath, settings.Version);
-
+            var path = string.Format("{0}/../../deploy/SuperTiled2Unity.{1}.unitypackage", Application.dataPath, SuperTiled2Unity_Config.Version);
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             AssetDatabase.ExportPackage("Assets/SuperTiled2Unity", path, ExportPackageOptions.Recurse);
         }

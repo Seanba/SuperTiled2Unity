@@ -16,8 +16,6 @@ namespace SuperTiled2Unity.Editor
 {
     public abstract class TiledAssetImporter : SuperImporter
     {
-        static private string m_ReportedVersion = string.Empty;
-
         [SerializeField] private float m_PixelsPerUnit = 0.0f;
         [SerializeField] private int m_EdgesPerEllipse = 0;
 
@@ -83,17 +81,6 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        public override string GetReportHeader()
-        {
-            string version = m_ReportedVersion;
-            if (string.IsNullOrEmpty(version))
-            {
-                version = "unknown";
-            }
-
-            return string.Format("SuperTiled2Unity version: {0}, Unity version: {1}", version, Application.unityVersion);
-        }
-
         protected override void InternalOnImportAsset()
         {
             m_RendererSorter = new RendererSorter();
@@ -148,30 +135,15 @@ namespace SuperTiled2Unity.Editor
 
         private void WrapImportContext(AssetImportContext ctx)
         {
-            var settings = ST2USettings.LoadSettings();
-            if (settings == null)
-            {
-                settings = ScriptableObject.CreateInstance<ST2USettings>();
-            }
-
-            var icons = ST2USettings.LoadIcons();
-            if (icons == null)
-            {
-                icons = ScriptableObject.CreateInstance<SuperIcons>();
-            }
+            var settings = ST2USettings.GetOrCreateST2USettings();
+            settings.RefreshCustomObjectTypes();
 
             // Create a copy of our settings that we can override based on importer settings
-            settings = GameObject.Instantiate<ST2USettings>(settings);
-            OverrideSettings(settings);
+            settings = Instantiate(settings);
+            settings.PixelsPerUnit = m_PixelsPerUnit;
+            settings.EdgesPerEllipse = m_EdgesPerEllipse;
 
-            m_ReportedVersion = settings.Version;
-            SuperImportContext = new SuperImportContext(ctx, settings, icons);
-        }
-
-        private void OverrideSettings(ST2USettings settings)
-        {
-            settings.DefaultOrOverride_PixelsPerUnit(ref m_PixelsPerUnit);
-            settings.DefaultOrOverride_EdgesPerEllipse(ref m_EdgesPerEllipse);
+            SuperImportContext = new SuperImportContext(ctx, settings);
         }
     }
 }

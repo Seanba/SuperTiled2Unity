@@ -28,7 +28,7 @@ namespace SuperTiled2Unity.Editor
             public static readonly GUIContent m_LayerColorsContent = new GUIContent("Layer Colors", "These colors will be used for drawing colliders in your imported Tiled maps.");
         }
 
-        public ST2USettingsProvider(string path) : base(path, SettingsScope.Project)
+        public ST2USettingsProvider() : base(ST2USettings.ProjectSettingsPath, SettingsScope.Project)
         {
         }
 
@@ -264,7 +264,7 @@ namespace SuperTiled2Unity.Editor
         {
             if (ST2USettings.GetOrCreateST2USettings())
             {
-                var provider = new ST2USettingsProvider("Project/SuperTiled2Unity");
+                var provider = new ST2USettingsProvider();
                 provider.keywords = GetSearchKeywordsFromGUIContentProperties<SettingsContent>();
                 return provider;
             }

@@ -7,24 +7,17 @@ namespace SuperTiled2Unity.Editor
 {
     public static class ImporterConstants
     {
-        public const int SettingsVersion = 3;
         public const int TilesetVersion = 7;
         public const int TemplateVersion = 3;
         public const int MapVersion = 12;
 
-        public const string SettingsExtension = "st2u";
         public const string TilesetExtension = "tsx";
         public const string TemplateExtension = "tx";
         public const string MapExtension = "tmx";
 
         // The order we import Tiled assets is important due to dependencies
-        public const int SettingsImportOrder = 1;
         public const int TilesetImportOrder = 10;
         public const int TemplateImportOrder = 11;
         public const int MapImportOrder = 12;
-
-        // Special makers for import versions we may care about
-        // These are, regrettably, magic numbers
-        public const int TilesetVersion_BeforeUnitySpriteAtlasFeature = 7;
     }
 }

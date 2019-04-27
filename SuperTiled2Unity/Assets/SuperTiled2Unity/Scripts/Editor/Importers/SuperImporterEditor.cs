@@ -96,6 +96,7 @@ namespace SuperTiled2Unity.Editor
                     EditorGUILayout.LabelField("Missing or misplaced assets!", EditorStyles.boldLabel);
 
                     var msg = new StringBuilder();
+
                     msg.AppendLine(TargetAssetImporter.GetReportHeader());
                     msg.AppendLine("This asset is dependent on other files that either cannot be found or they failed to be imported.");
                     msg.AppendLine("Note that all Tiled assets must be imported to Unity in folder locations that keep their relative paths intact.");
@@ -242,15 +243,12 @@ namespace SuperTiled2Unity.Editor
 
             using (new GUILayout.HorizontalScope())
             {
+#if UNITY_2018_3_OR_NEWER
                 if (GUILayout.Button("Open Tag Manager"))
                 {
-#if UNITY_2018_3_OR_NEWER
                     SettingsService.OpenProjectSettings("Project/Tags and Layers");
-#else
-                    EditorApplication.ExecuteMenuItem("Edit/Project Settings/Tags and Layers");
-#endif
                 }
-
+#endif
                 if (GUILayout.Button("Reimport"))
                 {
                     ApplyAndImport();

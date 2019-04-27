@@ -2,7 +2,6 @@ fileFormatVersion: 2
 guid: 7cd97f7550099dc4793197e248d94de4
 ScriptedImporter:
   fileIDToRecycleName:
-    11400000: _main
     11400002: _superAsset
     11400004: _icons
   externalObjects: {}
@@ -18,7 +17,7 @@ ScriptedImporter:
   missingTags: []
   importerVersion: 0
   version: 1.3.2
-  pixelsPerUnit: 100
+  pixelsPerUnit: 50
   edgesPerEllipse: 32
   animationFramerate: 20
   defaultMaterial: {instanceID: 0}
@@ -56,4 +55,6 @@ ScriptedImporter:
   - {r: 1, g: 0.64705884, b: 0, a: 1}
   - {r: 0, g: 1, b: 1, a: 1}
   - {r: 0.7372549, g: 0.56078434, b: 0.56078434, a: 1}
-  prefabReplacements: []
+  prefabReplacements:
+  - typeName: AppearingBlock
+    prefab: {instanceID: 0}

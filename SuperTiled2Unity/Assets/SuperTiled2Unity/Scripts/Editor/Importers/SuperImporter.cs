@@ -159,9 +159,9 @@ namespace SuperTiled2Unity.Editor
             m_Warnings.Add(warning);
         }
 
-        public virtual string GetReportHeader()
+        public string GetReportHeader()
         {
-            return string.Format("Unity version: {0}", Application.unityVersion);
+            return string.Format("SuperTiled2Unity version: {0}, Unity version: {1}", SuperTiled2Unity_Config.Version, Application.unityVersion);
         }
 
         public bool CheckSortingLayerName(string sortName)

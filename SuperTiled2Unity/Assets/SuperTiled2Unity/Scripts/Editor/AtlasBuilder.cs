@@ -191,7 +191,7 @@ namespace SuperTiled2Unity.Editor
             m_CurrentAtlas.SetPixels(Enumerable.Repeat(NamedColors.DeepPink, m_AtlasWidth * m_AtlasHeight).ToArray());
 
             // Add the texture to our import context and our list of textures
-            var icon = m_TiledAssetImporter.SuperImportContext.Icons.TsxIcon;
+            var icon = SuperIcons.GetTsxIcon();
             m_TiledAssetImporter.SuperImportContext.AddObjectToAsset(textureName, m_CurrentAtlas, icon);
             m_AtlasTextures.Add(m_CurrentAtlas);
 
