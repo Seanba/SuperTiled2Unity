@@ -106,7 +106,7 @@ namespace SuperTiled2Unity.Editor
 
                     EditorGUILayout.HelpBox(msg.ToString(), MessageType.Error);
 
-                    using (new GuiScopedHorizontal())
+                    using (new GUILayout.HorizontalScope())
                     {
                         if (GUILayout.Button("Copy Message to Clipboard"))
                         {
@@ -240,7 +240,7 @@ namespace SuperTiled2Unity.Editor
                 }
             }
 
-            using (new GuiScopedHorizontal())
+            using (new GUILayout.HorizontalScope())
             {
                 if (GUILayout.Button("Open Tag Manager"))
                 {
@@ -382,18 +382,7 @@ namespace SuperTiled2Unity.Editor
 
         // Conitional compiles
 #if UNITY_2018_1_OR_NEWER
-        protected void EditorGUILayout_ColorFieldNoEdit(GUIContent label, Color color)
-        {
-            EditorGUILayout.ColorField(label, color, false, true, false);
-        }
 #else
-        private static ColorPickerHDRConfig m_DummyHDRConfig = new ColorPickerHDRConfig(0, 0, 0, 0);
-
-        protected void EditorGUILayout_ColorFieldNoEdit(GUIContent label, Color color)
-        {
-            EditorGUILayout.ColorField(label, color, false, true, false, m_DummyHDRConfig);
-        }
-
         protected UnityEngine.Object assetTarget
         {
             get

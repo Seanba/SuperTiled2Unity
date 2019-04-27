@@ -8,6 +8,7 @@ using UnityEngine.Experimental.UIElements;
 
 namespace SuperTiled2Unity.Editor
 {
+    // fixit - support compiling in earlier versions with an error printed in this UI here
     public class ST2USettingsProvider : SettingsProvider
     {
         private ST2USettings m_ST2USettings;
@@ -186,7 +187,15 @@ namespace SuperTiled2Unity.Editor
             EditorGUILayout.LabelField("Custom Property Settings", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(xmlProperty, SettingsContent.m_ObjectTypesXmlContent);
 
-            // fixit - put a button for showing the custom properties in a specialized form
+            EditorGUILayout.Space();
+            using (new GUILayout.HorizontalScope())
+            {
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("View Custom Properties"))
+                {
+                    CustomPropertiesWindow.ShowCustomPropertiesWindow();
+                }
+            }
         }
 
         private void DoGuiReimportAssets()
@@ -198,9 +207,13 @@ namespace SuperTiled2Unity.Editor
                                 @" Note that some assets may be reimported multiple times because of dependencies.",
                                 MessageType.Info);
 
-            if (GUILayout.Button("Reimport Tiled Assets"))
+            using (new GUILayout.HorizontalScope())
             {
-                ReimportTiledAssets();
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Reimport Tiled Assets"))
+                {
+                    ReimportTiledAssets();
+                }
             }
         }
 

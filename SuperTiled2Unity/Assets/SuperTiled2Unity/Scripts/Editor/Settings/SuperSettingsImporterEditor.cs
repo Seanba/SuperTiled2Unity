@@ -8,6 +8,7 @@ using UnityEngine.Assertions;
 
 namespace SuperTiled2Unity.Editor
 {
+    // fixit - get rid of this class? Or leave a shell of it?
     [CustomEditor(typeof(SuperSettingsImporter))]
     public class SuperSettingsImporterEditor : SuperImporterEditor<SuperSettingsImporter>
     {
@@ -176,7 +177,7 @@ namespace SuperTiled2Unity.Editor
                             GUI.enabled = false;
                             var objectTip = string.Format("Object type '{0}' described in '{1}' Xml file.", objectType.m_Name, m_ObjectTypesXml);
                             var objectContent = new GUIContent(objectType.m_Name, objectTip);
-                            EditorGUILayout_ColorFieldNoEdit(objectContent, objectType.m_Color);
+                            //EditorGUILayout_ColorFieldNoEdit(objectContent, objectType.m_Color);
 
                             // Display custom properties
                             using (new GuiScopedIndent())

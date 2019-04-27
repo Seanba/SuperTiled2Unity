@@ -31,8 +31,8 @@ namespace SuperTiled2Unity.Editor
 
         protected override void Apply()
         {
-            m_PixelsPerUnit.floatValue = Clamper.ClampPixelsPerUnit(m_PixelsPerUnit.floatValue);
-            m_EdgesPerEllipse.intValue = Clamper.ClampEdgesPerEllipse(m_EdgesPerEllipse.intValue);
+            //m_PixelsPerUnit.floatValue = Clamper.ClampPixelsPerUnit(m_PixelsPerUnit.floatValue); // fixit - this this in the shower
+            //m_EdgesPerEllipse.intValue = Clamper.ClampEdgesPerEllipse(m_EdgesPerEllipse.intValue);
             base.Apply();
         }
 

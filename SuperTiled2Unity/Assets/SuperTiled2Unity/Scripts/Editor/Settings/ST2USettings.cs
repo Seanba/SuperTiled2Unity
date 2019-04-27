@@ -39,6 +39,10 @@ namespace SuperTiled2Unity.Editor
         public TextAsset ObjectTypesXml { get { return m_ObjectTypesXml; } }
 
         [SerializeField]
+        private string m_ParseXmlError = string.Empty;
+        public string ParseXmlError { get { return m_ParseXmlError; } }
+
+        [SerializeField]
         private List<Color> m_LayerColors = new List<Color>()
         {
             NamedColors.SteelBlue,          // Builtin - Default
@@ -95,6 +99,44 @@ namespace SuperTiled2Unity.Editor
             }
 
             return settings;
+        }
+
+        // Invoke this to ensure that Xml Object Types are up-to-date
+        // Our importers that depend on Object Types from tiled will want to call this early in their import process
+        internal void RefreshCustomObjectTypes()
+        {
+            m_CustomObjectTypes = new List<CustomObjectType>();
+            m_ParseXmlError = string.Empty;
+
+            if (m_ObjectTypesXml != null)
+            {
+                try
+                {
+                    XDocument xdoc = XDocument.Parse(m_ObjectTypesXml.text);
+
+                    if (xdoc.Root.Name != "objecttypes")
+                    {
+                        m_ParseXmlError = string.Format("'{0}' is not a valid object types xml file.", m_ObjectTypesXml.name);
+                    }
+
+                    // Import the data from the objecttype elements
+                    foreach (var xObjectType in xdoc.Descendants("objecttype"))
+                    {
+                        var cot = new CustomObjectType();
+                        cot.m_Name = xObjectType.GetAttributeAs("name", "NoName");
+                        cot.m_Color = xObjectType.GetAttributeAsColor("color", Color.gray);
+                        cot.m_CustomProperties = CustomPropertyLoader.LoadCustomPropertyList(xObjectType);
+
+                        m_CustomObjectTypes.Add(cot);
+                    }
+                }
+                // fixit - try for common exceptions so error is more descriptive
+                catch (Exception e)
+                {
+                    m_ParseXmlError = e.Message;
+                    m_CustomObjectTypes.Clear();
+                }
+            }
         }
 
         // I think almost everything below can go or change // fixit
@@ -209,22 +251,6 @@ namespace SuperTiled2Unity.Editor
         {
             const string search = "t:SuperIcons";
             return AssetDatabaseEx.LoadFirstAssetByFilter<SuperIcons>(search);
-        }
-
-        [MenuItem("Edit/Project Settings/SuperTiled2Unity Settings", false)]
-        private static void SelectProjectSettings() // fixit - open in project settings instead of this monstrosity
-        {
-            var asset = LoadSettings();
-            if (asset != null)
-            {
-                Selection.activeObject = asset;
-                EditorUtility.FocusProjectWindow();
-                EditorGUIUtility.PingObject(asset);
-            }
-            else
-            {
-                Debug.LogWarningFormat("SuperTiled2Unity settings asset not found. Was it deleted? Please reinstall Super Tiled2Unity.");
-            }
         }
     }
 }

@@ -52,4 +52,8 @@ MonoBehaviour:
   - {r: 0, g: 1, b: 1, a: 1}
   - {r: 0.7372549, g: 0.56078434, b: 0.56078434, a: 1}
   m_CustomObjectTypes: []
-  m_PrefabReplacements: []
+  m_PrefabReplacements:
+  - m_TypeName: 
+    m_Prefab: {fileID: 0}
+  - m_TypeName: 
+    m_Prefab: {fileID: 0}
