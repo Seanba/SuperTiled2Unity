@@ -21,12 +21,15 @@ namespace SuperTiled2Unity.Editor
 
         public override void OnInspectorGUI()
         {
-            EditorGUILayout.HelpBox("SuperTiled2Unity Settings have been moved to Project Settings. You can delete this asset.", MessageType.Warning);
 #if UNITY_2018_3_OR_NEWER
+            EditorGUILayout.HelpBox("SuperTiled2Unity Settings have been moved to Project Settings. You can delete this asset.", MessageType.Warning);
             if (GUILayout.Button("Open SuperTiled2Unity Project Settings"))
             {
                 SettingsService.OpenProjectSettings(ST2USettings.ProjectSettingsPath);
             }
+#else
+            string error = SuperTiled2Unity_Config.GetVersionError();
+            EditorGUILayout.HelpBox(error, MessageType.Error);
 #endif
         }
     }

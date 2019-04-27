@@ -223,7 +223,7 @@ namespace SuperTiled2Unity.Editor
 
         private void ReportUnityVersionError()
         {
-            string error = string.Format("SuperTiled2Unity requires Unity 2018.3 or later. You are using {0}", Application.unityVersion);
+            string error = SuperTiled2Unity_Config.GetVersionError();
             ReportError(error);
             Debug.LogError(error);
         }

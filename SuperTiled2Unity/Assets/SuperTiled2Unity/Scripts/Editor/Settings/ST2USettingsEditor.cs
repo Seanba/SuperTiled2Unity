@@ -16,6 +16,9 @@ namespace SuperTiled2Unity.Editor
             {
                 SettingsService.OpenProjectSettings(ST2USettings.ProjectSettingsPath);
             }
+#else
+            string error = SuperTiled2Unity_Config.GetVersionError();
+            EditorGUILayout.HelpBox(error, MessageType.Error);
 #endif
         }
     }

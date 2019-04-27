@@ -39,7 +39,9 @@ namespace SuperTiled2Unity.Editor
         public int GetNumberOfObjects()
         {
             var objects = new List<UnityEngine.Object>();
+#if UNITY_2018_3_OR_NEWER
             m_Context.GetObjects(objects);
+#endif
             return objects.Count;
         }
 

@@ -6,9 +6,9 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
 
+#if UNITY_2018_3_OR_NEWER
 namespace SuperTiled2Unity.Editor
 {
-    // fixit - support compiling in earlier versions with an error printed in this UI here
     public class ST2USettingsProvider : SettingsProvider
     {
         private ST2USettings m_ST2USettings;
@@ -80,7 +80,10 @@ namespace SuperTiled2Unity.Editor
                 DoGuiReimportAssets();
             }
 
-            m_S2TUSettingsObject.ApplyModifiedProperties();
+            if (m_S2TUSettingsObject.ApplyModifiedProperties())
+            {
+                ST2USettings.GetOrCreateST2USettings().RefreshCustomObjectTypes();
+            }
         }
 
         public override void OnTitleBarGUI()
@@ -185,12 +188,23 @@ namespace SuperTiled2Unity.Editor
             var xmlProperty = m_S2TUSettingsObject.FindProperty("m_ObjectTypesXml");
 
             EditorGUILayout.LabelField("Custom Property Settings", EditorStyles.boldLabel);
+
             EditorGUILayout.PropertyField(xmlProperty, SettingsContent.m_ObjectTypesXmlContent);
+
+            if (!string.IsNullOrEmpty(m_ST2USettings.ParseXmlError))
+            {
+                EditorGUILayout.HelpBox(m_ST2USettings.ParseXmlError, MessageType.Error);
+            }
 
             EditorGUILayout.Space();
             using (new GUILayout.HorizontalScope())
             {
                 GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Refresh"))
+                {
+                    ST2USettings.GetOrCreateST2USettings().RefreshCustomObjectTypes();
+                }
+
                 if (GUILayout.Button("View Custom Properties"))
                 {
                     CustomPropertiesWindow.ShowCustomPropertiesWindow();
@@ -274,3 +288,4 @@ namespace SuperTiled2Unity.Editor
         }
     }
 }
+#endif

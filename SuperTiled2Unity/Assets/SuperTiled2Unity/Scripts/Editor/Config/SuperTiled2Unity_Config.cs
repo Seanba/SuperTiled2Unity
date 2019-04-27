@@ -25,6 +25,11 @@ namespace SuperTiled2Unity.Editor
             return settings;
         }
 
+        public static string GetVersionError()
+        {
+            return string.Format("SuperTiled2Unity requires Unity 2018.3 or later. You are using {0}", Application.unityVersion);
+        }
+
         // This is only invoked by a deployment batch file
         private static void DeploySuperTiled2Unity()
         {

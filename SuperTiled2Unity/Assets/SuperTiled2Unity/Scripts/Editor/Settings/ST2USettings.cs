@@ -136,7 +136,11 @@ namespace SuperTiled2Unity.Editor
                         m_CustomObjectTypes.Add(cot);
                     }
                 }
-                // fixit - try for common exceptions so error is more descriptive
+                catch (XmlException xe)
+                {
+                    m_ParseXmlError = string.Format("'{0}' is not a valid XML file.\n\nError: {1}", m_ObjectTypesXml.name, xe.Message);
+                    m_CustomObjectTypes.Clear();
+                }
                 catch (Exception e)
                 {
                     m_ParseXmlError = e.Message;
