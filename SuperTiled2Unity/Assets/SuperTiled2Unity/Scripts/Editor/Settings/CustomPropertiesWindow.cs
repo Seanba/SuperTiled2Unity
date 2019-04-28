@@ -52,17 +52,20 @@ namespace SuperTiled2Unity.Editor
 
                 EditorGUILayout.Space();
 
-                using (new GuiScopedIndent())
+                if (obj.m_CustomProperties.Any())
                 {
-                    using (new GUILayout.VerticalScope(EditorStyles.helpBox))
+                    using (new GuiScopedIndent())
                     {
-                        foreach (var customProperty in obj.m_CustomProperties)
+                        using (new GUILayout.VerticalScope(EditorStyles.helpBox))
                         {
-                            using (new GUILayout.HorizontalScope())
+                            foreach (var customProperty in obj.m_CustomProperties)
                             {
-                                EditorGUILayout.LabelField(customProperty.m_Name);
-                                EditorGUILayout.LabelField(customProperty.m_Value, EditorStyles.textField);
-                                EditorGUILayout.LabelField(customProperty.m_Type);
+                                using (new GUILayout.HorizontalScope())
+                                {
+                                    EditorGUILayout.LabelField(customProperty.m_Name);
+                                    EditorGUILayout.LabelField(customProperty.m_Value, EditorStyles.textField);
+                                    EditorGUILayout.LabelField(customProperty.m_Type);
+                                }
                             }
                         }
                     }
