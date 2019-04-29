@@ -139,8 +139,11 @@ namespace SuperTiled2Unity.Editor
             {
                 foreach (var assetPath in importedAssets)
                 {
-                    // Have we imported a sprite atlas user?
-                    AddSpritesToAtlas(assetPath);
+                    if (assetPath.StartsWith("Assets", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Have we imported a sprite atlas user?
+                        AddSpritesToAtlas(assetPath);
+                    }
                 }
             }
         }
