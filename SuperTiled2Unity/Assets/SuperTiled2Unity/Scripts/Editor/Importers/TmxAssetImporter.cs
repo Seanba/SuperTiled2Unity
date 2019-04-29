@@ -86,7 +86,7 @@ namespace SuperTiled2Unity.Editor
         // The map object is our Main Asset - the prefab that is created in our scene when dragged into the hierarchy
         private bool PrepareMainObject()
         {
-            var icon = SuperImportContext.Icons.TmxIcon;
+            var icon = SuperIcons.GetTmxIcon();
 
             // The Main Gameobject is our grid containing all the layers
             var goGrid = new GameObject("_MapMainObject");

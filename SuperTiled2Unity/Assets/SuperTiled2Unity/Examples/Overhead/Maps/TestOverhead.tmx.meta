@@ -140,6 +140,7 @@ ScriptedImporter:
     6600014: _MapPrfab/TestOverhead/Trim/Collision_Default/CompositeCollider2D
     11400000: _MapPrfab/TestOverhead/MonoBehaviour-SuperTiled2Unity.SuperMap
     11400002: _MapPrfab/TestOverhead/MonoBehaviour-SuperTiled2Unity.SuperCustomProperties
+    11400004: __atlas
     11400016: _superAsset
     11400072: _MapPrfab/TestOverhead/OnTopOfGround/MonoBehaviour-SuperTiled2Unity.SuperTileLayer
     11400074: _MapPrfab/TestOverhead/OnTopOfGround/MonoBehaviour-SuperTiled2Unity.SuperCustomProperties
@@ -212,9 +213,12 @@ ScriptedImporter:
   missingSortingLayers: []
   missingLayers: []
   missingTags: []
+  importerVersion: 12
   pixelsPerUnit: 1
   edgesPerEllipse: 32
-  numberOfObjectsImported: 2
+  spriteAtlas: {fileID: 4343727234628468602, guid: 79a0a4cc83d55dc42a3aabbac113b1ac,
+    type: 2}
+  numberOfObjectsImported: 3
   tilesAsObjects: 0
   sortingMode: 1
   isIsometric: 0

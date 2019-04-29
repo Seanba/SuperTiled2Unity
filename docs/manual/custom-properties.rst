@@ -48,29 +48,28 @@ This will bring up the save file dialog. Save your object types Xml file somewhe
    You can export your Object Types Xml file to any filename but make sure it is somewhere under your Unity project's :code:`Assets` directory.
    This Xml file itself will need to be a Unity asset that is referenced by SuperTiled2Unity's settings.
 
-We now need to make SuperTiled2Unity aware of this exported Object Types Xml file. Select :code:`Assets/SuperTiled2Unity/S2TU Settings` within your Unity project.
+We now need to make SuperTiled2Unity aware of this exported Object Types Xml file through the :code:`SuperTiled2Unity Project Settings`.
+These settings are found with your other project-wide settings (audio, graphics, etc.) through the :code:`Edit -> Project Settings...` menu item.
 
-.. figure:: img/objects-xml/st2u-settings.png
-   :alt: SuperTiled2Unity Settings
-   
-   Select S2TU Settings asset in your Unity project
+.. figure:: img/objects-xml/unity-projects-settings-menuitem.png
 
-In the Inspector you should see a field for :code:`Object Types Xml`. Either drag and drop your recently exported Object Types Xml filed into this field or use the
+
+In the settings window you should see a field for :code:`Object Types Xml`. Either drag and drop your recently exported Object Types Xml filed into this field or use the
 asset selector button to select the asset.
 
-.. figure:: img/objects-xml/inspector-apply.png
-   :alt: S2TU Inspector
+.. figure:: img/objects-xml/st2u-project-settings-object-xml.png
+   :alt: SuperTiled2Unity Project Settings
    
-   Drag and drop your exported object types Xml file into the **Object Types Xml** field and hit **Apply**
+   Drag and drop your exported object types Xml file into the **Object Types Xml** field
 
-With the Object Types Xml file now set hit :code:`Apply` in the Inspector. You should now be able to expand the list of :code:`Custom Object Types` and see your predefined
-objects, including properties and colors, displayed.
+With the Object Types Xml file now set hit the :code:`View Custom Properties` button just below.
+This will display the :code:`Custom Object Types Properties` window which lists all the custom object types that were imported as well as their custom properties (if any) and custom color.
 
 
-.. figure:: img/objects-xml/inspector-done.png
-   :alt: S2TU Inspector Done
+.. figure:: img/objects-xml/custom-object-types-window.png
+   :alt: Custom Object Types Properties
    
-   Custom properties for object types should be visible now
+   Custom properties for object types are displayed in this window.
 
 Now, any in your Unity project that are updated should have these predefined properties in the appropriate :code:`SuperCustomProperties` instances.
 

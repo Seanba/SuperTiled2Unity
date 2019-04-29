@@ -7,30 +7,51 @@ using UnityEngine;
 namespace SuperTiled2Unity.Editor
 {
     // Collection of icons to be used with SuperTiled2Unity assets
-    public class SuperIcons : ScriptableObject
+    public static class SuperIcons
     {
-        [SerializeField]
-        private Texture2D m_SettingsIcon;
-        public Texture2D SettingsIcon { get { return m_SettingsIcon; } }
+        private static Texture2D m_SettingsIcon;
+        private static Texture2D m_TmxIcon;
+        private static Texture2D m_TsxIcon;
+        private static Texture2D m_TxIcon;
 
-        [SerializeField]
-        private Texture2D m_TmxIcon;
-        public Texture2D TmxIcon { get { return m_TmxIcon; } }
-
-        [SerializeField]
-        private Texture2D m_TsxIcon;
-        public Texture2D TsxIcon { get { return m_TsxIcon; } }
-
-        [SerializeField]
-        private Texture2D m_TxIcon;
-        public Texture2D TxIcon { get { return m_TxIcon; } }
-
-        public void AssignIcons()
+        public static Texture2D GetSettingsIcon()
         {
-            m_SettingsIcon = AssetDatabaseEx.LoadFirstAssetByFilter<Texture2D>("tiled-settings-icon-0x1badd00d");
-            m_TmxIcon = AssetDatabaseEx.LoadFirstAssetByFilter<Texture2D>("tmx-file-icon-0x1badd00d");
-            m_TsxIcon = AssetDatabaseEx.LoadFirstAssetByFilter<Texture2D>("tsx-file-icon-0x1badd00d");
-            m_TxIcon = AssetDatabaseEx.LoadFirstAssetByFilter<Texture2D>("tx-file-icon-0x1badd00d");
+            if (m_SettingsIcon == null)
+            {
+                m_SettingsIcon = AssetDatabaseEx.LoadFirstAssetByFilter<Texture2D>("tiled-settings-icon-0x1badd00d");
+            }
+
+            return m_SettingsIcon;
+        }
+
+        public static Texture2D GetTmxIcon()
+        {
+            if (m_TmxIcon == null)
+            {
+                m_TmxIcon = AssetDatabaseEx.LoadFirstAssetByFilter<Texture2D>("tmx-file-icon-0x1badd00d");
+            }
+
+            return m_TmxIcon;
+        }
+
+        public static Texture2D GetTsxIcon()
+        {
+            if (m_TsxIcon == null)
+            {
+                m_TsxIcon = AssetDatabaseEx.LoadFirstAssetByFilter<Texture2D>("tsx-file-icon-0x1badd00d");
+            }
+
+            return m_TsxIcon;
+        }
+
+        public static Texture2D GetTxIcon()
+        {
+            if (m_TxIcon == null)
+            {
+                m_TxIcon = AssetDatabaseEx.LoadFirstAssetByFilter<Texture2D>("tsx-file-icon-0x1badd00d");
+            }
+
+            return m_TxIcon;
         }
     }
 }

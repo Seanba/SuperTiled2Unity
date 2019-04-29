@@ -13,15 +13,13 @@ namespace SuperTiled2Unity.Editor
 
         private AssetImportContext m_Context;
 
-        public SuperImportContext(AssetImportContext context, ST2USettings settings, SuperIcons icons)
+        public SuperImportContext(AssetImportContext context, ST2USettings settings)
         {
             m_Context = context;
             Settings = settings;
-            Icons = icons;
         }
 
         public ST2USettings Settings { get; private set; }
-        public SuperIcons Icons { get; private set; }
 
         public void AddObjectToAsset(string identifier, UnityEngine.Object obj)
         {
@@ -41,7 +39,9 @@ namespace SuperTiled2Unity.Editor
         public int GetNumberOfObjects()
         {
             var objects = new List<UnityEngine.Object>();
+#if UNITY_2018_3_OR_NEWER
             m_Context.GetObjects(objects);
+#endif
             return objects.Count;
         }
 

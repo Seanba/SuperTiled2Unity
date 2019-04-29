@@ -484,6 +484,7 @@ ScriptedImporter:
     11400958: Tile_scraps_478
     11400960: Tile_scraps_479
     11400962: Tile_scraps_480
+    11400964: __atlas
     21300000: Sprite_scraps_1
     21300002: Sprite_scraps_2
     21300004: Sprite_scraps_3
@@ -971,8 +972,6 @@ ScriptedImporter:
   importerVersion: 8
   pixelsPerUnit: 1
   edgesPerEllipse: 32
-  spriteAtlasPacker:
-    removeFromAtlas: {instanceID: 0}
-    addToAtlas: {instanceID: 0}
-    userChanged: 1
-  numberOfObjectsImported: 955
+  spriteAtlas: {fileID: 4343727234628468602, guid: 79a0a4cc83d55dc42a3aabbac113b1ac,
+    type: 2}
+  numberOfObjectsImported: 956

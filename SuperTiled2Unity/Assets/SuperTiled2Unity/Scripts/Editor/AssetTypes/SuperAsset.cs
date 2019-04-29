@@ -19,7 +19,9 @@ namespace SuperTiled2Unity.Editor
         {
             if (!m_AssetDependencies.Contains(assetPath))
             {
+#if UNITY_2018_3_OR_NEWER
                 context.DependsOnSourceAsset(assetPath);
+#endif
                 m_AssetDependencies.Add(assetPath);
             }
         }

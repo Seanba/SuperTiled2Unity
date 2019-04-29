@@ -28,12 +28,12 @@ namespace SuperTiled2Unity.Editor
 
             if (m_Settings == null)
             {
-                m_Settings = ST2USettings.LoadSettings();
+                m_Settings = ST2USettings.GetOrCreateST2USettings();
 
                 if (m_Settings == null)
                 {
                     // If something goes wrong use some dummy settings
-                    m_Settings = ScriptableObject.CreateInstance<ST2USettings>();
+                    m_Settings = CreateInstance<ST2USettings>();
                 }
             }
 

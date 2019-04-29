@@ -28,16 +28,21 @@ namespace SuperTiled2Unity.Editor
 
         protected void ShowTiledAssetGui()
         {
+            EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(m_PixelsPerUnit, m_PixelsPerUnitContent);
-            EditorGUILayout.PropertyField(m_EdgesPerEllipse, m_EdgesPerEllipseContent);
-            EditorGUILayout.PropertyField(m_SpriteAtlas, m_SpriteAtlasContent);
-        }
+            if (EditorGUI.EndChangeCheck())
+            {
+                m_PixelsPerUnit.floatValue = Mathf.Clamp(m_PixelsPerUnit.floatValue, 0.01f, 2048);
+            }
 
-        protected override void Apply()
-        {
-            m_PixelsPerUnit.floatValue = Clamper.ClampPixelsPerUnit(m_PixelsPerUnit.floatValue);
-            m_EdgesPerEllipse.intValue = Clamper.ClampEdgesPerEllipse(m_EdgesPerEllipse.intValue);
-            base.Apply();
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(m_EdgesPerEllipse, m_EdgesPerEllipseContent);
+            if (EditorGUI.EndChangeCheck())
+            {
+                m_EdgesPerEllipse.intValue = Mathf.Clamp(m_EdgesPerEllipse.intValue, 6, 256);
+            }
+
+            EditorGUILayout.PropertyField(m_SpriteAtlas, m_SpriteAtlasContent);
         }
 
         protected override void ResetValues()

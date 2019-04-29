@@ -8,6 +8,7 @@ At the map import level, SuperTiled2Unity has two options for sorting the layers
 **Sorting Modes**
 
 .. csv-table::
+   :widths: auto
 
    "Stacked", "Default sorting. Matches the rendering order of layers and objects in Tiled."
    "Custom Sort Axis", "Sorting is performed with the help of a Custom Sort Axis (a setting in Unity)."
@@ -27,6 +28,7 @@ In Unity, render order of sprite and tile assets is generally handled through tw
 and `Tilemap Renderer <https://docs.unity3d.com/Manual/class-TilemapRenderer.html>`__ components:
 
 .. csv-table::
+   :widths: auto
 
    "Sorting Layer", "Name of sorting layer. See the `Tag Manager <https://docs.unity3d.com/Manual/class-TagManager.html>`__ to manage these."
    "Order in Layer", "How the renderer is sorted in the named layer."

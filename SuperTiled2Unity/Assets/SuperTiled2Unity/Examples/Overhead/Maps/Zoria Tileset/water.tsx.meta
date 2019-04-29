@@ -232,6 +232,7 @@ ScriptedImporter:
     11400454: Tile_water_226
     11400456: Tile_water_227
     11400458: Tile_water_228
+    11400460: __atlas
     21300000: Sprite_water_1
     21300002: Sprite_water_2
     21300004: Sprite_water_3
@@ -474,5 +475,6 @@ ScriptedImporter:
   importerVersion: 8
   pixelsPerUnit: 1
   edgesPerEllipse: 32
-  numberOfObjectsImported: 458
-  useSpriteAtlas: 1
+  spriteAtlas: {fileID: 4343727234628468602, guid: 79a0a4cc83d55dc42a3aabbac113b1ac,
+    type: 2}
+  numberOfObjectsImported: 459

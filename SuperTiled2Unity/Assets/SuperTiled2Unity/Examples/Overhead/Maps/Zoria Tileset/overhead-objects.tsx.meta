@@ -6,6 +6,7 @@ ScriptedImporter:
     11400002: _superAsset
     11400004: Tile_Overhead Objects_1
     11400006: Tile_Overhead Objects_2
+    11400008: __atlas
     21300000: Sprite_Overhead Objects_1
     21300002: Sprite_Overhead Objects_2
   externalObjects: {}
@@ -22,5 +23,6 @@ ScriptedImporter:
   importerVersion: 8
   pixelsPerUnit: 1
   edgesPerEllipse: 32
-  numberOfObjectsImported: 6
-  useSpriteAtlas: 1
+  spriteAtlas: {fileID: 4343727234628468602, guid: 79a0a4cc83d55dc42a3aabbac113b1ac,
+    type: 2}
+  numberOfObjectsImported: 7

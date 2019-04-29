@@ -43,9 +43,11 @@ namespace SuperTiled2Unity.Editor
         {
             Assert.IsNull(this.Tileset);
 
+            var icon = SuperIcons.GetTsxIcon();
+
             Tileset = ScriptableObject.CreateInstance<SuperTileset>();
             Tileset.m_IsInternal = false;
-            SuperImportContext.AddObjectToAsset("_TilesetScriptObject", Tileset, SuperImportContext.Icons.TsxIcon);
+            SuperImportContext.AddObjectToAsset("_TilesetScriptObject", Tileset, icon);
             SuperImportContext.SetMainObject(this.Tileset);
 
             var loader = new TilesetLoader(this.Tileset, this);
