@@ -48,7 +48,7 @@ namespace SuperTiled2Unity.Editor
 
             // Prepare our list of prefab replacements
             var replacements = m_S2TUSettingsObject.FindProperty("m_PrefabReplacements");
-            m_PrefabReplacementList = new ReorderableList(m_S2TUSettingsObject, replacements, false, false, true, true)
+            m_PrefabReplacementList = new ReorderableList(m_S2TUSettingsObject, replacements, true, false, true, true)
             {
                 headerHeight = 0,
                 drawElementCallback = OnDrawPrefabReplacementElement,
@@ -158,6 +158,21 @@ namespace SuperTiled2Unity.Editor
             if (m_ShowPrefabReplacements)
             {
                 m_PrefabReplacementList.DoLayoutList();
+
+                using (new GUILayout.HorizontalScope())
+                {
+                    GUILayout.FlexibleSpace();
+                    if (GUILayout.Button("Add From Object Types Xml"))
+                    {
+                        m_ST2USettings.AddObjectsToPrefabReplacements();
+                    }
+
+                    if (GUILayout.Button("Sort Alphabetically"))
+                    {
+                        m_ST2USettings.SortPrefabReplacements();
+                    }
+                }
+
                 EditorGUILayout.HelpBox("When the Tiled import scripts come across a Tiled Object of one of these given types it will be replace, automatically, with the associated prefab.", MessageType.None);
             }
         }

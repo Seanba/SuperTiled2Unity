@@ -149,6 +149,23 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
+        public void SortPrefabReplacements()
+        {
+            m_PrefabReplacements = m_PrefabReplacements.OrderBy(p => p.m_TypeName).ToList();
+        }
+
+        public void AddObjectsToPrefabReplacements()
+        {
+            RefreshCustomObjectTypes();
+            foreach (var cot in m_CustomObjectTypes)
+            {
+                if (!PrefabReplacements.Any(c => string.Equals(c.m_TypeName, cot.m_Name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    PrefabReplacements.Add(new TypePrefabReplacement { m_TypeName = cot.m_Name });
+                }
+            }
+        }
+
         public GameObject GetPrefabReplacement(string type)
         {
             var replacement = PrefabReplacements.FirstOrDefault(r => r.m_TypeName == type);
