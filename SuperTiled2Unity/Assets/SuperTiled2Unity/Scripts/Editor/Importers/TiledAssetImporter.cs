@@ -81,6 +81,23 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
+        public void ApplyTemplateToObject(XElement xObject)
+        {
+            var template = xObject.GetAttributeAs("template", "");
+            if (!string.IsNullOrEmpty(template))
+            {
+                var asset = RequestAssetAtPath<ObjectTemplate>(template);
+                if (asset != null)
+                {
+                    xObject.CombineWithTemplate(asset.m_ObjectXml);
+                }
+                else
+                {
+                    ReportError("Missing template file: {0}", template);
+                }
+            }
+        }
+
         protected override void InternalOnImportAsset()
         {
             m_RendererSorter = new RendererSorter();

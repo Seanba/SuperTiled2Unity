@@ -282,6 +282,9 @@ namespace SuperTiled2Unity.Editor
                 {
                     var collision = new CollisionObject();
 
+                    // Template may fill in a bunch of properties
+                    m_Importer.ApplyTemplateToObject(xObject);
+
                     collision.m_ObjectId = xObject.GetAttributeAs("id", 0);
                     collision.m_ObjectName = xObject.GetAttributeAs("name", string.Format("Object_{0}", collision.m_ObjectId));
                     collision.m_ObjectType = xObject.GetAttributeAs("type", "");
@@ -326,12 +329,12 @@ namespace SuperTiled2Unity.Editor
                     {
                         if (collision.m_Size.x == 0)
                         {
-                            m_Importer.ReportError("Invalid ellipse object Id '{0}' in tileset '{1}' has zero width", collision.m_ObjectId, m_TilesetScript.name);
+                            m_Importer.ReportError("Invalid ellipse (Tile ID ='{0}') in tileset '{1}' has zero width", tile.m_TileId, m_TilesetScript.name);
                             m_TilesetScript.m_HasErrors = true;
                         }
                         else if (collision.m_Size.y == 0)
                         {
-                            m_Importer.ReportError("Invalid ellipse object Id '{0}' in tileset '{1}' has zero height", collision.m_ObjectId, m_TilesetScript.name);
+                            m_Importer.ReportError("Invalid ellipse (Tile ID ='{0}') in tileset '{1}' has zero height", tile.m_TileId, m_TilesetScript.name);
                             m_TilesetScript.m_HasErrors = true;
                         }
                         else
@@ -344,12 +347,12 @@ namespace SuperTiled2Unity.Editor
                         // By default, objects are rectangles
                         if (collision.m_Size.x == 0)
                         {
-                            m_Importer.ReportError("Invalid rectangle object Id '{0}' in tileset '{1}' has zero width", collision.m_ObjectId, m_TilesetScript.name);
+                            m_Importer.ReportError("Invalid rectangle (Tile ID ='{0}') in tileset '{1}' has zero width", tile.m_TileId, m_TilesetScript.name);
                             m_TilesetScript.m_HasErrors = true;
                         }
                         else if (collision.m_Size.y == 0)
                         {
-                            m_Importer.ReportError("Invalid rectangle object Id '{0}' in tileset '{1}' has zero height", collision.m_ObjectId, m_TilesetScript.name);
+                            m_Importer.ReportError("Invalid rectangle (Tile ID ='{0}') in tileset '{1}' has zero height", tile.m_TileId, m_TilesetScript.name);
                             m_TilesetScript.m_HasErrors = true;
                         }
                         else

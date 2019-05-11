@@ -72,7 +72,7 @@ namespace SuperTiled2Unity.Editor
         private void CreateObject(XElement xObject)
         {
             // Templates may add extra data
-            ApplyTemplate(xObject);
+            Importer.ApplyTemplateToObject(xObject);
 
             // Create the super object and fill it out
             var superObject = CreateSuperObject(xObject);
@@ -83,23 +83,6 @@ namespace SuperTiled2Unity.Editor
 
             // Post processing after custom properties have been set
             PostProcessObject(superObject.gameObject);
-        }
-
-        private void ApplyTemplate(XElement xObject)
-        {
-            var template = xObject.GetAttributeAs("template", "");
-            if (!string.IsNullOrEmpty(template))
-            {
-                var asset = Importer.RequestAssetAtPath<ObjectTemplate>(template);
-                if (asset != null)
-                {
-                    xObject.CombineWithTemplate(asset.m_ObjectXml);
-                }
-                else
-                {
-                    Importer.ReportError("Missing template file: {0}", template);
-                }
-            }
         }
 
         private SuperObject CreateSuperObject(XElement xObject)
