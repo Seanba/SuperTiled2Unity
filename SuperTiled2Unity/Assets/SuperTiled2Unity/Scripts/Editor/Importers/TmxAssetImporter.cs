@@ -265,7 +265,7 @@ namespace SuperTiled2Unity.Editor
                 if (prefab != null)
                 {
                     // Replace the super object with the instantiated prefab
-                    var instance = Instantiate(prefab, so.transform.position, so.transform.rotation);
+                    var instance = Instantiate(prefab, so.transform.position + prefab.transform.localPosition, so.transform.rotation);
                     instance.transform.SetParent(so.transform.parent);
 
                     // Apply custom properties as messages to the instanced prefab
