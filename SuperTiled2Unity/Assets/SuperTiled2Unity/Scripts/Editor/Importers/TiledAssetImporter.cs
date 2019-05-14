@@ -157,6 +157,17 @@ namespace SuperTiled2Unity.Editor
 
             // Create a copy of our settings that we can override based on importer settings
             settings = Instantiate(settings);
+
+            if (m_PixelsPerUnit == 0)
+            {
+                m_PixelsPerUnit = settings.PixelsPerUnit;
+            }
+
+            if (m_EdgesPerEllipse == 0)
+            {
+                m_EdgesPerEllipse = settings.EdgesPerEllipse;
+            }
+
             settings.PixelsPerUnit = m_PixelsPerUnit;
             settings.EdgesPerEllipse = m_EdgesPerEllipse;
 
