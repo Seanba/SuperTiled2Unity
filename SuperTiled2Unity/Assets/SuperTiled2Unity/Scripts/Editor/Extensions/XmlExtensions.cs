@@ -128,7 +128,7 @@ namespace SuperTiled2Unity.Editor
             // Collect the properties on the source, overriding by named key
             foreach (var prop in xObject.Descendants("property"))
             {
-                properties.Add(prop.GetAttributeAs<string>("name"), prop);
+                properties[prop.GetAttributeAs<string>("name")] = prop;
             }
 
             // Put the combined properties into the object
