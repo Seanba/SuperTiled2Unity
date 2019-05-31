@@ -146,7 +146,7 @@ namespace SuperTiled2Unity.Editor
                         EditorGUILayout.LabelField(t.GetDisplayName());
                     }
 
-                    EditorGUILayout.HelpBox("Auto Importers are custom importers that run on automatically on every exported Tiled map. Order is controlled by the AutoCustomImporterAttribute.", MessageType.None);
+                    EditorGUILayout.HelpBox("Auto Importers are custom importers that run on automatically on every exported Tiled map. Order is controlled by the AutoCustomTmxImporterAttribute.", MessageType.None);
                 }
             }
         }
