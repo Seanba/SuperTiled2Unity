@@ -18,6 +18,7 @@ namespace SuperTiled2Unity
     {
         public static TilemapRenderer.SortOrder Tiled2Unity(MapRenderOrder order)
         {
+            // fixit - double check these. They appear wrong in the hex map I'm testing (reverse left/right?)
             // Swap top/bottom when going from Tiled data to Unity
             switch (order)
             {

@@ -101,7 +101,7 @@ namespace SuperTiled2Unity.Editor
 
         private Tilemap GetOrAddTilemapComponent(GameObject go)
         {
-            if (RendererSorter.IsUsingGroups())
+            if (RendererSorter.IsUsingGroups()) // fixit - make sure I don't lose this
             {
                 // If we have a group layer parent then use it instead as we are grouping tiles on the same tilemap (using the z-component of the tile location)
                 var grouping = go.GetComponentInParent<SuperGroupLayer>();
@@ -125,6 +125,9 @@ namespace SuperTiled2Unity.Editor
             tilemap = go.AddComponent<Tilemap>();
             tilemap.tileAnchor = m_MapComponent.GetTileAnchor();
             tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
+
+            // Offset the layer by one tile height (because Tiled treats the bottom-left corner of the tile as the origin)
+            go.transform.localPosition = new Vector3(0, -m_MapComponent.m_TileHeight * SuperImportContext.Settings.InversePPU, 0);
 
             AddTilemapRendererComponent(go);
 
@@ -203,6 +206,8 @@ namespace SuperTiled2Unity.Editor
                 {
                     var tileId = new TileIdMath(utId);
 
+                    // fixit - make sure to test infinite maps
+                    // fixit - don't forget stagger index and stagger axis (stagger axis means flat or point top in hex)
                     Vector3Int int3 = m_MapComponent.TiledIndexToGridCell(i, chunk.X, chunk.Y, chunk.Width);
 
                     SuperTile tile;
@@ -239,6 +244,7 @@ namespace SuperTiled2Unity.Editor
 
         private void PlaceTileAsObject(GameObject goTilemap, SuperTile tile, int cx, int cy, TileIdMath tileId, Vector3Int pos3)
         {
+            // fixit - this currently is broken
             Assert.IsNotNull(goTilemap.GetComponentInParent<SuperMap>());
             Assert.IsNotNull(goTilemap.GetComponentInParent<SuperLayer>());
 

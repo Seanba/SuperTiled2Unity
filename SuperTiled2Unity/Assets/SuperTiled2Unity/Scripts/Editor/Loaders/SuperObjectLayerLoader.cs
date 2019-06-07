@@ -242,16 +242,15 @@ namespace SuperTiled2Unity.Editor
             goCF.name = string.Format("{0} (CF)", superObject.m_TiledName);
             goTRS.AddChildWithUniqueName(goCF);
 
-            var toCenter = translateCenter + tileOffset;
-            goCF.transform.localPosition = toCenter;
+            goCF.transform.localPosition = translateCenter + tileOffset;
             goCF.transform.localRotation = Quaternion.Euler(0, 0, 0);
             goCF.transform.localScale = new Vector3(flip_h ? -1 : 1, flip_v ? -1 : 1, 1);
 
             // Note: We may not want to put the tile "back into place" depending on our coordinate system
-            var fromCenter = -toCenter;
+            var fromCenter = -translateCenter;
 
             // Isometric maps referece tile objects by bottom center
-            if (SuperMap.m_Orientation == MapOrientation.Isometric)
+            if (SuperMap.m_Orientation == MapOrientation.Isometric) // fixit - does this still apply?
             {
                 fromCenter.x -= Importer.SuperImportContext.MakeScalar(tile.m_Width * 0.5f);
             }

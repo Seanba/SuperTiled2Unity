@@ -75,7 +75,7 @@ namespace SuperTiled2Unity
             y += offset_y;
 
             // Always off by one because tile positions start at bottom of the cell in Tiled
-            y += 1;
+            //y += 1; // fixit - screw these off-by-one values if we can
             var pos3 = TiledCellToGridCell(x, y);
             pos3.y = -pos3.y;
 
@@ -85,8 +85,9 @@ namespace SuperTiled2Unity
         private Vector3Int TiledCellToGridCell(int x, int y)
         {
             // Orthogonal maps are easy
-            Vector3Int grid = new Vector3Int(x, y, 0);
+            Vector3Int cell = new Vector3Int(x, y, 0);
 
+            /* // fixit - try to use the map's grid
             if (m_Orientation == MapOrientation.Isometric)
             {
                 grid = OrthoToIsometric(x, y);
@@ -99,26 +100,27 @@ namespace SuperTiled2Unity
             {
                 Debug.LogErrorFormat("Map orientation not supported for placing tiles: {0}", m_Orientation);
             }
+            */
 
-            return grid;
+            return cell;
         }
 
         public Vector3 CalculateCellSize()
         {
-            if (m_Orientation == MapOrientation.Hexagonal)
-            {
-                var cell = new Vector3(m_TileWidth * 0.5f, m_TileHeight * 0.5f, 1);
-                if (m_StaggerAxis == StaggerAxis.X)
-                {
-                    cell.x += m_HexSideLength * 0.5f;
-                }
-                else
-                {
-                    cell.y += m_HexSideLength * 0.5f;
-                }
+            //if (m_Orientation == MapOrientation.Hexagonal) // fixit
+            //{
+            //    var cell = new Vector3(m_TileWidth * 0.5f, m_TileHeight * 0.5f, 1);
+            //    if (m_StaggerAxis == StaggerAxis.X)
+            //    {
+            //        cell.x += m_HexSideLength * 0.5f;
+            //    }
+            //    else
+            //    {
+            //        cell.y += m_HexSideLength * 0.5f;
+            //    }
 
-                return cell;
-            }
+            //    return cell;
+            //}
 
             return new Vector3(m_TileWidth, m_TileHeight, 1);
         }
