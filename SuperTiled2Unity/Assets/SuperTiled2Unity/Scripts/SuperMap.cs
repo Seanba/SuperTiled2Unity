@@ -169,8 +169,9 @@ namespace SuperTiled2Unity
             }
 
             // The point is now if full blown world coordinates but we want it in cell coordinates
-            point.x /= (int)CellSize.x;
-            point.y /= (int)CellSize.y;
+            var cell = CalculateCellSize();
+            point.x /= (int)cell.x;
+            point.y /= (int)cell.y;
 
             return point;
         }
