@@ -49,7 +49,7 @@ namespace SuperTiled2Unity
         [ReadOnly]
         public int m_NextObjectId;
 
-        public Vector3 CellSize { get; set; }
+        public Vector3 CellSize { get; set; } // fixit - I don't like this property
 
         private void Start()
         {
@@ -74,18 +74,34 @@ namespace SuperTiled2Unity
             x += offset_x;
             y += offset_y;
 
-            // Always off by one because tile positions start at bottom of the cell in Tiled
-            //y += 1; // fixit - screw these off-by-one values if we can
             var pos3 = TiledCellToGridCell(x, y);
             pos3.y = -pos3.y;
 
             return pos3;
         }
 
+        public Vector2 GetTileLayerOffset(float inversePPU)
+        {
+            var offset = new Vector2(0, -m_TileHeight);
+
+            if (m_Orientation == MapOrientation.Hexagonal && m_StaggerAxis == StaggerAxis.Y && m_StaggerIndex == StaggerIndex.Even)
+            {
+                offset.y = -m_TileHeight * 0.25f; // fixit - seems weird. Check this with other maps
+            }
+
+            return offset * inversePPU;
+        }
+
         private Vector3Int TiledCellToGridCell(int x, int y)
         {
             // Orthogonal maps are easy
             Vector3Int cell = new Vector3Int(x, y, 0);
+
+            if (m_Orientation == MapOrientation.Hexagonal && m_StaggerAxis == StaggerAxis.Y && m_StaggerIndex == StaggerIndex.Even)
+            {
+                // Start the staggering on the next row
+                cell.y = y + 1;
+            }
 
             /* // fixit - try to use the map's grid
             if (m_Orientation == MapOrientation.Isometric)

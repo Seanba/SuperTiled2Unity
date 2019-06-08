@@ -26,12 +26,12 @@ namespace SuperTiled2Unity.Editor
             m_ImportContext = importContext;
         }
 
-        public void PlaceTileColliders(SuperMap map, SuperTile tile, TileIdMath tileId, Vector3Int pos)
+        public void PlaceTileColliders(SuperMap map, Tilemap tilemap, SuperTile tile, TileIdMath tileId, Vector3Int pos) // fixit - this is currently busted
         {
             Assert.IsNotNull(m_Tilemap, "Need a Tilemap component if we are going to gather tile colliders");
 
             // Tile y position is always off by one
-            pos.y++;
+            //pos.y++; // fixit - screw this
 
             // Do we have any collider objects defined for this tile?
             if (!tile.m_CollisionObjects.IsEmpty())
@@ -49,8 +49,13 @@ namespace SuperTiled2Unity.Editor
                     var tileHeight = m_ImportContext.MakeScalar(tile.m_Height);
                     var tileDiff = m_Tilemap.cellSize.y - tileHeight;
 
-                    var offset = Vector2.zero;
+                    // Offset needs to be corrected for tile height difference and offset of tilemap
+                    var offset = map.MapCoordinatesToPositionPPU(pos.x, -pos.y);
+                    offset.y -= tilemap.transform.localPosition.y;
+                    //offset.y += tileHeight;
+                    offset.y -= tileDiff; // fixit - doesn't work for even stagger
 
+                    /* fixit - collision offset can hopefully go through the grid instead of this crap
                     // Our offset depends on map orientation. Isometric is such a pain in the ass.
                     if (map.m_Orientation == MapOrientation.Isometric)
                     {
@@ -62,6 +67,7 @@ namespace SuperTiled2Unity.Editor
                     {
                         offset = new Vector2(pos.x * cell_w, pos.y * cell_h - tileDiff);
                     }
+                    */
 
                     var points = poly.Points.Select(pt => pt + offset).ToArray();
 

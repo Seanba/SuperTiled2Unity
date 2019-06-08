@@ -34,6 +34,10 @@ namespace SuperTiled2Unity.Editor
             // Create the game object that contains the layer and add it to the grid parent
             var layerComponent = goParent.AddSuperLayerGameObject<SuperTileLayer>(new SuperTileLayerLoader(xLayer), SuperImportContext);
 
+            // Offset the layer by one tile height (because Tiled treats the bottom-left corner of the tile as the origin)
+            var map = layerComponent.GetComponentInParent<SuperMap>();
+            layerComponent.gameObject.transform.localPosition = map.GetTileLayerOffset(SuperImportContext.Settings.InversePPU);
+
             // Add properties then sort the layer
             AddSuperCustomProperties(layerComponent.gameObject, xLayer.Element("properties"));
 
@@ -125,9 +129,6 @@ namespace SuperTiled2Unity.Editor
             tilemap = go.AddComponent<Tilemap>();
             tilemap.tileAnchor = m_MapComponent.GetTileAnchor();
             tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
-
-            // Offset the layer by one tile height (because Tiled treats the bottom-left corner of the tile as the origin)
-            go.transform.localPosition = new Vector3(0, -m_MapComponent.m_TileHeight * SuperImportContext.Settings.InversePPU, 0);
 
             AddTilemapRendererComponent(go);
 
@@ -244,7 +245,6 @@ namespace SuperTiled2Unity.Editor
 
         private void PlaceTileAsObject(GameObject goTilemap, SuperTile tile, int cx, int cy, TileIdMath tileId, Vector3Int pos3)
         {
-            // fixit - this currently is broken
             Assert.IsNotNull(goTilemap.GetComponentInParent<SuperMap>());
             Assert.IsNotNull(goTilemap.GetComponentInParent<SuperLayer>());
 
@@ -262,8 +262,8 @@ namespace SuperTiled2Unity.Editor
                 var tileObject = goTRS.AddComponent<SuperObject>();
                 tileObject.m_Id = m_ObjectIdCounter++;
                 tileObject.m_TiledName = string.Format("AsObject_{0}", tileObject.m_Id);
-                tileObject.m_X = pos3.x * superMap.m_TileWidth;
-                tileObject.m_Y = -pos3.y * superMap.m_TileHeight;
+                tileObject.m_X = pos3.x * superMap.m_TileWidth; // fixit - this is wrong for hex?
+                tileObject.m_Y = -pos3.y * superMap.m_TileHeight; // fixit - this is wrong for hex?
                 tileObject.m_Width = tile.m_Width;
                 tileObject.m_Height = tile.m_Height;
                 tileObject.m_TileId = (uint)tile.m_TileId;
@@ -286,7 +286,7 @@ namespace SuperTiled2Unity.Editor
             translate.y -= cellPos.y;
 
             // If this is an isometric map than we have an additional translate to consider to place the tile
-            if (m_MapComponent.m_Orientation == MapOrientation.Isometric)
+            if (m_MapComponent.m_Orientation == MapOrientation.Isometric) // fixit - hoping we won't need this
             {
                 translate.y -= m_MapComponent.m_TileHeight * 0.5f * SuperImportContext.Settings.InversePPU;
             }
@@ -329,7 +329,7 @@ namespace SuperTiled2Unity.Editor
             tilemap.SetTile(pos3, tile);
 
             // Do we have any colliders on the tile to be gathered?
-            m_CurrentCollisionBuilder.PlaceTileColliders(m_MapComponent, tile, tileId, pos3);
+            m_CurrentCollisionBuilder.PlaceTileColliders(m_MapComponent, tilemap, tile, tileId, pos3);
         }
 
         private void ReadTileIds_Xml(XElement xElement, ref List<uint> tileIds)

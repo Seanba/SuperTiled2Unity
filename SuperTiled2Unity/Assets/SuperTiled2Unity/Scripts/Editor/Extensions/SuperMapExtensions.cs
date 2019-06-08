@@ -6,7 +6,7 @@ namespace SuperTiled2Unity.Editor
 {
     public static class SuperMapExtensions
     {
-        public static void UpdateProperties(this SuperMap superMap, SuperImportContext importContext)
+        public static void UpdateProperties(this SuperMap superMap, SuperImportContext importContext) // fixit - would be nice not to need this
         {
             var cellSize = superMap.CalculateCellSize();
 
@@ -30,6 +30,10 @@ namespace SuperTiled2Unity.Editor
 
         public static Vector2 MapCoordinatesToPositionPPU(this SuperMap superMap, int cx, int cy)
         {
+            var grid = superMap.GetComponentInChildren<Grid>();
+            return grid.CellToLocal(new Vector3Int(cx, -cy, 0));
+
+            /* // fixit - do everything through the grid if we can (make sure it works for isometric and staggered)
             float w = superMap.CellSize.x;
             float h = superMap.CellSize.y;
 
@@ -43,6 +47,7 @@ namespace SuperTiled2Unity.Editor
             {
                 return new Vector2(cx * w, -cy * h);
             }
+            */
         }
     }
 }

@@ -12,7 +12,7 @@ namespace SuperTiled2Unity.Editor
     {
         protected XElement m_Xml;
 
-        public SuperLayerLoader(XElement xml)
+        protected SuperLayerLoader(XElement xml)
         {
             m_Xml = xml;
         }
