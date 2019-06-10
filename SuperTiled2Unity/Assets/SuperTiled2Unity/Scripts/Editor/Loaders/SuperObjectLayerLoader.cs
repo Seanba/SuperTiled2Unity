@@ -250,7 +250,7 @@ namespace SuperTiled2Unity.Editor
             var fromCenter = -translateCenter;
 
             // Isometric maps referece tile objects by bottom center
-            if (SuperMap.m_Orientation == MapOrientation.Isometric) // fixit - does this still apply?
+            if (SuperMap.m_Orientation == MapOrientation.Isometric)
             {
                 fromCenter.x -= Importer.SuperImportContext.MakeScalar(tile.m_Width * 0.5f);
             }

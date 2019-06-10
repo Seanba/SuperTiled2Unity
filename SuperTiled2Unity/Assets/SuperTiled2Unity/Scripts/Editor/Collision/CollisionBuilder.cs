@@ -26,12 +26,9 @@ namespace SuperTiled2Unity.Editor
             m_ImportContext = importContext;
         }
 
-        public void PlaceTileColliders(SuperMap map, Tilemap tilemap, SuperTile tile, TileIdMath tileId, Vector3Int pos) // fixit - this is currently busted
+        public void PlaceTileColliders(SuperMap map, Tilemap tilemap, SuperTile tile, TileIdMath tileId, Vector3Int pos)
         {
             Assert.IsNotNull(m_Tilemap, "Need a Tilemap component if we are going to gather tile colliders");
-
-            // Tile y position is always off by one
-            //pos.y++; // fixit - screw this
 
             // Do we have any collider objects defined for this tile?
             if (!tile.m_CollisionObjects.IsEmpty())
@@ -46,28 +43,9 @@ namespace SuperTiled2Unity.Editor
                 foreach (var poly in polygons.Polygons)
                 {
                     // Offset the polygon so that it is in the location of the tile
-                    var tileHeight = m_ImportContext.MakeScalar(tile.m_Height);
-                    var tileDiff = m_Tilemap.cellSize.y - tileHeight;
-
-                    // Offset needs to be corrected for tile height difference and offset of tilemap
-                    var offset = map.MapCoordinatesToPositionPPU(pos.x, -pos.y);
-                    offset.y -= tilemap.transform.localPosition.y;
+                    var offset = map.CellPositionToLocalPosition(pos.x, pos.y);
+                    //var tileHeight = m_ImportContext.MakeScalar(tile.m_Height); // fixit - is this needed when using a custom tilemap anchor? (hmmm, perhaps not?)
                     //offset.y += tileHeight;
-                    offset.y -= tileDiff; // fixit - doesn't work for even stagger
-
-                    /* fixit - collision offset can hopefully go through the grid instead of this crap
-                    // Our offset depends on map orientation. Isometric is such a pain in the ass.
-                    if (map.m_Orientation == MapOrientation.Isometric)
-                    {
-                        var x = (pos.x - pos.y) * halfCell_w;
-                        var y = (pos.x + pos.y) * halfCell_h;
-                        offset = new Vector2(x + halfCell_w, y - tileDiff);
-                    }
-                    else
-                    {
-                        offset = new Vector2(pos.x * cell_w, pos.y * cell_h - tileDiff);
-                    }
-                    */
 
                     var points = poly.Points.Select(pt => pt + offset).ToArray();
 

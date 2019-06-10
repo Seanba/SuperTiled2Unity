@@ -34,7 +34,7 @@ namespace SuperTiled2Unity.Editor
             // Create the game object that contains the layer and add it to the grid parent
             var layerComponent = goParent.AddSuperLayerGameObject<SuperTileLayer>(new SuperTileLayerLoader(xLayer), SuperImportContext);
 
-            // Offset the layer by one tile height (because Tiled treats the bottom-left corner of the tile as the origin)
+            // Tile tilelayer will need to be offset to make up for a change in cooridnate systems from Tiled to Unity
             var map = layerComponent.GetComponentInParent<SuperMap>();
             layerComponent.gameObject.transform.localPosition = map.GetTileLayerOffset(SuperImportContext.Settings.InversePPU);
 
@@ -105,7 +105,7 @@ namespace SuperTiled2Unity.Editor
 
         private Tilemap GetOrAddTilemapComponent(GameObject go)
         {
-            if (RendererSorter.IsUsingGroups()) // fixit - make sure I don't lose this
+            if (RendererSorter.IsUsingGroups()) // fixit - make sure I don't lose this funtionality
             {
                 // If we have a group layer parent then use it instead as we are grouping tiles on the same tilemap (using the z-component of the tile location)
                 var grouping = go.GetComponentInParent<SuperGroupLayer>();
@@ -127,8 +127,18 @@ namespace SuperTiled2Unity.Editor
             go.AddComponent<TilemapData>();
 
             tilemap = go.AddComponent<Tilemap>();
-            tilemap.tileAnchor = m_MapComponent.GetTileAnchor();
+            tilemap.tileAnchor = Vector2.zero;
             tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
+
+            // fixit - might want this for iso maps too
+            if (m_MapComponent.m_Orientation == MapOrientation.Hexagonal)
+            {
+                tilemap.orientation = Tilemap.Orientation.Custom;
+
+                float ox = m_MapComponent.m_TileWidth * 0.5f * SuperImportContext.Settings.InversePPU;
+                float oy = m_MapComponent.m_TileHeight * 0.5f * SuperImportContext.Settings.InversePPU;
+                tilemap.orientationMatrix = Matrix4x4.Translate(new Vector3(-ox, -oy));
+            }
 
             AddTilemapRendererComponent(go);
 
@@ -281,15 +291,9 @@ namespace SuperTiled2Unity.Editor
             Vector3 translate, rotate, scale;
             tile.GetTRS(tileId.FlipFlags, out translate, out rotate, out scale);
 
-            var cellPos = superMap.MapCoordinatesToPositionPPU(pos3.x, pos3.y);
+            var cellPos = superMap.CellPositionToLocalPosition(pos3.x, pos3.y);
             translate.x += cellPos.x;
-            translate.y -= cellPos.y;
-
-            // If this is an isometric map than we have an additional translate to consider to place the tile
-            if (m_MapComponent.m_Orientation == MapOrientation.Isometric) // fixit - hoping we won't need this
-            {
-                translate.y -= m_MapComponent.m_TileHeight * 0.5f * SuperImportContext.Settings.InversePPU;
-            }
+            translate.y += cellPos.y;
 
             // Add the game object for the tile
             goTRS.transform.localPosition = translate;

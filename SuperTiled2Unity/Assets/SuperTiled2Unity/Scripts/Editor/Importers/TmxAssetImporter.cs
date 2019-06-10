@@ -120,13 +120,14 @@ namespace SuperTiled2Unity.Editor
             m_MapComponent.m_BackgroundColor = xMap.GetAttributeAsColor("backgroundcolor", NamedColors.Gray);
             m_MapComponent.m_NextObjectId = xMap.GetAttributeAs<int>("nextobjectid");
 
-            // Done reading in values from Xml. Update other properties that may have depended on those settings.
-            m_MapComponent.UpdateProperties(SuperImportContext);
-
+            // Add the tilemap grid to the map
+            // Grid cell size always has a z-value of 1 so that we can use custom axis sorting
             var grid = m_MapComponent.gameObject.AddComponent<Grid>();
-            grid.cellSize = m_MapComponent.CellSize;
+            float sx = SuperImportContext.MakeScalar(m_MapComponent.m_TileWidth);
+            float sy = SuperImportContext.MakeScalar(m_MapComponent.m_TileHeight);
+            grid.cellSize = new Vector3(sx, sy, 1);
 
-            // Todo: figure out what to do about staggered and hex and Y-As-Z isometric // fixit
+            // fixit - flat top hex and staggered still need to be handled
             switch (m_MapComponent.m_Orientation)
             {
 #if UNITY_2018_3_OR_NEWER
@@ -135,7 +136,19 @@ namespace SuperTiled2Unity.Editor
                     break;
 
                 case MapOrientation.Hexagonal:
-                    grid.cellLayout = GridLayout.CellLayout.Hexagon; // fixit - don't forget flat-top (and staggered?)
+                    if (m_MapComponent.m_StaggerAxis == StaggerAxis.Y)
+                    {
+                        // Pointy-top hex maps
+                        grid.cellLayout = GridLayout.CellLayout.Hexagon;
+                        grid.cellSwizzle = GridLayout.CellSwizzle.XYZ;
+                    }
+                    else if (m_MapComponent.m_StaggerAxis == StaggerAxis.X)
+                    {
+                        // Flat-top hex maps. Reverse x and y on size.
+                        grid.cellLayout = GridLayout.CellLayout.Hexagon;
+                        grid.cellSwizzle = GridLayout.CellSwizzle.YXZ;
+                        grid.cellSize = new Vector3(sy, sx, 1);
+                    }
                     break;
 #endif
                 default:

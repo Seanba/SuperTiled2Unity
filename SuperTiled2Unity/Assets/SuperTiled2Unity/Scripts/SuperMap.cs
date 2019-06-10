@@ -49,8 +49,6 @@ namespace SuperTiled2Unity
         [ReadOnly]
         public int m_NextObjectId;
 
-        public Vector3 CellSize { get; set; } // fixit - I don't like this property
-
         private void Start()
         {
             // This is a bad hack but the CompositeCollider2D is currently broken in Unity
@@ -82,132 +80,99 @@ namespace SuperTiled2Unity
 
         public Vector2 GetTileLayerOffset(float inversePPU)
         {
+            return Vector2.zero; // fixit - should put offset on a grid object instead of seprate layers. Objects can be placed in global space.
+
+            /*
             var offset = new Vector2(0, -m_TileHeight);
 
-            if (m_Orientation == MapOrientation.Hexagonal && m_StaggerAxis == StaggerAxis.Y && m_StaggerIndex == StaggerIndex.Even)
+            if (m_Orientation == MapOrientation.Isometric)
             {
-                offset.y = -m_TileHeight * 0.25f; // fixit - seems weird. Check this with other maps
+                offset.x = -m_TileWidth * 0.5f;
+            }
+            else if (m_Orientation == MapOrientation.Hexagonal)
+            {
+                var isStaggerX = m_StaggerAxis == StaggerAxis.X;
+                var isStaggerOdd = m_StaggerIndex == StaggerIndex.Odd;
+
+                if (isStaggerX)
+                {
+                    // Flat top hex
+                    if (isStaggerOdd)
+                    {
+                        offset.x = 0;
+                        offset.y = -m_TileWidth;
+                    }
+                    else
+                    {
+                        // fixit
+                    }
+                }
+                else
+                {
+                    // Pointy top hex
+                    if (isStaggerOdd)
+                    {
+                        // fixit
+                    }
+                    else
+                    {
+                        // fixit
+                    }
+                }
             }
 
+            //else if (m_Orientation == MapOrientation.Hexagonal && m_StaggerAxis == StaggerAxis.Y && m_StaggerIndex == StaggerIndex.Even)
+            //{
+            //    // Offset by one half of one half a tile height
+            //    offset.y = -m_TileHeight * 0.25f;
+            //}
+
             return offset * inversePPU;
+            */
         }
+
 
         private Vector3Int TiledCellToGridCell(int x, int y)
         {
-            // Orthogonal maps are easy
-            Vector3Int cell = new Vector3Int(x, y, 0);
+            //return new Vector3Int(x, y, 0);
 
-            if (m_Orientation == MapOrientation.Hexagonal && m_StaggerAxis == StaggerAxis.Y && m_StaggerIndex == StaggerIndex.Even)
+            if (m_Orientation == MapOrientation.Isometric) // fixit
             {
-                // Start the staggering on the next row
-                cell.y = y + 1;
+                return new Vector3Int(-y, x, 0);
             }
-
-            /* // fixit - try to use the map's grid
-            if (m_Orientation == MapOrientation.Isometric)
+            else if (m_Orientation == MapOrientation.Hexagonal)
             {
-                grid = OrthoToIsometric(x, y);
-            }
-            else if (m_Orientation == MapOrientation.Staggered || m_Orientation == MapOrientation.Hexagonal)
-            {
-                grid = OrthoToStaggeredOrHexagonal(x, y);
-            }
-            else if (m_Orientation != MapOrientation.Orthogonal)
-            {
-                Debug.LogErrorFormat("Map orientation not supported for placing tiles: {0}", m_Orientation);
-            }
-            */
+                var isStaggerX = m_StaggerAxis == StaggerAxis.X;
+                var isStaggerOdd = m_StaggerIndex == StaggerIndex.Odd;
 
-            return cell;
-        }
-
-        public Vector3 CalculateCellSize()
-        {
-            //if (m_Orientation == MapOrientation.Hexagonal) // fixit
-            //{
-            //    var cell = new Vector3(m_TileWidth * 0.5f, m_TileHeight * 0.5f, 1);
-            //    if (m_StaggerAxis == StaggerAxis.X)
-            //    {
-            //        cell.x += m_HexSideLength * 0.5f;
-            //    }
-            //    else
-            //    {
-            //        cell.y += m_HexSideLength * 0.5f;
-            //    }
-
-            //    return cell;
-            //}
-
-            return new Vector3(m_TileWidth, m_TileHeight, 1);
-        }
-
-        private Vector3Int OrthoToIsometric(int x, int y)
-        {
-            var iso = new Vector3Int(-y, x, 0);
-            return iso;
-        }
-
-        private Vector3Int OrthoToStaggeredOrHexagonal(int x, int y)
-        {
-            // This is simulated from Tiled Map Editor "tileToScreenCoords" method
-            var point = new Vector3Int();
-
-            // Round down to even number on tile width and height
-            int tileWidth = m_TileWidth & ~1;
-            int tileHeight = m_TileHeight & ~1;
-
-            int sideLengthX = m_StaggerAxis == StaggerAxis.X ? m_HexSideLength : 0;
-            int sideLengthY = m_StaggerAxis == StaggerAxis.Y ? m_HexSideLength : 0;
-
-            int sideOffsetX = (tileWidth - sideLengthX) / 2;
-            int sideOffsetY = (tileHeight - sideLengthY) / 2;
-
-            int columnWidth = sideOffsetX + sideLengthX;
-            int rowHeight = sideOffsetY + sideLengthY;
-
-            if (m_StaggerAxis == StaggerAxis.X)
-            {
-                point.y = y * (tileHeight + sideLengthY);
-                if (DoStaggerX(x))
+                if (isStaggerX)
                 {
-                    point.y += rowHeight;
+                    // Flat top hex
+                    if (isStaggerOdd)
+                    {
+                        return new Vector3Int(-y, -x - 1, 0);
+                    }
+                    else
+                    {
+                        return new Vector3Int(-y, -x, 0);
+                    }
                 }
-
-                point.x = x * columnWidth;
-            }
-            else
-            {
-                point.x = x * (tileWidth + sideLengthX);
-                if (DoStaggerY(y))
+                else
                 {
-                    point.x += columnWidth;
+                    // Pointy top hex
+                    if (isStaggerOdd)
+                    {
+                        return new Vector3Int(x, y, 0);
+                    }
+                    else
+                    {
+                        return new Vector3Int(x, y + 1, 0);
+                    }
                 }
-
-                point.y = y * rowHeight;
             }
 
-            // The point is now if full blown world coordinates but we want it in cell coordinates
-            var cell = CalculateCellSize();
-            point.x /= (int)cell.x;
-            point.y /= (int)cell.y;
-
-            return point;
-        }
-
-        private bool DoStaggerX(int x)
-        {
-            int staggerX = (m_StaggerAxis == StaggerAxis.X) ? 1 : 0;
-            int staggerEven = (m_StaggerIndex == StaggerIndex.Even) ? 1 : 0;
-
-            return staggerX != 0 && ((x & 1) ^ staggerEven) != 0;
-        }
-
-        private bool DoStaggerY(int y)
-        {
-            int staggerX = (m_StaggerAxis == StaggerAxis.X) ? 1 : 0;
-            int staggerEven = (m_StaggerIndex == StaggerIndex.Even) ? 1 : 0;
-
-            return staggerX == 0 && ((y & 1) ^ staggerEven) != 0;
+            // Simple maps (like orthongal do not transform indices into other spaces)
+            return new Vector3Int(x, y, 0);
         }
     }
 }
