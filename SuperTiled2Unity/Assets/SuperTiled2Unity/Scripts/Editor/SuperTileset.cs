@@ -29,7 +29,7 @@ namespace SuperTiled2Unity.Editor
         public Vector2 m_TileOffset;
 
         [ReadOnly]
-        public MapOrientation m_GridOrientation;
+        public GridOrientation m_GridOrientation;
 
         [ReadOnly]
         public Vector2 m_GridSize;

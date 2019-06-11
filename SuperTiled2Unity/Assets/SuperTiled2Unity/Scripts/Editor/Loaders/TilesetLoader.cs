@@ -67,7 +67,7 @@ namespace SuperTiled2Unity.Editor
             var xGrid = xTileset.Element("grid");
             if (xGrid != null)
             {
-                m_TilesetScript.m_GridOrientation = xGrid.GetAttributeAs<MapOrientation>("orientation");
+                m_TilesetScript.m_GridOrientation = xGrid.GetAttributeAs<GridOrientation>("orientation");
 
                 var w = xGrid.GetAttributeAs<float>("width", 0.0f);
                 var h = xGrid.GetAttributeAs<float>("height", 0.0f);

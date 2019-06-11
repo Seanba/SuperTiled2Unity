@@ -126,7 +126,7 @@ namespace SuperTiled2Unity.Editor
             tilemap.tileAnchor = Vector2.zero;
             tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
 
-            // fixit - might want this for iso maps too
+            // fixit - might want this for iso staggered maps too
             if (m_MapComponent.m_Orientation == MapOrientation.Hexagonal)
             {
                 tilemap.orientation = Tilemap.Orientation.Custom;
@@ -135,6 +135,14 @@ namespace SuperTiled2Unity.Editor
                 float oy = m_MapComponent.m_TileHeight * 0.5f * SuperImportContext.Settings.InversePPU;
                 tilemap.orientationMatrix = Matrix4x4.Translate(new Vector3(-ox, -oy));
             }
+            else if (m_MapComponent.m_Orientation == MapOrientation.Isometric)
+            {
+                tilemap.orientation = Tilemap.Orientation.Custom;
+
+                float ox = m_MapComponent.m_TileWidth * 0.5f * SuperImportContext.Settings.InversePPU;
+                tilemap.orientationMatrix = Matrix4x4.Translate(new Vector3(-ox, 0));
+            }
+
 
             AddTilemapRendererComponent(go);
 

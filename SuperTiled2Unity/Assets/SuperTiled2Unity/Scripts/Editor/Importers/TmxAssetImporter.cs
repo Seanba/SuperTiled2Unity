@@ -148,6 +148,7 @@ namespace SuperTiled2Unity.Editor
 #if UNITY_2018_3_OR_NEWER
                 case MapOrientation.Isometric:
                     m_GridComponent.cellLayout = GridLayout.CellLayout.Isometric;
+                    localPosition = new Vector3(0, -sy, 0);
                     break;
 
                 case MapOrientation.Hexagonal:
@@ -156,7 +157,15 @@ namespace SuperTiled2Unity.Editor
                         // Pointy-top hex maps
                         m_GridComponent.cellLayout = GridLayout.CellLayout.Hexagon;
                         m_GridComponent.cellSwizzle = GridLayout.CellSwizzle.XYZ;
-                        localPosition = new Vector3(sx * 0.5f, sx * -0.5f, 0);
+
+                        if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
+                        {
+                            localPosition = new Vector3(sx * 0.5f, sy * -0.5f, 0);
+                        }
+                        else
+                        {
+                            localPosition = new Vector3(sx * 0.5f, sy * 0.25f, 0);
+                        }
                     }
                     else if (m_MapComponent.m_StaggerAxis == StaggerAxis.X)
                     {
@@ -164,7 +173,15 @@ namespace SuperTiled2Unity.Editor
                         m_GridComponent.cellLayout = GridLayout.CellLayout.Hexagon;
                         m_GridComponent.cellSwizzle = GridLayout.CellSwizzle.YXZ;
                         m_GridComponent.cellSize = new Vector3(sy, sx, 1);
-                        localPosition = new Vector3(sx * -0.25f, -sy, 1);
+
+                        if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
+                        {
+                            localPosition = new Vector3(sx * -0.25f, -sy, 0);
+                        }
+                        else
+                        {
+                            localPosition = new Vector3(sx * 0.5f, -sy, 0);
+                        }
                     }
                     break;
 #endif
