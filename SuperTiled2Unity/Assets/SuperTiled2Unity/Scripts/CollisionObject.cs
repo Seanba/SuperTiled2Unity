@@ -92,7 +92,7 @@ namespace SuperTiled2Unity
             {
                 m_Position = IsometricTransform(m_Position, tile, gridSize);
                 m_Position.x += gridSize.x * 0.5f;
-                m_Position.y += tile.m_Height - gridSize.y;
+                m_Position.y += tile.m_Height - gridSize.y; // fixit - do we have to do this? Can't we put all positions into space of bottom-left corner?
 
                 for (int i = 0; i < m_Points.Length; i++)
                 {
@@ -112,11 +112,11 @@ namespace SuperTiled2Unity
 
         private Vector2 IsometricTransform(Vector2 pt, SuperTile tile,Vector2 gridSize)
         {
-            float cx = pt.x / tile.m_Width;
+            float cx = pt.x / tile.m_Height;
             float cy = pt.y / tile.m_Height;
 
-            float x = (cx - cy) * gridSize.x;
-            float y = (cx + cy) * gridSize.y;
+            float x = (cx - cy) * gridSize.x * 0.5f;
+            float y = (cx + cy) * gridSize.y * 0.5f;
 
             return new Vector2(x, y);
         }
