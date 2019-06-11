@@ -18,6 +18,8 @@ namespace SuperTiled2Unity.Editor
     public partial class TmxAssetImporter : TiledAssetImporter
     {
         private SuperMap m_MapComponent;
+        private Grid m_GridComponent;
+
         private GlobalTileDatabase m_GlobalTileDatabase;
         private Dictionary<uint, TilePolygonCollection> m_TilePolygonDatabase;
         private int m_ObjectIdCounter = 0;
@@ -71,6 +73,7 @@ namespace SuperTiled2Unity.Editor
             bool success = true;
             success = success && PrepareMainObject();
             success = success && ProcessMapAttributes(xMap);
+            success = success && ProcessGridObject(xMap);
             success = success && ProcessTilesetElements(xMap);
 
             if (success)
@@ -78,8 +81,8 @@ namespace SuperTiled2Unity.Editor
                 // Custom properties need to be in place before we process the map layers
                 AddSuperCustomProperties(m_MapComponent.gameObject, xMap.Element("properties"));
 
-                // Create our main grid object and add the layers to it
-                ProcessMapLayers(m_MapComponent.gameObject, xMap);
+                // Add layers to our grid object
+                ProcessMapLayers(m_GridComponent.gameObject, xMap);
             }
         }
 
@@ -120,43 +123,58 @@ namespace SuperTiled2Unity.Editor
             m_MapComponent.m_BackgroundColor = xMap.GetAttributeAsColor("backgroundcolor", NamedColors.Gray);
             m_MapComponent.m_NextObjectId = xMap.GetAttributeAs<int>("nextobjectid");
 
-            // Add the tilemap grid to the map
+            m_IsIsometric = m_MapComponent.m_Orientation == MapOrientation.Isometric;
+
+            return true;
+        }
+
+        private bool ProcessGridObject(XElement xMap)
+        {
+            // Add the grid to the map
+            var goGrid = new GameObject("Grid");
+            goGrid.transform.SetParent(m_MapComponent.gameObject.transform);
+
+            m_GridComponent = goGrid.AddComponent<Grid>();
+
             // Grid cell size always has a z-value of 1 so that we can use custom axis sorting
-            var grid = m_MapComponent.gameObject.AddComponent<Grid>();
             float sx = SuperImportContext.MakeScalar(m_MapComponent.m_TileWidth);
             float sy = SuperImportContext.MakeScalar(m_MapComponent.m_TileHeight);
-            grid.cellSize = new Vector3(sx, sy, 1);
+            m_GridComponent.cellSize = new Vector3(sx, sy, 1);
+            var localPosition = new Vector3(0, 0, 0);
 
-            // fixit - flat top hex and staggered still need to be handled
+            // fixit - staggered still needs to be handled
             switch (m_MapComponent.m_Orientation)
             {
 #if UNITY_2018_3_OR_NEWER
                 case MapOrientation.Isometric:
-                    grid.cellLayout = GridLayout.CellLayout.Isometric;
+                    m_GridComponent.cellLayout = GridLayout.CellLayout.Isometric;
                     break;
 
                 case MapOrientation.Hexagonal:
                     if (m_MapComponent.m_StaggerAxis == StaggerAxis.Y)
                     {
                         // Pointy-top hex maps
-                        grid.cellLayout = GridLayout.CellLayout.Hexagon;
-                        grid.cellSwizzle = GridLayout.CellSwizzle.XYZ;
+                        m_GridComponent.cellLayout = GridLayout.CellLayout.Hexagon;
+                        m_GridComponent.cellSwizzle = GridLayout.CellSwizzle.XYZ;
+                        localPosition = new Vector3(sx * 0.5f, sx * -0.5f, 0);
                     }
                     else if (m_MapComponent.m_StaggerAxis == StaggerAxis.X)
                     {
                         // Flat-top hex maps. Reverse x and y on size.
-                        grid.cellLayout = GridLayout.CellLayout.Hexagon;
-                        grid.cellSwizzle = GridLayout.CellSwizzle.YXZ;
-                        grid.cellSize = new Vector3(sy, sx, 1);
+                        m_GridComponent.cellLayout = GridLayout.CellLayout.Hexagon;
+                        m_GridComponent.cellSwizzle = GridLayout.CellSwizzle.YXZ;
+                        m_GridComponent.cellSize = new Vector3(sy, sx, 1);
+                        localPosition = new Vector3(sx * -0.25f, -sy, 1);
                     }
                     break;
 #endif
                 default:
-                    grid.cellLayout = GridLayout.CellLayout.Rectangle;
+                    m_GridComponent.cellLayout = GridLayout.CellLayout.Rectangle;
                     break;
             }
 
-            m_IsIsometric = m_MapComponent.m_Orientation == MapOrientation.Isometric;
+            m_GridComponent.transform.localPosition = localPosition;
+
             return true;
         }
 

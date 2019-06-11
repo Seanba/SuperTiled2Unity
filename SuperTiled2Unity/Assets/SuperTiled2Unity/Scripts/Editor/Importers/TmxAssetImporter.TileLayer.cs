@@ -34,10 +34,6 @@ namespace SuperTiled2Unity.Editor
             // Create the game object that contains the layer and add it to the grid parent
             var layerComponent = goParent.AddSuperLayerGameObject<SuperTileLayer>(new SuperTileLayerLoader(xLayer), SuperImportContext);
 
-            // Tile tilelayer will need to be offset to make up for a change in cooridnate systems from Tiled to Unity
-            var map = layerComponent.GetComponentInParent<SuperMap>();
-            layerComponent.gameObject.transform.localPosition = map.GetTileLayerOffset(SuperImportContext.Settings.InversePPU);
-
             // Add properties then sort the layer
             AddSuperCustomProperties(layerComponent.gameObject, xLayer.Element("properties"));
 
@@ -272,8 +268,8 @@ namespace SuperTiled2Unity.Editor
                 var tileObject = goTRS.AddComponent<SuperObject>();
                 tileObject.m_Id = m_ObjectIdCounter++;
                 tileObject.m_TiledName = string.Format("AsObject_{0}", tileObject.m_Id);
-                tileObject.m_X = pos3.x * superMap.m_TileWidth; // fixit - this is wrong for hex?
-                tileObject.m_Y = -pos3.y * superMap.m_TileHeight; // fixit - this is wrong for hex?
+                tileObject.m_X = pos3.x * superMap.m_TileWidth;
+                tileObject.m_Y = -pos3.y * superMap.m_TileHeight;
                 tileObject.m_Width = tile.m_Width;
                 tileObject.m_Height = tile.m_Height;
                 tileObject.m_TileId = (uint)tile.m_TileId;

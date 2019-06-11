@@ -78,65 +78,9 @@ namespace SuperTiled2Unity
             return pos3;
         }
 
-        public Vector2 GetTileLayerOffset(float inversePPU)
-        {
-            return Vector2.zero; // fixit - should put offset on a grid object instead of seprate layers. Objects can be placed in global space.
-
-            /*
-            var offset = new Vector2(0, -m_TileHeight);
-
-            if (m_Orientation == MapOrientation.Isometric)
-            {
-                offset.x = -m_TileWidth * 0.5f;
-            }
-            else if (m_Orientation == MapOrientation.Hexagonal)
-            {
-                var isStaggerX = m_StaggerAxis == StaggerAxis.X;
-                var isStaggerOdd = m_StaggerIndex == StaggerIndex.Odd;
-
-                if (isStaggerX)
-                {
-                    // Flat top hex
-                    if (isStaggerOdd)
-                    {
-                        offset.x = 0;
-                        offset.y = -m_TileWidth;
-                    }
-                    else
-                    {
-                        // fixit
-                    }
-                }
-                else
-                {
-                    // Pointy top hex
-                    if (isStaggerOdd)
-                    {
-                        // fixit
-                    }
-                    else
-                    {
-                        // fixit
-                    }
-                }
-            }
-
-            //else if (m_Orientation == MapOrientation.Hexagonal && m_StaggerAxis == StaggerAxis.Y && m_StaggerIndex == StaggerIndex.Even)
-            //{
-            //    // Offset by one half of one half a tile height
-            //    offset.y = -m_TileHeight * 0.25f;
-            //}
-
-            return offset * inversePPU;
-            */
-        }
-
-
         private Vector3Int TiledCellToGridCell(int x, int y)
         {
-            //return new Vector3Int(x, y, 0);
-
-            if (m_Orientation == MapOrientation.Isometric) // fixit
+            if (m_Orientation == MapOrientation.Isometric)
             {
                 return new Vector3Int(-y, x, 0);
             }

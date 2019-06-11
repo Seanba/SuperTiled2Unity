@@ -35,17 +35,16 @@ namespace SuperTiled2Unity.Editor
             {
                 var polygons = AcquireTilePolygonCollection(tile, tileId);
 
-                float cell_w = m_Tilemap.cellSize.x;
-                float cell_h = m_Tilemap.cellSize.y;
-                float halfCell_w = m_Tilemap.cellSize.x * 0.5f;
-                float halfCell_h = m_Tilemap.cellSize.y * 0.5f;
-
                 foreach (var poly in polygons.Polygons)
                 {
                     // Offset the polygon so that it is in the location of the tile
                     var offset = map.CellPositionToLocalPosition(pos.x, pos.y);
-                    //var tileHeight = m_ImportContext.MakeScalar(tile.m_Height); // fixit - is this needed when using a custom tilemap anchor? (hmmm, perhaps not?)
-                    //offset.y += tileHeight;
+
+                    if (tilemap.orientation == Tilemap.Orientation.Custom)
+                    {
+                        var translate = tilemap.orientationMatrix.GetColumn(3);
+                        offset += new Vector2(translate.x, translate.y * -2.0f);
+                    }
 
                     var points = poly.Points.Select(pt => pt + offset).ToArray();
 

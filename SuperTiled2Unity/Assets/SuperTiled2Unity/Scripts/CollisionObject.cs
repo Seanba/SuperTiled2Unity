@@ -88,7 +88,7 @@ namespace SuperTiled2Unity
         // This must be called in order for rotation and position offset to by applied
         public void RenderPoints(SuperTile tile, MapOrientation orientation, Vector2 gridSize)
         {
-            if (orientation == MapOrientation.Isometric)
+            if (orientation == MapOrientation.Isometric) // fixit - this is busted now?
             {
                 m_Position = IsometricTransform(m_Position, tile, gridSize);
                 m_Position.x += gridSize.x * 0.5f;
