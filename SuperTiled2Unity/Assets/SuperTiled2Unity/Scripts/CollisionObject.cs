@@ -88,11 +88,11 @@ namespace SuperTiled2Unity
         // This must be called in order for rotation and position offset to by applied
         public void RenderPoints(SuperTile tile, GridOrientation orientation, Vector2 gridSize)
         {
-            if (orientation == GridOrientation.Isometric) // fixit - this is busted now? (Or always has been?)
+            if (orientation == GridOrientation.Isometric)
             {
                 m_Position = IsometricTransform(m_Position, tile, gridSize);
                 m_Position.x += gridSize.x * 0.5f;
-                m_Position.y += tile.m_Height - gridSize.y; // fixit - do we have to do this? Can't we put all positions into space of bottom-left corner?
+                //m_Position.y += tile.m_Height - gridSize.y; // fixit - do we have to do this? Can't we put all positions into space of bottom-left corner?
 
                 for (int i = 0; i < m_Points.Length; i++)
                 {
@@ -107,7 +107,17 @@ namespace SuperTiled2Unity
             }
 
             ApplyRotationToPoints();
-            m_Points = m_Points.Select(p => p + m_Position).ToArray();
+
+            // Transform all points so that they wrt the bottom-left of the tile
+            // This should make calculations later easier since Tiled treats the bottom-left corner of a tile as the local origin
+            m_Points = m_Points.Select(p => LocalTransform(p, tile)).ToArray();
+
+            // Offset the all our points. We negate y because Unity has y going up in the positive.
+            var offset = new Vector2(m_Position.x, -m_Position.y);
+            m_Points = m_Points.Select(p => p + offset).ToArray();
+
+            // Position needs to be put into relation of our local origin
+            m_Position = LocalTransform(m_Position, tile);
         }
 
         private Vector2 IsometricTransform(Vector2 pt, SuperTile tile,Vector2 gridSize)
@@ -121,10 +131,17 @@ namespace SuperTiled2Unity
             return new Vector2(x, y);
         }
 
+        private Vector2 LocalTransform(Vector2 pt, SuperTile tile)
+        {
+            return new Vector2(pt.x, tile.m_Height - pt.y);
+        }
+
         private void ApplyRotationToPoints()
         {
             if (m_Rotation != 0)
             {
+                // fixit - have to translate all points back and forth (or do we?) Try position and points afterwards
+
                 var rads = m_Rotation * Mathf.Deg2Rad;
                 var cos = Mathf.Cos(rads);
                 var sin = Mathf.Sin(rads);

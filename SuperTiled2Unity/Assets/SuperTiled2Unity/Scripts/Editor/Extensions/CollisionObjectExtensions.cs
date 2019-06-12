@@ -56,17 +56,14 @@ namespace SuperTiled2Unity.Editor
             PolygonUtils.AddCompositePolygonCollider(go, convexPolygons);
 
             // Position is from top-left corner
-            float height = importContext.MakeScalar(tile.m_Height);
-            go.transform.localPosition = new Vector3(0, height, 0);
+            //float height = importContext.MakeScalar(tile.m_Height);
+            //go.transform.localPosition = new Vector3(0, height, 0);
         }
 
         private static void AddEdgeCollider(GameObject go, CollisionObject collision, SuperTile tile, SuperImportContext importContext)
         {
             var edge = go.AddComponent<EdgeCollider2D>();
-            edge.points = importContext.MakePoints(collision.Points);
-
-            float height = importContext.MakeScalar(tile.m_Height);
-            go.transform.localPosition = new Vector3(0, height, 0);
+            edge.points = importContext.MakePoints2(collision.Points);
 
             go.AddComponent<SuperColliderComponent>();
         }
@@ -77,13 +74,13 @@ namespace SuperTiled2Unity.Editor
             if (collision.m_Size.x == collision.m_Size.y)
             {
                 var cirlce = go.AddComponent<CircleCollider2D>();
-                cirlce.offset = importContext.MakePoint(collision.m_Size) * 0.5f;
+                cirlce.offset = importContext.MakePoint(collision.m_Size) * 0.5f; // fixit
                 cirlce.radius = importContext.MakeScalar(collision.m_Size.x) * 0.5f;
 
-                float height = importContext.MakeScalar(tile.m_Height);
+                // fixit - need this?
                 var xpos = importContext.MakeScalar(collision.m_Position.x);
                 var ypos = importContext.MakeScalar(collision.m_Position.y);
-                go.transform.localPosition = new Vector3(xpos, height - ypos);
+                go.transform.localPosition = new Vector3(xpos, ypos);
                 go.transform.localEulerAngles = new Vector3(0, 0, importContext.MakeRotation(collision.m_Rotation));
 
                 go.AddComponent<SuperColliderComponent>();
@@ -100,10 +97,10 @@ namespace SuperTiled2Unity.Editor
             box.offset = importContext.MakePoint(collision.m_Size) * 0.5f;
             box.size = importContext.MakeSize(collision.m_Size);
 
-            float height = importContext.MakeScalar(tile.m_Height);
             var xpos = importContext.MakeScalar(collision.m_Position.x);
             var ypos = importContext.MakeScalar(collision.m_Position.y);
-            go.transform.localPosition = new Vector3(xpos, height - ypos);
+
+            go.transform.localPosition = new Vector3(xpos, ypos);
             go.transform.localEulerAngles = new Vector3(0, 0, importContext.MakeRotation(collision.m_Rotation));
 
             go.AddComponent<SuperColliderComponent>();
