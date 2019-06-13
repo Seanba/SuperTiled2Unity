@@ -88,11 +88,10 @@ namespace SuperTiled2Unity
         // This must be called in order for rotation and position offset to by applied
         public void RenderPoints(SuperTile tile, GridOrientation orientation, Vector2 gridSize)
         {
-            if (orientation == GridOrientation.Isometric)
+            if (orientation == GridOrientation.Isometric) // fixit - make sure this is good after all our changes are made to "regular" collision objects
             {
                 m_Position = IsometricTransform(m_Position, tile, gridSize);
                 m_Position.x += gridSize.x * 0.5f;
-                //m_Position.y += tile.m_Height - gridSize.y; // fixit - do we have to do this? Can't we put all positions into space of bottom-left corner?
 
                 for (int i = 0; i < m_Points.Length; i++)
                 {
@@ -106,17 +105,15 @@ namespace SuperTiled2Unity
                 }
             }
 
+            // Burn rotation into our points
             ApplyRotationToPoints();
+
+            // Burn translation into our points
+            m_Points = m_Points.Select(p => p + m_Position).ToArray();
 
             // Transform all points so that they wrt the bottom-left of the tile
             // This should make calculations later easier since Tiled treats the bottom-left corner of a tile as the local origin
             m_Points = m_Points.Select(p => LocalTransform(p, tile)).ToArray();
-
-            // Offset the all our points. We negate y because Unity has y going up in the positive.
-            var offset = new Vector2(m_Position.x, -m_Position.y);
-            m_Points = m_Points.Select(p => p + offset).ToArray();
-
-            // Position needs to be put into relation of our local origin
             m_Position = LocalTransform(m_Position, tile);
         }
 
@@ -140,8 +137,6 @@ namespace SuperTiled2Unity
         {
             if (m_Rotation != 0)
             {
-                // fixit - have to translate all points back and forth (or do we?) Try position and points afterwards
-
                 var rads = m_Rotation * Mathf.Deg2Rad;
                 var cos = Mathf.Cos(rads);
                 var sin = Mathf.Sin(rads);

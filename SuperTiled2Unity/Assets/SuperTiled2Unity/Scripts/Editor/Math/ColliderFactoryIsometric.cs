@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
 {
+    // fixit - double check all collider objects in Isometric map
     public class ColliderFactoryIsometric : ColliderFactory
     {
         private float m_MapTileWidth;

@@ -187,6 +187,7 @@ namespace SuperTiled2Unity.Editor
 #endif
                 default:
                     m_GridComponent.cellLayout = GridLayout.CellLayout.Rectangle;
+                    localPosition = new Vector3(0, -sy, 0);
                     break;
             }
 

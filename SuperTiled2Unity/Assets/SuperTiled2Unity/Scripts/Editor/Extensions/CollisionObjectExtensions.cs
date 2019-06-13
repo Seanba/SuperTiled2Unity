@@ -43,7 +43,7 @@ namespace SuperTiled2Unity.Editor
         private static void AddPolygonCollider(GameObject go, CollisionObject collision, SuperTile tile, SuperImportContext importContext)
         {
             // Note that polygons may need to be decomposed into convex parts
-            var points = importContext.MakePoints(collision.Points);
+            var points = importContext.MakePoints2(collision.Points);
 
             // Triangulate the polygon points
             var triangulator = new Triangulator();
@@ -54,10 +54,6 @@ namespace SuperTiled2Unity.Editor
             var convexPolygons = composition.Compose(triangles);
 
             PolygonUtils.AddCompositePolygonCollider(go, convexPolygons);
-
-            // Position is from top-left corner
-            //float height = importContext.MakeScalar(tile.m_Height);
-            //go.transform.localPosition = new Vector3(0, height, 0);
         }
 
         private static void AddEdgeCollider(GameObject go, CollisionObject collision, SuperTile tile, SuperImportContext importContext)
@@ -74,10 +70,9 @@ namespace SuperTiled2Unity.Editor
             if (collision.m_Size.x == collision.m_Size.y)
             {
                 var cirlce = go.AddComponent<CircleCollider2D>();
-                cirlce.offset = importContext.MakePoint(collision.m_Size) * 0.5f; // fixit
+                cirlce.offset = importContext.MakePoint2(collision.m_Size.x, -collision.m_Size.y) * 0.5f;
                 cirlce.radius = importContext.MakeScalar(collision.m_Size.x) * 0.5f;
 
-                // fixit - need this?
                 var xpos = importContext.MakeScalar(collision.m_Position.x);
                 var ypos = importContext.MakeScalar(collision.m_Position.y);
                 go.transform.localPosition = new Vector3(xpos, ypos);
@@ -94,7 +89,7 @@ namespace SuperTiled2Unity.Editor
         private static void AddBoxCollider(GameObject go, CollisionObject collision, SuperTile tile, SuperImportContext importContext)
         {
             var box = go.AddComponent<BoxCollider2D>();
-            box.offset = importContext.MakePoint(collision.m_Size) * 0.5f;
+            box.offset = importContext.MakePoint2(collision.m_Size.x, -collision.m_Size.y) * 0.5f;
             box.size = importContext.MakeSize(collision.m_Size);
 
             var xpos = importContext.MakeScalar(collision.m_Position.x);

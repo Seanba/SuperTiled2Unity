@@ -101,7 +101,7 @@ namespace SuperTiled2Unity.Editor
                     tilePoly.ColliderLayerId = LayerMask.NameToLayer(collision.m_PhysicsLayer);
                     tilePoly.IsTrigger = collision.m_IsTrigger;
 
-                    var points = m_ImportContext.MakePoints(collision.Points);
+                    var points = m_ImportContext.MakePoints2(collision.Points);
                     points = points.Select(pt => (Vector2)m_Transform.MultiplyPoint(pt)).ToArray();
                     tilePoly.Points = points;
 

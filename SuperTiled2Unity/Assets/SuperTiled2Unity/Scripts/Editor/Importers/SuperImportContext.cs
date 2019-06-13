@@ -76,6 +76,11 @@ namespace SuperTiled2Unity.Editor
             return pt * Settings.InversePPU;
         }
 
+        public Vector2 MakePoint2(float x, float y) // fixit - without the negate (temp function)
+        {
+            return MakePoint2(new Vector2(x, y));
+        }
+
         public Vector2 MakePoint2(Vector2 pt) // fixit - without the negate (temp function)
         {
             return pt * Settings.InversePPU;
