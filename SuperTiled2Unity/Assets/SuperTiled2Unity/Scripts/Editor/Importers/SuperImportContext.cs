@@ -76,12 +76,13 @@ namespace SuperTiled2Unity.Editor
             return pt * Settings.InversePPU;
         }
 
-        public Vector2 MakePoint2(float x, float y) // fixit - without the negate (temp function)
+        // Applies PPU multiple but does not invert Y
+        public Vector2 MakePointPPU(float x, float y)
         {
-            return MakePoint2(new Vector2(x, y));
+            return MakePointPPU(new Vector2(x, y));
         }
 
-        public Vector2 MakePoint2(Vector2 pt) // fixit - without the negate (temp function)
+        public Vector2 MakePointPPU(Vector2 pt)
         {
             return pt * Settings.InversePPU;
         }
@@ -91,9 +92,9 @@ namespace SuperTiled2Unity.Editor
             return points.Select(p => MakePoint(p)).ToArray();
         }
 
-        public Vector2[] MakePoints2(Vector2[] points)
+        public Vector2[] MakePointsPPU(Vector2[] points)
         {
-            return points.Select(p => MakePoint2(p)).ToArray(); // fixit -temp func
+            return points.Select(p => MakePointPPU(p)).ToArray();
         }
 
         public float MakeRotation(float rot)

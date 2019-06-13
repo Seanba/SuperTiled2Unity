@@ -142,10 +142,11 @@ namespace SuperTiled2Unity.Editor
             m_GridComponent.cellSize = new Vector3(sx, sy, 1);
             var localPosition = new Vector3(0, 0, 0);
 
-            // fixit - staggered still needs to be handled
+            // fixit - staggered isometric still needs to be done
             switch (m_MapComponent.m_Orientation)
             {
 #if UNITY_2018_3_OR_NEWER
+                case MapOrientation.Staggered:
                 case MapOrientation.Isometric:
                     m_GridComponent.cellLayout = GridLayout.CellLayout.Isometric;
                     localPosition = new Vector3(0, -sy, 0);

@@ -221,7 +221,6 @@ namespace SuperTiled2Unity.Editor
                 {
                     var tileId = new TileIdMath(utId);
 
-                    // fixit - make sure to test infinite maps
                     // fixit - don't forget stagger index and stagger axis (stagger axis means flat or point top in hex)
                     Vector3Int int3 = m_MapComponent.TiledIndexToGridCell(i, chunk.X, chunk.Y, chunk.Width);
 
