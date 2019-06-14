@@ -84,6 +84,20 @@ namespace SuperTiled2Unity
             {
                 return new Vector3Int(-y, x, 0);
             }
+            else if (m_Orientation == MapOrientation.Staggered)
+            {
+                // fixit - this works for Stagger Axis Y and Stagger Index Odd
+                var pos = new Vector3Int(x, y + x, 0);
+
+                if (m_StaggerIndex == StaggerIndex.Odd)
+                {
+                    var stagger = y / 2;
+                    pos.x -= stagger;
+                    pos.y -= stagger;
+                }
+
+                return pos;
+            }
             else if (m_Orientation == MapOrientation.Hexagonal)
             {
                 var isStaggerX = m_StaggerAxis == StaggerAxis.X;

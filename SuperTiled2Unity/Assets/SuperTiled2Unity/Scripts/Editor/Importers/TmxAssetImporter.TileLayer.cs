@@ -120,13 +120,12 @@ namespace SuperTiled2Unity.Editor
             }
 
             // Need tilemap data if we're going to have tilemap for flips and rotations
-            go.AddComponent<TilemapData>();
+            go.AddComponent<TilemapData>(); // fixit - get rid of tilemap data an use tilemap.SetMatrix or whatever
 
             tilemap = go.AddComponent<Tilemap>();
             tilemap.tileAnchor = Vector2.zero;
             tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
 
-            // fixit - might want this for iso staggered maps too
             if (m_MapComponent.m_Orientation == MapOrientation.Hexagonal)
             {
                 tilemap.orientation = Tilemap.Orientation.Custom;
@@ -135,7 +134,7 @@ namespace SuperTiled2Unity.Editor
                 float oy = m_MapComponent.m_TileHeight * 0.5f * SuperImportContext.Settings.InversePPU;
                 tilemap.orientationMatrix = Matrix4x4.Translate(new Vector3(-ox, -oy));
             }
-            else if (m_MapComponent.m_Orientation == MapOrientation.Isometric)
+            else if (m_MapComponent.m_Orientation == MapOrientation.Isometric || m_MapComponent.m_Orientation == MapOrientation.Staggered)
             {
                 tilemap.orientation = Tilemap.Orientation.Custom;
 

@@ -146,10 +146,21 @@ namespace SuperTiled2Unity.Editor
             switch (m_MapComponent.m_Orientation)
             {
 #if UNITY_2018_3_OR_NEWER
-                case MapOrientation.Staggered:
                 case MapOrientation.Isometric:
                     m_GridComponent.cellLayout = GridLayout.CellLayout.Isometric;
                     localPosition = new Vector3(0, -sy, 0);
+                    break;
+
+                case MapOrientation.Staggered:
+                    m_GridComponent.cellLayout = GridLayout.CellLayout.Isometric;
+
+                    if (m_MapComponent.m_StaggerAxis == StaggerAxis.Y)
+                    {
+                        if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
+                        {
+                            localPosition = new Vector3(sx * 0.5f, -sy, 0);
+                        }
+                    }
                     break;
 
                 case MapOrientation.Hexagonal:
