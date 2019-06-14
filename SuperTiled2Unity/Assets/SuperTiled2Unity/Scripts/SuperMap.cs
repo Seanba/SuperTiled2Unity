@@ -84,6 +84,14 @@ namespace SuperTiled2Unity
             {
                 return new Vector3Int(-y, x, 0);
             }
+            else if (m_Orientation == MapOrientation.Staggered) // fixit - this is is a tough one
+            {
+                //int iso_x = -y;
+                //int iso_y = x;
+
+                //return new Vector3Int(iso_x + x, -iso_y, 0);
+                return new Vector3Int(-y + x, x, 0);
+            }
             else if (m_Orientation == MapOrientation.Hexagonal)
             {
                 var isStaggerX = m_StaggerAxis == StaggerAxis.X;
