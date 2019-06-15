@@ -26,7 +26,7 @@ namespace SuperTiled2Unity.Editor
             m_ImportContext = importContext;
         }
 
-        public void PlaceTileColliders(SuperMap map, Tilemap tilemap, SuperTile tile, TileIdMath tileId, Vector3Int pos)
+        public void PlaceTileColliders(SuperMap map, SuperTile tile, TileIdMath tileId, Vector3Int pos)
         {
             Assert.IsNotNull(m_Tilemap, "Need a Tilemap component if we are going to gather tile colliders");
 
@@ -40,10 +40,13 @@ namespace SuperTiled2Unity.Editor
                     // Offset the polygon so that it is in the location of the tile
                     var offset = map.CellPositionToLocalPosition(pos.x, pos.y);
 
-                    if (tilemap.orientation == Tilemap.Orientation.Custom)
+                    if (map.m_Orientation == MapOrientation.Isometric || map.m_Orientation == MapOrientation.Staggered)
                     {
-                        var translate = tilemap.orientationMatrix.GetColumn(3);
-                        offset += new Vector2(translate.x, translate.y * -2.0f);
+                        offset -= m_ImportContext.MakePointPPU(map.m_TileWidth, 0) * 0.5f;
+                    }
+                    else if (map.m_Orientation == MapOrientation.Hexagonal)
+                    {
+                        offset -= m_ImportContext.MakePointPPU(map.m_TileWidth, map.m_TileHeight) * 0.5f;
                     }
 
                     var points = poly.Points.Select(pt => pt + offset).ToArray();

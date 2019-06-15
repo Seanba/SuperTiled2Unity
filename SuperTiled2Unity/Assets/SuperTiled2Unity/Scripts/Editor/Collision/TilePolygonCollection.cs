@@ -103,6 +103,13 @@ namespace SuperTiled2Unity.Editor
 
                     var points = m_ImportContext.MakePointsPPU(collision.Points);
                     points = points.Select(pt => (Vector2)m_Transform.MultiplyPoint(pt)).ToArray();
+
+                    // Make sure the polygon points order is still CCW. Otherwise clipper may subtract polygons from each other.
+                    if (PolygonUtils.SumOverEdges(points) < 0)
+                    {
+                        points = points.Reverse().ToArray();
+                    }
+
                     tilePoly.Points = points;
 
                     m_Polygons.Add(tilePoly);

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SuperTiled2Unity.Editor.ClipperLib;
 using SuperTiled2Unity.Editor.Geometry;
 using UnityEngine;
