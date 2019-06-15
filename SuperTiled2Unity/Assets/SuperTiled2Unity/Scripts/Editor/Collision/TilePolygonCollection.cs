@@ -44,7 +44,7 @@ namespace SuperTiled2Unity.Editor
                 return;
             }
 
-            var tileCenter = m_ImportContext.MakeSize(m_Tile.m_Width, -m_Tile.m_Height) * 0.5f;
+            var tileCenter = m_ImportContext.MakeSize(m_Tile.m_Width, m_Tile.m_Height) * 0.5f;
 
             Matrix4x4 matTransIn = Matrix4x4.identity;
             Matrix4x4 matFlip = Matrix4x4.identity;

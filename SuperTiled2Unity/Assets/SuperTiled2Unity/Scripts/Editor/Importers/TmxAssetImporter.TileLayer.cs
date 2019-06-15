@@ -119,9 +119,6 @@ namespace SuperTiled2Unity.Editor
                 return tilemap;
             }
 
-            // Need tilemap data if we're going to have tilemap for flips and rotations
-            go.AddComponent<TilemapData>(); // fixit - get rid of tilemap data an use tilemap.SetMatrix or whatever
-
             tilemap = go.AddComponent<Tilemap>();
             tilemap.tileAnchor = Vector2.zero;
             tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
@@ -325,13 +322,11 @@ namespace SuperTiled2Unity.Editor
             // This allows us to support Tilemaps being shared by groups
             pos3.z = RendererSorter.CurrentTileZ;
 
-            // Set the flip data
-            var tilemapData = goTilemap.GetComponentInParent<TilemapData>();
-            tilemapData.SetFlipFlags(pos3, tileId.FlipFlags);
-
-            // Set the tile
+            // Set the tile (sprite, transform matrix, flags)
             var tilemap = goTilemap.GetComponentInParent<Tilemap>();
             tilemap.SetTile(pos3, tile);
+            tilemap.SetTransformMatrix(pos3, tile.GetTransformMatrix(tileId.FlipFlags));
+            tilemap.SetTileFlags(pos3, TileFlags.LockAll);
 
             // Do we have any colliders on the tile to be gathered?
             m_CurrentCollisionBuilder.PlaceTileColliders(m_MapComponent, tilemap, tile, tileId, pos3);
