@@ -142,7 +142,6 @@ namespace SuperTiled2Unity.Editor
             m_GridComponent.cellSize = new Vector3(sx, sy, 1);
             var localPosition = new Vector3(0, 0, 0);
 
-            // fixit - staggered isometric still needs to be done
             switch (m_MapComponent.m_Orientation)
             {
 #if UNITY_2018_3_OR_NEWER
@@ -159,6 +158,21 @@ namespace SuperTiled2Unity.Editor
                         if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
                         {
                             localPosition = new Vector3(sx * 0.5f, -sy, 0);
+                        }
+                        else
+                        {
+                            localPosition = new Vector3(sx, -sy, 0);
+                        }
+                    }
+                    else if (m_MapComponent.m_StaggerAxis == StaggerAxis.X)
+                    {
+                        if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
+                        {
+                            localPosition = new Vector3(sx * 0.5f, -sy, 0);
+                        }
+                        else
+                        {
+                            localPosition = new Vector3(sx * 0.5f, -sy * 1.5f, 0);
                         }
                     }
                     break;
