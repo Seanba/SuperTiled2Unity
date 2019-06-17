@@ -14,6 +14,8 @@ namespace SuperTiled2Unity.Editor
         {
         }
 
+        public override bool WorldPositionStays { get { return true; } }
+
         protected override SuperLayer CreateLayerComponent(GameObject go)
         {
             return go.AddComponent<SuperGroupLayer>();

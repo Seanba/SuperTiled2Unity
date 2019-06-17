@@ -30,6 +30,8 @@ namespace SuperTiled2Unity.Editor
             set { m_AnimationFramerate = value; }
         }
 
+        public override bool WorldPositionStays { get { return true; } }
+
         public void CreateObjects()
         {
             Assert.IsNotNull(m_Xml);
@@ -115,16 +117,16 @@ namespace SuperTiled2Unity.Editor
                 goObject.name = comp.m_TiledName;
             }
 
+            // Position the game object
+            var localPosition = new Vector2(comp.m_X, comp.m_Y);
+            localPosition = ColliderFactory.TransformPoint(localPosition);
+            localPosition = Importer.SuperImportContext.MakePoint(localPosition);
+
+            goObject.transform.localPosition = localPosition;
+            goObject.transform.localRotation = Quaternion.Euler(0, 0, Importer.SuperImportContext.MakeRotation(comp.m_Rotation));
+
             // Add our object to the parent layer
             m_ObjectLayer.gameObject.AddChildWithUniqueName(goObject);
-
-            // Position the game object. This is in world position because our grid may be offset due to Tiled -> Unity coordinate transforms.
-            var position = new Vector2(comp.m_X, comp.m_Y);
-            position = ColliderFactory.TransformPoint(position);
-            position = Importer.SuperImportContext.MakePoint(position);
-
-            goObject.transform.rotation = Quaternion.Euler(0, 0, Importer.SuperImportContext.MakeRotation(comp.m_Rotation));
-            goObject.transform.position = position;
 
             return comp;
         }

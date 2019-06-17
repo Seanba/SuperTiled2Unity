@@ -33,6 +33,8 @@ namespace SuperTiled2Unity.Editor
             return layer;
         }
 
+        public abstract bool WorldPositionStays { get; }
+
         protected abstract SuperLayer CreateLayerComponent(GameObject go);
         protected abstract void InternalLoadFromXml(GameObject go);
     }
