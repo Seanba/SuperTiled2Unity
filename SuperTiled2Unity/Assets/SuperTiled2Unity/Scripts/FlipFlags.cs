@@ -12,14 +12,23 @@ namespace SuperTiled2Unity
         Diagonal = 1,
         Vertical = 2,
         Horizontal = 4,
+    }
 
-        // Combos
-        D__ = Diagonal,
-        DV_ = Diagonal | Vertical,
-        D_H = Diagonal | Horizontal,
-        DVH = Diagonal | Vertical | Horizontal,
-        _V_ = Vertical,
-        _VH = Vertical | Horizontal,
-        __H = Horizontal,
+    public static class FlipFlagsMask
+    {
+        public static bool FlippedHorizontally(FlipFlags flags)
+        {
+            return (flags & FlipFlags.Horizontal) != 0;
+        }
+
+        public static bool FlippedVertically(FlipFlags flags)
+        {
+            return (flags & FlipFlags.Vertical) != 0;
+        }
+
+        public static bool FlippedDiagonally(FlipFlags flags)
+        {
+            return (flags & FlipFlags.Diagonal) != 0;
+        }
     }
 }

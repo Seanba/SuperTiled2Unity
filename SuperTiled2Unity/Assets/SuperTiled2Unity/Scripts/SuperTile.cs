@@ -101,73 +101,59 @@ namespace SuperTiled2Unity
             return matOffset * matTransOut * matFlip * matTransIn;
         }
 
-        public void GetTRS(FlipFlags flags, out Vector3 trans, out Vector3 rot, out Vector3 scale)
+        public void GetTRS(FlipFlags flags, out Vector3 xfTranslate, out Vector3 xfRotate, out Vector3 xfScale)
         {
             float inversePPU = 1.0f / m_Sprite.pixelsPerUnit;
             float width = m_Width * inversePPU;
             float height = m_Height * inversePPU;
 
-            switch (flags)
+            bool flippedHorizontally = FlipFlagsMask.FlippedHorizontally(flags);
+            bool flippedVertically = FlipFlagsMask.FlippedVertically(flags);
+            bool flippedDiagonally = FlipFlagsMask.FlippedDiagonally(flags);
+
+            xfTranslate = Vector3.zero;
+            xfRotate = Vector3.zero;
+            xfScale = Vector3.one;
+
+            // fixit - hex cells are different (and don't use diag flag?)
+
+            if (flags != FlipFlags.None)
             {
-                // diagonal
-                case FlipFlags.D__:
-                    trans = new Vector3(height, width, 0);
-                    rot = new Vector3(0, 0, -90);
-                    scale = new Vector3(1, -1, 1);
-                    break;
+                if (flippedDiagonally)
+                {
+                    xfRotate.z = -90.0f;
 
-                // diagonal-vertical
-                case FlipFlags.DV_:
-                    trans = new Vector3(height, 0, 0);
-                    rot = new Vector3(0, 0, 90);
-                    scale = Vector3.one;
-                    break;
+                    flippedHorizontally = FlipFlagsMask.FlippedVertically(flags);
+                    flippedVertically = !FlipFlagsMask.FlippedHorizontally(flags);
+                }
 
-                // diagonal-horizontal
-                case FlipFlags.D_H:
-                    trans = new Vector3(0, width, 0);
-                    rot = new Vector3(0, 0, -90);
-                    scale = Vector3.one;
-                    break;
+                xfScale.x = flippedHorizontally ? -1.0f : 1.0f;
+                xfScale.y = flippedVertically ? -1.0f : 1.0f;
 
-                // diagonal-vertical-horizontal
-                case FlipFlags.DVH:
-                    trans = Vector3.zero;
-                    rot = new Vector3(0, 0, 90);
-                    scale = new Vector3(1, -1, 1);
-                    break;
+                // Mulitply the corners for our tile against rotation and scale matrices to see what our translation should be to get the tile back to the bottom-left origin
+                var points = new Vector3[]
+                {
+                    new Vector3(0, height, 0),
+                    new Vector3(width, height, 0),
+                    new Vector3(width, 0, 0),
+                };
 
-                // vertical
-                case FlipFlags._V_:
-                    trans = new Vector3(0, height, 0);
-                    rot = Vector3.zero;
-                    scale = new Vector3(1, -1, 1);
-                    break;
+                var matScale = Matrix4x4.Scale(xfScale);
+                var matRotate = Matrix4x4.Rotate(Quaternion.Euler(xfRotate));
 
-                // vertical-horizontal
-                case FlipFlags._VH:
-                    trans = new Vector3(width, height, 0);
-                    rot = Vector3.zero;
-                    scale = new Vector3(-1, -1, 1);
-                    break;
+                points = points.Select(p => matScale.MultiplyPoint(p)).ToArray();
+                points = points.Select(p => matRotate.MultiplyPoint(p)).ToArray();
 
-                // horizontal
-                case FlipFlags.__H:
-                    trans = new Vector3(width, 0, 0);
-                    rot = Vector3.zero;
-                    scale = new Vector3(-1, 1, 1);
-                    break;
+                var minX = points.Select(p => p.x).Min();
+                var minY = points.Select(p => p.y).Min();
 
-                default:
-                    trans = Vector3.zero;
-                    rot = Vector3.zero;
-                    scale = Vector3.one;
-                    break;
+                xfTranslate.x = -minX;
+                xfTranslate.y = -minY;
             }
 
             // Each tile may have an additional offset
-            trans.x += m_TileOffsetX * inversePPU;
-            trans.y -= m_TileOffsetY * inversePPU;
+            xfTranslate.x += m_TileOffsetX * inversePPU;
+            xfTranslate.y -= m_TileOffsetY * inversePPU;
         }
 
         public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData)
