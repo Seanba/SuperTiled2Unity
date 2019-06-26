@@ -287,7 +287,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             Vector3 translate, rotate, scale;
-            tile.GetTRS(tileId.FlipFlags, out translate, out rotate, out scale);
+            tile.GetTRS(tileId.FlipFlags, m_MapComponent.m_Orientation, out translate, out rotate, out scale);
 
             var cellPos = superMap.CellPositionToLocalPosition(pos3.x, pos3.y);
             translate.x += cellPos.x;
@@ -335,7 +335,7 @@ namespace SuperTiled2Unity.Editor
             // Set the tile (sprite, transform matrix, flags)
             var tilemap = goTilemap.GetComponentInParent<Tilemap>();
             tilemap.SetTile(pos3, tile);
-            tilemap.SetTransformMatrix(pos3, tile.GetTransformMatrix(tileId.FlipFlags));
+            tilemap.SetTransformMatrix(pos3, tile.GetTransformMatrix(tileId.FlipFlags, m_MapComponent.m_Orientation));
             tilemap.SetTileFlags(pos3, TileFlags.LockAll);
 
             // Do we have any colliders on the tile to be gathered?

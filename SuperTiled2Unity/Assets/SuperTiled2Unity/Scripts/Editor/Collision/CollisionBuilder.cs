@@ -33,7 +33,7 @@ namespace SuperTiled2Unity.Editor
             // Do we have any collider objects defined for this tile?
             if (!tile.m_CollisionObjects.IsEmpty())
             {
-                var polygons = AcquireTilePolygonCollection(tile, tileId);
+                var polygons = AcquireTilePolygonCollection(tile, tileId, map.m_Orientation);
 
                 foreach (var poly in polygons.Polygons)
                 {
@@ -146,7 +146,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private TilePolygonCollection AcquireTilePolygonCollection(SuperTile tile, TileIdMath tileId)
+        private TilePolygonCollection AcquireTilePolygonCollection(SuperTile tile, TileIdMath tileId, MapOrientation orientation)
         {
             TilePolygonCollection polygons;
             if (m_TilePolygonDatabase.TryGetValue(tileId.ImportedlTileId, out polygons))
@@ -155,7 +155,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             // If we're here then we don't have a polygon collection for this tile yet
-            polygons = new TilePolygonCollection(tile, tileId, m_ImportContext);
+            polygons = new TilePolygonCollection(tile, tileId, m_ImportContext, orientation);
             m_TilePolygonDatabase.Add(tileId.ImportedlTileId, polygons);
             return polygons;
         }

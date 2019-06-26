@@ -12,6 +12,7 @@ namespace SuperTiled2Unity
         Diagonal = 1,
         Vertical = 2,
         Horizontal = 4,
+        Hexagonal120 = 8,
     }
 
     public static class FlipFlagsMask
@@ -26,9 +27,14 @@ namespace SuperTiled2Unity
             return (flags & FlipFlags.Vertical) != 0;
         }
 
-        public static bool FlippedDiagonally(FlipFlags flags)
+        public static bool RotatedDiagonally(FlipFlags flags)
         {
             return (flags & FlipFlags.Diagonal) != 0;
+        }
+
+        public static bool RotatedHexagonally120(FlipFlags flags)
+        {
+            return (flags & FlipFlags.Hexagonal120) != 0;
         }
     }
 }

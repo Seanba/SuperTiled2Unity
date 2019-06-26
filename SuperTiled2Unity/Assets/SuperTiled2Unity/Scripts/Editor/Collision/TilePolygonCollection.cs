@@ -21,73 +21,19 @@ namespace SuperTiled2Unity.Editor
 
         private SuperImportContext m_ImportContext;
 
-        public TilePolygonCollection(SuperTile tile, TileIdMath tileId, SuperImportContext importContext)
+        public TilePolygonCollection(SuperTile tile, TileIdMath tileId, SuperImportContext importContext, MapOrientation orientation)
         {
             m_ImportContext = importContext;
 
             m_Tile = tile;
             m_TileId = tileId;
 
-            CalculateTransform();
+            m_Transform = m_Tile.GetTransformMatrix(m_TileId.FlipFlags, orientation);
+
             CollectTilePolygons();
         }
 
         public List<TilePolygon> Polygons { get { return m_Polygons; } }
-
-        private void CalculateTransform()
-        {
-            Matrix4x4 matTileOffset = Matrix4x4.Translate(m_ImportContext.MakePoint(m_Tile.m_TileOffsetX, m_Tile.m_TileOffsetY));
-
-            if (!m_TileId.HasFlip)
-            {
-                m_Transform = matTileOffset;
-                return;
-            }
-
-            var tileCenter = m_ImportContext.MakeSize(m_Tile.m_Width, m_Tile.m_Height) * 0.5f;
-
-            Matrix4x4 matTransIn = Matrix4x4.identity;
-            Matrix4x4 matFlip = Matrix4x4.identity;
-            Matrix4x4 matTransOut = Matrix4x4.identity;
-
-            // Go to the tile center
-            matTransIn = Matrix4x4.Translate(-tileCenter);
-
-            // Do the flips
-            if (m_TileId.HasHorizontalFlip)
-            {
-                matFlip *= HorizontalFlipMatrix;
-            }
-
-            if (m_TileId.HasVerticalFlip)
-            {
-                matFlip *= VerticalFlipMatrix;
-            }
-
-            if (m_TileId.HasDiagonalFlip)
-            {
-                matFlip *= DiagonalFlipMatrix;
-            }
-
-            // Go out of the tile center
-            if (!m_TileId.HasDiagonalFlip)
-            {
-                matTransOut = Matrix4x4.Translate(tileCenter);
-            }
-            else
-            {
-                float diff = m_ImportContext.MakeScalar(m_Tile.m_Height - m_Tile.m_Width) * 0.5f;
-                tileCenter.x += diff;
-                tileCenter.y -= diff;
-                matTransOut = Matrix4x4.Translate(tileCenter);
-            }
-
-            // Put it all together
-            Matrix4x4 mat = matTileOffset * matTransOut * matFlip * matTransIn;
-
-            // Remember our transformation matrix
-            m_Transform = mat;
-        }
 
         private void CollectTilePolygons()
         {

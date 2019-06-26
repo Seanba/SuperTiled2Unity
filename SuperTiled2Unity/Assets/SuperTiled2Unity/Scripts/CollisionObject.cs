@@ -85,6 +85,7 @@ namespace SuperTiled2Unity
             m_Points = points;
         }
 
+        // fixit - bump up map and tileset versions when all is good
         // This must be called in order for rotation and position offset to by applied
         public void RenderPoints(SuperTile tile, GridOrientation orientation, Vector2 gridSize)
         {
@@ -122,8 +123,10 @@ namespace SuperTiled2Unity
             float cx = pt.x / tile.m_Height;
             float cy = pt.y / tile.m_Height;
 
-            float x = (cx - cy) * gridSize.x * 0.5f;
-            float y = (cx + cy) * gridSize.y * 0.5f;
+            float x = (cx - cy) * gridSize.x;
+            float y = (cx + cy) * gridSize.y;
+
+            y += gridSize.y * 0.5f; // fixit - this seems good but better double-check
 
             return new Vector2(x, y);
         }

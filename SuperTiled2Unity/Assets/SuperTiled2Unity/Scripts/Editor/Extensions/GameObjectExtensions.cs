@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -113,9 +110,8 @@ namespace SuperTiled2Unity.Editor
 
             // Add the object to the parent
             goLayer.name = layerComponent.m_TiledName;
-            goParent.AddChildWithUniqueName(goLayer, loader.WorldPositionStays); // fixit - tile layers use local space, other layers don't
+            goParent.AddChildWithUniqueName(goLayer, loader.WorldPositionStays);
 
-            // fixit - object placement is now broken because they are no longer using localPosition and layers may have an offset
             // Position the layer based on the x, y offsets and pixels per unit
             goLayer.transform.localPosition += (Vector3)importContext.MakePoint(layerComponent.m_OffsetX, layerComponent.m_OffsetY);
 
