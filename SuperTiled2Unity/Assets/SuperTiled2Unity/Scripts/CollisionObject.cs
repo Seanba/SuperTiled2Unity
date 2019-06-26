@@ -120,13 +120,14 @@ namespace SuperTiled2Unity
 
         private Vector2 IsometricTransform(Vector2 pt, SuperTile tile,Vector2 gridSize)
         {
-            float cx = pt.x / tile.m_Height;
-            float cy = pt.y / tile.m_Height;
+            float cx = pt.x / gridSize.y;
+            float cy = pt.y / gridSize.y;
 
-            float x = (cx - cy) * gridSize.x;
-            float y = (cx + cy) * gridSize.y;
+            float x = (cx - cy) * gridSize.x * 0.5f;
+            float y = (cx + cy) * gridSize.y * 0.5f;
 
-            y += gridSize.y * 0.5f; // fixit - this seems good but better double-check
+            //y += gridSize.y * 0.5f;             // fixit - we need a vertical offset here but this isn't it
+            y += (tile.m_Height - gridSize.y) * 0.5f;
 
             return new Vector2(x, y);
         }
