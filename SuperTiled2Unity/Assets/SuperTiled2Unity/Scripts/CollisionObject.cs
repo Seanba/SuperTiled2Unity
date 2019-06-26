@@ -126,7 +126,6 @@ namespace SuperTiled2Unity
             float x = (cx - cy) * gridSize.x * 0.5f;
             float y = (cx + cy) * gridSize.y * 0.5f;
 
-            //y += gridSize.y * 0.5f;             // fixit - we need a vertical offset here but this isn't it
             y += (tile.m_Height - gridSize.y) * 0.5f;
 
             return new Vector2(x, y);
