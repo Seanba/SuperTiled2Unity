@@ -85,7 +85,6 @@ namespace SuperTiled2Unity
             m_Points = points;
         }
 
-        // fixit - bump up map and tileset versions when all is good
         // This must be called in order for rotation and position offset to by applied
         public void RenderPoints(SuperTile tile, GridOrientation orientation, Vector2 gridSize)
         {
