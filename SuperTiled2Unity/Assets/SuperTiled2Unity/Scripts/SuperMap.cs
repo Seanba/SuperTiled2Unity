@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SuperTiled2Unity
 {
@@ -48,22 +45,6 @@ namespace SuperTiled2Unity
 
         [ReadOnly]
         public int m_NextObjectId;
-
-        private void Start()
-        {
-            // This is a bad hack but the CompositeCollider2D is currently broken in Unity
-            // By putting this here we are (more) confident that the collision geometry is as-expected
-            // Keep an eye on these links for when the real fix is ready:
-            // https://github.com/Unity-Technologies/2d-extras/issues/34
-            // https://fogbugz.unity3d.com/default.asp?1093506_ahe9u92nr8fojlcc
-            gameObject.SetActive(false);
-            gameObject.SetActive(true);
-
-            foreach (var collider in GetComponentsInChildren<CompositeCollider2D>())
-            {
-                collider.GenerateGeometry();
-            }
-        }
 
         public Vector3Int TiledIndexToGridCell(int index, int offset_x, int offset_y, int stride)
         {

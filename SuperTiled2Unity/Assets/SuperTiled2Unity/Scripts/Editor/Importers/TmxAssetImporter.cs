@@ -91,7 +91,6 @@ namespace SuperTiled2Unity.Editor
         {
             var icon = SuperIcons.GetTmxIcon();
 
-            // The Main Gameobject is our grid containing all the layers
             var goGrid = new GameObject("_MapMainObject");
             SuperImportContext.AddObjectToAsset("_MapPrfab", goGrid, icon);
             SuperImportContext.SetMainObject(goGrid);
@@ -133,6 +132,9 @@ namespace SuperTiled2Unity.Editor
             // Add the grid to the map
             var goGrid = new GameObject("Grid");
             goGrid.transform.SetParent(m_MapComponent.gameObject.transform);
+
+            // The grid is added to the asset because without it we get prefab modifications for all collision geometry and tile matrices
+            SuperImportContext.AddObjectToAsset("_grid", goGrid);
 
             m_GridComponent = goGrid.AddComponent<Grid>();
 
