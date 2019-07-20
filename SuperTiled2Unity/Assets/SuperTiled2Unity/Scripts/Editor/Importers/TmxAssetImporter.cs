@@ -91,11 +91,10 @@ namespace SuperTiled2Unity.Editor
         {
             var icon = SuperIcons.GetTmxIcon();
 
-            // The Main Gameobject is our grid containing all the layers
-            var goGrid = new GameObject("_MapMainObject");
-            SuperImportContext.AddObjectToAsset("_MapPrfab", goGrid, icon);
-            SuperImportContext.SetMainObject(goGrid);
-            m_MapComponent = goGrid.AddComponent<SuperMap>();
+            var goMap = new GameObject("_MapMainObject");
+            SuperImportContext.AddObjectToAsset("_MapPrfab", goMap, icon);
+            SuperImportContext.SetMainObject(goMap);
+            m_MapComponent = goMap.AddComponent<SuperMap>();
 
             return true;
         }
@@ -132,7 +131,7 @@ namespace SuperTiled2Unity.Editor
         {
             // Add the grid to the map
             var goGrid = new GameObject("Grid");
-            goGrid.transform.SetParent(m_MapComponent.gameObject.transform);
+            SuperImportContext.AddChildObjectToParent(goGrid, m_MapComponent.gameObject);
 
             m_GridComponent = goGrid.AddComponent<Grid>();
 

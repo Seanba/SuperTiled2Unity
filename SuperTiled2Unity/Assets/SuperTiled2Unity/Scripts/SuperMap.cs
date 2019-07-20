@@ -51,9 +51,12 @@ namespace SuperTiled2Unity
 
         private void Start()
         {
+            // fixit - report this bug to users: https://issuetracker.unity3d.com/issues/unity-editor-crashes-when-clicking-on-prefabs-overrides-dropdown-after-making-changes-to-its-child-gameobjects
+
             // This is a bad hack but the CompositeCollider2D is currently broken in Unity
             // By putting this here we are (more) confident that the collision geometry is as-expected
             // Keep an eye on these links for when the real fix is ready:
+            /* // fixit - This appears to be fixed too? Maybe check on 2018 versions?
             // https://github.com/Unity-Technologies/2d-extras/issues/34
             // https://fogbugz.unity3d.com/default.asp?1093506_ahe9u92nr8fojlcc
             gameObject.SetActive(false);
@@ -63,6 +66,7 @@ namespace SuperTiled2Unity
             {
                 collider.GenerateGeometry();
             }
+            */
         }
 
         public Vector3Int TiledIndexToGridCell(int index, int offset_x, int offset_y, int stride)

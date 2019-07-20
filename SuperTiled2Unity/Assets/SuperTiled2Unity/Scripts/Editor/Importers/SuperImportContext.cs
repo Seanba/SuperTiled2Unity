@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEditor.Experimental.AssetImporters;
 
@@ -12,6 +10,7 @@ namespace SuperTiled2Unity.Editor
         private static Vector2 NegateY = new Vector2(1, -1);
 
         private AssetImportContext m_Context;
+        private int m_ObjectCount;
 
         public SuperImportContext(AssetImportContext context, ST2USettings settings)
         {
@@ -21,13 +20,28 @@ namespace SuperTiled2Unity.Editor
 
         public ST2USettings Settings { get; private set; }
 
+        public void AddChildObjectToParent(GameObject goChild, GameObject goParent)
+        {
+            AddChildObjectToParent(goChild, goParent, false);
+        }
+
+        public void AddChildObjectToParent(GameObject goChild, GameObject goParent, bool worldPositionStays)
+        {
+            goParent.AddChildWithUniqueName(goChild, worldPositionStays);
+
+            string identifier = string.Format("{0} [{1}]", goChild.name, m_ObjectCount);
+            AddObjectToAsset(identifier, goChild);
+        }
+
         public void AddObjectToAsset(string identifier, UnityEngine.Object obj)
         {
+            m_ObjectCount++;
             m_Context.AddObjectToAsset(identifier, obj);
         }
 
         public void AddObjectToAsset(string identifier, UnityEngine.Object obj, Texture2D thumbnail)
         {
+            m_ObjectCount++;
             m_Context.AddObjectToAsset(identifier, obj, thumbnail);
         }
 
@@ -41,8 +55,11 @@ namespace SuperTiled2Unity.Editor
             var objects = new List<UnityEngine.Object>();
 #if UNITY_2018_3_OR_NEWER
             m_Context.GetObjects(objects);
-#endif
             return objects.Count;
+#else
+            // May not be accurate
+            return m_ObjectCount;
+#endif
         }
 
         // Math/space transform functions
