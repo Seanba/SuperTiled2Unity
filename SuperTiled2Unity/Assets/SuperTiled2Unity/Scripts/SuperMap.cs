@@ -46,6 +46,20 @@ namespace SuperTiled2Unity
         [ReadOnly]
         public int m_NextObjectId;
 
+#if !UNITY_2019_1_OR_NEWER
+        private void Start()
+        {
+            // This is a bad hack but the CompositeCollider2D does not update its geometry in Unity 2018
+            gameObject.SetActive(false);
+            gameObject.SetActive(true);
+
+            foreach (var collider in GetComponentsInChildren<CompositeCollider2D>())
+            {
+                collider.GenerateGeometry();
+            }
+        }
+#endif
+
         public Vector3Int TiledIndexToGridCell(int index, int offset_x, int offset_y, int stride)
         {
             int x = index % stride;

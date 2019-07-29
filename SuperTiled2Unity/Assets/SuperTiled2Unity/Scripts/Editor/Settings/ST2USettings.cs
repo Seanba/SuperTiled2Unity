@@ -100,7 +100,8 @@ namespace SuperTiled2Unity.Editor
             var settings = AssetDatabaseEx.LoadFirstAssetByFilterAndExtension<ST2USettings>("t: ST2USettings", "asset");
             if (settings == null)
             {
-                // This shouldn't often happen but we need settings in case they get deleted on us
+                // This should only happen when we are first installing SuperTiled2Unity
+                // However, should our settings be deleted we would like them to be recreated
                 settings = SuperTiled2Unity_Config.CreateDefaultSettings();
             }
 

@@ -113,6 +113,12 @@ namespace SuperTiled2Unity.Editor
                     m_CurrentSortOrder = 0;
                 }
             }
+
+            // The game object may have a custom property to hard-code the current sort order
+            if (go.TryGetCustomPropertySafe("unity:sortingOrder", out property))
+            {
+                m_CurrentSortOrder = property.GetValueAsInt();
+            }
         }
     }
 }
