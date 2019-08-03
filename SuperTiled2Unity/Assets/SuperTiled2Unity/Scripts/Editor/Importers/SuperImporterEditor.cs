@@ -35,6 +35,9 @@ namespace SuperTiled2Unity.Editor
                 EditorGUILayout.HelpBox(EditorDefinition, MessageType.None);
                 EditorGUILayout.Separator();
 
+#if UNITY_2019_2_OR_NEWER
+                serializedObject.Update();
+#endif
                 InternalOnInspectorGUI();
                 DisplayDependencies();
             }
@@ -81,6 +84,14 @@ namespace SuperTiled2Unity.Editor
             {
                 property.intValue = intValue;
             }
+        }
+
+        protected void InternalApplyRevertGUI()
+        {
+#if UNITY_2019_2_OR_NEWER
+            serializedObject.ApplyModifiedProperties();
+#endif
+            ApplyRevertGUI();
         }
 
         protected abstract void InternalOnInspectorGUI();

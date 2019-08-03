@@ -81,7 +81,7 @@ namespace SuperTiled2Unity.Editor
             EditorGUILayout.Space();
 
             InspectorGUIForAtlasSettings();
-            ApplyRevertGUI();
+            InternalApplyRevertGUI();
         }
 
         private void InspectorGUIForAtlasSettings()

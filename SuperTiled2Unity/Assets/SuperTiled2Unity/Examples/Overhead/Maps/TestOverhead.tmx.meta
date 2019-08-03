@@ -611,10 +611,10 @@ ScriptedImporter:
   missingSortingLayers: []
   missingLayers: []
   missingTags: []
-  importerVersion: 13
+  importerVersion: 16
   pixelsPerUnit: 1
   edgesPerEllipse: 32
-  numberOfObjectsImported: 2
+  numberOfObjectsImported: 3
   tilesAsObjects: 0
   sortingMode: 1
   isIsometric: 0

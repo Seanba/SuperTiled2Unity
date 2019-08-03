@@ -62,7 +62,7 @@ namespace SuperTiled2Unity.Editor
             EditorGUILayout.Space();
             ShowCustomImporterGui();
 
-            ApplyRevertGUI();
+            InternalApplyRevertGUI();
         }
 
         protected override void ResetValues()
