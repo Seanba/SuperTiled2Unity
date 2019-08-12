@@ -38,6 +38,9 @@ namespace SuperTiled2Unity.Editor
         public bool m_IsInternal;
 
         [ReadOnly]
+        public float m_PixelsPerUnit;
+
+        [ReadOnly]
         public bool m_IsImageCollection;
 
         public List<CustomProperty> m_CustomProperties;

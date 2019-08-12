@@ -68,11 +68,11 @@ namespace MyNamespace
     }
 
     [AutoCustomTmxImporter(2)]
-    public class MyOrderedTmxImporter2 : CustomTmxImporter
+    public class MyThrowingCustomImporter : CustomTmxImporter
     {
         public override void TmxAssetImported(TmxAssetImportedArgs args)
         {
-            Debug.Log("MyOrderedTmxImporter2 importer");
+            throw new CustomImporterException("This is my custom importer exception message.");
         }
     }
 }

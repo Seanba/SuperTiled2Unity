@@ -17,6 +17,8 @@ namespace SuperTiled2Unity.Editor
     public abstract class TiledAssetImporter : SuperImporter
     {
         [SerializeField] private float m_PixelsPerUnit = 0.0f;
+        public float PixelsPerUnit { get { return m_PixelsPerUnit; } }
+
         [SerializeField] private int m_EdgesPerEllipse = 0;
 
 #pragma warning disable 414

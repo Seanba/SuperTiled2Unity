@@ -264,6 +264,12 @@ namespace SuperTiled2Unity.Editor
             // Load the tileset and process the tiles inside
             var tileset = RequestAssetAtPath<SuperTileset>(source);
 
+            // Warn the user of mismatching pixels per units
+            if (PixelsPerUnit != tileset.m_PixelsPerUnit)
+            {
+                ReportWarning("Pixels Per Unit mismatch between map ({0}) and tileset '{1}' ({2})", PixelsPerUnit, source, tileset.m_PixelsPerUnit);
+            }
+
             if (tileset == null)
             {
                 // Tileset is either missing or is not yet ready
@@ -425,9 +431,15 @@ namespace SuperTiled2Unity.Editor
 
                 customImporter.TmxAssetImported(args);
             }
+            catch (CustomImporterException cie)
+            {
+                ReportError("Custom Importer error: \n  Importer: {0}\n  Message: {1}", customImporter.GetType().Name, cie.Message);
+                Debug.LogErrorFormat("Custom Importer ({0}) exception: {1}", customImporter.GetType().Name, cie.Message);
+            }
             catch (Exception e)
             {
                 ReportError("Custom importer '{0}' threw an exception. Message = '{1}', Stack:\n{2}", customImporter.GetType().Name, e.Message, e.StackTrace);
+                Debug.LogErrorFormat("Custom importer general exception: {0}", e.Message);
             }
         }
     }

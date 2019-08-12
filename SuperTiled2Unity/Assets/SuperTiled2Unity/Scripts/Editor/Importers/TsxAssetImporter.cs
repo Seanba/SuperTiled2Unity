@@ -62,6 +62,7 @@ namespace SuperTiled2Unity.Editor
 
             Tileset = ScriptableObject.CreateInstance<SuperTileset>();
             Tileset.m_IsInternal = false;
+            Tileset.m_PixelsPerUnit = PixelsPerUnit;
             SuperImportContext.AddObjectToAsset("_TilesetScriptObject", Tileset, icon);
             SuperImportContext.SetMainObject(this.Tileset);
 
