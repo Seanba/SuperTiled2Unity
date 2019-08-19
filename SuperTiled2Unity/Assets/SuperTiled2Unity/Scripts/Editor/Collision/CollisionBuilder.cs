@@ -114,7 +114,7 @@ namespace SuperTiled2Unity.Editor
                     var composite = goCollider.AddComponent<CompositeCollider2D>();
                     composite.geometryType = CompositeCollider2D.GeometryType.Polygons;
                     composite.isTrigger = key.IsTrigger;
-                    composite.generationType = CompositeCollider2D.GenerationType.Synchronous;
+                    composite.generationType = CompositeCollider2D.GenerationType.Manual;
 
                     // Add polygon colliders
                     foreach (var path in clipper.ClosedPaths)
@@ -140,6 +140,8 @@ namespace SuperTiled2Unity.Editor
                         edgeCollider.points = path;
                         edgeCollider.gameObject.AddComponent<SuperColliderComponent>();
                     }
+
+                    composite.GenerateGeometry();
                 }
             }
         }
