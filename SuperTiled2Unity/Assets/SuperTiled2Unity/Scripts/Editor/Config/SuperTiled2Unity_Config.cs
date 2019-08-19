@@ -9,7 +9,7 @@ namespace SuperTiled2Unity.Editor
 {
     internal class SuperTiled2Unity_Config
     {
-        internal const string Version = "1.5.7";
+        internal const string Version = "1.5.8";
         internal const string DefaultSettingsFileName = "ST2U Settings.asset";
 
         public static ST2USettings CreateDefaultSettings()
