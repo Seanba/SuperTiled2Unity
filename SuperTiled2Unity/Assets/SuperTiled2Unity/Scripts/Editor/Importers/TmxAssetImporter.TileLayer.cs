@@ -363,7 +363,7 @@ namespace SuperTiled2Unity.Editor
                 if (!String.IsNullOrEmpty(line))
                 {
                     var datum = from val in line.Split(',')
-                                where !String.IsNullOrWhiteSpace(val)
+                                where !val.IsNullOrWhiteSpace()
                                 select Convert.ToUInt32(val);
 
                     tileIds.AddRange(datum);
