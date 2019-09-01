@@ -264,12 +264,6 @@ namespace SuperTiled2Unity.Editor
             // Load the tileset and process the tiles inside
             var tileset = RequestAssetAtPath<SuperTileset>(source);
 
-            // Warn the user of mismatching pixels per units
-            if (PixelsPerUnit != tileset.m_PixelsPerUnit)
-            {
-                ReportWarning("Pixels Per Unit mismatch between map ({0}) and tileset '{1}' ({2})", PixelsPerUnit, source, tileset.m_PixelsPerUnit);
-            }
-
             if (tileset == null)
             {
                 // Tileset is either missing or is not yet ready
@@ -278,6 +272,12 @@ namespace SuperTiled2Unity.Editor
             }
             else
             {
+                // Warn the user of mismatching pixels per units
+                if (PixelsPerUnit != tileset.m_PixelsPerUnit)
+                {
+                    ReportWarning("Pixels Per Unit mismatch between map ({0}) and tileset '{1}' ({2})", PixelsPerUnit, source, tileset.m_PixelsPerUnit);
+                }
+
                 if (tileset.m_HasErrors)
                 {
                     ReportError("Errors detected in tileset '{0}'. Check the tileset inspector for more details. Your map may be broken until these are fixed.", source);
