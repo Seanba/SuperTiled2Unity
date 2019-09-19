@@ -1,4 +1,5 @@
 *.anim text eol=lf
+*.asmdef text eol=lf
 *.asset text eol=lf
 *.controller text eol=lf
 *.json text eol=lf

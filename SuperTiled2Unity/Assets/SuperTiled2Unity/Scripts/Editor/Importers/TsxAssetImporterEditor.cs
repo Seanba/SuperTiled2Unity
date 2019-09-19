@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
-using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -59,13 +55,13 @@ namespace SuperTiled2Unity.Editor
 
         private void CacheSerializedProperites()
         {
-            m_UseSpriteAtlas = this.serializedObject.FindProperty("m_UseSpriteAtlas");
+            m_UseSpriteAtlas = serializedObject.FindProperty("m_UseSpriteAtlas");
             Assert.IsNotNull(m_UseSpriteAtlas);
 
-            m_AtlasWidth = this.serializedObject.FindProperty("m_AtlasWidth");
+            m_AtlasWidth = serializedObject.FindProperty("m_AtlasWidth");
             Assert.IsNotNull(m_AtlasWidth);
 
-            m_AtlasHeight = this.serializedObject.FindProperty("m_AtlasHeight");
+            m_AtlasHeight = serializedObject.FindProperty("m_AtlasHeight");
             Assert.IsNotNull(m_AtlasHeight);
         }
 
@@ -87,7 +83,7 @@ namespace SuperTiled2Unity.Editor
         private void InspectorGUIForAtlasSettings()
         {
             ShowTiledAssetGui();
-            ToggleFromInt(this.m_UseSpriteAtlas, this.m_UseSpriteAtlasContent);
+            ToggleFromInt(m_UseSpriteAtlas, m_UseSpriteAtlasContent);
             m_ShowAtlasSettings.target = (m_UseSpriteAtlas.boolValue && !m_UseSpriteAtlas.hasMultipleDifferentValues);
             if (EditorGUILayout.BeginFadeGroup(m_ShowAtlasSettings.faded))
             {

@@ -389,7 +389,7 @@ namespace SuperTiled2Unity.Editor
         {
             if (!string.IsNullOrEmpty(m_CustomImporterClassName))
             {
-                var type = Type.GetType(m_CustomImporterClassName);
+                var type = AppDomain.CurrentDomain.GetTypeFromName(m_CustomImporterClassName);
 
                 if (type == null)
                 {

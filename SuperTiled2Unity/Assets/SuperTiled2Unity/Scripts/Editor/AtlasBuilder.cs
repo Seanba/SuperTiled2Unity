@@ -215,12 +215,14 @@ namespace SuperTiled2Unity.Editor
                 // Create the sprite with the anchor at (0, 0)
                 var sprite = Sprite.Create(t.PreferredTexture2D, t.PreferredRectangle, Vector2.zero, m_TiledAssetImporter.SuperImportContext.Settings.PixelsPerUnit);
                 sprite.name = spriteName;
+                sprite.hideFlags = HideFlags.HideInHierarchy;
                 m_TiledAssetImporter.SuperImportContext.AddObjectToAsset(spriteName, sprite);
 
                 // Create the tile that uses the sprite
                 var tile = ScriptableObject.CreateInstance<SuperTile>();
                 tile.m_TileId = t.Index;
                 tile.name = tileName;
+                tile.hideFlags = HideFlags.HideInHierarchy;
                 tile.m_Sprite = sprite;
                 tile.m_Width = t.SourceRectangle.width;
                 tile.m_Height = t.SourceRectangle.height;
