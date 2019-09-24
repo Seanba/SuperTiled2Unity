@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Xml;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Tilemaps;
-using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
 
 namespace SuperTiled2Unity.Editor
