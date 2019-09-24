@@ -138,7 +138,7 @@ namespace SuperTiled2Unity.Editor
                         edgeCollider.gameObject.AddComponent<SuperColliderComponent>();
                     }
 
-                    composite.GenerateGeometry();
+                    composite.ST2UGenerateGeometry();
                 }
             }
         }
