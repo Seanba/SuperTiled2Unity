@@ -4,7 +4,7 @@
     {
         public const int TilesetVersion = 10;
         public const int TemplateVersion = 4;
-        public const int MapVersion = 16;
+        public const int MapVersion = 17;
 
         public const string TilesetExtension = "tsx";
         public const string TemplateExtension = "tx";
