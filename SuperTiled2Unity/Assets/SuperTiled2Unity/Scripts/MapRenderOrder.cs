@@ -35,4 +35,3 @@ namespace SuperTiled2Unity
         }
     }
 }
-
