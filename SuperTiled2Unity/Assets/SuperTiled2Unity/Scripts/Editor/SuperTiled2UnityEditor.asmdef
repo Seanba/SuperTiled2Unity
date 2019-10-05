@@ -1,7 +1,7 @@
 {
     "name": "SuperTiled2UnityEditor",
     "references": [
-        "GUID:06e56dbbb8dec4d43a0b85b0fe0dd0ca"
+        "SuperTiled2Unity"
     ],
     "includePlatforms": [
         "Editor"
