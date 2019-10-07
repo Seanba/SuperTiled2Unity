@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
@@ -21,7 +18,7 @@ namespace SuperTiled2Unity.Editor
 
         public override Collider2D MakeBox(GameObject go, float width, float height)
         {
-            // In orthogonal space, a box is a box and the only transforms that are needed will put coordinates into "Unity Space"
+            // In orthogonal space, a box is a box and the only transforms that are needed will put coordinates into Unity Space
             var collider = go.AddComponent<BoxCollider2D>();
 
             if (width == 0 && height == 0)
