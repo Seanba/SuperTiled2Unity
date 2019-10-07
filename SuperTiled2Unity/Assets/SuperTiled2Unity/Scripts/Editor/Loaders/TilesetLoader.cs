@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 using SuperTiled2Unity.Editor.Diablo404;
 using UnityEditor;
@@ -376,7 +374,7 @@ namespace SuperTiled2Unity.Editor
         private void AssignCollisionObjectProperties(CollisionObject collision, SuperTile tile)
         {
             // Check properties for layer name
-            var layerProperty = GetCollisionOrTileOrTilesetProperty(collision, tile, "unity:layer");
+            var layerProperty = GetCollisionOrTileOrTilesetProperty(collision, tile, StringConstants.Unity_Layer);
             if (layerProperty != null)
             {
                 // Explicit request to assign a layer to a collision. Report errors if the layer is missing.
@@ -398,7 +396,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             // Check properties for trigger setting
-            var triggerProperty = GetCollisionOrTileOrTilesetProperty(collision, tile, "unity:isTrigger");
+            var triggerProperty = GetCollisionOrTileOrTilesetProperty(collision, tile, StringConstants.Unity_IsTrigger);
             if (triggerProperty != null)
             {
                 collision.m_IsTrigger = triggerProperty.GetValueAsBool();
