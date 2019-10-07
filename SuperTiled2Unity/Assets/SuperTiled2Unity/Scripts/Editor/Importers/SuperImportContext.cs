@@ -21,6 +21,8 @@ namespace SuperTiled2Unity.Editor
 
         public ST2USettings Settings { get; private set; }
 
+        public LayerIgnoreMode LayerIgnoreMode { get; private set; }
+
         public void AddObjectToAsset(string identifier, UnityEngine.Object obj)
         {
             m_Context.AddObjectToAsset(identifier, obj);
@@ -129,6 +131,16 @@ namespace SuperTiled2Unity.Editor
             return null;
         }
 
+        public IDisposable BeginLayerIgnoreMode(LayerIgnoreMode mode)
+        {
+            if (mode != LayerIgnoreMode)
+            {
+                return new ScopedLayerIgnoreMode(this, mode);
+            }
+
+            return null;
+        }
+
         private class ScopedIsTriggerOverride : IDisposable
         {
             private SuperImportContext m_SuperContext;
@@ -141,6 +153,24 @@ namespace SuperTiled2Unity.Editor
             public void Dispose()
             {
                 m_SuperContext.m_IsTriggerOverride = null;
+            }
+        }
+
+        private class ScopedLayerIgnoreMode : IDisposable
+        {
+            private SuperImportContext m_SuperContext;
+            private LayerIgnoreMode m_RestoreIgnoreMode;
+
+            public ScopedLayerIgnoreMode(SuperImportContext superContext, LayerIgnoreMode newIgnoreMode)
+            {
+                m_SuperContext = superContext;
+                m_RestoreIgnoreMode = m_SuperContext.LayerIgnoreMode;
+                m_SuperContext.LayerIgnoreMode = newIgnoreMode;
+            }
+
+            public void Dispose()
+            {
+                m_SuperContext.LayerIgnoreMode = m_RestoreIgnoreMode;
             }
         }
     }

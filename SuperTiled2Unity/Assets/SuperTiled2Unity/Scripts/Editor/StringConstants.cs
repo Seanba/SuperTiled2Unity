@@ -2,6 +2,7 @@
 {
     public static class StringConstants
     {
+        public const string Unity_Ignore = "unity:ignore";
         public const string Unity_IsTrigger = "unity:IsTrigger";
         public const string Unity_Layer = "unity:layer";
         public const string Unity_SortingLayer = "unity:SortingLayer";

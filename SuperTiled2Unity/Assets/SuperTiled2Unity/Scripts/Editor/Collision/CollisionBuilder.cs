@@ -10,7 +10,6 @@ namespace SuperTiled2Unity.Editor
     public class CollisionBuilder
     {
         private GameObject m_TilemapGameObject;
-        private Tilemap m_Tilemap;
         private Dictionary<uint, TilePolygonCollection> m_TilePolygonDatabase;
         private Dictionary<CollisionClipperKey, CollisionClipper> m_CollisionClippers = new Dictionary<CollisionClipperKey, CollisionClipper>();
         private SuperImportContext m_ImportContext;
@@ -18,15 +17,12 @@ namespace SuperTiled2Unity.Editor
         public CollisionBuilder(GameObject goTilemap, Dictionary<uint, TilePolygonCollection> tilePolygonDatabase, SuperImportContext importContext)
         {
             m_TilemapGameObject = goTilemap;
-            m_Tilemap = m_TilemapGameObject.GetComponentInParent<Tilemap>();
             m_TilePolygonDatabase = tilePolygonDatabase;
             m_ImportContext = importContext;
         }
 
         public void PlaceTileColliders(SuperMap map, SuperTile tile, TileIdMath tileId, Vector3Int pos)
         {
-            Assert.IsNotNull(m_Tilemap, "Need a Tilemap component if we are going to gather tile colliders");
-
             // Do we have any collider objects defined for this tile?
             if (!tile.m_CollisionObjects.IsEmpty())
             {

@@ -4,7 +4,7 @@
     {
         public const int TilesetVersion = 10;
         public const int TemplateVersion = 4;
-        public const int MapVersion = 17;
+        public const int MapVersion = 17; // fixit - bump this up with ignore mode is working
 
         public const string TilesetExtension = "tsx";
         public const string TemplateExtension = "tx";

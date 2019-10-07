@@ -59,7 +59,7 @@ namespace SuperTiled2Unity.Editor
             Assert.IsNotNull(xData);
 
             // Create the tilemap for the layer if needed
-            if (!m_TilesAsObjects)
+            if (!m_TilesAsObjects && SuperImportContext.LayerIgnoreMode != LayerIgnoreMode.Visual)
             {
                 GetOrAddTilemapComponent(goLayer);
             }
@@ -333,14 +333,20 @@ namespace SuperTiled2Unity.Editor
             // This allows us to support Tilemaps being shared by groups
             pos3.z = RendererSorter.CurrentTileZ;
 
-            // Set the tile (sprite, transform matrix, flags)
-            var tilemap = goTilemap.GetComponentInParent<Tilemap>();
-            tilemap.SetTile(pos3, tile);
-            tilemap.SetTransformMatrix(pos3, tile.GetTransformMatrix(tileId.FlipFlags, m_MapComponent.m_Orientation));
-            tilemap.SetTileFlags(pos3, TileFlags.LockAll);
+            if (SuperImportContext.LayerIgnoreMode != LayerIgnoreMode.Visual)
+            {
+                // Set the tile (sprite, transform matrix, flags)
+                var tilemap = goTilemap.GetComponentInParent<Tilemap>();
+                tilemap.SetTile(pos3, tile);
+                tilemap.SetTransformMatrix(pos3, tile.GetTransformMatrix(tileId.FlipFlags, m_MapComponent.m_Orientation));
+                tilemap.SetTileFlags(pos3, TileFlags.LockAll);
+            }
 
-            // Do we have any colliders on the tile to be gathered?
-            m_CurrentCollisionBuilder.PlaceTileColliders(m_MapComponent, tile, tileId, pos3);
+            if (SuperImportContext.LayerIgnoreMode != LayerIgnoreMode.Collision)
+            {
+                // Do we have any colliders on the tile to be gathered?
+                m_CurrentCollisionBuilder.PlaceTileColliders(m_MapComponent, tile, tileId, pos3);
+            }
         }
 
         private void ReadTileIds_Xml(XElement xElement, ref List<uint> tileIds)

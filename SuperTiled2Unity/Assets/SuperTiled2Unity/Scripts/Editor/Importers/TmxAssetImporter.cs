@@ -330,21 +330,30 @@ namespace SuperTiled2Unity.Editor
                     continue;
                 }
 
-                if (xNode.Name == "layer")
+                LayerIgnoreMode ignoreMode = xNode.GetPropertyAttributeAs(StringConstants.Unity_Ignore, LayerIgnoreMode.False);
+                if (ignoreMode == LayerIgnoreMode.True)
                 {
-                    ProcessTileLayer(goParent, xNode);
+                    continue;
                 }
-                else if (xNode.Name == "group")
+
+                using (SuperImportContext.BeginLayerIgnoreMode(ignoreMode)) // fixit - make sure it works with grouping
                 {
-                    ProcessGroupLayer(goParent, xNode);
-                }
-                else if (xNode.Name == "objectgroup")
-                {
-                    ProcessObjectLayer(goParent, xNode);
-                }
-                else if (xNode.Name == "imagelayer")
-                {
-                    ProcessImageLayer(goParent, xNode);
+                    if (xNode.Name == "layer")
+                    {
+                        ProcessTileLayer(goParent, xNode);
+                    }
+                    else if (xNode.Name == "group")
+                    {
+                        ProcessGroupLayer(goParent, xNode); // fixit - ignore tile objects or collisions
+                    }
+                    else if (xNode.Name == "objectgroup")
+                    {
+                        ProcessObjectLayer(goParent, xNode);
+                    }
+                    else if (xNode.Name == "imagelayer")
+                    {
+                        ProcessImageLayer(goParent, xNode);
+                    }
                 }
             }
         }
