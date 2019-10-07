@@ -16,7 +16,12 @@ namespace SuperTiled2Unity.Editor
 
             // Group layers can contain other layers
             RendererSorter.BeginGroupLayer(groupLayerComponent);
-            ProcessMapLayers(groupLayerComponent.gameObject, xGroup);
+
+            using (SuperImportContext.BeginIsTriggerOverride(groupLayerComponent.gameObject))
+            {
+                ProcessMapLayers(groupLayerComponent.gameObject, xGroup);
+            }
+
             RendererSorter.EndGroupLayer();
 
             return groupLayerComponent.gameObject;

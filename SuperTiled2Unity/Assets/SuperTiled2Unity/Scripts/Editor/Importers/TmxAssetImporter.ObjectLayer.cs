@@ -20,7 +20,12 @@ namespace SuperTiled2Unity.Editor
             AddSuperCustomProperties(objectLayer.gameObject, xObjectLayer.Element("properties"));
 
             RendererSorter.BeginObjectLayer(objectLayer);
-            loader.CreateObjects();
+
+            using (SuperImportContext.BeginIsTriggerOverride(objectLayer.gameObject))
+            {
+                loader.CreateObjects();
+            }
+
             RendererSorter.EndObjectLayer(objectLayer);
 
             return objectLayer.gameObject;
