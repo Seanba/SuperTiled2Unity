@@ -34,7 +34,7 @@ namespace SuperTiled2Unity.Editor
             var addedCollider = go.GetComponent<Collider2D>();
             if (addedCollider != null)
             {
-                addedCollider.isTrigger = collision.m_IsTrigger;
+                addedCollider.isTrigger = importContext.GetIsTriggerOverridable(collision.m_IsTrigger);
             }
 
             goParent.AddChildWithUniqueName(go);

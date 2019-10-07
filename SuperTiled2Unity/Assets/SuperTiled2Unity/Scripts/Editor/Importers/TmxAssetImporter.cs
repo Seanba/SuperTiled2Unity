@@ -81,8 +81,11 @@ namespace SuperTiled2Unity.Editor
                 // Custom properties need to be in place before we process the map layers
                 AddSuperCustomProperties(m_MapComponent.gameObject, xMap.Element("properties"));
 
-                // Add layers to our grid object
-                ProcessMapLayers(m_GridComponent.gameObject, xMap);
+                using (SuperImportContext.BeginIsTriggerOverride(m_MapComponent.gameObject))
+                {
+                    // Add layers to our grid object
+                    ProcessMapLayers(m_GridComponent.gameObject, xMap);
+                }
             }
         }
 

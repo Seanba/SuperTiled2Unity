@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Xml.Linq;
 using SuperTiled2Unity.Editor.Geometry;
 using UnityEngine;
@@ -335,9 +332,9 @@ namespace SuperTiled2Unity.Editor
             if (collider != null)
             {
                 CustomProperty isTrigger;
-                if (properties.TryGetCustomProperty("unity:isTrigger", out isTrigger))
+                if (properties.TryGetCustomProperty(StringConstants.Unity_IsTrigger, out isTrigger))
                 {
-                    collider.isTrigger = isTrigger.GetValueAsBool();
+                    collider.isTrigger = Importer.SuperImportContext.GetIsTriggerOverridable(isTrigger.GetValueAsBool());
                 }
             }
 

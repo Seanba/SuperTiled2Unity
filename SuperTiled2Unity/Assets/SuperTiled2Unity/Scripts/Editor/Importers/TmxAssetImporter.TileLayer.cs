@@ -34,16 +34,17 @@ namespace SuperTiled2Unity.Editor
             // Create the game object that contains the layer and add it to the grid parent
             var layerComponent = goParent.AddSuperLayerGameObject<SuperTileLayer>(new SuperTileLayerLoader(xLayer), SuperImportContext);
 
-            // Add properties then sort the layer
             AddSuperCustomProperties(layerComponent.gameObject, xLayer.Element("properties"));
-
             RendererSorter.BeginTileLayer(layerComponent);
 
-            // Process the data for the layer
-            var xData = xLayer.Element("data");
-            if (xData != null)
+            using (SuperImportContext.BeginIsTriggerOverride(layerComponent.gameObject))
             {
-                ProcessLayerData(layerComponent.gameObject, xData);
+                // Process the data for the layer
+                var xData = xLayer.Element("data");
+                if (xData != null)
+                {
+                    ProcessLayerData(layerComponent.gameObject, xData);
+                }
             }
 
             RendererSorter.EndTileLayer(layerComponent);
