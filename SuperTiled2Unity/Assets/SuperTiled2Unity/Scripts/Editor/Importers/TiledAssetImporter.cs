@@ -109,7 +109,7 @@ namespace SuperTiled2Unity.Editor
         {
             // Do we have a 'unity:tag' property?
             CustomProperty prop;
-            if (properties.TryGetCustomProperty("unity:tag", out prop))
+            if (properties.TryGetCustomProperty(StringConstants.Unity_Tag, out prop))
             {
                 string tag = prop.m_Value;
                 CheckTagName(tag);
@@ -121,7 +121,7 @@ namespace SuperTiled2Unity.Editor
         {
             // Do we have a 'unity:layer' property?
             CustomProperty prop;
-            if (properties.TryGetCustomProperty("unity:layer", out prop))
+            if (properties.TryGetCustomProperty(StringConstants.Unity_Layer, out prop))
             {
                 string layer = prop.m_Value;
                 if (!UnityEditorInternal.InternalEditorUtility.layers.Contains(layer))
