@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Linq;
-using System.Text;
+﻿using System.Xml.Linq;
 using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
@@ -32,8 +28,6 @@ namespace SuperTiled2Unity.Editor
 
             return layer;
         }
-
-        public abstract bool WorldPositionStays { get; }
 
         protected abstract SuperLayer CreateLayerComponent(GameObject go);
         protected abstract void InternalLoadFromXml(GameObject go);

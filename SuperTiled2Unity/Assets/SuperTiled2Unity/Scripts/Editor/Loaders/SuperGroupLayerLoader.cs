@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
@@ -13,8 +9,6 @@ namespace SuperTiled2Unity.Editor
             : base(xml)
         {
         }
-
-        public override bool WorldPositionStays { get { return true; } }
 
         protected override SuperLayer CreateLayerComponent(GameObject go)
         {

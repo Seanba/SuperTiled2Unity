@@ -27,8 +27,6 @@ namespace SuperTiled2Unity.Editor
             set { m_AnimationFramerate = value; }
         }
 
-        public override bool WorldPositionStays { get { return true; } }
-
         public void CreateObjects()
         {
             Assert.IsNotNull(m_Xml);
@@ -137,19 +135,21 @@ namespace SuperTiled2Unity.Editor
             var xPoint = xObject.Element("point");
             var xText = xObject.Element("text");
 
+            bool collisions = Importer.SuperImportContext.LayerIgnoreMode != LayerIgnoreMode.Collision;
+
             if (superObject.m_TileId != 0)
             {
                 ProcessTileObject(superObject, xObject);
             }
-            else if (xPolygon != null)
+            else if (xPolygon != null && collisions)
             {
                 ProcessPolygonElement(superObject.gameObject, xPolygon);
             }
-            else if (xPolyline != null)
+            else if (xPolyline != null && collisions)
             {
                 ProcessPolylineElement(superObject.gameObject, xPolyline);
             }
-            else if (xEllipse != null)
+            else if (xEllipse != null && collisions)
             {
                 ProcessEllipseElement(superObject.gameObject, xObject);
             }
@@ -162,7 +162,7 @@ namespace SuperTiled2Unity.Editor
                 // A point is simply an empty game object out in space.
                 // We don't need to add anything else
             }
-            else
+            else if (collisions)
             {
                 // Default object is a rectangle
                 ProcessObjectRectangle(superObject.gameObject, xObject);
@@ -261,23 +261,29 @@ namespace SuperTiled2Unity.Editor
             goTile.transform.localRotation = Quaternion.Euler(0, 0, 0);
             goTile.transform.localScale = Vector3.one;
 
-            // Add the renderer
-            var renderer = goTile.AddComponent<SpriteRenderer>();
-            renderer.sprite = tile.m_Sprite;
-            renderer.color = new Color(1, 1, 1, superObject.CalculateOpacity());
-            Importer.AssignMaterial(renderer);
-            Importer.AssignSpriteSorting(renderer);
-
-            // Add the animator if needed
-            if (!tile.m_AnimationSprites.IsEmpty())
+            if (Importer.SuperImportContext.LayerIgnoreMode != LayerIgnoreMode.Visual)
             {
-                var tileAnimator = goTile.AddComponent<TileObjectAnimator>();
-                tileAnimator.m_AnimationFramerate = AnimationFramerate;
-                tileAnimator.m_AnimationSprites = tile.m_AnimationSprites;
+                // Add the renderer
+                var renderer = goTile.AddComponent<SpriteRenderer>();
+                renderer.sprite = tile.m_Sprite;
+                renderer.color = new Color(1, 1, 1, superObject.CalculateOpacity());
+                Importer.AssignMaterial(renderer);
+                Importer.AssignSpriteSorting(renderer);
+
+                // Add the animator if needed
+                if (!tile.m_AnimationSprites.IsEmpty())
+                {
+                    var tileAnimator = goTile.AddComponent<TileObjectAnimator>();
+                    tileAnimator.m_AnimationFramerate = AnimationFramerate;
+                    tileAnimator.m_AnimationSprites = tile.m_AnimationSprites;
+                }
             }
 
-            // Add any colliders that were set up on the tile in the collision editor
-            tile.AddCollidersForTileObject(goTile, Importer.SuperImportContext);
+            if (Importer.SuperImportContext.LayerIgnoreMode != LayerIgnoreMode.Collision)
+            {
+                // Add any colliders that were set up on the tile in the collision editor
+                tile.AddCollidersForTileObject(goTile, Importer.SuperImportContext);
+            }
 
             // Store a reference to our tile object
             superObject.m_SuperTile = tile;

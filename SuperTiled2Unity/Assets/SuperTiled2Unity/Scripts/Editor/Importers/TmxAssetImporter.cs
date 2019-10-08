@@ -149,14 +149,14 @@ namespace SuperTiled2Unity.Editor
             float sx = SuperImportContext.MakeScalar(m_MapComponent.m_TileWidth);
             float sy = SuperImportContext.MakeScalar(m_MapComponent.m_TileHeight);
             m_GridComponent.cellSize = new Vector3(sx, sy, 1);
-            var localPosition = new Vector3(0, 0, 0);
+            var tileLayerOffset = new Vector3(0, 0, 0);
 
             switch (m_MapComponent.m_Orientation)
             {
 #if UNITY_2018_3_OR_NEWER
                 case MapOrientation.Isometric:
                     m_GridComponent.cellLayout = GridLayout.CellLayout.Isometric;
-                    localPosition = new Vector3(0, -sy, 0);
+                    tileLayerOffset = new Vector3(0, -sy, 0);
                     break;
 
                 case MapOrientation.Staggered:
@@ -166,22 +166,22 @@ namespace SuperTiled2Unity.Editor
                     {
                         if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
                         {
-                            localPosition = new Vector3(sx * 0.5f, -sy, 0);
+                            tileLayerOffset = new Vector3(sx * 0.5f, -sy, 0);
                         }
                         else
                         {
-                            localPosition = new Vector3(sx, -sy, 0);
+                            tileLayerOffset = new Vector3(sx, -sy, 0);
                         }
                     }
                     else if (m_MapComponent.m_StaggerAxis == StaggerAxis.X)
                     {
                         if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
                         {
-                            localPosition = new Vector3(sx * 0.5f, -sy, 0);
+                            tileLayerOffset = new Vector3(sx * 0.5f, -sy, 0);
                         }
                         else
                         {
-                            localPosition = new Vector3(sx * 0.5f, -sy * 1.5f, 0);
+                            tileLayerOffset = new Vector3(sx * 0.5f, -sy * 1.5f, 0);
                         }
                     }
                     break;
@@ -195,11 +195,11 @@ namespace SuperTiled2Unity.Editor
 
                         if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
                         {
-                            localPosition = new Vector3(sx * 0.5f, sy * -0.5f, 0);
+                            tileLayerOffset = new Vector3(sx * 0.5f, sy * -0.5f, 0);
                         }
                         else
                         {
-                            localPosition = new Vector3(sx * 0.5f, sy * 0.25f, 0);
+                            tileLayerOffset = new Vector3(sx * 0.5f, sy * 0.25f, 0);
                         }
                     }
                     else if (m_MapComponent.m_StaggerAxis == StaggerAxis.X)
@@ -211,23 +211,22 @@ namespace SuperTiled2Unity.Editor
 
                         if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
                         {
-                            localPosition = new Vector3(sx * -0.25f, -sy, 0);
+                            tileLayerOffset = new Vector3(sx * -0.25f, -sy, 0);
                         }
                         else
                         {
-                            localPosition = new Vector3(sx * 0.5f, -sy, 0);
+                            tileLayerOffset = new Vector3(sx * 0.5f, -sy, 0);
                         }
                     }
                     break;
 #endif
                 default:
                     m_GridComponent.cellLayout = GridLayout.CellLayout.Rectangle;
-                    localPosition = new Vector3(0, -sy, 0);
+                    tileLayerOffset = new Vector3(0, -sy, 0);
                     break;
             }
 
-            // fixit - this "localPosition" value should instead be used as an additional offset for any tile layers, I think. Check that out with grouping.
-            m_GridComponent.transform.localPosition = localPosition;
+            SuperImportContext.TileLayerOffset = tileLayerOffset;
 
             return true;
         }
@@ -331,13 +330,13 @@ namespace SuperTiled2Unity.Editor
                     continue;
                 }
 
-                LayerIgnoreMode ignoreMode = xNode.GetPropertyAttributeAs(StringConstants.Unity_Ignore, LayerIgnoreMode.False);
+                LayerIgnoreMode ignoreMode = xNode.GetPropertyAttributeAs(StringConstants.Unity_Ignore, SuperImportContext.LayerIgnoreMode);
                 if (ignoreMode == LayerIgnoreMode.True)
                 {
                     continue;
                 }
 
-                using (SuperImportContext.BeginLayerIgnoreMode(ignoreMode)) // fixit - make sure it works with grouping
+                using (SuperImportContext.BeginLayerIgnoreMode(ignoreMode))
                 {
                     if (xNode.Name == "layer")
                     {
@@ -345,7 +344,7 @@ namespace SuperTiled2Unity.Editor
                     }
                     else if (xNode.Name == "group")
                     {
-                        ProcessGroupLayer(goParent, xNode); // fixit - ignore tile objects or collisions
+                        ProcessGroupLayer(goParent, xNode);
                     }
                     else if (xNode.Name == "objectgroup")
                     {
