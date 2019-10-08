@@ -226,6 +226,7 @@ namespace SuperTiled2Unity.Editor
                     break;
             }
 
+            // fixit - this "localPosition" value should instead be used as an additional offset for any tile layers, I think. Check that out with grouping.
             m_GridComponent.transform.localPosition = localPosition;
 
             return true;

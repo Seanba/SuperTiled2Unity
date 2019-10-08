@@ -110,7 +110,8 @@ namespace SuperTiled2Unity.Editor
 
             // Add the object to the parent
             goLayer.name = layerComponent.m_TiledName;
-            goParent.AddChildWithUniqueName(goLayer, loader.WorldPositionStays);
+            goParent.AddChildWithUniqueName(goLayer, loader.WorldPositionStays); // fixit - this doesn't work because of grouping
+            //goParent.AddChildWithUniqueName(goLayer, false); // should be this but then tile layers are off a bit
 
             // Position the layer based on the x, y offsets and pixels per unit
             goLayer.transform.localPosition += (Vector3)importContext.MakePoint(layerComponent.m_OffsetX, layerComponent.m_OffsetY);
