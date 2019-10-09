@@ -26,3 +26,4 @@ Additional `donations can be made <http://www.seanba.com/donate>`_ and **are alw
    
    manual/sorting
    manual/custom-properties
+   manual/custom-properties-importing
