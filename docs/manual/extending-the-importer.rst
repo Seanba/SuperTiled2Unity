@@ -1,5 +1,5 @@
 Extending The SuperTiled2Unity Importer
----------------------------------------
+=======================================
 
 .. image:: img/pipeline/custom-importer-header.png
 
