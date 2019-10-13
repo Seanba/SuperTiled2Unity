@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
@@ -173,7 +170,7 @@ namespace SuperTiled2Unity.Editor
                     }
                 }
 
-                EditorGUILayout.HelpBox("When the Tiled import scripts come across a Tiled Object of one of these given types it will be replace, automatically, with the associated prefab.", MessageType.None);
+                EditorGUILayout.HelpBox("When the Tiled import scripts come across a Tiled Object of one of these given types it will be replaced, automatically, with the associated prefab.", MessageType.None);
             }
         }
 
