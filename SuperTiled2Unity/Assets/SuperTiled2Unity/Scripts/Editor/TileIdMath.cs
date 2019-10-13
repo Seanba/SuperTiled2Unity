@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SuperTiled2Unity.Editor
+﻿namespace SuperTiled2Unity.Editor
 {
     // Helper struct to deal with Tile Id values having burned-in flip flags
     public struct TileIdMath

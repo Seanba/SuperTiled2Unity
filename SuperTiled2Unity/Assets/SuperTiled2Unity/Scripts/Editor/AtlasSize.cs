@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SuperTiled2Unity.Editor
+﻿namespace SuperTiled2Unity.Editor
 {
     // Only allow certain sizes (and always power-of-two) for atlases used for tiles
     public enum AtlasSize
