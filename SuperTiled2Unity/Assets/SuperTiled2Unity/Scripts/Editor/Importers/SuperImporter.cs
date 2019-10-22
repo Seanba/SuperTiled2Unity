@@ -97,11 +97,6 @@ namespace SuperTiled2Unity.Editor
 #endif
         }
 
-        public void AddAssetPathDependency(string assetPath)
-        {
-            m_SuperAsset.AddDependency(AssetImportContext, assetPath);
-        }
-
         public T RequestAssetAtPath<T>(string path) where T : UnityEngine.Object
         {
             Assert.IsNotNull(m_SuperAsset, "Must be a SuperAsset type if we are requesting dependencies");
