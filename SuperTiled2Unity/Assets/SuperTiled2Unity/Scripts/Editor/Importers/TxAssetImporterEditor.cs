@@ -43,6 +43,8 @@ namespace SuperTiled2Unity.Editor
                 XElement xml = XElement.Parse(objectTemplate.m_ObjectXml);
                 InspectorGUIForXmlElement(xml);
             }
+
+            ApplyRevertGUI();
         }
 
         private void InspectorGUIForXmlElement(XElement xml)
