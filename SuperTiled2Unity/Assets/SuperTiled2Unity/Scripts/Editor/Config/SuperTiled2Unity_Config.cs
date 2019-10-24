@@ -8,7 +8,7 @@ namespace SuperTiled2Unity.Editor
 {
     internal class SuperTiled2Unity_Config
     {
-        internal const string Version = "1.7.0";
+        internal const string Version = "1.7.1";
         internal const string DefaultSettingsFileName = "ST2U Settings.asset";
 
         public static ST2USettings CreateDefaultSettings()
@@ -32,8 +32,6 @@ namespace SuperTiled2Unity.Editor
         [MenuItem("Assets/SuperTiled2Unity/Export ST2U Asset", true)]
         private static bool ExportSuperAssetValidate()
         {
-            // fixit - what if multiple objects are selected? (i.e. Selection.gameObjects)
-            // see: https://answers.unity.com/questions/472808/how-to-get-the-current-selected-folder-of-project.html
             var path = AssetDatabase.GetAssetPath(Selection.activeObject);
             if (!string.IsNullOrEmpty(path))
             {
@@ -47,13 +45,8 @@ namespace SuperTiled2Unity.Editor
         private static void ExportSuperAsset()
         {
             var path = AssetDatabase.GetAssetPath(Selection.activeObject);
-
-            AssetDependencies depends;
-            if (TiledAssetDependencies.Instance.GetAssetDependencies(path, out depends)) // fixit - need a recursive version
-            {
-                var deps = string.Join(" ", depends.Dependencies);
-                Debug.LogFormat("fixit - dependencies: {0}", deps);
-            }
+            var tracker = new RecursiveAssetDependencyTracker(path);
+            SuperPackageExport.ShowWindow(Path.GetFileNameWithoutExtension(path), tracker.Dependencies);
         }
 
         // This is only invoked by a deployment batch file
