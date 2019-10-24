@@ -33,6 +33,7 @@ namespace SuperTiled2Unity.Editor
         private static bool ExportSuperAssetValidate()
         {
             // fixit - what if multiple objects are selected? (i.e. Selection.gameObjects)
+            // see: https://answers.unity.com/questions/472808/how-to-get-the-current-selected-folder-of-project.html
             var path = AssetDatabase.GetAssetPath(Selection.activeObject);
             if (!string.IsNullOrEmpty(path))
             {
