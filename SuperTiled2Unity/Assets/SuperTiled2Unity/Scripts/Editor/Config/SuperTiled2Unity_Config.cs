@@ -29,6 +29,32 @@ namespace SuperTiled2Unity.Editor
             return string.Format("SuperTiled2Unity requires Unity 2018.3 or later. You are using {0}", Application.unityVersion);
         }
 
+        [MenuItem("Assets/SuperTiled2Unity/Export ST2U Asset", true)]
+        private static bool ExportSuperAssetValidate()
+        {
+            // fixit - what if multiple objects are selected? (i.e. Selection.gameObjects)
+            var path = AssetDatabase.GetAssetPath(Selection.activeObject);
+            if (!string.IsNullOrEmpty(path))
+            {
+                return AssetDatabase.LoadAssetAtPath<SuperAsset>(path) != null;
+            }
+
+            return false;
+        }
+
+        [MenuItem("Assets/SuperTiled2Unity/Export ST2U Asset")]
+        private static void ExportSuperAsset()
+        {
+            var path = AssetDatabase.GetAssetPath(Selection.activeObject);
+
+            AssetDependencies depends;
+            if (TiledAssetDependencies.Instance.GetAssetDependencies(path, out depends)) // fixit - need a recursive version
+            {
+                var deps = string.Join(" ", depends.Dependencies);
+                Debug.LogFormat("fixit - dependencies: {0}", deps);
+            }
+        }
+
         // This is only invoked by a deployment batch file
         private static void DeploySuperTiled2Unity()
         {
