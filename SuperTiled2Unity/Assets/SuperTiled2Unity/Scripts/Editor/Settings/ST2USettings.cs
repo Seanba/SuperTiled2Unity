@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
-using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using UnityEditor;
 using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
@@ -37,6 +34,10 @@ namespace SuperTiled2Unity.Editor
         [SerializeField]
         private Material m_DefaultMaterial = null;
         public Material DefaultMaterial { get { return m_DefaultMaterial; } }
+
+        [SerializeField]
+        private List<LayerMaterialMatch> m_MaterialMatchings = new List<LayerMaterialMatch>();
+        public List<LayerMaterialMatch> MaterialMatchings { get { return m_MaterialMatchings; } }
 
         [SerializeField]
         private TextAsset m_ObjectTypesXml = null;
@@ -91,7 +92,6 @@ namespace SuperTiled2Unity.Editor
         [SerializeField]
         private List<TypePrefabReplacement> m_PrefabReplacements = new List<TypePrefabReplacement>();
         public List<TypePrefabReplacement> PrefabReplacements { get { return m_PrefabReplacements; } }
-
 
         public float InversePPU { get { return 1.0f / PixelsPerUnit; } }
 
@@ -148,6 +148,11 @@ namespace SuperTiled2Unity.Editor
                     m_CustomObjectTypes.Clear();
                 }
             }
+        }
+
+        public void SortMaterialMatchings()
+        {
+            m_MaterialMatchings = m_MaterialMatchings.OrderBy(m => m.m_LayerName).ToList();
         }
 
         public void SortPrefabReplacements()

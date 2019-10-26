@@ -17,7 +17,9 @@ namespace SuperTiled2Unity.Editor
     {
         private ST2USettings m_ST2USettings;
         private SerializedObject m_S2TUSettingsObject;
+        private ReorderableList m_MaterialMatchingsList;
         private ReorderableList m_PrefabReplacementList;
+        private bool m_ShowMaterialMatchings;
         private bool m_ShowPrefabReplacements;
         private bool m_ShowLayerColors;
 
@@ -27,6 +29,7 @@ namespace SuperTiled2Unity.Editor
             public static readonly GUIContent m_EdgesPerEllipseContent = new GUIContent("Default Edges Per Ellipse", "How many edges to use when appromixating ellipse/circle colliders. (Default Setting)");
             public static readonly GUIContent m_AnimationFramerateContent = new GUIContent("Animation Framerate", "How many frames per second for tile animations.");
             public static readonly GUIContent m_DefaultMaterialContent = new GUIContent("Default Material", "Set to the material you want to use for sprites and tiles imported by SuperTiled2Unity. Leave empy to use built-in sprite material.");
+            public static readonly GUIContent m_MaterialMatchingsContent = new GUIContent("Material Matchings", "Match these materials by Tiled Layer names.");
             public static readonly GUIContent m_ObjectTypesXmlContent = new GUIContent("Object Types Xml", "Set to an Object Types Xml file exported from Tiled Object Type Editor.");
             public static readonly GUIContent m_PrefabReplacmentsContent = new GUIContent("Prefab Replacements", "List of prefabs to replace Tiled Object Types during import.");
             public static readonly GUIContent m_LayerColorsContent = new GUIContent("Layer Colors", "These colors will be used for drawing colliders in your imported Tiled maps.");
@@ -42,6 +45,14 @@ namespace SuperTiled2Unity.Editor
 
             m_ST2USettings = ST2USettings.GetOrCreateST2USettings();
             m_S2TUSettingsObject = new SerializedObject(m_ST2USettings);
+
+            // Prepare our list of material matchings
+            var matchings = m_S2TUSettingsObject.FindProperty("m_MaterialMatchings");
+            m_MaterialMatchingsList = new ReorderableList(m_S2TUSettingsObject, matchings, true, false, true, true)
+            {
+                headerHeight = 0,
+                drawElementCallback = OnDrawMaterialMatchingElement,
+            };
 
             // Prepare our list of prefab replacements
             var replacements = m_S2TUSettingsObject.FindProperty("m_PrefabReplacements");
@@ -134,6 +145,9 @@ namespace SuperTiled2Unity.Editor
             EditorGUILayout.PropertyField(materialProperty, SettingsContent.m_DefaultMaterialContent);
             EditorGUILayout.Space();
 
+            DoGuiMaterialMatchings();
+            EditorGUILayout.Space();
+
             EditorGUILayout.LabelField("Animation Settings", EditorStyles.boldLabel);
 
             // Animation Framerate
@@ -145,6 +159,28 @@ namespace SuperTiled2Unity.Editor
             }
 
             EditorGUILayout.HelpBox("In frames-per-second. Note: You will need to reimport all your tilesets after making changes to the animation framerate for tiles.", MessageType.None);
+        }
+
+        private void DoGuiMaterialMatchings()
+        {
+            EditorGUILayout.LabelField("Material Matchings", EditorStyles.boldLabel);
+
+            m_ShowMaterialMatchings = EditorGUILayout.Foldout(m_ShowMaterialMatchings, SettingsContent.m_MaterialMatchingsContent);
+            if (m_ShowMaterialMatchings)
+            {
+                m_MaterialMatchingsList.DoLayoutList();
+
+                using (new GUILayout.HorizontalScope())
+                {
+                    GUILayout.FlexibleSpace();
+                    if (GUILayout.Button("Sort Alphabetically"))
+                    {
+                        m_ST2USettings.SortMaterialMatchings();
+                    }
+                }
+
+                EditorGUILayout.HelpBox("Fill this out with the names of Tile Layer names you want a material to be assigned to automatically during import.", MessageType.None);
+            }
         }
 
         private void DoGuiPrefabReplacements()
@@ -247,6 +283,24 @@ namespace SuperTiled2Unity.Editor
                 {
                     ReimportTiledAssets();
                 }
+            }
+        }
+
+        private void OnDrawMaterialMatchingElement(Rect rect, int index, bool isActive, bool isFocused)
+        {
+            using (new GuiScopedIndent())
+            {
+                const int kMargin = 20;
+                float fieldWidth = (rect.width - kMargin) / 2;
+
+                var element = m_MaterialMatchingsList.serializedProperty.GetArrayElementAtIndex(index);
+                var nameProperty = element.FindPropertyRelative("m_LayerName");
+                var materialProperty = element.FindPropertyRelative("m_Material");
+
+                rect.y += 2;
+
+                EditorGUI.PropertyField(new Rect(rect.x, rect.y, fieldWidth, EditorGUIUtility.singleLineHeight), nameProperty, GUIContent.none);
+                EditorGUI.PropertyField(new Rect(rect.x + fieldWidth + kMargin, rect.y, fieldWidth, EditorGUIUtility.singleLineHeight), materialProperty, GUIContent.none);
             }
         }
 

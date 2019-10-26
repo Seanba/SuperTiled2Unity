@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Xml.Linq;
 using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
@@ -67,8 +68,16 @@ namespace SuperTiled2Unity.Editor
             CheckSortingLayerName(sortLayerName);
         }
 
-        public void AssignMaterial(Renderer renderer)
+        public void AssignMaterial(Renderer renderer, string match)
         {
+            // Do we have a registered material match?
+            var matchedMaterial = SuperImportContext.Settings.MaterialMatchings.FirstOrDefault(m => m.m_LayerName.Equals(match, StringComparison.OrdinalIgnoreCase));
+            if (matchedMaterial != null)
+            {
+                renderer.material = matchedMaterial.m_Material;
+                return;
+            }
+
             // Has the user chosen to override the material used for our tilemaps and sprite objects?
             if (SuperImportContext.Settings.DefaultMaterial != null)
             {

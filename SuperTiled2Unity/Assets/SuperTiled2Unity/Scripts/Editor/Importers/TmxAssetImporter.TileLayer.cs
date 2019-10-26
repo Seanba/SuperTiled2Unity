@@ -12,6 +12,7 @@ namespace SuperTiled2Unity.Editor
     public partial class TmxAssetImporter
     {
         private CollisionBuilder m_CurrentCollisionBuilder;
+        private SuperTileLayer m_CurrentTileLayer;
 
         private struct Chunk
         {
@@ -56,8 +57,11 @@ namespace SuperTiled2Unity.Editor
         private void ProcessLayerData(GameObject goLayer, XElement xData)
         {
             Assert.IsNotNull(goLayer);
-            Assert.IsNotNull(goLayer.GetComponent<SuperTileLayer>());
             Assert.IsNotNull(xData);
+            Assert.IsNull(m_CurrentTileLayer);
+
+            m_CurrentTileLayer = goLayer.GetComponent<SuperTileLayer>();
+            Assert.IsNotNull(m_CurrentTileLayer);
 
             // Create the tilemap for the layer if needed
             if (!m_TilesAsObjects && SuperImportContext.LayerIgnoreMode != LayerIgnoreMode.Visual)
@@ -99,6 +103,8 @@ namespace SuperTiled2Unity.Editor
 
                 ProcessLayerDataChunk(goLayer, chunk);
             }
+
+            m_CurrentTileLayer = null;
         }
 
         private Tilemap GetOrAddTilemapComponent(GameObject go)
@@ -141,7 +147,6 @@ namespace SuperTiled2Unity.Editor
                 tilemap.orientationMatrix = Matrix4x4.Translate(new Vector3(-ox, 0));
             }
 
-
             AddTilemapRendererComponent(go);
 
             // Figure out our opacity
@@ -155,7 +160,7 @@ namespace SuperTiled2Unity.Editor
         {
             var renderer = go.AddComponent<TilemapRenderer>();
             renderer.sortOrder = MapRenderConverter.Tiled2Unity(m_MapComponent.m_RenderOrder);
-            AssignMaterial(renderer);
+            AssignMaterial(renderer, m_CurrentTileLayer.m_TiledName);
             AssignTilemapSorting(renderer);
 
 #if UNITY_2018_3_OR_NEWER
@@ -314,7 +319,7 @@ namespace SuperTiled2Unity.Editor
             var renderer = goTRS.AddComponent<SpriteRenderer>();
             renderer.sprite = tile.m_Sprite;
             renderer.color = color;
-            AssignMaterial(renderer);
+            AssignMaterial(renderer, m_CurrentTileLayer.m_TiledName);
             AssignSpriteSorting(renderer);
 
             if (!tile.m_AnimationSprites.IsEmpty())
