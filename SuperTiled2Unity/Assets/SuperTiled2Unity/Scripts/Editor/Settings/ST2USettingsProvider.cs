@@ -179,7 +179,7 @@ namespace SuperTiled2Unity.Editor
                     }
                 }
 
-                EditorGUILayout.HelpBox("Fill this out with the names of Tile Layer names you want a material to be assigned to automatically during import.", MessageType.None);
+                EditorGUILayout.HelpBox("Fill this out with the names of Tile Layer names and their matching materials. Any imported Tiled Layer with a matching name will use the assigned material.", MessageType.None);
             }
         }
 
