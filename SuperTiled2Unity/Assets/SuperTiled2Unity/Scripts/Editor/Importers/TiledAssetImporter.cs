@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Xml.Linq;
+using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -100,6 +101,14 @@ namespace SuperTiled2Unity.Editor
                     ReportError("Missing template file: {0}", template);
                 }
             }
+        }
+
+        public void ApplyDefaultSettings()
+        {
+            var settings = ST2USettings.GetOrCreateST2USettings();
+            m_PixelsPerUnit = settings.PixelsPerUnit;
+            m_EdgesPerEllipse = settings.EdgesPerEllipse;
+            EditorUtility.SetDirty(this);
         }
 
         protected override void InternalOnImportAsset()

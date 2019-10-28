@@ -16,6 +16,7 @@ MonoBehaviour:
   m_EdgesPerEllipse: 32
   m_AnimationFramerate: 20
   m_DefaultMaterial: {fileID: 0}
+  m_MaterialMatchings: []
   m_ObjectTypesXml: {fileID: 0}
   m_ParseXmlError: 
   m_LayerColors:

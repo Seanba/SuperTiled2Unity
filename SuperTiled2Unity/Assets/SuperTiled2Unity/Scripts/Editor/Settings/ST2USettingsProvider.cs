@@ -22,6 +22,7 @@ namespace SuperTiled2Unity.Editor
         private bool m_ShowMaterialMatchings;
         private bool m_ShowPrefabReplacements;
         private bool m_ShowLayerColors;
+        private bool m_ApplyDefaultSettings;
 
         public class SettingsContent
         {
@@ -33,6 +34,7 @@ namespace SuperTiled2Unity.Editor
             public static readonly GUIContent m_ObjectTypesXmlContent = new GUIContent("Object Types Xml", "Set to an Object Types Xml file exported from Tiled Object Type Editor.");
             public static readonly GUIContent m_PrefabReplacmentsContent = new GUIContent("Prefab Replacements", "List of prefabs to replace Tiled Object Types during import.");
             public static readonly GUIContent m_LayerColorsContent = new GUIContent("Layer Colors", "These colors will be used for drawing colliders in your imported Tiled maps.");
+            public static readonly GUIContent m_ApplyDefaultSettingsContent = new GUIContent("Apply Default Settings", "Default Import Settings will be applied to every ST2U that is imported. Beware!");
         }
 
         public ST2USettingsProvider() : base(ST2USettings.ProjectSettingsPath, SettingsScope.Project)
@@ -279,9 +281,15 @@ namespace SuperTiled2Unity.Editor
             using (new GUILayout.HorizontalScope())
             {
                 GUILayout.FlexibleSpace();
+                m_ApplyDefaultSettings = GUILayout.Toggle(m_ApplyDefaultSettings, SettingsContent.m_ApplyDefaultSettingsContent);
+            }
+
+            using (new GUILayout.HorizontalScope())
+            {
+                GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Reimport Tiled Assets"))
                 {
-                    ReimportTiledAssets();
+                    ReimportTiledAssets(m_ApplyDefaultSettings);
                 }
             }
         }
@@ -322,8 +330,21 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private static void ReimportTiledAssets()
+        private static void ReimportTiledAssets(bool applyDefaults)
         {
+            if (applyDefaults)
+            {
+                foreach (var guid in AssetDatabase.FindAssets("t:SuperAsset"))
+                {
+                    var path = AssetDatabase.GUIDToAssetPath(guid);
+                    var importer = AssetImporter.GetAtPath(path) as TiledAssetImporter;
+                    if (importer != null)
+                    {
+                        importer.ApplyDefaultSettings();
+                    }
+                }
+            }
+
             // Reimport tilesets first
             foreach (var guid in AssetDatabase.FindAssets("t:SuperAssetTileset"))
             {

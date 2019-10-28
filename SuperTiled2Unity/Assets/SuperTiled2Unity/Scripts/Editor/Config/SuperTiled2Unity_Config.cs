@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -29,7 +30,7 @@ namespace SuperTiled2Unity.Editor
             return string.Format("SuperTiled2Unity requires Unity 2018.3 or later. You are using {0}", Application.unityVersion);
         }
 
-        [MenuItem("Assets/SuperTiled2Unity/Export ST2U Asset", true)]
+        [MenuItem("Assets/SuperTiled2Unity/Export ST2U Asset...", true)]
         private static bool ExportSuperAssetValidate()
         {
             var path = AssetDatabase.GetAssetPath(Selection.activeObject);
@@ -41,12 +42,39 @@ namespace SuperTiled2Unity.Editor
             return false;
         }
 
-        [MenuItem("Assets/SuperTiled2Unity/Export ST2U Asset")]
+        [MenuItem("Assets/SuperTiled2Unity/Export ST2U Asset...")]
         private static void ExportSuperAsset()
         {
             var path = AssetDatabase.GetAssetPath(Selection.activeObject);
             var tracker = new RecursiveAssetDependencyTracker(path);
             SuperPackageExport.ShowWindow(Path.GetFileNameWithoutExtension(path), tracker.Dependencies);
+        }
+
+        [MenuItem("Assets/SuperTiled2Unity/Apply Default Settings to ST2U Assets")]
+        private static void ReimportWithDefaults()
+        {
+            UnityEngine.Object[] selectedAsset = Selection.GetFiltered(typeof(UnityEngine.Object), SelectionMode.DeepAssets);
+            HashSet<TiledAssetImporter> tiledImporters = new HashSet<TiledAssetImporter>();
+
+            foreach (var obj in selectedAsset)
+            {
+                var path = AssetDatabase.GetAssetPath(obj);
+                var importer = AssetImporter.GetAtPath(path) as TiledAssetImporter;
+                if (importer != null)
+                {
+                    tiledImporters.Add(importer);
+                }
+            }
+
+            foreach (var importer in tiledImporters)
+            {
+                importer.ApplyDefaultSettings();
+            }
+
+            foreach (var importer in tiledImporters)
+            {
+                importer.SaveAndReimport();
+            }
         }
 
         // This is only invoked by a deployment batch file
