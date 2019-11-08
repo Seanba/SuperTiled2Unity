@@ -5,12 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using SuperTiled2Unity;
 using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Tilemaps;
 
 namespace SuperTiled2Unity.Editor
 {

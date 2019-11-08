@@ -21,6 +21,22 @@ namespace SuperTiled2Unity.Editor
         private AtlasSize m_AtlasHeight = AtlasSize._2048;
         public int AtlasHeight { get { return (int)m_AtlasHeight; } }
 
+        [SerializeField]
+        private bool m_SpritePivotOverrideEnabled = false;
+        public bool SpritePivotOverrideEnabled { get { return m_SpritePivotOverrideEnabled; } }
+
+        [SerializeField]
+        private Vector2 m_SpritePivotOverride = Vector2.zero;
+        public Vector2 SpritePivotOverride { get { return m_SpritePivotOverride; } }
+
+        [SerializeField]
+        private bool m_OffsetOverrideEnabled = false;
+        public bool OffsetOverrideEnabled { get { return m_OffsetOverrideEnabled; } }
+
+        [SerializeField]
+        private Vector2 m_OffsetOverride = Vector2.zero;
+        public Vector2 OffsetOverride { get { return m_OffsetOverride; } }
+
         public SuperTileset Tileset { get; private set; }
 
         protected override void InternalOnImportAsset()
@@ -35,7 +51,7 @@ namespace SuperTiled2Unity.Editor
 
         private void ImportTsxFile()
         {
-            XDocument doc = XDocument.Load(this.assetPath);
+            XDocument doc = XDocument.Load(assetPath);
             var xTileset = doc.Element("tileset");
             ProcessTileset(xTileset);
         }
@@ -43,12 +59,12 @@ namespace SuperTiled2Unity.Editor
         private void ProcessTileset(XElement xTileset)
         {
             CreateTileset(xTileset);
-            Assert.IsNotNull(this.Tileset);
+            Assert.IsNotNull(Tileset);
         }
 
         private void CreateTileset(XElement xTileset)
         {
-            Assert.IsNull(this.Tileset);
+            Assert.IsNull(Tileset);
 
             var icon = SuperIcons.GetTsxIcon();
 
@@ -56,9 +72,9 @@ namespace SuperTiled2Unity.Editor
             Tileset.m_IsInternal = false;
             Tileset.m_PixelsPerUnit = PixelsPerUnit;
             SuperImportContext.AddObjectToAsset("_TilesetScriptObject", Tileset, icon);
-            SuperImportContext.SetMainObject(this.Tileset);
+            SuperImportContext.SetMainObject(Tileset);
 
-            var loader = new TilesetLoader(this.Tileset, this, m_UseSpriteAtlas, (int)m_AtlasWidth, (int)m_AtlasHeight);
+            var loader = new TilesetLoader(Tileset, this, m_UseSpriteAtlas, (int)m_AtlasWidth, (int)m_AtlasHeight);
             loader.LoadFromXml(xTileset);
         }
     }
