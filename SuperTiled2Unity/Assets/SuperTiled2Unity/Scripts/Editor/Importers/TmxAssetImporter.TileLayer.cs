@@ -34,7 +34,7 @@ namespace SuperTiled2Unity.Editor
 
             // Create the game object that contains the layer and add it to the grid parent
             var layerComponent = goParent.AddSuperLayerGameObject<SuperTileLayer>(new SuperTileLayerLoader(xLayer), SuperImportContext);
-            layerComponent.gameObject.transform.localPosition = SuperImportContext.TileLayerOffset;
+            layerComponent.gameObject.transform.localPosition += (Vector3)SuperImportContext.TileLayerOffset;
 
             AddSuperCustomProperties(layerComponent.gameObject, xLayer.Element("properties"));
             RendererSorter.BeginTileLayer(layerComponent);

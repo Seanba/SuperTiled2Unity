@@ -21,22 +21,6 @@ namespace SuperTiled2Unity.Editor
         private AtlasSize m_AtlasHeight = AtlasSize._2048;
         public int AtlasHeight { get { return (int)m_AtlasHeight; } }
 
-        [SerializeField]
-        private bool m_SpritePivotOverrideEnabled = false;
-        public bool SpritePivotOverrideEnabled { get { return m_SpritePivotOverrideEnabled; } }
-
-        [SerializeField]
-        private Vector2 m_SpritePivotOverride = Vector2.zero;
-        public Vector2 SpritePivotOverride { get { return m_SpritePivotOverride; } }
-
-        [SerializeField]
-        private bool m_OffsetOverrideEnabled = false;
-        public bool OffsetOverrideEnabled { get { return m_OffsetOverrideEnabled; } }
-
-        [SerializeField]
-        private Vector2 m_OffsetOverride = Vector2.zero;
-        public Vector2 OffsetOverride { get { return m_OffsetOverride; } }
-
         public SuperTileset Tileset { get; private set; }
 
         protected override void InternalOnImportAsset()
