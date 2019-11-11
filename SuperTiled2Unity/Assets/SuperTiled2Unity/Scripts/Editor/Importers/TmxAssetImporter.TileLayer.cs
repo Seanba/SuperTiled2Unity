@@ -34,7 +34,6 @@ namespace SuperTiled2Unity.Editor
 
             // Create the game object that contains the layer and add it to the grid parent
             var layerComponent = goParent.AddSuperLayerGameObject<SuperTileLayer>(new SuperTileLayerLoader(xLayer), SuperImportContext);
-            layerComponent.gameObject.transform.localPosition += (Vector3)SuperImportContext.TileLayerOffset;
 
             AddSuperCustomProperties(layerComponent.gameObject, xLayer.Element("properties"));
             RendererSorter.BeginTileLayer(layerComponent);
@@ -128,24 +127,8 @@ namespace SuperTiled2Unity.Editor
             }
 
             tilemap = go.AddComponent<Tilemap>();
-            tilemap.tileAnchor = Vector2.zero;
+            tilemap.tileAnchor = SuperImportContext.TileAnchor;
             tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
-
-            if (m_MapComponent.m_Orientation == MapOrientation.Hexagonal)
-            {
-                tilemap.orientation = Tilemap.Orientation.Custom;
-
-                float ox = SuperImportContext.MakeScalar(m_MapComponent.m_TileWidth) * 0.5f;
-                float oy = SuperImportContext.MakeScalar(m_MapComponent.m_TileHeight) * 0.5f;
-                tilemap.orientationMatrix = Matrix4x4.Translate(new Vector3(-ox, -oy));
-            }
-            else if (m_MapComponent.m_Orientation == MapOrientation.Isometric || m_MapComponent.m_Orientation == MapOrientation.Staggered)
-            {
-                tilemap.orientation = Tilemap.Orientation.Custom;
-
-                float ox = SuperImportContext.MakeScalar(m_MapComponent.m_TileWidth) * 0.5f;
-                tilemap.orientationMatrix = Matrix4x4.Translate(new Vector3(-ox, 0));
-            }
 
             AddTilemapRendererComponent(go);
 
@@ -296,19 +279,9 @@ namespace SuperTiled2Unity.Editor
             Vector3 translate, rotate, scale;
             tile.GetTRS(tileId.FlipFlags, m_MapComponent.m_Orientation, out translate, out rotate, out scale);
 
-            var cellPos = superMap.CellPositionToLocalPosition(pos3.x, pos3.y);
+            var cellPos = superMap.CellPositionToLocalPosition(pos3.x, pos3.y, SuperImportContext);
             translate.x += cellPos.x;
             translate.y += cellPos.y;
-
-            if (m_MapComponent.m_Orientation == MapOrientation.Isometric || m_MapComponent.m_Orientation == MapOrientation.Staggered)
-            {
-                translate.x -= SuperImportContext.MakeScalar(m_MapComponent.m_TileWidth) * 0.5f;
-            }
-            else if (m_MapComponent.m_Orientation == MapOrientation.Hexagonal)
-            {
-                translate.x -= SuperImportContext.MakeScalar(m_MapComponent.m_TileWidth) * 0.5f;
-                translate.y -= SuperImportContext.MakeScalar(m_MapComponent.m_TileHeight) * 0.5f;
-            }
 
             // Add the game object for the tile
             goTRS.transform.localPosition = translate;
@@ -338,6 +311,11 @@ namespace SuperTiled2Unity.Editor
             // Burn our layer index into the z component of the tile position
             // This allows us to support Tilemaps being shared by groups
             pos3.z = RendererSorter.CurrentTileZ;
+
+            if (pos3.z != 0)
+            {
+                Debug.LogFormat("pos3 index: {0}", pos3.z);
+            }
 
             if (SuperImportContext.LayerIgnoreMode != LayerIgnoreMode.Visual)
             {

@@ -31,16 +31,7 @@ namespace SuperTiled2Unity.Editor
                 foreach (var poly in polygons.Polygons)
                 {
                     // Offset the polygon so that it is in the location of the tile
-                    var offset = map.CellPositionToLocalPosition(pos.x, pos.y);
-
-                    if (map.m_Orientation == MapOrientation.Isometric || map.m_Orientation == MapOrientation.Staggered)
-                    {
-                        offset -= m_ImportContext.MakePointPPU(map.m_TileWidth, 0) * 0.5f;
-                    }
-                    else if (map.m_Orientation == MapOrientation.Hexagonal)
-                    {
-                        offset -= m_ImportContext.MakePointPPU(map.m_TileWidth, map.m_TileHeight) * 0.5f;
-                    }
+                    var offset = map.CellPositionToLocalPosition(pos.x, pos.y, m_ImportContext);
 
                     var points = poly.Points.Select(pt => pt + offset).ToArray();
 

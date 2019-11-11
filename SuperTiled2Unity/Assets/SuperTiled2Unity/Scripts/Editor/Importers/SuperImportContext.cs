@@ -22,7 +22,7 @@ namespace SuperTiled2Unity.Editor
         public ST2USettings Settings { get; private set; }
 
         public LayerIgnoreMode LayerIgnoreMode { get; private set; }
-        public Vector2 TileLayerOffset { get; set; }
+        public Vector2 TileAnchor { get; set; }
 
         public void AddObjectToAsset(string identifier, UnityEngine.Object obj)
         {

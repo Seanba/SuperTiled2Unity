@@ -147,14 +147,14 @@ namespace SuperTiled2Unity.Editor
             float sx = SuperImportContext.MakeScalar(m_MapComponent.m_TileWidth);
             float sy = SuperImportContext.MakeScalar(m_MapComponent.m_TileHeight);
             m_GridComponent.cellSize = new Vector3(sx, sy, 1);
-            var tileLayerOffset = new Vector3(0, 0, 0);
+            var tileAnchor = new Vector3(0, 0, 0);
 
             switch (m_MapComponent.m_Orientation)
             {
 #if UNITY_2018_3_OR_NEWER
                 case MapOrientation.Isometric:
                     m_GridComponent.cellLayout = GridLayout.CellLayout.Isometric;
-                    tileLayerOffset = new Vector3(0, -sy, 0);
+                    tileAnchor = new Vector3(-1.5f, -0.5f, 0);
                     break;
 
                 case MapOrientation.Staggered:
@@ -164,22 +164,23 @@ namespace SuperTiled2Unity.Editor
                     {
                         if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
                         {
-                            tileLayerOffset = new Vector3(sx * 0.5f, -sy, 0);
+                            tileAnchor = new Vector3(-1, -1, 0);
                         }
                         else
                         {
-                            tileLayerOffset = new Vector3(sx, -sy, 0);
+                            tileAnchor = new Vector3(-0.5f, -1.5f, 0);
                         }
                     }
                     else if (m_MapComponent.m_StaggerAxis == StaggerAxis.X)
                     {
                         if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
                         {
-                            tileLayerOffset = new Vector3(sx * 0.5f, -sy, 0);
+                            tileAnchor = new Vector3(-1, -1, 0);
                         }
                         else
                         {
-                            tileLayerOffset = new Vector3(sx * 0.5f, -sy * 1.5f, 0);
+                            // X-Even
+                            tileAnchor = new Vector3(-1.5f, -1.5f, 0);
                         }
                     }
                     break;
@@ -193,11 +194,13 @@ namespace SuperTiled2Unity.Editor
 
                         if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
                         {
-                            tileLayerOffset = new Vector3(sx * 0.5f, sy * -0.5f, 0);
+                            // Y-Odd
+                            tileAnchor = new Vector3(-0.5f, -4/3.0f, 0);
                         }
                         else
                         {
-                            tileLayerOffset = new Vector3(sx * 0.5f, sy * 0.25f, 0);
+                            // Y-Even
+                            tileAnchor = new Vector3(0, -1/3.0f, 0);
                         }
                     }
                     else if (m_MapComponent.m_StaggerAxis == StaggerAxis.X)
@@ -209,22 +212,22 @@ namespace SuperTiled2Unity.Editor
 
                         if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
                         {
-                            tileLayerOffset = new Vector3(sx * -0.25f, -sy, 0);
+                            tileAnchor = new Vector3(-2, -1, 0);
                         }
                         else
                         {
-                            tileLayerOffset = new Vector3(sx * 0.5f, -sy, 0);
+                            tileAnchor = new Vector3(-1.5f, 0, 0);
                         }
                     }
                     break;
 #endif
                 default:
                     m_GridComponent.cellLayout = GridLayout.CellLayout.Rectangle;
-                    tileLayerOffset = new Vector3(0, -sy, 0);
+                    tileAnchor = new Vector3(0, -1, 0);
                     break;
             }
 
-            SuperImportContext.TileLayerOffset = tileLayerOffset;
+            SuperImportContext.TileAnchor = tileAnchor;
 
             return true;
         }

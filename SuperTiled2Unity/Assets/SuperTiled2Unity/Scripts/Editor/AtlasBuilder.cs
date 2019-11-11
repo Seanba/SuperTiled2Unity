@@ -211,7 +211,6 @@ namespace SuperTiled2Unity.Editor
 
                 // Create the sprite with the anchor at (0, 0)
                 var sprite = Sprite.Create(t.PreferredTexture2D, t.PreferredRectangle, Vector2.zero, m_TiledAssetImporter.SuperImportContext.Settings.PixelsPerUnit);
-                //var sprite = Sprite.Create(t.PreferredTexture2D, t.PreferredRectangle, new Vector2(0, 0.5f), m_TiledAssetImporter.SuperImportContext.Settings.PixelsPerUnit); // fixit - tricky isometric example (issue 106)
 
                 sprite.name = spriteName;
                 sprite.hideFlags = HideFlags.HideInHierarchy;

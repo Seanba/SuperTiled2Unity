@@ -59,7 +59,7 @@ namespace SuperTiled2Unity.Editor
             {
                 var x = xTileOffset.GetAttributeAs<float>("x", 0.0f);
                 var y = xTileOffset.GetAttributeAs<float>("y", 0.0f);
-                m_TilesetScript.m_TileOffset = new Vector2(x, y); // fixit - tricky isometric example wants this disabled (issue 106)
+                m_TilesetScript.m_TileOffset = new Vector2(x, y);
             }
 
             var xGrid = xTileset.Element("grid");
