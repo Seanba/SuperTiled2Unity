@@ -9,7 +9,7 @@ namespace SuperTiled2Unity.Editor
 {
     public partial class TmxAssetImporter
     {
-        private GameObject ProcessGroupLayer(GameObject goParent, XElement xGroup)
+        private SuperLayer ProcessGroupLayer(GameObject goParent, XElement xGroup)
         {
             var groupLayerComponent = goParent.AddSuperLayerGameObject<SuperGroupLayer>(new SuperGroupLayerLoader(xGroup), SuperImportContext);
             AddSuperCustomProperties(groupLayerComponent.gameObject, xGroup.Element("properties"));
@@ -24,7 +24,7 @@ namespace SuperTiled2Unity.Editor
 
             RendererSorter.EndGroupLayer();
 
-            return groupLayerComponent.gameObject;
+            return groupLayerComponent;
         }
     }
 }

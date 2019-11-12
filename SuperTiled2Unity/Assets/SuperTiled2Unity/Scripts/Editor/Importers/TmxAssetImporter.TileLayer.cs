@@ -27,7 +27,7 @@ namespace SuperTiled2Unity.Editor
             public int Height { get; set; }
         }
 
-        private GameObject ProcessTileLayer(GameObject goParent, XElement xLayer)
+        private SuperLayer ProcessTileLayer(GameObject goParent, XElement xLayer)
         {
             Assert.IsNotNull(xLayer);
             Assert.IsNotNull(goParent);
@@ -50,7 +50,7 @@ namespace SuperTiled2Unity.Editor
 
             RendererSorter.EndTileLayer(layerComponent);
 
-            return layerComponent.gameObject;
+            return layerComponent;
         }
 
         private void ProcessLayerData(GameObject goLayer, XElement xData)
@@ -311,11 +311,6 @@ namespace SuperTiled2Unity.Editor
             // Burn our layer index into the z component of the tile position
             // This allows us to support Tilemaps being shared by groups
             pos3.z = RendererSorter.CurrentTileZ;
-
-            if (pos3.z != 0)
-            {
-                Debug.LogFormat("pos3 index: {0}", pos3.z);
-            }
 
             if (SuperImportContext.LayerIgnoreMode != LayerIgnoreMode.Visual)
             {

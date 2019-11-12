@@ -339,21 +339,33 @@ namespace SuperTiled2Unity.Editor
 
                 using (SuperImportContext.BeginLayerIgnoreMode(ignoreMode))
                 {
+                    SuperLayer layer = null;
+
                     if (xNode.Name == "layer")
                     {
-                        ProcessTileLayer(goParent, xNode);
+                        layer = ProcessTileLayer(goParent, xNode);
                     }
                     else if (xNode.Name == "group")
                     {
-                        ProcessGroupLayer(goParent, xNode);
+                        layer = ProcessGroupLayer(goParent, xNode);
                     }
                     else if (xNode.Name == "objectgroup")
                     {
-                        ProcessObjectLayer(goParent, xNode);
+                        layer = ProcessObjectLayer(goParent, xNode);
                     }
                     else if (xNode.Name == "imagelayer")
                     {
-                        ProcessImageLayer(goParent, xNode);
+                        layer = ProcessImageLayer(goParent, xNode);
+                    }
+
+                    if (layer != null)
+                    {
+                        CustomProperty zprop;
+                        if (layer.gameObject.TryGetCustomPropertySafe(StringConstants.Unity_ZPosition, out zprop))
+                        {
+                            float zpos = zprop.GetValueAsFloat();
+                            layer.gameObject.transform.Translate(0, 0, zpos);
+                        }
                     }
                 }
             }

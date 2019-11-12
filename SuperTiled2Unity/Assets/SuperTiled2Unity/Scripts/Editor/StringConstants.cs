@@ -9,5 +9,6 @@
         public const string Unity_SortingLayerName = "unity:SortingLayerName";
         public const string Unity_SortingOrder = "unity:SortingOrder";
         public const string Unity_Tag = "unity:tag";
+        public const string Unity_ZPosition = "unity:z-pos";
     }
 }

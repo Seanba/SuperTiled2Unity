@@ -10,7 +10,7 @@ namespace SuperTiled2Unity.Editor
 {
     partial class TmxAssetImporter
     {
-        private GameObject ProcessImageLayer(GameObject goParent, XElement xLayer)
+        private SuperLayer ProcessImageLayer(GameObject goParent, XElement xLayer)
         {
             Assert.IsNotNull(xLayer);
             Assert.IsNotNull(goParent);
@@ -61,7 +61,7 @@ namespace SuperTiled2Unity.Editor
                 }
             }
 
-            return goLayer;
+            return layerComponent;
         }
     }
 }

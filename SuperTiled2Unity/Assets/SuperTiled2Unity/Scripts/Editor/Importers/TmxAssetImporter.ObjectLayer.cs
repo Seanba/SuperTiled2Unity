@@ -5,7 +5,7 @@ namespace SuperTiled2Unity.Editor
 {
     partial class TmxAssetImporter
     {
-        private GameObject ProcessObjectLayer(GameObject goParent, XElement xObjectLayer)
+        private SuperLayer ProcessObjectLayer(GameObject goParent, XElement xObjectLayer)
         {
             // Have our super object layer loader take care of things
             var loader = new SuperObjectLayerLoader(xObjectLayer);
@@ -28,7 +28,7 @@ namespace SuperTiled2Unity.Editor
 
             RendererSorter.EndObjectLayer(objectLayer);
 
-            return objectLayer.gameObject;
+            return objectLayer;
         }
 
         private ColliderFactory CreateColliderFactory()
