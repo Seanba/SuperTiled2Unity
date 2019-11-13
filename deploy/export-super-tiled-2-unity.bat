@@ -1,7 +1,7 @@
 @echo off
 pushd %~dp0
 
-set UnityExe="C:\Program Files\Unity\Hub\Editor\2019.2.1f1\Editor\Unity.exe"
+set UnityExe="C:\Program Files\Unity\Hub\Editor\2019.2.10f1\Editor\Unity.exe"
 set UnityProj="../SuperTiled2Unity"
 set UnityMethod=SuperTiled2Unity.Editor.SuperTiled2Unity_Config.DeploySuperTiled2Unity
 
