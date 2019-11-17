@@ -19,6 +19,7 @@ MonoBehaviour:
   m_MaterialMatchings: []
   m_ObjectTypesXml: {fileID: 0}
   m_ParseXmlError: 
+  m_CollisionGeometryType: 1
   m_LayerColors:
   - {r: 0.2901961, g: 0.41198432, b: 0.78431374, a: 1}
   - {r: 1, g: 0.3882353, b: 0.2784314, a: 1}

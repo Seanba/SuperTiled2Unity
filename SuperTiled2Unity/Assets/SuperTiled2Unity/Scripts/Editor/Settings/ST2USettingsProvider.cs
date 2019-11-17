@@ -33,6 +33,7 @@ namespace SuperTiled2Unity.Editor
             public static readonly GUIContent m_MaterialMatchingsContent = new GUIContent("Material Matchings", "Match these materials by Tiled Layer names.");
             public static readonly GUIContent m_ObjectTypesXmlContent = new GUIContent("Object Types Xml", "Set to an Object Types Xml file exported from Tiled Object Type Editor.");
             public static readonly GUIContent m_PrefabReplacmentsContent = new GUIContent("Prefab Replacements", "List of prefabs to replace Tiled Object Types during import.");
+            public static readonly GUIContent m_CollisionGeometryTypeContent = new GUIContent("Collision Geometry Type", "The type of geometry used by CompositeCollider2D components.");
             public static readonly GUIContent m_LayerColorsContent = new GUIContent("Layer Colors", "These colors will be used for drawing colliders in your imported Tiled maps.");
             public static readonly GUIContent m_ApplyDefaultSettingsContent = new GUIContent("Apply Default Settings", "Default Import Settings will be applied to every ST2U that is imported. Beware!");
         }
@@ -215,6 +216,9 @@ namespace SuperTiled2Unity.Editor
         private void DoGuiColliders()
         {
             EditorGUILayout.LabelField("Collider Settings", EditorStyles.boldLabel);
+
+            SerializedProperty geoTypeProperty = m_S2TUSettingsObject.FindProperty("m_CollisionGeometryType");
+            geoTypeProperty.intValue = (int)(CompositeCollider2D.GeometryType)EditorGUILayout.EnumPopup(SettingsContent.m_CollisionGeometryTypeContent, (CompositeCollider2D.GeometryType)geoTypeProperty.intValue);
 
             m_ShowLayerColors = EditorGUILayout.Foldout(m_ShowLayerColors, SettingsContent.m_LayerColorsContent);
             if (m_ShowLayerColors)

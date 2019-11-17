@@ -9,7 +9,7 @@ namespace SuperTiled2Unity.Editor
     public static class PolygonUtils
     {
         // Group convex polygons into a composite collider
-        public static void AddCompositePolygonCollider(GameObject go, List<Vector2[]> convexPolygons)
+        public static void AddCompositePolygonCollider(GameObject go, List<Vector2[]> convexPolygons, SuperImportContext context)
         {
             // If there is only one convex polygon then don't use a composite
             if (convexPolygons.Count == 1)
@@ -29,7 +29,7 @@ namespace SuperTiled2Unity.Editor
                 // This way we have convex polygon paths (in the children) if needed
                 // And we can have complex polygons represented by one object
                 var composite = go.AddComponent<CompositeCollider2D>();
-                composite.geometryType = CompositeCollider2D.GeometryType.Polygons;
+                composite.geometryType = context.Settings.CollisionGeometryType;
                 composite.generationType = CompositeCollider2D.GenerationType.Manual;
 
                 // Add polygon colliders

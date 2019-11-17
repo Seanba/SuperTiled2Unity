@@ -53,7 +53,7 @@ namespace SuperTiled2Unity.Editor
             var composition = new ComposeConvexPolygons();
             var convexPolygons = composition.Compose(triangles);
 
-            PolygonUtils.AddCompositePolygonCollider(go, convexPolygons);
+            PolygonUtils.AddCompositePolygonCollider(go, convexPolygons, importContext);
         }
 
         private static void AddEdgeCollider(GameObject go, CollisionObject collision, SuperTile tile, SuperImportContext importContext)

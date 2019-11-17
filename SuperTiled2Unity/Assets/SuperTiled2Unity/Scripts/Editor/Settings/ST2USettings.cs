@@ -48,6 +48,10 @@ namespace SuperTiled2Unity.Editor
         public string ParseXmlError { get { return m_ParseXmlError; } }
 
         [SerializeField]
+        private CompositeCollider2D.GeometryType m_CollisionGeometryType = CompositeCollider2D.GeometryType.Polygons;
+        public CompositeCollider2D.GeometryType CollisionGeometryType { get { return m_CollisionGeometryType; } }
+
+        [SerializeField]
         private List<Color> m_LayerColors = new List<Color>()
         {
             NamedColors.SteelBlue,          // Builtin - Default

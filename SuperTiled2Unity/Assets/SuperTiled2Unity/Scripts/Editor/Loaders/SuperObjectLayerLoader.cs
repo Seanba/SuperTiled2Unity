@@ -304,7 +304,7 @@ namespace SuperTiled2Unity.Editor
             var composition = new ComposeConvexPolygons();
             var convexPolygons = composition.Compose(triangles);
 
-            PolygonUtils.AddCompositePolygonCollider(goObject, convexPolygons);
+            PolygonUtils.AddCompositePolygonCollider(goObject, convexPolygons, Importer.SuperImportContext);
         }
 
         private void ProcessPolylineElement(GameObject goObject, XElement xPolyline)
