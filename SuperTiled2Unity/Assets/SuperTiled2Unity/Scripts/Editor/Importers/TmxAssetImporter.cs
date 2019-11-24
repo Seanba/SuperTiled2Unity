@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Xml;
 using System.Xml.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
@@ -83,6 +80,7 @@ namespace SuperTiled2Unity.Editor
                 {
                     // Add layers to our grid object
                     ProcessMapLayers(m_GridComponent.gameObject, xMap);
+                    PostProccessMapLayers(m_GridComponent.gameObject);
                 }
             }
         }
@@ -147,14 +145,14 @@ namespace SuperTiled2Unity.Editor
             float sx = SuperImportContext.MakeScalar(m_MapComponent.m_TileWidth);
             float sy = SuperImportContext.MakeScalar(m_MapComponent.m_TileHeight);
             m_GridComponent.cellSize = new Vector3(sx, sy, 1);
-            var tileAnchor = new Vector3(0, 0, 0);
+            Vector3 tilemapOffset = new Vector3(0, 0, 0);
 
             switch (m_MapComponent.m_Orientation)
             {
 #if UNITY_2018_3_OR_NEWER
                 case MapOrientation.Isometric:
                     m_GridComponent.cellLayout = GridLayout.CellLayout.Isometric;
-                    tileAnchor = new Vector3(-1.5f, -0.5f, 0);
+                    tilemapOffset = new Vector3(-sx * 0.5f, -sy, 0);
                     break;
 
                 case MapOrientation.Staggered:
@@ -164,23 +162,26 @@ namespace SuperTiled2Unity.Editor
                     {
                         if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
                         {
-                            tileAnchor = new Vector3(-1, -1, 0);
+                            // Y - Odd
+                            tilemapOffset = new Vector3(0, -sy, 0);
                         }
                         else
                         {
-                            tileAnchor = new Vector3(-0.5f, -1.5f, 0);
+                            // Y-Even
+                            tilemapOffset = new Vector3(sx * 0.5f, -sy, 0);
                         }
                     }
                     else if (m_MapComponent.m_StaggerAxis == StaggerAxis.X)
                     {
+                        // X-Ood
                         if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
                         {
-                            tileAnchor = new Vector3(-1, -1, 0);
+                            tilemapOffset = new Vector3(0, -sy, 0);
                         }
                         else
                         {
                             // X-Even
-                            tileAnchor = new Vector3(-1.5f, -1.5f, 0);
+                            tilemapOffset = new Vector3(0, -sy * 1.5f, 0);
                         }
                     }
                     break;
@@ -195,12 +196,12 @@ namespace SuperTiled2Unity.Editor
                         if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
                         {
                             // Y-Odd
-                            tileAnchor = new Vector3(-0.5f, -4/3.0f, 0);
+                            tilemapOffset = new Vector3(0, -sy, 0);
                         }
                         else
                         {
                             // Y-Even
-                            tileAnchor = new Vector3(0, -1/3.0f, 0);
+                            tilemapOffset = new Vector3(0, -sy * 0.25f, 0);
                         }
                     }
                     else if (m_MapComponent.m_StaggerAxis == StaggerAxis.X)
@@ -212,22 +213,24 @@ namespace SuperTiled2Unity.Editor
 
                         if (m_MapComponent.m_StaggerIndex == StaggerIndex.Odd)
                         {
-                            tileAnchor = new Vector3(-2, -1, 0);
+                            // X-Odd
+                            tilemapOffset = new Vector3(-sx * 0.75f, -sy * 1.5f, 0);
                         }
                         else
                         {
-                            tileAnchor = new Vector3(-1.5f, 0, 0);
+                            // X-Even
+                            tilemapOffset = new Vector3(0, -sy * 1.5f, 0);
                         }
                     }
                     break;
 #endif
                 default:
                     m_GridComponent.cellLayout = GridLayout.CellLayout.Rectangle;
-                    tileAnchor = new Vector3(0, -1, 0);
+                    tilemapOffset = new Vector3(0, -sy, 0);
                     break;
             }
 
-            SuperImportContext.TileAnchor = tileAnchor;
+            SuperImportContext.TilemapOffset = tilemapOffset;
 
             return true;
         }
@@ -339,35 +342,31 @@ namespace SuperTiled2Unity.Editor
 
                 using (SuperImportContext.BeginLayerIgnoreMode(ignoreMode))
                 {
-                    SuperLayer layer = null;
-
                     if (xNode.Name == "layer")
                     {
-                        layer = ProcessTileLayer(goParent, xNode);
+                        ProcessTileLayer(goParent, xNode);
                     }
                     else if (xNode.Name == "group")
                     {
-                        layer = ProcessGroupLayer(goParent, xNode);
+                        ProcessGroupLayer(goParent, xNode);
                     }
                     else if (xNode.Name == "objectgroup")
                     {
-                        layer = ProcessObjectLayer(goParent, xNode);
+                        ProcessObjectLayer(goParent, xNode);
                     }
                     else if (xNode.Name == "imagelayer")
                     {
-                        layer = ProcessImageLayer(goParent, xNode);
-                    }
-
-                    if (layer != null)
-                    {
-                        CustomProperty zprop;
-                        if (layer.gameObject.TryGetCustomPropertySafe(StringConstants.Unity_ZPosition, out zprop))
-                        {
-                            float zpos = zprop.GetValueAsFloat();
-                            layer.gameObject.transform.Translate(0, 0, zpos);
-                        }
+                        ProcessImageLayer(goParent, xNode);
                     }
                 }
+            }
+        }
+
+        private void PostProccessMapLayers(GameObject goParent)
+        {
+            foreach (var layer in goParent.GetComponentsInChildren<SuperLayer>())
+            {
+                layer.SetWorldPosition(SuperImportContext);
             }
         }
 

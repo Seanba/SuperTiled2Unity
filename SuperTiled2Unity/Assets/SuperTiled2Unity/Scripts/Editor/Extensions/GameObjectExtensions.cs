@@ -76,11 +76,6 @@ namespace SuperTiled2Unity.Editor
 
         public static void AddChildWithUniqueName(this GameObject go, GameObject child)
         {
-            AddChildWithUniqueName(go, child, false);
-        }
-
-        public static void AddChildWithUniqueName(this GameObject go, GameObject child, bool worldPositionStays)
-        {
             if (go == null)
             {
                 return;
@@ -96,7 +91,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             child.name = name;
-            child.transform.SetParent(go.transform, worldPositionStays);
+            child.transform.SetParent(go.transform, false);
         }
 
         // Creates a new object, attached to the parent, with a specialized layer component
@@ -110,10 +105,7 @@ namespace SuperTiled2Unity.Editor
 
             // Add the object to the parent
             goLayer.name = layerComponent.m_TiledName;
-            goParent.AddChildWithUniqueName(goLayer, false);
-
-            // Position the layer based on the x, y offsets and pixels per unit
-            goLayer.transform.localPosition += (Vector3)importContext.MakePoint(layerComponent.m_OffsetX, layerComponent.m_OffsetY);
+            goParent.AddChildWithUniqueName(goLayer);
 
             return layerComponent;
         }

@@ -67,6 +67,10 @@ namespace SuperTiled2Unity.Editor
             {
                 GetOrAddTilemapComponent(goLayer);
             }
+            else if (m_TilesAsObjects)
+            {
+                goLayer.AddComponent<SuperTilesAsObjectsTilemap>();
+            }
 
             var chunk = new Chunk();
             chunk.Encoding = xData.GetAttributeAs<DataEncoding>("encoding");
@@ -127,8 +131,8 @@ namespace SuperTiled2Unity.Editor
             }
 
             tilemap = go.AddComponent<Tilemap>();
-            tilemap.tileAnchor = SuperImportContext.TileAnchor;
             tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
+            tilemap.tileAnchor = new Vector3(0, 0, 0);
 
             AddTilemapRendererComponent(go);
 
