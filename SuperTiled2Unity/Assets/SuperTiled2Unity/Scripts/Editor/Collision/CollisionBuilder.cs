@@ -113,6 +113,8 @@ namespace SuperTiled2Unity.Editor
                         polyCollider.gameObject.AddComponent<SuperColliderComponent>();
                     }
 
+                    composite.ST2UGeneratePolygonGeometry();
+
                     // Add Edge colliders
                     foreach (var path in clipper.OpenPaths)
                     {
@@ -124,8 +126,6 @@ namespace SuperTiled2Unity.Editor
                         edgeCollider.points = path;
                         edgeCollider.gameObject.AddComponent<SuperColliderComponent>();
                     }
-
-                    composite.ST2UGenerateGeometry();
                 }
             }
         }

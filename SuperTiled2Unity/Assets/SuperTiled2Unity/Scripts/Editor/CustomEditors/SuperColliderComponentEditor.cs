@@ -39,7 +39,14 @@ namespace SuperTiled2Unity.Editor
 
             if (m_Settings != null)
             {
-                ColliderGizmos.DrawColliders(component.gameObject, m_Settings);
+                if (component.m_PolygonShapes.Count > 0)
+                {
+                    ColliderGizmos.DrawColliderShapes(component, m_Settings);
+                }
+                else
+                {
+                    ColliderGizmos.DrawColliders(component.gameObject, m_Settings);
+                }
             }
         }
     }

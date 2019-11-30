@@ -13,6 +13,19 @@ namespace SuperTiled2Unity.Editor
         private const float FillOpcacity = 0.25f;
         private const float LineThickness = 5.0f;
 
+        public static void DrawColliderShapes(SuperColliderComponent collider, ST2USettings settings)
+        {
+            foreach (var shape in collider.m_PolygonShapes)
+            {
+                FillShape(collider.gameObject, shape.m_Points, settings);
+            }
+
+            foreach (var shape in collider.m_OutlineShapes)
+            {
+                OutlineShape(collider.gameObject, shape.m_Points, settings);
+            }
+        }
+
         public static void DrawColliders(GameObject go, ST2USettings settings)
         {
             foreach (var polygon in go.GetComponentsInChildren<PolygonCollider2D>())
@@ -36,10 +49,27 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
+        private static void FillShape(GameObject go, Vector2[] points, ST2USettings settings)
+        {
+            CheckHelpers();
+
+            var transformed = points.Select(pt => go.transform.TransformPoint(pt)).ToArray();
+            DrawAsConvexPolygonFill(go, transformed, settings);
+        }
+
+        private static void OutlineShape(GameObject go, Vector2[] points, ST2USettings settings)
+        {
+            CheckHelpers();
+
+            var transformed = points.Select(pt => go.transform.TransformPoint(pt)).ToArray();
+            DrawAsConvexPolygonOutline(go, transformed, settings);
+        }
+
         private static void DrawPolygon(PolygonCollider2D polygon, ST2USettings settings)
         {
             CheckHelpers();
 
+            // Note: we are assuming the PolygonCollider2D is convex when using this function
             Vector3 offset = polygon.transform.TransformVector(polygon.offset);
             var points = polygon.GetPath(0).Select(pt => polygon.transform.TransformPoint(pt) + offset).ToArray();
             DrawAsConvexPolygon(polygon.gameObject, points, settings);
@@ -99,6 +129,22 @@ namespace SuperTiled2Unity.Editor
                 LineTexture.SetPixel(0, 0, Color.white);
                 LineTexture.SetPixel(0, 1, Color.white);
             }
+        }
+
+        private static void DrawAsConvexPolygonOutline(GameObject go, Vector3[] points, ST2USettings settings)
+        {
+            var color = GetColorFromObject(go, settings);
+            Handles.color = color;
+            Handles.DrawAAPolyLine(LineTexture, LineThickness, points);
+            Handles.DrawAAPolyLine(LineTexture, LineThickness, points[0], points[points.Length - 1]);
+        }
+
+        private static void DrawAsConvexPolygonFill(GameObject go, Vector3[] points, ST2USettings settings)
+        {
+            var color = GetColorFromObject(go, settings);
+            color.a *= FillOpcacity;
+            Handles.color = color;
+            Handles.DrawAAConvexPolygon(points);
         }
 
         private static void DrawAsConvexPolygon(GameObject go, Vector3[] points, ST2USettings settings)

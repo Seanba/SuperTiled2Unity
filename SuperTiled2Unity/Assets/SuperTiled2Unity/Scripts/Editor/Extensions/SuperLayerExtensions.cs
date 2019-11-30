@@ -16,7 +16,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             // Add an additional offset if our tileset is present. These coordinates have already been transformed.
-            if (layer.GetComponent<Tilemap>() != null || layer.GetComponent<SuperTilesAsObjectsTilemap>() != null)
+            if (layer is SuperTileLayer || layer.GetComponent<Tilemap>() != null || layer.GetComponent<SuperTilesAsObjectsTilemap>() != null)
             {
                 position_w += context.TilemapOffset;
             }

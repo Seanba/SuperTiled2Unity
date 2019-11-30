@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace SuperTiled2Unity
 {
@@ -46,19 +47,15 @@ namespace SuperTiled2Unity
         [ReadOnly]
         public int m_NextObjectId;
 
-#if !UNITY_2019_1_OR_NEWER
         private void Start()
         {
-            // This is a bad hack but the CompositeCollider2D does not update its geometry in Unity 2018
-            gameObject.SetActive(false);
-            gameObject.SetActive(true);
-
-            foreach (var collider in GetComponentsInChildren<CompositeCollider2D>())
+            // This is a hack so that Unity does not falsely report prefab instance differences from our importer map
+            // Look for where renderer.detectChunkCullingBounds is set to Manual in the importer code which is the other part of this hack
+            foreach (var renderer in GetComponentsInChildren<TilemapRenderer>())
             {
-                collider.GenerateGeometry();
+                renderer.detectChunkCullingBounds = TilemapRenderer.DetectChunkCullingBounds.Auto;
             }
         }
-#endif
 
         public Vector3Int TiledIndexToGridCell(int index, int offset_x, int offset_y, int stride)
         {

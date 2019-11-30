@@ -45,7 +45,7 @@ namespace SuperTiled2Unity.Editor
                     polyCollider.gameObject.AddComponent<SuperColliderComponent>();
                 }
 
-                composite.ST2UGenerateGeometry();
+                composite.ST2UGeneratePolygonGeometry();
             }
         }
 
