@@ -19,13 +19,6 @@ namespace SuperTiled2Unity.Editor
             var layerComponent = goParent.AddSuperLayerGameObject<SuperImageLayer>(new SuperImageLayerLoader(xLayer), SuperImportContext);
             var goLayer = layerComponent.gameObject;
 
-            // This sucks but we have to correct for isometric orientation for image layers
-            if (m_MapComponent.m_Orientation == MapOrientation.Isometric)
-            {
-                float dx = SuperImportContext.MakeScalar(m_MapComponent.m_Height * m_MapComponent.m_TileHeight);
-                goLayer.transform.Translate(-dx, 0, 0);
-            }
-
             AddSuperCustomProperties(goLayer, xLayer.Element("properties"));
 
             var xImage = xLayer.Element("image");

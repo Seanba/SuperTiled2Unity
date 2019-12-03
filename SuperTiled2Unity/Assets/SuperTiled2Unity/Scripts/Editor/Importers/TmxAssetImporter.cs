@@ -360,7 +360,7 @@ namespace SuperTiled2Unity.Editor
         {
             foreach (var layer in goParent.GetComponentsInChildren<SuperLayer>())
             {
-                layer.SetWorldPosition(SuperImportContext);
+                layer.SetWorldPosition(m_MapComponent, SuperImportContext);
             }
 
             // Refresh all our tilemaps so that needless prefab instance changes don't appear

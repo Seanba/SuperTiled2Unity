@@ -5,7 +5,7 @@ namespace SuperTiled2Unity.Editor
 {
     public static class SuperLayerExtensions
     {
-        public static void SetWorldPosition(this SuperLayer layer, SuperImportContext context)
+        public static void SetWorldPosition(this SuperLayer layer, SuperMap map, SuperImportContext context)
         {
             // Accumlate positions up the tree
             Vector3 position_w = new Vector3();
@@ -22,6 +22,13 @@ namespace SuperTiled2Unity.Editor
             }
 
             layer.transform.position = position_w;
+
+            // This sucks but we have to correct for isometric orientation for image layers
+            if (layer is SuperImageLayer && map.m_Orientation == MapOrientation.Isometric)
+            {
+                float dx = context.MakeScalar(map.m_Height * map.m_TileHeight);
+                layer.transform.Translate(-dx, 0, 0);
+            }
         }
     }
 }

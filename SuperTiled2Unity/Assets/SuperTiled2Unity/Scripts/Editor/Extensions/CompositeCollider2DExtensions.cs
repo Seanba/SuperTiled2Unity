@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
@@ -34,6 +34,14 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
+        public static Vector2[] GetPathPoints(this CompositeCollider2D composite, int index)
+        {
+            int count = composite.GetPathPointCount(index);
+            Vector2[] points = new Vector2[count];
+            composite.GetPath(index, points);
+            return points;
+        }
+
         private static void ReplaceWithPolygonCollider2D(CompositeCollider2D composite)
         {
             var go = composite.gameObject;
@@ -46,12 +54,11 @@ namespace SuperTiled2Unity.Editor
             combined.isTrigger = composite.isTrigger;
 
             // Copy composite paths to combined PolygonCollider2D
-            List<Vector2> points = new List<Vector2>(1024 * 8);
             for (int p = 0; p < composite.pathCount; p++)
             {
-                composite.GetPath(p, points);
+                var points = composite.GetPathPoints(p);
 
-                if (points.Count > 0)
+                if (points.Length > 0)
                 {
                     combined.SetPath(p, points);
                 }
@@ -67,9 +74,9 @@ namespace SuperTiled2Unity.Editor
             // Add outline shapes
             for (int p = 0; p < composite.pathCount; p++)
             {
-                composite.GetPath(p, points);
+                var points = composite.GetPathPoints(p);
 
-                if (points.Count != 0)
+                if (points.Length != 0)
                 {
                     super.AddOutline(points);
                 }
@@ -91,10 +98,9 @@ namespace SuperTiled2Unity.Editor
             // Add an edge collider child for every path in our composite
             var go = composite.gameObject;
 
-            List<Vector2> points = new List<Vector2>(1024 * 8);
             for (int p = 0; p < composite.pathCount; p++)
             {
-                composite.GetPath(p, points);
+                var points = composite.GetPathPoints(p).ToList();
 
                 // Close the loop
                 points.Add(points[0]);
