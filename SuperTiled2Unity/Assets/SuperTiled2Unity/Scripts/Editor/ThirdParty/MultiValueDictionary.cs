@@ -32,11 +32,8 @@
 // Seanba edit: Put into SuperTiled2Unity namespace to avoid name collisions
 // Seanba edit: Not using using SD.Tools.Algorithmia.UtilityClasses
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 //using SD.Tools.Algorithmia.UtilityClasses;
 
 namespace SuperTiled2Unity.Editor.SD.Tools.Algorithmia.GeneralDataStructures

@@ -33,8 +33,6 @@
 
 // Seanba edit: Put LibTessDotNet in unique namespace so avoid name collisions
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 #if DOUBLE

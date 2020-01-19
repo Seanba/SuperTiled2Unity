@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace SuperTiled2Unity.Editor
 {
