@@ -13,5 +13,13 @@ namespace SuperTiled2Unity
         {
             return m_Properties.TryGetProperty(name, out property);
         }
+
+        public void RemoveCustomProperty(string name) {
+            m_Properties.RemoveAll(PredicateRemoveCustomProperty);
+
+            bool PredicateRemoveCustomProperty(CustomProperty customProperty) {
+                return name.Equals(customProperty.m_Name);
+            }
+        }
     }
 }
