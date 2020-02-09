@@ -16,7 +16,7 @@ These custom properties are also **supported by SuperTiled2Unity** and can be fo
    
    SuperTiled2Unity Custom Properties
 
-Obejct Types Support
+Object Types Support
 --------------------
 
 Tiled also has *predefined* properties that are described through the 
