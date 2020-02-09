@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Assertions;
-using UnityEngine.Tilemaps;
 
 namespace SuperTiled2Unity.Editor
 {
