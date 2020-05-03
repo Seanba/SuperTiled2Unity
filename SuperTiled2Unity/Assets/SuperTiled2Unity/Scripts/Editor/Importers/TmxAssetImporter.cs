@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
@@ -399,6 +399,12 @@ namespace SuperTiled2Unity.Editor
                     string name = so.gameObject.name;
                     DestroyImmediate(so.gameObject);
                     instance.name = name;
+                }
+                else
+                {
+                    // Ignore game object as per Prefab Replacements (Object Type present but no game object to replace with)
+                    Debug.LogWarningFormat("Prefab Replacements-> Ignoring GameObject: {0} in map {1} (Object Type present but no game object to replace with)", so.gameObject.name, m_MapComponent.gameObject.name);
+                    DestroyImmediate(so.gameObject);                    
                 }
             }
         }
