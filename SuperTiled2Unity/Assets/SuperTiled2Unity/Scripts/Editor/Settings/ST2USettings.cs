@@ -176,12 +176,12 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        public GameObject GetPrefabReplacement(string type)
+        public TypePrefabReplacement GetPrefabReplacement(string type)
         {
             var replacement = PrefabReplacements.FirstOrDefault(r => r.m_TypeName == type);
             if (replacement != null)
             {
-                return replacement.m_Prefab;
+                return replacement;
             }
 
             return null;

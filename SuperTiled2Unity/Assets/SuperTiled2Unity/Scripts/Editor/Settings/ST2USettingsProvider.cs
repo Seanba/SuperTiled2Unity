@@ -209,7 +209,7 @@ namespace SuperTiled2Unity.Editor
                     }
                 }
 
-                EditorGUILayout.HelpBox("When the Tiled import scripts come across a Tiled Object of one of these given types it will be replaced, automatically, with the associated prefab.", MessageType.None);
+                EditorGUILayout.HelpBox("When the Tiled import scripts come across a Tiled Object of one of these given types it will be replaced, automatically, with the associated prefab.\nNote: If no game object is specified, the Tiled Object won't be imported (ignored)", MessageType.None);
             }
         }
 

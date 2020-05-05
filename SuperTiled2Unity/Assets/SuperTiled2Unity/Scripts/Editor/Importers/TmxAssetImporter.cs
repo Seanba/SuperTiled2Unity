@@ -377,28 +377,38 @@ namespace SuperTiled2Unity.Editor
             foreach (var so in supers)
             {
                 var prefab = SuperImportContext.Settings.GetPrefabReplacement(so.m_Type);
+
                 if (prefab != null)
                 {
-                    // Replace the super object with the instantiated prefab
-                    var instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-                    instance.transform.SetParent(so.transform.parent);
-                    instance.transform.position = so.transform.position + prefab.transform.localPosition;
-                    instance.transform.rotation = so.transform.rotation;
-
-                    // Apply custom properties as messages to the instanced prefab
-                    var props = so.GetComponent<SuperCustomProperties>();
-                    if (props != null)
+                    if (prefab.m_Prefab != null)
                     {
-                        foreach (var p in props.m_Properties)
-                        {
-                            instance.gameObject.BroadcastProperty(p);
-                        }
-                    }
+                        // Replace the super object with the instantiated prefab
+                        var instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab.m_Prefab);
+                        instance.transform.SetParent(so.transform.parent);
+                        instance.transform.position = so.transform.position + prefab.m_Prefab.transform.localPosition;
+                        instance.transform.rotation = so.transform.rotation;
 
-                    // Keep the name from Tiled.
-                    string name = so.gameObject.name;
-                    DestroyImmediate(so.gameObject);
-                    instance.name = name;
+                        // Apply custom properties as messages to the instanced prefab
+                        var props = so.GetComponent<SuperCustomProperties>();
+                        if (props != null)
+                        {
+                            foreach (var p in props.m_Properties)
+                            {
+                                instance.gameObject.BroadcastProperty(p);
+                            }
+                        }
+
+                        // Keep the name from Tiled.
+                        string name = so.gameObject.name;
+                        DestroyImmediate(so.gameObject);
+                        instance.name = name;
+                    }
+                    else if (prefab.m_TypeName == so.m_Type)
+                    {
+                        // Ignore game object as per Prefab Replacements (Object Type present but no game object to replace with)
+                        Debug.LogWarningFormat("Prefab Replacements-> Ignoring GameObject: {0} in map {1} (Object Type: {2} present but no game object to replace with)", so.gameObject.name, m_MapComponent.gameObject.name, so.m_Type);
+                        DestroyImmediate(so.gameObject);
+                    }
                 }
             }
         }
