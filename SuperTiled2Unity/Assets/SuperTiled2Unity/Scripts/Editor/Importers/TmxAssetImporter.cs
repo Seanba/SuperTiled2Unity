@@ -430,6 +430,15 @@ namespace SuperTiled2Unity.Editor
                     {
                         objectsById[so.m_Id].BroadcastProperty(p, objectsById);
                     }
+
+                    if (so.gameObject.GetSuperPropertyValueBool(StringConstants.Unity_PrefabKeepObject, false))
+                    {
+                        var superObjectCopy = objectsById[so.m_Id].AddComponent<SuperObject>();
+                        EditorUtility.CopySerialized(so, superObjectCopy);
+
+                        var superPropsCopy = objectsById[so.m_Id].AddComponent<SuperCustomProperties>();
+                        EditorUtility.CopySerialized(props, superPropsCopy);
+                    }
                 }
             }
 
