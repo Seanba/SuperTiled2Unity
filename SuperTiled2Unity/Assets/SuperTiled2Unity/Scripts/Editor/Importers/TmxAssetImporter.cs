@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
@@ -47,6 +48,14 @@ namespace SuperTiled2Unity.Editor
             XDocument doc = XDocument.Load(assetPath);
             if (doc != null)
             {
+                // Early out if Zstd compression is used. This simply isn't supported by Unity.
+                if (doc.Descendants("data").Where(x => ((string)x.Attribute("compression")) == "zstd").Count() > 0)
+                {
+                    ReportError("Unity does not support Zstandard compression.");
+                    ReportError("Select a different 'Tile Layer Format' in your map settings in Tiled and resave.");
+                    return;
+                }
+
                 var xMap = doc.Element("map");
                 ProcessMap(xMap);
             }

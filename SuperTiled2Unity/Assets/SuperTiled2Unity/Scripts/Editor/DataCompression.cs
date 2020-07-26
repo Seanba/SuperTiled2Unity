@@ -4,6 +4,7 @@
     {
         None,
         Gzip,
-        Zlib
+        Zlib,
+        Zstd,
     }
 }
