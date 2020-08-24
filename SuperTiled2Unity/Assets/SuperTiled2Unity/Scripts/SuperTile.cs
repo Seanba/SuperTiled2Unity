@@ -37,6 +37,9 @@ namespace SuperTiled2Unity
         [ReadOnly]
         public float m_TileOffsetY;
 
+        [ReadOnly]
+        public ObjectAlignment m_ObjectAlignment;
+
         public List<CustomProperty> m_CustomProperties;
 
         public List<CollisionObject> m_CollisionObjects;

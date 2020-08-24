@@ -53,6 +53,7 @@ namespace SuperTiled2Unity.Editor
             m_TilesetScript.m_Margin = xTileset.GetAttributeAs<int>("margin");
             m_TilesetScript.m_TileCount = xTileset.GetAttributeAs<int>("tilecount");
             m_TilesetScript.m_TileColumns = xTileset.GetAttributeAs<int>("columns");
+            m_TilesetScript.m_ObjectAlignment = xTileset.GetAttributeAs<ObjectAlignment>("objectalignment", ObjectAlignment.Unspecified);
 
             var xTileOffset = xTileset.Element("tileoffset");
             if (xTileOffset != null)

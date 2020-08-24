@@ -42,6 +42,9 @@ namespace SuperTiled2Unity.Editor
         [ReadOnly]
         public bool m_IsImageCollection;
 
+        [ReadOnly]
+        public ObjectAlignment m_ObjectAlignment;
+
         public List<CustomProperty> m_CustomProperties;
 
         [ReadOnly]

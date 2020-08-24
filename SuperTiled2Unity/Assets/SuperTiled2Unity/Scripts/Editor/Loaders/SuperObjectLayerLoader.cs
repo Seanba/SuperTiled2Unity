@@ -228,31 +228,32 @@ namespace SuperTiled2Unity.Editor
             scale.y /= tile.m_Height;
 
             var tileOffset = new Vector3(tile.m_TileOffsetX * inversePPU, -tile.m_TileOffsetY * inversePPU);
+            var pivotOffset = ObjectAlignmentToPivot.ToVector3(tile.m_Width, tile.m_Height, inversePPU, SuperMap.m_Orientation, tile.m_ObjectAlignment);
+
             var translateCenter = new Vector3(tile.m_Width * 0.5f * inversePPU, tile.m_Height * 0.5f * inversePPU);
 
             // Our root object will contain the translation, rotation, and scale of the tile object
             var goTRS = superObject.gameObject;
             goTRS.transform.localScale = scale;
 
+            // Our pivot object will contain the tileset orientation and offset
+            var goPivot = new GameObject();
+            goPivot.name = string.Format("{0} (Pivot)", superObject.m_TiledName);
+            goPivot.transform.localPosition = tileOffset + pivotOffset;
+            goTRS.AddChildWithUniqueName(goPivot);
+
             // Add another object to handle tile flipping
             // This object will center us into the tile and perform the flips through scaling
             // This object also contains the tile offset in her transform
             var goCF = new GameObject();
             goCF.name = string.Format("{0} (CF)", superObject.m_TiledName);
-            goTRS.AddChildWithUniqueName(goCF);
+            goPivot.AddChildWithUniqueName(goCF);
 
-            goCF.transform.localPosition = translateCenter + tileOffset;
+            goCF.transform.localPosition = translateCenter;
             goCF.transform.localRotation = Quaternion.Euler(0, 0, 0);
             goCF.transform.localScale = new Vector3(flip_h ? -1 : 1, flip_v ? -1 : 1, 1);
 
-            // Note: We may not want to put the tile "back into place" depending on our coordinate system
             var fromCenter = -translateCenter;
-
-            // Isometric maps referece tile objects by bottom center
-            if (SuperMap.m_Orientation == MapOrientation.Isometric)
-            {
-                fromCenter.x -= Importer.SuperImportContext.MakeScalar(tile.m_Width * 0.5f);
-            }
 
             // Add another child, putting our coordinates back into the proper place
             var goTile = new GameObject(superObject.m_TiledName);
