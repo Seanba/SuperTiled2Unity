@@ -68,8 +68,16 @@ namespace SuperTiled2Unity.Editor
 #if UNITY_2018_3_OR_NEWER
             try
             {
+                // Disable Physics simulation during the map import process.
+                // This is necessary because each time a Collider2D is constructed, there is a full Physics2D update.
+                // This can make the map import process several hundred times slower for no reason.
+                bool physics_simulation = Physics.autoSimulation;
+                Physics.autoSimulation = false;
+
                 InternalOnImportAsset();
                 InternalOnImportAssetCompleted();
+
+                Physics.autoSimulation = physics_simulation;
             }
             catch (TiledException tiled)
             {
