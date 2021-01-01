@@ -1,6 +1,11 @@
 ﻿using UnityEditor;
-using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
+
+#if UNITY_2020_2_OR_NEWER
+using ScriptedImporterEditor = UnityEditor.AssetImporters.ScriptedImporterEditor;
+#else
+using ScriptedImporterEditor = UnityEditor.Experimental.AssetImporters.ScriptedImporterEditor;
+#endif
 
 namespace SuperTiled2Unity.Editor
 {

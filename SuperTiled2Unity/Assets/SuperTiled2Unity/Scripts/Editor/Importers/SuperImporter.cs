@@ -4,9 +4,16 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using UnityEditor;
-using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
 using UnityEngine.Assertions;
+
+#if UNITY_2020_2_OR_NEWER
+using AssetImportContext = UnityEditor.AssetImporters.AssetImportContext;
+using ScriptedImporter = UnityEditor.AssetImporters.ScriptedImporter;
+#else
+using AssetImportContext = UnityEditor.Experimental.AssetImporters.AssetImportContext;
+using ScriptedImporter = UnityEditor.Experimental.AssetImporters.ScriptedImporter;
+#endif
 
 namespace SuperTiled2Unity.Editor
 {

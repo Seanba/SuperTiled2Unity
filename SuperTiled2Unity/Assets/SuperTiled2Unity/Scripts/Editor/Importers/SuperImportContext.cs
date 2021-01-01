@@ -1,8 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEditor.Experimental.AssetImporters;
-using System;
+
+#if UNITY_2020_2_OR_NEWER
+using AssetImportContext = UnityEditor.AssetImporters.AssetImportContext;
+#else
+using AssetImportContext = UnityEditor.Experimental.AssetImporters.AssetImportContext;
+#endif
 
 namespace SuperTiled2Unity.Editor
 {

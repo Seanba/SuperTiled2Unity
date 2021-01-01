@@ -1,7 +1,12 @@
 ﻿using System.Xml.Linq;
-using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
 using UnityEngine.Assertions;
+
+#if UNITY_2020_2_OR_NEWER
+using ScriptedImporterAttribute = UnityEditor.AssetImporters.ScriptedImporterAttribute;
+#else
+using ScriptedImporterAttribute = UnityEditor.Experimental.AssetImporters.ScriptedImporterAttribute;
+#endif
 
 // Importer for Tiled TX (template) files
 namespace SuperTiled2Unity.Editor

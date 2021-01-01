@@ -45,3 +45,6 @@ sysinfo.txt
 *.apk
 #*.unitypackage # I want to deploy unity packages
 SuperTiled2Unity/Logs/Packages-Update.log
+SuperTiled2Unity/.vsconfig
+SuperTiled2Unity/Logs/ApiUpdaterCheck.txt
+SuperTiled2Unity/Logs/AssetImportWorker0.log

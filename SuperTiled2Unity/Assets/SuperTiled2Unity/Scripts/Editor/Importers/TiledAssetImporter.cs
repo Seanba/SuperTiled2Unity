@@ -2,9 +2,14 @@
 using System.Linq;
 using System.Xml.Linq;
 using UnityEditor;
-using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+
+#if UNITY_2020_2_OR_NEWER
+using AssetImportContext = UnityEditor.AssetImporters.AssetImportContext;
+#else
+using AssetImportContext = UnityEditor.Experimental.AssetImporters.AssetImportContext;
+#endif
 
 // All tiled assets we want imported should use this class
 namespace SuperTiled2Unity.Editor
@@ -13,6 +18,8 @@ namespace SuperTiled2Unity.Editor
     {
         [SerializeField] private float m_PixelsPerUnit = 0.0f;
         public float PixelsPerUnit { get { return m_PixelsPerUnit; } }
+
+        public float InversePPU {  get { return 1.0f / PixelsPerUnit; } }
 
         [SerializeField] private int m_EdgesPerEllipse = 0;
 
