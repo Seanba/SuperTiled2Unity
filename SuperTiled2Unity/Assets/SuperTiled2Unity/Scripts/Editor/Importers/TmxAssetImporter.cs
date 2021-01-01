@@ -276,6 +276,13 @@ namespace SuperTiled2Unity.Editor
             var firstId = xTileset.GetAttributeAs<int>("firstgid");
             var source = xTileset.GetAttributeAs<string>("source");
 
+            // JSON customized assets are not supported as Unity has the *.json extension reserved
+            if (string.Equals(Path.GetExtension(source), ".json", StringComparison.OrdinalIgnoreCase))
+            {
+                ReportError("JSON tilesets are not supported by Unity. Use TSX files instead. Tileset: {0}", source);
+                return false;
+            }
+
             // Load the tileset and process the tiles inside
             var tileset = RequestAssetAtPath<SuperTileset>(source);
 
