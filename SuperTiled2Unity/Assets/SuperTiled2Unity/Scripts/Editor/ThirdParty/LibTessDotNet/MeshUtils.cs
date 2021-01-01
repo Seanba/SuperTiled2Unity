@@ -32,6 +32,7 @@
 */
 
 // Seanba edit: Put LibTessDotNet in unique namespace so avoid name collisions
+// Seanba edit: Namespace modifications not supported by Unity
 
 #if DEBUG
 #define DEBUG_CHECK_BALANCE
@@ -41,13 +42,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-#if DOUBLE
-using Real = System.Double;
-namespace LibTessDotNet.Double
-#else
+//#if DOUBLE
+//using Real = System.Double;
+//namespace LibTessDotNet.Double
+//#else
 using Real = System.Single;
 namespace SuperTiled2Unity.Editor.LibTessDotNet
-#endif
+//#endif
 {
     public struct Vec3
     {

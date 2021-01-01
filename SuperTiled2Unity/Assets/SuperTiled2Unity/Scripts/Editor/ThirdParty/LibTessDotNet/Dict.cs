@@ -32,12 +32,13 @@
 */
 
 // Seanba edit: Put LibTessDotNet in unique namespace so avoid name collisions
+// Seanba edit: Namespace modifications not supported by Unity
 
-#if DOUBLE
-namespace LibTessDotNet.Double
-#else
+//#if DOUBLE
+//namespace LibTessDotNet.Double
+//#else
 namespace SuperTiled2Unity.Editor.LibTessDotNet
-#endif
+//#endif
 {
     internal class Dict<TValue> where TValue : class
     {
