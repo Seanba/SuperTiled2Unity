@@ -9,7 +9,7 @@ namespace SuperTiled2Unity.Editor
 {
     internal class SuperTiled2Unity_Config
     {
-        internal const string Version = "1.9.3";
+        internal const string Version = "1.10.0";
         internal const string DefaultSettingsFileName = "ST2U Settings.asset";
 
         public static ST2USettings CreateDefaultSettings()
@@ -31,7 +31,7 @@ namespace SuperTiled2Unity.Editor
         }
 
         [MenuItem("Assets/SuperTiled2Unity/Export ST2U Asset...", true)]
-        private static bool ExportSuperAssetValidate()
+        public static bool ExportSuperAssetValidate()
         {
             var path = AssetDatabase.GetAssetPath(Selection.activeObject);
             if (!string.IsNullOrEmpty(path))
@@ -43,7 +43,7 @@ namespace SuperTiled2Unity.Editor
         }
 
         [MenuItem("Assets/SuperTiled2Unity/Export ST2U Asset...")]
-        private static void ExportSuperAsset()
+        public static void ExportSuperAsset()
         {
             var path = AssetDatabase.GetAssetPath(Selection.activeObject);
             var tracker = new RecursiveAssetDependencyTracker(path);
@@ -51,7 +51,7 @@ namespace SuperTiled2Unity.Editor
         }
 
         [MenuItem("Assets/SuperTiled2Unity/Apply Default Settings to ST2U Assets")]
-        private static void ReimportWithDefaults()
+        public static void ReimportWithDefaults()
         {
             UnityEngine.Object[] selectedAsset = Selection.GetFiltered(typeof(UnityEngine.Object), SelectionMode.DeepAssets);
             HashSet<TiledAssetImporter> tiledImporters = new HashSet<TiledAssetImporter>();
@@ -78,7 +78,7 @@ namespace SuperTiled2Unity.Editor
         }
 
         // This is only invoked by a deployment batch file
-        private static void DeploySuperTiled2Unity()
+        public static void DeploySuperTiled2Unity()
         {
             var path = string.Format("{0}/../../deploy/SuperTiled2Unity.{1}.unitypackage", Application.dataPath, SuperTiled2Unity_Config.Version);
             Directory.CreateDirectory(Path.GetDirectoryName(path));
