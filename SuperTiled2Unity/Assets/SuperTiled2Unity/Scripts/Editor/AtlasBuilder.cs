@@ -24,7 +24,15 @@ namespace SuperTiled2Unity.Editor
 
             public Texture2D PreferredTexture2D
             {
-                get { return AtlasTexture ?? SourceTexture; }
+                get
+                {
+                    if (AtlasTexture != null)
+                    {
+                        return AtlasTexture;
+                    }
+
+                    return SourceTexture; 
+                }
             }
 
             public Rect PreferredRectangle
@@ -185,7 +193,7 @@ namespace SuperTiled2Unity.Editor
             m_CurrentAtlas.wrapMode = TextureWrapMode.Clamp;
             m_CurrentAtlas.filterMode = FilterMode.Point;
             m_CurrentAtlas.name = textureName;
-            m_CurrentAtlas.SetPixels(Enumerable.Repeat(NamedColors.DeepPink, m_AtlasWidth * m_AtlasHeight).ToArray());
+            m_CurrentAtlas.SetPixels32(Enumerable.Repeat(NamedColors.DeepPink, m_AtlasWidth * m_AtlasHeight).ToArray());
 
             // Add the texture to our import context and our list of textures
             var icon = SuperIcons.GetTsxIcon();

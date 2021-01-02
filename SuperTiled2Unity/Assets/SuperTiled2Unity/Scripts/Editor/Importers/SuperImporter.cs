@@ -108,6 +108,7 @@ namespace SuperTiled2Unity.Editor
             Assert.IsNotNull(m_SuperAsset, "Must be a SuperAsset type if we are requesting dependencies");
 
             // Is the asset in our cache?
+            path = path.SanitizePath();
             var key = new KeyValuePair<string, Type>(path.ToLower(), typeof(T));
             UnityEngine.Object cachedObject;
 

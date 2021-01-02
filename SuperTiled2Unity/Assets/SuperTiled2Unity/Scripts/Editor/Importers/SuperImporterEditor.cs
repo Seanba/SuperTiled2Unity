@@ -286,6 +286,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             EditorGUILayout.TextArea("", GUI.skin.horizontalSlider);
+            EditorGUILayout.Space();
             EditorGUILayout.LabelField("Additional Tiled Asset Information", EditorStyles.boldLabel);
 
             using (new GuiScopedIndent())

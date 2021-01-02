@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
 {
@@ -40,8 +41,8 @@ namespace SuperTiled2Unity.Editor
                 int sw = (int)sourceRect.width;
                 int sh = (int)sourceRect.height;
 
-                var sourcePixels = sourceTextureCopy.GetPixels(sx, sy, sw, sh);
-                texture.SetPixels(dx, dy, sw, sh, sourcePixels);
+                var sourcePixels = sourceTextureCopy.GetPixels(sx, sy, sw, sh).Select(c => (Color32)c).ToArray();
+                texture.SetPixels32(dx, dy, sw, sh, sourcePixels);
 
                 // Destroy our source copy
                 Texture2D.DestroyImmediate(sourceTextureCopy);
@@ -61,10 +62,10 @@ namespace SuperTiled2Unity.Editor
             int sw = (int)sourceRect.width;
             int sh = (int)sourceRect.height;
 
-            var pixels = texture.GetPixels(sx, sy, sw, sh);
+            var pixels = texture.GetPixels(sx, sy, sw, sh).Select(c => (Color32)c).ToArray();
             //pixels = pixels.Select(p => NamedColors.Purple).ToArray();
 
-            texture.SetPixels(dx, dy, sw, sh, pixels);
+            texture.SetPixels32(dx, dy, sw, sh, pixels);
         }
 
         public static void CopyOwnPixels(this Texture2D texture, float dx, float dy, Rect sourceRect)
