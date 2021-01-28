@@ -21,5 +21,9 @@ namespace SuperTiled2Unity
                 return name.Equals(customProperty.m_Name);
             }
         }
+
+        public void ClearAllCustomProperties() {
+            m_Properties.Clear();
+        }
     }
 }
