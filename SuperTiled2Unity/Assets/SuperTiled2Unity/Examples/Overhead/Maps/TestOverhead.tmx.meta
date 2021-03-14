@@ -606,17 +606,15 @@ ScriptedImporter:
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 1fa25d03934ea624a82bf2fcee6f0873, type: 3}
   missingFiles: []
-  errors:
-  - Unity does not support Zstandard compression.
-  - Select a different 'Tile Layer Format' in your map settings in Tiled and resave.
+  errors: []
   warnings: []
   missingSortingLayers: []
   missingLayers: []
   missingTags: []
-  importerVersion: 21
+  importerVersion: 22
   pixelsPerUnit: 1
   edgesPerEllipse: 32
-  numberOfObjectsImported: 1
+  numberOfObjectsImported: 2
   tilesAsObjects: 0
   sortingMode: 1
   isIsometric: 0

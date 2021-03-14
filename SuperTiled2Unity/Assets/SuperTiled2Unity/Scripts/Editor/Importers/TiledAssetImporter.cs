@@ -128,6 +128,10 @@ namespace SuperTiled2Unity.Editor
         {
             m_RendererSorter = null;
             m_NumberOfObjectsImported = SuperImportContext.GetNumberOfObjects();
+
+            // Assets should be dirtied upon importing so that their meta files are serialized
+            // Without this we may end up with old garbage in our meta files
+            EditorUtility.SetDirty(this);
         }
 
         protected void AssignUnityTag(SuperCustomProperties properties)

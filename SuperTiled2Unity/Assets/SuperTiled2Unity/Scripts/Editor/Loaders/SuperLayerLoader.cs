@@ -22,6 +22,7 @@ namespace SuperTiled2Unity.Editor
             layer.m_OffsetX = m_Xml.GetAttributeAs("offsetx", 0.0f);
             layer.m_OffsetY = m_Xml.GetAttributeAs("offsety", 0.0f);
             layer.m_Opacity = m_Xml.GetAttributeAs("opacity", 1.0f);
+            layer.m_TintColor = m_Xml.GetAttributeAsColor("tintcolor", Color.white);
 
             // Internal method will get the layer component it wants and fill out any extra data needed from the xml element.
             InternalLoadFromXml(go);

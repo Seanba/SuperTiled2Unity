@@ -17,7 +17,23 @@ namespace SuperTiled2Unity
         public float m_Opacity;
 
         [ReadOnly]
+        public Color m_TintColor;
+
+        [ReadOnly]
         public bool m_Visible;
+
+        public Color CalculateColor()
+        {
+            Color color = Color.white;
+
+            foreach (var layer in gameObject.GetComponentsInParent<SuperLayer>())
+            {
+                color *= layer.m_TintColor;
+                color.a *= layer.m_Opacity;
+            }
+
+            return color;
+        }
 
         public float CalculateOpacity()
         {
