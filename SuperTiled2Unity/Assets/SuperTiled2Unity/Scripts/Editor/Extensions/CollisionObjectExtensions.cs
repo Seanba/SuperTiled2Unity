@@ -31,6 +31,7 @@ namespace SuperTiled2Unity.Editor
             if (addedCollider != null)
             {
                 addedCollider.isTrigger = importContext.GetIsTriggerOverridable(collision.m_IsTrigger);
+                addedCollider.gameObject.layer = LayerMask.NameToLayer(collision.m_PhysicsLayer);
             }
 
             goParent.AddChildWithUniqueName(go);

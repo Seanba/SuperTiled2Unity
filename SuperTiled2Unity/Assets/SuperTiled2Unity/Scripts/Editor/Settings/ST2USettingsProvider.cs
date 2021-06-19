@@ -179,6 +179,7 @@ namespace SuperTiled2Unity.Editor
                     if (GUILayout.Button("Sort Alphabetically"))
                     {
                         m_ST2USettings.SortMaterialMatchings();
+                        EditorUtility.SetDirty(m_ST2USettings);
                     }
                 }
 
@@ -201,11 +202,13 @@ namespace SuperTiled2Unity.Editor
                     if (GUILayout.Button("Add From Object Types Xml"))
                     {
                         m_ST2USettings.AddObjectsToPrefabReplacements();
+                        EditorUtility.SetDirty(m_ST2USettings);
                     }
 
                     if (GUILayout.Button("Sort Alphabetically"))
                     {
                         m_ST2USettings.SortPrefabReplacements();
+                        EditorUtility.SetDirty(m_ST2USettings);
                     }
                 }
 

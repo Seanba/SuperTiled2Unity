@@ -138,7 +138,7 @@ namespace SuperTiled2Unity.Editor
 
             // Figure out our opacity
             var layer = go.GetComponent<SuperLayer>();
-            tilemap.color = new Color(1, 1, 1, layer.CalculateOpacity());
+            tilemap.color = layer.CalculateColor();
 
             return tilemap;
         }
@@ -209,6 +209,9 @@ namespace SuperTiled2Unity.Editor
             // Only report each missing tile Id once
             HashSet<int> badTiles = new HashSet<int>();
 
+            var tilemap = goTilemap.GetComponentInParent<Tilemap>();
+            var tilemapRenderer = goTilemap.GetComponentInParent<TilemapRenderer>();
+
             for (int i = 0; i < tileIds.Count; i++)
             {
                 uint utId = tileIds[i];
@@ -227,7 +230,7 @@ namespace SuperTiled2Unity.Editor
                         cx += chunk.X;
                         cy += chunk.Y;
 
-                        PlaceTile(goTilemap, cx, cy, tile, int3, tileId);
+                        PlaceTile(goTilemap, tilemap, tilemapRenderer, cx, cy, tile, int3, tileId);
                     }
                     else if (!badTiles.Contains(tileId.JustTileId))
                     {
@@ -238,7 +241,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private void PlaceTile(GameObject goTilemap, int cx, int cy, SuperTile tile, Vector3Int pos3, TileIdMath tileId)
+        private void PlaceTile(GameObject goTilemap, Tilemap tilemap, TilemapRenderer tilemapRenderer, int cx, int cy, SuperTile tile, Vector3Int pos3, TileIdMath tileId)
         {
             if (m_TilesAsObjects)
             {
@@ -246,7 +249,7 @@ namespace SuperTiled2Unity.Editor
             }
             else
             {
-                PlaceTileAsTile(goTilemap, tile, tileId, pos3);
+                PlaceTileAsTile(goTilemap, tilemap, tilemapRenderer, tile, tileId, pos3);
             }
         }
 
@@ -257,7 +260,7 @@ namespace SuperTiled2Unity.Editor
 
             var superMap = goTilemap.GetComponentInParent<SuperMap>();
             var superLayer = goTilemap.GetComponentInParent<SuperLayer>();
-            var color = new Color(1, 1, 1, superLayer.CalculateOpacity());
+            var color = superLayer.CalculateColor();
 
             string tileName = string.Format("tile ({0}, {1})", cx, cy);
             var goTRS = new GameObject(string.Format("{0} (TRS)", tileName));
@@ -315,7 +318,7 @@ namespace SuperTiled2Unity.Editor
             tile.AddCollidersForTileObject(goTRS, SuperImportContext);
         }
 
-        private void PlaceTileAsTile(GameObject goTilemap, SuperTile tile, TileIdMath tileId, Vector3Int pos3)
+        private void PlaceTileAsTile(GameObject goTilemap, Tilemap tilemap, TilemapRenderer tilemapRenderer, SuperTile tile, TileIdMath tileId, Vector3Int pos3)
         {
             // Burn our layer index into the z component of the tile position
             // This allows us to support Tilemaps being shared by groups
@@ -324,9 +327,17 @@ namespace SuperTiled2Unity.Editor
             if (SuperImportContext.LayerIgnoreMode != LayerIgnoreMode.Visual)
             {
                 // Set the tile (sprite, transform matrix, flags)
-                var tilemap = goTilemap.GetComponentInParent<Tilemap>();
                 tilemap.SetTile(pos3, tile);
                 tilemap.SetTransformMatrix(pos3, tile.GetTransformMatrix(tileId.FlipFlags, m_MapComponent.m_Orientation));
+
+#if UNITY_2018_3_OR_NEWER
+                if (tilemapRenderer.mode == TilemapRenderer.Mode.Individual)
+                {
+                    // Each tile color must be set individually
+                    tilemap.SetColor(pos3, tilemap.color);
+                }
+#endif
+
                 tilemap.SetTileFlags(pos3, TileFlags.LockAll);
             }
 
