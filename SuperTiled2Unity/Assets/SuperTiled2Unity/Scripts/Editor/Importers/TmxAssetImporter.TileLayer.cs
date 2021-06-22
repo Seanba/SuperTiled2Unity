@@ -91,6 +91,7 @@ namespace SuperTiled2Unity.Editor
                     // Each chunk is a separate game object on the super layer
                     GameObject goChunk = new GameObject(string.Format("Chunk ({0},{1})", chunk.X, chunk.Y));
                     goLayer.AddChildWithUniqueName(goChunk);
+                    goChunk.layer = goLayer.layer;
 
                     ProcessLayerDataChunk(goChunk, chunk);
                 }
