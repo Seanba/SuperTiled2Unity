@@ -19,6 +19,8 @@ These custom properties always have a :code:`unity:` prefix so that they do not 
       * **Collision**: The colliders are not imported for the layer."
    ":code:`unity:IsTrigger`", ":code:`bool`", "Layers, Tileset, Tile, Collider, Collider Group", "Controls the :code:`isTrigger` setting of the :code:`Collider2D` object generated in the prefab. Add as a layer custom property to override all colliders for a given layer."
    ":code:`unity:layer`", ":code:`string`", "Layers, Tileset, Tile, Collider, Collider Group", "Controls which Unity phyisics layer our generated colliders are assigned. The layer name must exist in your project's Tag Manager."
+   ":code:`unity:prefabKeepCollider`", ":code:`bool`", "Collider", "If set on an object using prefab replacements, copies the Collider onto the replacement prefab."
+   ":code:`unity:prefabKeepObject`", ":code:`bool`", Collider", "If set on an object using prefab replacements, copies the SuperObject onto the replacement prefab."
    ":code:`unity:SortingLayer`", ":code:`string`", "Layers, Tile Objects", "Controls which sorting layer is assigned to the Unity :code:`Renderer` component created for your tilemaps and sprites. The sorting layer name must exist in your project's Tag Manager."
    ":code:`unity:SortingOrder`", ":code:`int`", "Layers, Tile Objects", "Controls which sorting order is applied to the Unity :code:`Renderer` component created for your tilemaps and sprites."
    ":code:`unity:Tag`", ":code:`string`", "Layers, Objects", "Controls which tag is applied to the :code:`GameObject` created for your layers and objects. The tag must exist in your project's Tag Manager."

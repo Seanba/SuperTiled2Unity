@@ -416,6 +416,26 @@ namespace SuperTiled2Unity.Editor
                         }
                     }
 
+                    if (so.gameObject.GetSuperPropertyValueBool(StringConstants.Unity_PrefabKeepObject, false))
+                    {
+                        var superObjectCopy = instance.gameObject.AddComponent<SuperObject>();
+                        EditorUtility.CopySerialized(so, superObjectCopy);
+                    }
+
+                    if (so.gameObject.GetSuperPropertyValueBool(StringConstants.Unity_PrefabKeepCollider, false))
+                    {
+                        var origCollider = so.GetComponent<Collider2D>();
+                        if (origCollider != null) {
+                            var colliderCopy = instance.gameObject.AddComponent(origCollider.GetType());
+                            EditorUtility.CopySerialized(origCollider, colliderCopy);
+                        }
+                        var origSuper = so.GetComponent<SuperColliderComponent>();
+                        if (origSuper != null) {
+                            var superColliderCopy = instance.gameObject.AddComponent<SuperColliderComponent>();
+                            EditorUtility.CopySerialized(origSuper, superColliderCopy);
+                        }
+                    }
+
                     // Keep the name from Tiled.
                     string name = so.gameObject.name;
                     DestroyImmediate(so.gameObject);
