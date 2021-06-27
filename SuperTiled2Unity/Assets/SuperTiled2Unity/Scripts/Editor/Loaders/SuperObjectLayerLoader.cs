@@ -40,7 +40,12 @@ namespace SuperTiled2Unity.Editor
             if (drawOrder == DrawOrder.TopDown)
             {
                 // xObjects need to be ordered by y-value
-                xObjects = xObjects.OrderBy(x => x.GetAttributeAs<float>("y", 0.0f));
+                xObjects = xObjects.OrderBy((x) => {
+                    float m_X = x.GetAttributeAs<float>("x", 0.0f);
+                    float m_Y = x.GetAttributeAs<float>("y", 0.0f);
+                    var localPosition = ColliderFactory.TransformPoint(new Vector2(m_X, m_Y));
+                    return localPosition.y;
+                });
             }
 
             foreach (var xObj in xObjects)
