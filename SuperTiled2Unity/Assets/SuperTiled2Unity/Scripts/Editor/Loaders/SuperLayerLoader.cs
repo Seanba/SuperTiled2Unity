@@ -21,6 +21,8 @@ namespace SuperTiled2Unity.Editor
             layer.m_Visible = m_Xml.GetAttributeAs("visible", true);
             layer.m_OffsetX = m_Xml.GetAttributeAs("offsetx", 0.0f);
             layer.m_OffsetY = m_Xml.GetAttributeAs("offsety", 0.0f);
+            layer.m_ParallaxX = m_Xml.GetAttributeAs("parallaxx", 1.0f);
+            layer.m_ParallaxY = m_Xml.GetAttributeAs("parallaxy", 1.0f);
             layer.m_Opacity = m_Xml.GetAttributeAs("opacity", 1.0f);
             layer.m_TintColor = m_Xml.GetAttributeAsColor("tintcolor", Color.white);
 
