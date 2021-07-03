@@ -14,6 +14,12 @@ namespace SuperTiled2Unity
         public float m_OffsetY;
 
         [ReadOnly]
+        public float m_ParallaxX;
+
+        [ReadOnly]
+        public float m_ParallaxY;
+
+        [ReadOnly]
         public float m_Opacity;
 
         [ReadOnly]
