@@ -611,7 +611,7 @@ ScriptedImporter:
   missingSortingLayers: []
   missingLayers: []
   missingTags: []
-  importerVersion: 23
+  importerVersion: 24
   pixelsPerUnit: 1
   edgesPerEllipse: 32
   numberOfObjectsImported: 2
