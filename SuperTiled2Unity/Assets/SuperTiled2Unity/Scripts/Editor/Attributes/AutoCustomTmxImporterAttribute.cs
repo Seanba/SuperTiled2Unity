@@ -19,8 +19,11 @@ namespace SuperTiled2Unity.Editor
 
         public int Order { get; private set; }
 
+        private static List<Type> _cachedImporters;
         public static List<Type> GetOrderedAutoImportersTypes()
         {
+            if (_cachedImporters != null) return _cachedImporters;
+
             var importers = from t in AppDomain.CurrentDomain.GetAllDerivedTypes<CustomTmxImporter>()
                             where !t.IsAbstract
                             from attr in GetCustomAttributes(t, typeof(AutoCustomTmxImporterAttribute))
@@ -28,7 +31,7 @@ namespace SuperTiled2Unity.Editor
                             orderby auto.Order
                             select t;
 
-            return importers.ToList();
+            return _cachedImporters = importers.ToList();
         }
     }
 }
