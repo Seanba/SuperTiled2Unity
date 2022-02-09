@@ -1,0 +1,27 @@
+{
+  "name": "com.seanba.supertiled2unity",
+  "version": "1.10.3",
+  "displayName": "Seanba/SuperTiled2Unity",
+  "description": "Imports Tiled files to Unity. Better than regular Tiled2Unity.",
+  "unity": "2019.1",
+  "unityRelease": "0b5",
+  "documentationUrl": "https://supertiled2unity.readthedocs.io/",
+  "changelogUrl": "https://github.com/Seanba/SuperTiled2Unity",
+  "licensesUrl": "https://github.com/Seanba/SuperTiled2Unity/blob/master/LICENSE",
+  "dependencies": {
+  },
+  "keywords": [
+    "tiled"
+  ],
+  "author": {
+    "name": "Seanba",
+    "email": "sean@seanba.com",
+    "url": "https://github.com/Seanba"
+  },
+  "samples": [
+    {
+      "displayName": "Overhead",
+      "path": "SuperTiled2Unity/Examples~/Overhead"
+    }
+  ]
+}
