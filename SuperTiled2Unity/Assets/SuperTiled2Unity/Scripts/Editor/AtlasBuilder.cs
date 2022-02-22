@@ -218,8 +218,7 @@ namespace SuperTiled2Unity.Editor
                 string spriteName = string.Format("Sprite_{0}_{1}", m_TilesetScript.name, t.Index + 1);
                 string tileName = string.Format("Tile_{0}_{1}", m_TilesetScript.name, t.Index + 1);
 
-                // TODO: Create the sprite according to its pivot
-                // Create the sprite with the anchor at (0, 0)
+                // Create the sprite according to its pivot
                 var sprite = Sprite.Create(t.PreferredTexture2D, t.PreferredRectangle, t.Pivot, m_TiledAssetImporter.SuperImportContext.Settings.PixelsPerUnit);
 
                 sprite.name = spriteName;
@@ -234,8 +233,9 @@ namespace SuperTiled2Unity.Editor
                 tile.m_Sprite = sprite;
                 tile.m_Width = t.SourceRectangle.width;
                 tile.m_Height = t.SourceRectangle.height;
-                tile.m_TileOffsetX = m_TilesetScript.m_TileOffset.x;
-                tile.m_TileOffsetY = m_TilesetScript.m_TileOffset.y;
+                // NOTE: We adjust the tile offset by the pivot amount to we still render in the correct position.
+                tile.m_TileOffsetX = m_TilesetScript.m_TileOffset.x + (t.Pivot.x * tile.m_Width);
+                tile.m_TileOffsetY = m_TilesetScript.m_TileOffset.y - (t.Pivot.y * tile.m_Height);
                 tile.m_ObjectAlignment = m_TilesetScript.m_ObjectAlignment;
 
                 m_TilesetScript.m_Tiles.Add(tile);
