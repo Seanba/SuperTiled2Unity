@@ -52,6 +52,14 @@ namespace SuperTiled2Unity
             m_Points[3] = new Vector2(m_Size.x, 0);
         }
 
+        public void MakePoint()
+        {
+            m_CollisionShapeType = CollisionShapeType.Point;
+            m_IsClosed = false;
+            m_Points = new Vector2[1];
+            m_Points[0] = m_Position;
+        }
+
         public void MakePointsFromEllipse(int numEdges)
         {
             m_CollisionShapeType = CollisionShapeType.Ellipse;
