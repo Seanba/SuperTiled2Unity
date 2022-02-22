@@ -21,6 +21,7 @@ namespace SuperTiled2Unity.Editor
 
             public Texture2D AtlasTexture;
             public Rect AtlasRectangle;
+            public Vector2 Pivot = Vector2.zero;
 
             public Texture2D PreferredTexture2D
             {
@@ -62,9 +63,9 @@ namespace SuperTiled2Unity.Editor
             m_TilesetScript = tilesetScript;
         }
 
-        public void AddTile(int index, Texture2D texSource, Rect rcSource)
+        public void AddTile(int index, Texture2D texSource, Rect rcSource, Vector2 pivot)
         {
-            var atlasTile = new AtlasTile() { Index = index, SourceTexture = texSource, SourceRectangle = rcSource };
+            var atlasTile = new AtlasTile() { Index = index, SourceTexture = texSource, SourceRectangle = rcSource, Pivot = pivot };
             m_AtlasTiles.Add(atlasTile);
         }
 
@@ -217,8 +218,9 @@ namespace SuperTiled2Unity.Editor
                 string spriteName = string.Format("Sprite_{0}_{1}", m_TilesetScript.name, t.Index + 1);
                 string tileName = string.Format("Tile_{0}_{1}", m_TilesetScript.name, t.Index + 1);
 
+                // TODO: Create the sprite according to its pivot
                 // Create the sprite with the anchor at (0, 0)
-                var sprite = Sprite.Create(t.PreferredTexture2D, t.PreferredRectangle, Vector2.zero, m_TiledAssetImporter.SuperImportContext.Settings.PixelsPerUnit);
+                var sprite = Sprite.Create(t.PreferredTexture2D, t.PreferredRectangle, t.Pivot, m_TiledAssetImporter.SuperImportContext.Settings.PixelsPerUnit);
 
                 sprite.name = spriteName;
                 sprite.hideFlags = HideFlags.HideInHierarchy;

@@ -139,6 +139,8 @@ namespace SuperTiled2Unity.Editor
                 return;
             }
 
+            var alignment = xTileset.GetAttributeAs<ObjectAlignment>("objectalignment", ObjectAlignment.Unspecified);
+            var pivot = -ObjectAlignmentToPivot.ToVector3(1, 1, 1, MapOrientation.Orthogonal, alignment);
             for (int i = 0; i < m_TilesetScript.m_TileCount; i++)
             {
                 // Get grid x,y coords
@@ -166,14 +168,15 @@ namespace SuperTiled2Unity.Editor
 
                 // Add the tile to our atlas
                 Rect rcSource = new Rect(srcx, srcy, m_TilesetScript.m_TileWidth, m_TilesetScript.m_TileHeight);
-                atlas.AddTile(i, tex2d, rcSource);
+                atlas.AddTile(i, tex2d, rcSource, pivot);
             }
         }
 
         private void BuildTilesetFromCollection(XElement xTileset, AtlasBuilder atlas)
         {
             m_TilesetScript.m_IsImageCollection = true;
-
+            var alignment = xTileset.GetAttributeAs<ObjectAlignment>("objectalignment", ObjectAlignment.Unspecified);
+            var pivot = -ObjectAlignmentToPivot.ToVector3(1, 1, 1, MapOrientation.Orthogonal, alignment);
             foreach (var xTile in xTileset.Elements("tile"))
             {
                 int tileIndex = xTile.GetAttributeAs<int>("id");
@@ -205,7 +208,7 @@ namespace SuperTiled2Unity.Editor
                     }
 
                     var rcSource = new Rect(0, 0, tex2d.width, tex2d.height);
-                    atlas.AddTile(tileIndex, tex2d, rcSource);
+                    atlas.AddTile(tileIndex, tex2d, rcSource, pivot);
                 }
             }
         }
