@@ -4,5 +4,6 @@
     {
         Stacked = 0,
         CustomSortAxis,
+        CustomSortAxisManual,
     }
 }

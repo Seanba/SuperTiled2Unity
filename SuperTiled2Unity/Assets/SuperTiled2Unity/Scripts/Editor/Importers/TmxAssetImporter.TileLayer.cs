@@ -156,7 +156,7 @@ namespace SuperTiled2Unity.Editor
             AssignTilemapSorting(renderer);
 
 #if UNITY_2018_3_OR_NEWER
-            if (m_SortingMode == SortingMode.CustomSortAxis)
+            if (m_SortingMode == SortingMode.CustomSortAxis || m_SortingMode == SortingMode.CustomSortAxisManual)
             {
                 renderer.mode = TilemapRenderer.Mode.Individual;
             }
