@@ -414,6 +414,10 @@ namespace SuperTiled2Unity.Editor
                         {
                             instance.gameObject.BroadcastProperty(p);
                         }
+                        // Unconditionally make a copy of all custom properties onto the root of the instance
+                        // in case the propeties can't broadcast correctly
+                        var superPropsCopy = instance.gameObject.AddComponent<SuperCustomProperties>();
+                        EditorUtility.CopySerialized(props, superPropsCopy);
                     }
 
                     if (so.gameObject.GetSuperPropertyValueBool(StringConstants.Unity_PrefabKeepObject, false))
