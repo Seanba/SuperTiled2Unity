@@ -140,7 +140,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             var alignment = xTileset.GetAttributeAs<ObjectAlignment>("objectalignment", ObjectAlignment.Unspecified);
-            var pivot = -ObjectAlignmentToPivot.ToVector3(1, 1, 1, MapOrientation.Orthogonal, alignment);
+            var defaultPivot = -ObjectAlignmentToPivot.ToVector3(1, 1, 1, MapOrientation.Orthogonal, alignment);
             for (int i = 0; i < m_TilesetScript.m_TileCount; i++)
             {
                 // Get grid x,y coords
@@ -168,7 +168,8 @@ namespace SuperTiled2Unity.Editor
 
                 // Add the tile to our atlas
                 Rect rcSource = new Rect(srcx, srcy, m_TilesetScript.m_TileWidth, m_TilesetScript.m_TileHeight);
-                atlas.AddTile(i, tex2d, rcSource, pivot);
+                // TODO: GET PIVOT FROM objectgroup/object[@type="unity:pivot"]
+                atlas.AddTile(i, tex2d, rcSource, defaultPivot);
             }
         }
 
