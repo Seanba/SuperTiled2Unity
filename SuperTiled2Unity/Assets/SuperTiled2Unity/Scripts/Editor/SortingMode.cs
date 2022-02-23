@@ -2,7 +2,8 @@
 {
     public enum SortingMode
     {
-        Stacked = 0,
+        Stacked = 10,
         CustomSortAxis,
+        CustomSortAxisManual,
     }
 }

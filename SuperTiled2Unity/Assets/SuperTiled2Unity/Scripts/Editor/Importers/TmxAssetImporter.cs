@@ -44,6 +44,25 @@ namespace SuperTiled2Unity.Editor
         [SerializeField]
         private List<SuperTileset> m_InternalTilesets;
 
+        override public void ApplyDefaultSettings()
+        {
+            base.ApplyDefaultSettings();
+            var settings = ST2USettings.GetOrCreateST2USettings();
+            m_SortingMode = settings.SortingMode;
+            EditorUtility.SetDirty(this);
+        }
+
+        override protected void WrapImportContext(UnityEditor.AssetImporters.AssetImportContext ctx) {
+            base.WrapImportContext(ctx);
+
+            if ((int)m_SortingMode == 0)
+            {
+                m_SortingMode = SuperImportContext.Settings.SortingMode;
+            } else if ((int)m_SortingMode == 1) {
+                m_SortingMode = SortingMode.CustomSortAxis;
+            }
+        }
+
         protected override void InternalOnImportAsset()
         {
             base.InternalOnImportAsset();

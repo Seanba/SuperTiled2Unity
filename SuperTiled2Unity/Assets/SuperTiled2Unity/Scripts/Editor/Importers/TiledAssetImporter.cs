@@ -110,7 +110,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        public void ApplyDefaultSettings()
+        virtual public void ApplyDefaultSettings()
         {
             var settings = ST2USettings.GetOrCreateST2USettings();
             m_PixelsPerUnit = settings.PixelsPerUnit;
@@ -174,7 +174,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private void WrapImportContext(AssetImportContext ctx)
+        virtual protected void WrapImportContext(AssetImportContext ctx)
         {
             var settings = ST2USettings.GetOrCreateST2USettings();
             settings.RefreshCustomObjectTypes();
