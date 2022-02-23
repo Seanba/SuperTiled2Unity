@@ -176,7 +176,7 @@ namespace SuperTiled2Unity.Editor
         {
             m_TilesetScript.m_IsImageCollection = true;
             var alignment = xTileset.GetAttributeAs<ObjectAlignment>("objectalignment", ObjectAlignment.Unspecified);
-            var pivot = -ObjectAlignmentToPivot.ToVector3(1, 1, 1, MapOrientation.Orthogonal, alignment);
+            var defaultPivot = -ObjectAlignmentToPivot.ToVector3(1, 1, 1, MapOrientation.Orthogonal, alignment);
             foreach (var xTile in xTileset.Elements("tile"))
             {
                 int tileIndex = xTile.GetAttributeAs<int>("id");
@@ -208,6 +208,26 @@ namespace SuperTiled2Unity.Editor
                     }
 
                     var rcSource = new Rect(0, 0, tex2d.width, tex2d.height);
+                    // Get the per-tile pivot from the tile xml metadata
+                    var pivot = defaultPivot;
+                    var xObjectGroup = xTile.Element("objectgroup");
+                    if (xObjectGroup != null) {
+                        foreach (var xObject in xObjectGroup.Elements()) {
+                            if (xObject.Name == "object"
+                                && xObject.GetAttributeAs<string>("type") == StringConstants.Unity_Pivot
+                                && xObject.Element("point") != null
+                            ) {
+                                float objX = xObject.GetAttributeAs<int>("x");
+                                float objY = xObject.GetAttributeAs<int>("y");
+                                pivot = new Vector3(
+                                    1f - (objX / tex2d.width),
+                                    1f - (objY / tex2d.height),
+                                    0f
+                                );
+                            }
+                        }
+                    }
+
                     atlas.AddTile(tileIndex, tex2d, rcSource, pivot);
                 }
             }
