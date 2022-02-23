@@ -102,15 +102,7 @@ namespace SuperTiled2Unity.Editor
             comp.m_Template = xObject.GetAttributeAs("template", "");
 
             // Assign the name of our game object
-            if (comp.m_TileId != 0)
-            {
-                // The tile object name is decorated. A descendent will have the "real" object name.
-                goObject.name = string.Format("{0} (TRS)", comp.m_TiledName);
-            }
-            else
-            {
-                goObject.name = comp.m_TiledName;
-            }
+            goObject.name = comp.m_TiledName;
 
             // Position the game object
             var localPosition = new Vector2(comp.m_X, comp.m_Y);
@@ -256,7 +248,7 @@ namespace SuperTiled2Unity.Editor
             var fromCenter = -translateCenter;
 
             // Add another child, putting our coordinates back into the proper place
-            var goTile = new GameObject(superObject.m_TiledName);
+            var goTile = new GameObject($"{superObject.m_TiledName} (Tile)");
             goCF.AddChildWithUniqueName(goTile);
             goTile.transform.localPosition = fromCenter;
             goTile.transform.localRotation = Quaternion.Euler(0, 0, 0);
