@@ -47,16 +47,6 @@ namespace SuperTiled2Unity
         [ReadOnly]
         public int m_NextObjectId;
 
-        private void Start()
-        {
-            // This is a hack so that Unity does not falsely report prefab instance differences from our importer map
-            // Look for where renderer.detectChunkCullingBounds is set to Manual in the importer code which is the other part of this hack
-            foreach (var renderer in GetComponentsInChildren<TilemapRenderer>())
-            {
-                renderer.detectChunkCullingBounds = TilemapRenderer.DetectChunkCullingBounds.Auto;
-            }
-        }
-
         public Vector3Int TiledIndexToGridCell(int index, int offset_x, int offset_y, int stride)
         {
             int x = index % stride;
