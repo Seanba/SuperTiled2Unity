@@ -239,8 +239,7 @@ namespace SuperTiled2Unity.Editor
             // Our pivot object will contain the tileset orientation and offset
             var goPivot = new GameObject();
             goPivot.name = string.Format("{0} (Pivot)", superObject.m_TiledName);
-            // goPivot.transform.localPosition = tileOffset + pivotOffset;
-            goPivot.transform.localPosition = tileOffset;
+            goPivot.transform.localPosition = tileOffset + pivotOffset;
             goTRS.AddChildWithUniqueName(goPivot);
 
             // Add another object to handle tile flipping
@@ -269,6 +268,7 @@ namespace SuperTiled2Unity.Editor
                 var renderer = goTile.AddComponent<SpriteRenderer>();
                 renderer.sprite = tile.m_Sprite;
                 renderer.color = superObject.CalculateColor();
+                renderer.spriteSortPoint = SpriteSortPoint.Pivot;
                 Importer.AssignMaterial(renderer, m_ObjectLayer.m_TiledName);
                 Importer.AssignSpriteSorting(renderer);
 
