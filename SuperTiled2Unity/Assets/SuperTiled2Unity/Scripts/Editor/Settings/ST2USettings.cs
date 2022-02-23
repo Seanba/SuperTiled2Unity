@@ -32,6 +32,10 @@ namespace SuperTiled2Unity.Editor
         public int AnimationFramerate {  get { return m_AnimationFramerate; } }
 
         [SerializeField]
+        private SortingMode m_SortingMode = SortingMode.Stacked;
+        public SortingMode SortingMode {  get { return m_SortingMode; } }
+
+        [SerializeField]
         private Material m_DefaultMaterial = null;
         public Material DefaultMaterial { get { return m_DefaultMaterial; } }
 
