@@ -51,7 +51,7 @@ namespace SuperTiled2Unity.Editor
 
             m_SortingMode.intValue = (int)(SortingMode)EditorGUILayout.EnumPopup(m_SortingModeContent, (SortingMode)m_SortingMode.intValue);
 
-            if (m_SortingMode.intValue == (int)SortingMode.CustomSortAxis)
+            if (m_SortingMode.intValue == (int)SortingMode.CustomSortAxis || m_SortingMode.intValue == (int)SortingMode.CustomSortAxisManual)
             {
                 EditorGUILayout.HelpBox("Tip: Custom Sort Axis may require you to set a Transparency Sort Axis for cameras in your project Graphics settings.", MessageType.Info);
             }

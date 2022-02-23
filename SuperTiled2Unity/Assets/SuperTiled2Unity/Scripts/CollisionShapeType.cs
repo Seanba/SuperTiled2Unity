@@ -6,5 +6,6 @@
         Ellipse,
         Polygon,
         Polyline,
+        Point,
     }
 }
