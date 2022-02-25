@@ -311,8 +311,8 @@ namespace SuperTiled2Unity.Editor
                     collision.m_ObjectId = xObject.GetAttributeAs("id", 0);
                     collision.m_ObjectName = xObject.GetAttributeAs("name", string.Format("Object_{0}", collision.m_ObjectId));
                     collision.m_ObjectType = xObject.GetAttributeAs("type", "");
-                    collision.m_Position.x = xObject.GetAttributeAs("x", 0.0f);
-                    collision.m_Position.y = xObject.GetAttributeAs("y", 0.0f);
+                    collision.m_Position.x = xObject.GetAttributeAs("x", 0.0f) - tile.m_TileOffsetX;
+                    collision.m_Position.y = xObject.GetAttributeAs("y", 0.0f) - tile.m_TileOffsetY;
                     collision.m_Size.x = xObject.GetAttributeAs("width", 0.0f);
                     collision.m_Size.y = xObject.GetAttributeAs("height", 0.0f);
                     collision.m_Rotation = xObject.GetAttributeAs("rotation", 0.0f);
