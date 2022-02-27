@@ -341,6 +341,10 @@ namespace SuperTiled2Unity.Editor
                             collision.MakePointsFromEllipse(m_Importer.SuperImportContext.Settings.EdgesPerEllipse);
                         }
                     }
+                    else if (xObject.Element("point") != null)
+                    {
+                        collision.MakePoint();
+                    }
                     else
                     {
                         // By default, objects are rectangles
