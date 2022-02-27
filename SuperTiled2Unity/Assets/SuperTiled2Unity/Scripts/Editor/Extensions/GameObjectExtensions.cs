@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -128,7 +129,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        public static void BroadcastProperty(this GameObject go, CustomProperty property)
+        public static void BroadcastProperty(this GameObject go, CustomProperty property, Dictionary<int, GameObject> objectsById)
         {
             object objValue = null;
 
@@ -147,6 +148,20 @@ namespace SuperTiled2Unity.Editor
             else if (property.m_Type == "int")
             {
                 objValue = property.GetValueAsInt();
+            }
+            else if (property.m_Type == "object")
+            {
+                var id = property.GetValueAsInt();
+                GameObject gameObject = null;
+                if (!objectsById.TryGetValue(id, out gameObject))
+                {
+                    Debug.LogErrorFormat("Object property refers to invalid ID {0}", id);
+                    return;
+                }
+                else
+                {
+                    objValue = gameObject;
+                }
             }
             else
             {
