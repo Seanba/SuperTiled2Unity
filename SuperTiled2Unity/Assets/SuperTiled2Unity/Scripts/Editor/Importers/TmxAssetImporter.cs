@@ -31,7 +31,7 @@ namespace SuperTiled2Unity.Editor
         public bool TilesAsObjects { get { return m_TilesAsObjects; } }
 
         [SerializeField]
-        private SortingMode m_SortingMode = SortingMode.Stacked;
+        private SortingMode m_SortingMode;
         public SortingMode SortingMode { get { return m_SortingMode; } }
 
         [SerializeField]
