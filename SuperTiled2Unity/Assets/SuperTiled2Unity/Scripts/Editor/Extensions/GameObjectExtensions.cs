@@ -131,7 +131,7 @@ namespace SuperTiled2Unity.Editor
 
         public static void BroadcastProperty(this GameObject go, CustomProperty property, Dictionary<int, GameObject> objectsById)
         {
-            object objValue = null;
+            object objValue;
 
             if (property.m_Type == "bool")
             {
@@ -151,11 +151,11 @@ namespace SuperTiled2Unity.Editor
             }
             else if (property.m_Type == "object")
             {
-                var id = property.GetValueAsInt();
-                GameObject gameObject = null;
-                if (!objectsById.TryGetValue(id, out gameObject))
+                var objectId = property.GetValueAsInt();
+                GameObject gameObject;
+                if (!objectsById.TryGetValue(objectId, out gameObject))
                 {
-                    Debug.LogErrorFormat("Object property refers to invalid ID {0}", id);
+                    Debug.LogErrorFormat("Object property refers to invalid ID {0}", objectId);
                     return;
                 }
                 else

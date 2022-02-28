@@ -7,6 +7,8 @@ namespace SuperTiled2Unity.Editor
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class AutoCustomTmxImporterAttribute : Attribute
     {
+        private static List<Type> m_CachedImporters;
+
         public AutoCustomTmxImporterAttribute()
         {
             Order = 0;
@@ -21,6 +23,11 @@ namespace SuperTiled2Unity.Editor
 
         public static List<Type> GetOrderedAutoImportersTypes()
         {
+            if (m_CachedImporters != null)
+            {
+                return m_CachedImporters;
+            }
+
             var importers = from t in AppDomain.CurrentDomain.GetAllDerivedTypes<CustomTmxImporter>()
                             where !t.IsAbstract
                             from attr in GetCustomAttributes(t, typeof(AutoCustomTmxImporterAttribute))
@@ -28,7 +35,8 @@ namespace SuperTiled2Unity.Editor
                             orderby auto.Order
                             select t;
 
-            return importers.ToList();
+            m_CachedImporters = importers.ToList();
+            return m_CachedImporters;
         }
     }
 }

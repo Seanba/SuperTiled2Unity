@@ -270,7 +270,7 @@ namespace SuperTiled2Unity.Editor
             // We need this in case we have custom scripts that are looking for tile object via component
             {
                 var tileObject = goTRS.AddComponent<SuperObject>();
-                tileObject.m_Id = m_ObjectIdCounter++;
+                tileObject.m_Id = m_NextTileAsObjectId++;
                 tileObject.m_TiledName = string.Format("AsObject_{0}", tileObject.m_Id);
                 tileObject.m_X = pos3.x * superMap.m_TileWidth;
                 tileObject.m_Y = -pos3.y * superMap.m_TileHeight;

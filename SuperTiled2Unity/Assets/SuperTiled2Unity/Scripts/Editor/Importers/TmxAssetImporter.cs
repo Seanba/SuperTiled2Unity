@@ -24,7 +24,7 @@ namespace SuperTiled2Unity.Editor
 
         private GlobalTileDatabase m_GlobalTileDatabase;
         private Dictionary<uint, TilePolygonCollection> m_TilePolygonDatabase;
-        private int m_ObjectIdCounter = 0;
+        private int m_NextTileAsObjectId;
 
         [SerializeField]
         private bool m_TilesAsObjects = false;
@@ -76,7 +76,6 @@ namespace SuperTiled2Unity.Editor
             Assert.IsNull(m_GlobalTileDatabase);
 
             m_TilePolygonDatabase = new Dictionary<uint, TilePolygonCollection>();
-            m_ObjectIdCounter = 0;
             RendererSorter.SortingMode = m_SortingMode;
 
             // Create our map and fill it out
@@ -137,6 +136,7 @@ namespace SuperTiled2Unity.Editor
             m_MapComponent.m_NextObjectId = xMap.GetAttributeAs<int>("nextobjectid");
 
             m_IsIsometric = m_MapComponent.m_Orientation == MapOrientation.Isometric;
+            m_NextTileAsObjectId = m_MapComponent.m_NextObjectId;
 
             return true;
         }
@@ -397,6 +397,7 @@ namespace SuperTiled2Unity.Editor
             var supers = m_MapComponent.GetComponentsInChildren<SuperObject>();
             var objectsById = supers.ToDictionary(so => so.m_Id, so => so.gameObject);
             var goToDestroy = new List<GameObject>();
+
             foreach (var so in supers)
             {
                 var prefab = SuperImportContext.Settings.GetPrefabReplacement(so.m_Type);

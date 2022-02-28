@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace SuperTiled2Unity.Editor
 {
@@ -23,8 +25,9 @@ namespace SuperTiled2Unity.Editor
                             types.Add(theType);
                         }
                     }
-                    catch (ReflectionTypeLoadException e)
+                    catch (ReflectionTypeLoadException)
                     {
+                        // Ignore
                     }
                 }
             }
