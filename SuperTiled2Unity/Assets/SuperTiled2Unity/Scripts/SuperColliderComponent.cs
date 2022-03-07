@@ -18,6 +18,7 @@ namespace SuperTiled2Unity
         // Editor code to help us manage when we draw gizmo colliders for this component
         public List<Shape> m_PolygonShapes = new List<Shape>();
         public List<Shape> m_OutlineShapes = new List<Shape>();
+        public string m_ObjectType;
 
 #if UNITY_EDITOR
         public void AddPolygonShape(IEnumerable<Vector2> points)
