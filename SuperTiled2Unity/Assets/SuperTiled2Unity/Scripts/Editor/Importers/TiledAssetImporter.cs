@@ -60,6 +60,11 @@ namespace SuperTiled2Unity.Editor
             // Sort the properties alphabetically
             component.m_Properties = properties.OrderBy(p => p.m_Name).ToList();
 
+            ApplyMagicSuperCustomProperties(component);
+        }
+
+        public void ApplyMagicSuperCustomProperties(SuperCustomProperties component)
+        {
             AssignUnityTag(component);
             AssignUnityLayer(component);
         }

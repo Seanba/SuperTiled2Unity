@@ -21,5 +21,12 @@ namespace SuperTiled2Unity
                 return name.Equals(customProperty.m_Name);
             }
         }
+
+        public void CopyFrom(SuperCustomProperties other)
+        {
+            m_Properties.Clear();
+            m_Properties.Capacity = other.m_Properties.Count;
+            m_Properties.AddRange(other.m_Properties);
+        }
     }
 }

@@ -412,6 +412,15 @@ namespace SuperTiled2Unity.Editor
                     // Keep the name from Tiled.
                     instance.name = so.gameObject.name;
 
+                    // Transfer and reapply custom property magic on the instantiated prefab.
+                    var soSuperCustomProperties = so.gameObject.GetComponent<SuperCustomProperties>();
+                    if (soSuperCustomProperties != null)
+                    {
+                        var instanceSuperCustomProperties = instance.AddComponent<SuperCustomProperties>();
+                        instanceSuperCustomProperties.CopyFrom(soSuperCustomProperties);
+                        ApplyMagicSuperCustomProperties(instanceSuperCustomProperties);
+                    }
+
                     // Update bookkeeping for later custom property replacement.
                     goToDestroy.Add(so.gameObject);
                     objectsById[so.m_Id] = instance;
