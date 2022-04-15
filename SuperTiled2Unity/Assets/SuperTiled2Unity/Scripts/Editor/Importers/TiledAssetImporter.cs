@@ -60,13 +60,8 @@ namespace SuperTiled2Unity.Editor
             // Sort the properties alphabetically
             component.m_Properties = properties.OrderBy(p => p.m_Name).ToList();
 
-            ApplyMagicSuperCustomProperties(component);
-        }
-
-        public void ApplyMagicSuperCustomProperties(SuperCustomProperties component)
-        {
             AssignUnityTag(component);
-            AssignUnityLayer(component);
+            AssignUnityLayer(component, defaultInheritFromParent: true);
         }
 
         public void AssignTilemapSorting(TilemapRenderer renderer)
@@ -151,7 +146,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        protected void AssignUnityLayer(SuperCustomProperties properties)
+        protected void AssignUnityLayer(SuperCustomProperties properties, bool defaultInheritFromParent)
         {
             // Do we have a 'unity:layer' property?
             CustomProperty prop;
@@ -168,7 +163,7 @@ namespace SuperTiled2Unity.Editor
                     properties.gameObject.layer = LayerMask.NameToLayer(layer);
                 }
             }
-            else
+            else if (defaultInheritFromParent)
             {
                 // Inherit the layer of our parent
                 var parent = properties.gameObject.transform.parent;

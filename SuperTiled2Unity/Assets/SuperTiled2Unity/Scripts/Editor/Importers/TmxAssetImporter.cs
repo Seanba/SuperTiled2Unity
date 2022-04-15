@@ -419,7 +419,8 @@ namespace SuperTiled2Unity.Editor
                         var component = instance.AddComponent<SuperCustomProperties>();
                         component.m_Properties = new List<CustomProperty>();
                         component.m_Properties.CombineFromSource(soComponent.m_Properties);
-                        ApplyMagicSuperCustomProperties(component);
+                        AssignUnityTag(component);
+                        AssignUnityLayer(component, defaultInheritFromParent: false);
                     }
 
                     // Update bookkeeping for later custom property replacement.
