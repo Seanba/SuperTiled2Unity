@@ -413,12 +413,13 @@ namespace SuperTiled2Unity.Editor
                     instance.name = so.gameObject.name;
 
                     // Transfer and reapply custom property magic on the instantiated prefab.
-                    var soSuperCustomProperties = so.gameObject.GetComponent<SuperCustomProperties>();
-                    if (soSuperCustomProperties != null)
+                    var soComponent = so.gameObject.GetComponent<SuperCustomProperties>();
+                    if (soComponent != null && !soComponent.m_Properties.IsEmpty())
                     {
-                        var instanceSuperCustomProperties = instance.AddComponent<SuperCustomProperties>();
-                        instanceSuperCustomProperties.CopyFrom(soSuperCustomProperties);
-                        ApplyMagicSuperCustomProperties(instanceSuperCustomProperties);
+                        var component = instance.AddComponent<SuperCustomProperties>();
+                        component.m_Properties = new List<CustomProperty>();
+                        component.m_Properties.CombineFromSource(soComponent.m_Properties);
+                        ApplyMagicSuperCustomProperties(component);
                     }
 
                     // Update bookkeeping for later custom property replacement.
