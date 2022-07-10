@@ -2,9 +2,9 @@
 {
     public static class ImporterConstants
     {
-        public const int TilesetVersion = 12;
-        public const int TemplateVersion = 5;
-        public const int MapVersion = 25;
+        public const int TilesetVersion = 13;
+        public const int TemplateVersion = 6;
+        public const int MapVersion = 26;
         public const int WorldVersion = 1;
 
         public const string TilesetExtension = "tsx";

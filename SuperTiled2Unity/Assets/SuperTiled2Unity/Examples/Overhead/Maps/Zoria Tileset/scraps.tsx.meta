@@ -2903,7 +2903,7 @@ ScriptedImporter:
   missingSortingLayers: []
   missingLayers: []
   missingTags: []
-  importerVersion: 12
+  importerVersion: 13
   pixelsPerUnit: 1
   edgesPerEllipse: 32
   numberOfObjectsImported: 963
