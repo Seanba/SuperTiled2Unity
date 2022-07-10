@@ -226,8 +226,13 @@ namespace SuperTiled2Unity.Editor
             SuperTile tile;
             if (m_TilesetScript.TryGetTile(index, out tile))
             {
-                // A tile may have a type associated with it
-                tile.m_Type = xTile.GetAttributeAs("type", "");
+                // A tile may have a class associated with it
+                tile.m_Type = xTile.GetAttributeAs("class", "");
+                
+                //As of Tiled 1.9 types have been merged with classes
+                //As a simple way to support both version we can fall back like this to the old < 1.9 way
+                if(string.IsNullOrWhiteSpace(tile.m_Type))
+                    tile.m_Type = xTile.GetAttributeAs("type", "");
 
                 // Tiles can have custom properties (and properties inherited from their Type)
                 tile.m_CustomProperties = CustomPropertyLoader.LoadCustomPropertyList(xTile.Element("properties"));
