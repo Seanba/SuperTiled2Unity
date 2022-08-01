@@ -96,7 +96,7 @@ namespace SuperTiled2Unity.Editor
                 // This should be reported for bug fixing
                 m_Errors.Add("Unknown error encountered. Please report as bug. Stack track is in the console output.");
                 m_Errors.Add(ex.Message);
-                Debug.LogErrorFormat("Unknown error of type {0}: {1}\nStack Trace:\n{2}", ex.GetType(), ex.Message, ex.StackTrace);
+                Debug.LogErrorFormat("Unknown error of type importing '{0}': {1}\nStack Trace:\n{2}", assetPath, ex.Message, ex.StackTrace);
             }
 #else
             ReportUnityVersionError();
@@ -105,40 +105,52 @@ namespace SuperTiled2Unity.Editor
 
         public T RequestAssetAtPath<T>(string path) where T : UnityEngine.Object
         {
-            Assert.IsNotNull(m_SuperAsset, "Must be a SuperAsset type if we are requesting dependencies");
+            Assert.IsNotNull(m_SuperAsset, "Must be a SuperAsset type if we are requesting dependencies.");
 
             // Is the asset in our cache?
             path = path.SanitizePath();
             var key = new KeyValuePair<string, Type>(path.ToLower(), typeof(T));
-            UnityEngine.Object cachedObject;
-
-            if (m_CachedDatabase.TryGetValue(key, out cachedObject))
+            if (m_CachedDatabase.TryGetValue(key, out UnityEngine.Object cachedObject))
             {
                 return cachedObject as T;
             }
 
-            // The path is either relative to our asset path or is absolute
-            using (new ChDir(assetPath))
+            // Asset is not in our cache so load it from the asset database
+            string absPath;
+            if (Path.IsPathRooted(path))
             {
-                path = Path.GetFullPath(path);
-                if (AssetPath.TryAbsoluteToAsset(ref path))
-                {
-                    // Keep track that the the asset is a dependency
-                    m_SuperAsset.AddDependency(AssetImportContext, path);
+                // Rooted paths baked into Tiled files are not recommended but if they resolve to a Unity asset then so be it.
+                absPath = Path.GetFullPath(path);
+            }
+            else
+            {
+                // Passed-in path should be relative to this asset
+                var thisAssetFolder = Path.GetDirectoryName(assetPath);
+                var combiedPath = Path.Combine(thisAssetFolder, path);
+                absPath = Path.GetFullPath(combiedPath);
+            }
 
-                    // In most cases our dependency is already known by the AssetDatabase
-                    T asset = AssetDatabase.LoadAssetAtPath<T>(path);
-                    if (asset != null)
-                    {
-                        // Add the asset to our cache for next time it is requested
-                        m_CachedDatabase[key] = asset;
-                        return asset;
-                    }
-                    else
-                    {
-                        ReportMissingFile(path);
-                    }
-                }
+            string requestedAssetPath = absPath;
+            if (!AssetPath.TryAbsoluteToAsset(ref requestedAssetPath))
+            {
+                ReportError($"Could not generate asset path for '{path}'");
+                return null;
+            }
+
+            // Keep track that the the asset is a dependency
+            m_SuperAsset.AddDependency(AssetImportContext, requestedAssetPath);
+
+            // In most cases our dependency is already known by the AssetDatabase
+            T asset = AssetDatabase.LoadAssetAtPath<T>(requestedAssetPath);
+            if (asset != null)
+            {
+                // Add the asset to our cache for next time it is requested
+                m_CachedDatabase[key] = asset;
+                return asset;
+            }
+            else
+            {
+                ReportMissingFile(path);
             }
 
             return null;

@@ -21,12 +21,5 @@ namespace SuperTiled2Unity.Editor
 
             return false;
         }
-
-        // Transform a relative path into Assets/Path/To/Asset.ext
-        public static bool TryRelativeToAsset(ref string path)
-        {
-            path = Path.GetFullPath(path);
-            return TryAbsoluteToAsset(ref path);
-        }
     }
 }
