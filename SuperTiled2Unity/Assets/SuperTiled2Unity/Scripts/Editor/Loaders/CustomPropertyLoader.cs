@@ -88,13 +88,10 @@ namespace SuperTiled2Unity.Editor
                     foreach (var xSubProperty in properties.Elements("property"))
                     {
                         var name = xSubProperty.GetAttributeAs<String>("name");
-                        var isSubCustomClass = xSubProperty.GetAttributeAs<String>("type") == "class";
-                        var subRealType =
-                            isSubCustomClass 
-                                ? xSubProperty.GetAttributeAs<String>("propertytype", "")
-                                : xSubProperty.GetAttributeAs<String>("type");
-                        
-                        jObj[name] = ParseXmlDescPropertiesToJObjectWithExpansion(
+                        var isSubCustomClass = jObj[name]!["type"]!.ToString() == "class";
+                        var subRealType = jObj[name]!["realType"]!.ToString();
+
+                            jObj[name] = ParseXmlDescPropertiesToJObjectWithExpansion(
                             xSubProperty, context, isSubCustomClass, subRealType);
                     }
                 }

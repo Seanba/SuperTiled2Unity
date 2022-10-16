@@ -86,7 +86,7 @@
     <property name="PlaintInt" type="int" value="0"/>
     <property name="TestProperty" type="class" propertytype="TestClass">
      <properties>
-      <property name="Field3" value="new String"/>
+      <property name="Field3" value="new String prop"/>
      </properties>
     </property>
    </properties>
