@@ -6,7 +6,8 @@ namespace SuperTiled2Unity.Editor
 {
     public class CustomPropertiesWindow : EditorWindow
     {
-        private static readonly GUIContent m_TitleContent = new GUIContent("Custom Object Types Properties", "These are the objects created in the Object Types Editor in Tiled.");
+        private static readonly GUIContent m_TitleContent = new GUIContent("Custom Object Types Properties",
+            "These are the objects created in the Object Types Editor in Tiled.");
 
         private Vector2 m_ScrollPosition;
 
@@ -61,7 +62,8 @@ namespace SuperTiled2Unity.Editor
                                 using (new GUILayout.HorizontalScope())
                                 {
                                     EditorGUILayout.LabelField(customProperty.m_Name);
-                                    EditorGUILayout.LabelField(customProperty.m_Value, EditorStyles.textField);
+                                    EditorGUILayout.LabelField(customProperty.m_JObject.ToString(),
+                                        EditorStyles.textField);
                                     EditorGUILayout.LabelField(customProperty.m_Type);
                                 }
                             }

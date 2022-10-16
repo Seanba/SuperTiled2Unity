@@ -388,8 +388,8 @@ namespace SuperTiled2Unity.Editor
             if (layerProperty != null)
             {
                 // Explicit request to assign a layer to a collision. Report errors if the layer is missing.
-                m_Importer.CheckLayerName(layerProperty.m_Value);
-                collision.m_PhysicsLayer = layerProperty.m_Value;
+                m_Importer.CheckLayerName(layerProperty.GetValueAsString());
+                collision.m_PhysicsLayer = layerProperty.GetValueAsString();
             }
             else if (!string.IsNullOrEmpty(collision.m_ObjectName))
             {

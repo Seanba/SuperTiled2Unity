@@ -23,10 +23,10 @@ namespace SuperTiled2Unity.Editor
             }
 
             var vectors = from v in data.Split(' ')
-                          let a = v.Split(',').ToArray()
-                          let x = Convert.ToSingle(a[0], CultureInfo.InvariantCulture)
-                          let y = Convert.ToSingle(a[1], CultureInfo.InvariantCulture)
-                          select new Vector2(x, y);
+                let a = v.Split(',').ToArray()
+                let x = Convert.ToSingle(a[0], CultureInfo.InvariantCulture)
+                let y = Convert.ToSingle(a[1], CultureInfo.InvariantCulture)
+                select new Vector2(x, y);
             return vectors.ToArray();
         }
 
@@ -76,7 +76,7 @@ namespace SuperTiled2Unity.Editor
                 }
             }
 
-            return (T)Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture);
+            return (T) Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture);
         }
 
         public static T GetAttributeAs<T>(this XElement element, string name) where T : IConvertible
@@ -84,14 +84,16 @@ namespace SuperTiled2Unity.Editor
             return element.GetAttributeAs<T>(name, default(T));
         }
 
-        public static T GetPropertyAttributeAs<T>(this XElement element, string name, T defaultValue) where T : IConvertible
+        public static T GetPropertyAttributeAs<T>(this XElement element, string name, T defaultValue)
+            where T : IConvertible
         {
             var xProperties = element.Element("properties");
             if (xProperties != null)
             {
                 foreach (var xProperty in xProperties.Elements("property"))
                 {
-                    if (string.Equals(xProperty.GetAttributeAs<string>("name"), name, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(xProperty.GetAttributeAs<string>("name"), name,
+                            StringComparison.OrdinalIgnoreCase))
                     {
                         return xProperty.GetAttributeAs<T>("value", defaultValue);
                     }
@@ -134,16 +136,22 @@ namespace SuperTiled2Unity.Editor
             // Combine the properties from source and template
             var properties = new Dictionary<string, XElement>();
 
-            // Collect the properties from the template first, by named key
-            foreach (var prop in xTemplate.Descendants("property"))
+            if (xTemplate.Element("properties") is { } propertiesTemplate)
             {
-                properties.Add(prop.GetAttributeAs<string>("name"), prop);
+                // Collect the properties from the template first, by named key
+                foreach (var prop in propertiesTemplate.Elements("property"))
+                {
+                    properties.Add(prop.GetAttributeAs<string>("name"), prop);
+                }
             }
 
-            // Collect the properties on the source, overriding by named key
-            foreach (var prop in xObject.Descendants("property"))
+            if (xObject.Element("properties") is { } propertiesElem)
             {
-                properties[prop.GetAttributeAs<string>("name")] = prop;
+                // Collect the properties on the source, overriding by named key
+                foreach (var prop in propertiesElem.Elements("property"))
+                {
+                    properties[prop.GetAttributeAs<string>("name")] = prop;
+                }
             }
 
             // Put the combined properties into the object

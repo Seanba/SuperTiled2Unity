@@ -6,16 +6,6 @@ namespace SuperTiled2Unity.Editor
 {
     public static class CustomPropertyExtensions
     {
-        public static CustomProperty CloneProperty(this CustomProperty property)
-        {
-            var cloned = new CustomProperty();
-            cloned.m_Name = property.m_Name;
-            cloned.m_Type = property.m_Type;
-            cloned.m_Value = property.m_Value;
-
-            return cloned;
-        }
-
         public static int CombineFromSource(this List<CustomProperty> list, List<CustomProperty> source)
         {
             int numAdded = 0;
