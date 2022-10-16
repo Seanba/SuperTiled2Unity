@@ -91,7 +91,7 @@ namespace SuperTiled2Unity.Editor
                         var isSubCustomClass = jObj[name]!["type"]!.ToString() == "class";
                         var subRealType = jObj[name]!["realType"]!.ToString();
 
-                            jObj[name] = ParseXmlDescPropertiesToJObjectWithExpansion(
+                        jObj[name] = ParseXmlDescPropertiesToJObjectWithExpansion(
                             xSubProperty, context, isSubCustomClass, subRealType);
                     }
                 }
