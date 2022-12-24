@@ -11,8 +11,7 @@ SuperTiled2Unity Documentation
    By `Sean Barton <http://www.seanba.com>`_
 
 
-**SuperTiled2Unity** is a collection of Unity scripts that import files from the popular `Tiled Map Editor <https://www.mapeditor.org/>`_ in your Unity projects.
-
+**SuperTiled2Unity** is a collection of Unity scripts that import files from the popular `Tiled Map Editor <https://www.mapeditor.org/>`_ in your Unity projects. It is available for download on `itch.io <https://seanba.itch.io/supertiled2unity>`_.
 The goal of SuperTiled2Unity is that **it just works**. Except for the most specialized cases users should be able to quickly and easily add tile-based 2D content to their Unity projects.
 
 SuperTiled2Unity is currently distibuted as a Unity Package at any price you choose (including free).
