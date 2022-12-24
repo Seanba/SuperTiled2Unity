@@ -13,9 +13,9 @@
         public const string WorldExtension = "world";
 
         // The order we import Tiled assets is important due to dependencies
-        public const int TilesetImportOrder = 10;
-        public const int TemplateImportOrder = 11;
-        public const int MapImportOrder = 12;
-        public const int WorldImportOrder = 13;
+        public const int TilesetImportOrder = 5010;
+        public const int TemplateImportOrder = 5011;
+        public const int MapImportOrder = 5012;
+        public const int WorldImportOrder = 5013;
     }
 }
