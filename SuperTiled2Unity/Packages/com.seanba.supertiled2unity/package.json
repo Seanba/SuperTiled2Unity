@@ -15,5 +15,12 @@
     "name": "Sean Barton",
     "email": "sean@seanba.com",
     "url": "https://seanba.com/"
-  }
+  },
+  "samples": [
+      {
+          "displayName": "Overhead",
+          "description": "Simple overhead map. Uses a custom depth sort axis for sprite that can move behind columns.",
+          "path": "Samples~/Overhead"
+      }
+  ]
 }

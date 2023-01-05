@@ -1,0 +1,44 @@
+fileFormatVersion: 2
+guid: 3a9a22dfb9db3dd48a4ecfa6ff3b5b2b
+ScriptedImporter:
+  internalIDToNameTable:
+  - first:
+      28: 2800000
+    second: Atlas_Overhead Objects_1
+  - first:
+      114: 11400000
+    second: _TilesetScriptObject
+  - first:
+      114: 11400002
+    second: _superAsset
+  - first:
+      114: 11400004
+    second: Tile_Overhead Objects_1
+  - first:
+      114: 11400006
+    second: Tile_Overhead Objects_2
+  - first:
+      213: 21300000
+    second: Sprite_Overhead Objects_1
+  - first:
+      213: 21300002
+    second: Sprite_Overhead Objects_2
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: cc34d0f3dc257a442819830b408c5322, type: 3}
+  missingFiles: []
+  errors: []
+  warnings: []
+  missingSortingLayers: []
+  missingLayers: []
+  missingTags: []
+  importerVersion: 13
+  pixelsPerUnit: 1
+  edgesPerEllipse: 32
+  numberOfObjectsImported: 7
+  useSpriteAtlas: 1
+  atlasWidth: 256
+  atlasHeight: 256
