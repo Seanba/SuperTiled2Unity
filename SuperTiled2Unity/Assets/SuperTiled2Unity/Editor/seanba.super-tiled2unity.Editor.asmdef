@@ -1,7 +1,8 @@
 {
-    "name": "SuperTiled2UnityEditor",
+    "name": "Super Tiled2Unity Editor",
+    "rootNamespace": "",
     "references": [
-        "SuperTiled2Unity"
+        "GUID:06e56dbbb8dec4d43a0b85b0fe0dd0ca"
     ],
     "includePlatforms": [
         "Editor"
@@ -12,5 +13,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": []
+    "versionDefines": [],
+    "noEngineReferences": false
 }
