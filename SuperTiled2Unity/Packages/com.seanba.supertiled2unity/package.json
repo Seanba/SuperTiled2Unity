@@ -1,0 +1,19 @@
+{
+  "name": "com.seanba.supertiled2unity",
+  "version": "2.0.0",
+  "displayName": "Super Tiled2Unity",
+  "description": "Imports Tiled Map Editor assets to Unity",
+  "unity": "2020.3",
+  "dependencies": {
+ },
+ "keywords": [
+    "Tiled",
+    "Importer",
+    "Plugin"
+  ],
+  "author": {
+    "name": "Sean Barton",
+    "email": "sean@seanba.com",
+    "url": "https://seanba.com/"
+  }
+}
