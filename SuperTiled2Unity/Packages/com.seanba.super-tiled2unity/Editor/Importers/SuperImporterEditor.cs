@@ -2,13 +2,8 @@
 using System.Linq;
 using System.Text;
 using UnityEditor;
+using UnityEditor.AssetImporters;
 using UnityEngine;
-
-#if UNITY_2020_2_OR_NEWER
-using ScriptedImporterEditor = UnityEditor.AssetImporters.ScriptedImporterEditor;
-#else
-using ScriptedImporterEditor = UnityEditor.Experimental.AssetImporters.ScriptedImporterEditor;
-#endif
 
 namespace SuperTiled2Unity.Editor
 {
@@ -17,10 +12,7 @@ namespace SuperTiled2Unity.Editor
         private bool m_ShowDependencies;
         private bool m_ShowReferences;
 
-        public T TargetAssetImporter
-        {
-            get { return serializedObject.targetObject as T; }
-        }
+        public T TargetAssetImporter => serializedObject.targetObject as T;
 
         protected abstract string EditorLabel { get; }
         protected abstract string EditorDefinition { get; }
@@ -38,9 +30,8 @@ namespace SuperTiled2Unity.Editor
                 EditorGUILayout.HelpBox(EditorDefinition, MessageType.None);
                 EditorGUILayout.Separator();
 
-#if UNITY_2019_2_OR_NEWER
                 serializedObject.Update();
-#endif
+
                 InternalOnInspectorGUI();
                 DisplayDependencies();
             }
@@ -91,9 +82,7 @@ namespace SuperTiled2Unity.Editor
 
         protected void InternalApplyRevertGUI()
         {
-#if UNITY_2019_2_OR_NEWER
             serializedObject.ApplyModifiedProperties();
-#endif
             ApplyRevertGUI();
         }
 
@@ -256,12 +245,11 @@ namespace SuperTiled2Unity.Editor
 
             using (new GUILayout.HorizontalScope())
             {
-#if UNITY_2018_3_OR_NEWER
                 if (GUILayout.Button("Open Tag Manager"))
                 {
                     SettingsService.OpenProjectSettings("Project/Tags and Layers");
                 }
-#endif
+
                 if (GUILayout.Button("Reimport"))
                 {
                     ApplyAndImport();
@@ -279,8 +267,7 @@ namespace SuperTiled2Unity.Editor
                 return;
             }
 
-            AssetDependencies depends;
-            if (!TiledAssetDependencies.Instance.GetAssetDependencies(TargetAssetImporter.assetPath, out depends))
+            if (!TiledAssetDependencies.Instance.GetAssetDependencies(TargetAssetImporter.assetPath, out AssetDependencies depends))
             {
                 return;
             }
@@ -391,33 +378,5 @@ namespace SuperTiled2Unity.Editor
             Selection.objects = new UnityEngine.Object[0];
             GUIUtility.ExitGUI();
         }
-
-        // Conitional compiles
-#if UNITY_2018_1_OR_NEWER
-#else
-        protected UnityEngine.Object assetTarget
-        {
-            get
-            {
-                if (assetEditor != null)
-                {
-                    return assetEditor.target;
-                }
-                return null;
-            }
-        }
-
-        protected UnityEngine.Object[] assetTargets
-        {
-            get
-            {
-                if (assetEditor != null)
-                {
-                    return assetEditor.targets;
-                }
-                return null;
-            }
-        }
-#endif
     }
 }

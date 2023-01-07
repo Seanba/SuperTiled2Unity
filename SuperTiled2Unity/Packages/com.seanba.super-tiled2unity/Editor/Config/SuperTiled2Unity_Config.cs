@@ -27,7 +27,7 @@ namespace SuperTiled2Unity.Editor
 
         public static string GetVersionError()
         {
-            return string.Format("SuperTiled2Unity requires Unity 2018.3 or later. You are using {0}", Application.unityVersion);
+            return string.Format("SuperTiled2Unity requires Unity 2020.3 or later. You are using {0}", Application.unityVersion);
         }
 
         [MenuItem("Assets/SuperTiled2Unity/Export ST2U Asset...", true)]

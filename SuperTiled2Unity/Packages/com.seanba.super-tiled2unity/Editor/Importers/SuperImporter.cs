@@ -4,16 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using UnityEditor;
+using UnityEditor.AssetImporters;
 using UnityEngine;
 using UnityEngine.Assertions;
-
-#if UNITY_2020_2_OR_NEWER
-using AssetImportContext = UnityEditor.AssetImporters.AssetImportContext;
-using ScriptedImporter = UnityEditor.AssetImporters.ScriptedImporter;
-#else
-using AssetImportContext = UnityEditor.Experimental.AssetImporters.AssetImportContext;
-using ScriptedImporter = UnityEditor.Experimental.AssetImporters.ScriptedImporter;
-#endif
 
 namespace SuperTiled2Unity.Editor
 {
@@ -21,27 +14,27 @@ namespace SuperTiled2Unity.Editor
     {
         [SerializeField]
         private List<string> m_MissingFiles = new List<string>();
-        public IEnumerable<string> MissingFiles { get { return m_MissingFiles; } }
+        public IEnumerable<string> MissingFiles => m_MissingFiles;
 
         [SerializeField]
         private List<string> m_Errors = new List<string>();
-        public IEnumerable<string> Errors { get { return m_Errors; } }
+        public IEnumerable<string> Errors => m_Errors;
 
         [SerializeField]
         private List<string> m_Warnings = new List<string>();
-        public IEnumerable<string> Warnings { get { return m_Warnings; } }
+        public IEnumerable<string> Warnings => m_Warnings;
 
         [SerializeField]
         private List<string> m_MissingSortingLayers = new List<string>();
-        public IEnumerable<string> MissingSortingLayers { get { return m_MissingSortingLayers; } }
+        public IEnumerable<string> MissingSortingLayers => m_MissingSortingLayers;
 
         [SerializeField]
         private List<string> m_MissingLayers = new List<string>();
-        public IEnumerable<string> MissingLayers { get { return m_MissingLayers; } }
+        public IEnumerable<string> MissingLayers => m_MissingLayers;
 
         [SerializeField]
         private List<string> m_MissingTags = new List<string>();
-        public IEnumerable<string> MissingTags { get { return m_MissingTags; } }
+        public IEnumerable<string> MissingTags => m_MissingTags;
 
         // Keep track of our importer version so that we may handle converions from old imports
         [SerializeField]
@@ -53,7 +46,7 @@ namespace SuperTiled2Unity.Editor
         }
 
         // Keep track of loaded database objects by type
-        private Dictionary<KeyValuePair<string, Type>, UnityEngine.Object> m_CachedDatabase = new Dictionary<KeyValuePair<string, Type>, UnityEngine.Object>();
+        private readonly Dictionary<KeyValuePair<string, Type>, UnityEngine.Object> m_CachedDatabase = new Dictionary<KeyValuePair<string, Type>, UnityEngine.Object>();
 
         // For tracking assets and dependencies imported by SuperTiled2Unity
         private SuperAsset m_SuperAsset;
@@ -72,7 +65,7 @@ namespace SuperTiled2Unity.Editor
             m_SuperAsset = null;
             AssetImportContext = ctx;
 
-#if UNITY_2018_3_OR_NEWER
+#if UNITY_2020_3_OR_NEWER
             try
             {
                 InternalOnImportAsset();
@@ -99,7 +92,11 @@ namespace SuperTiled2Unity.Editor
                 Debug.LogErrorFormat("Unknown error of type importing '{0}': {1}\nStack Trace:\n{2}", assetPath, ex.Message, ex.StackTrace);
             }
 #else
-            ReportUnityVersionError();
+            {
+                string error = SuperTiled2Unity_Config.GetVersionError();
+                ReportError(error);
+                Debug.LogError(error);
+            }
 #endif
         }
 
@@ -234,12 +231,5 @@ namespace SuperTiled2Unity.Editor
 
         protected abstract void InternalOnImportAsset();
         protected abstract void InternalOnImportAssetCompleted();
-
-        private void ReportUnityVersionError()
-        {
-            string error = SuperTiled2Unity_Config.GetVersionError();
-            ReportError(error);
-            Debug.LogError(error);
-        }
     }
 }

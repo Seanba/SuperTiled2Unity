@@ -2,14 +2,9 @@
 using System.Linq;
 using System.Xml.Linq;
 using UnityEditor;
+using UnityEditor.AssetImporters;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-
-#if UNITY_2020_2_OR_NEWER
-using AssetImportContext = UnityEditor.AssetImporters.AssetImportContext;
-#else
-using AssetImportContext = UnityEditor.Experimental.AssetImporters.AssetImportContext;
-#endif
 
 // All tiled assets we want imported should use this class
 namespace SuperTiled2Unity.Editor
@@ -17,9 +12,9 @@ namespace SuperTiled2Unity.Editor
     public abstract class TiledAssetImporter : SuperImporter
     {
         [SerializeField] private float m_PixelsPerUnit = 0.0f;
-        public float PixelsPerUnit { get { return m_PixelsPerUnit; } }
+        public float PixelsPerUnit => m_PixelsPerUnit;
 
-        public float InversePPU {  get { return 1.0f / PixelsPerUnit; } }
+        public float InversePPU => 1.0f / PixelsPerUnit;
 
         [SerializeField] private int m_EdgesPerEllipse = 0;
 
@@ -27,8 +22,7 @@ namespace SuperTiled2Unity.Editor
         [SerializeField] private int m_NumberOfObjectsImported = 0;
 #pragma warning restore 414
 
-        private RendererSorter m_RendererSorter;
-        public RendererSorter RendererSorter { get { return m_RendererSorter; } }
+        public RendererSorter RendererSorter { get; private set; }
 
         public SuperImportContext SuperImportContext { get; private set; }
 
@@ -66,13 +60,13 @@ namespace SuperTiled2Unity.Editor
 
         public void AssignTilemapSorting(TilemapRenderer renderer)
         {
-            var sortLayerName = m_RendererSorter.AssignTilemapSort(renderer);
+            var sortLayerName = RendererSorter.AssignTilemapSort(renderer);
             CheckSortingLayerName(sortLayerName);
         }
 
         public void AssignSpriteSorting(SpriteRenderer renderer)
         {
-            var sortLayerName = m_RendererSorter.AssignSpriteSort(renderer);
+            var sortLayerName = RendererSorter.AssignSpriteSort(renderer);
             CheckSortingLayerName(sortLayerName);
         }
 
@@ -120,13 +114,13 @@ namespace SuperTiled2Unity.Editor
 
         protected override void InternalOnImportAsset()
         {
-            m_RendererSorter = new RendererSorter();
+            RendererSorter = new RendererSorter();
             WrapImportContext(AssetImportContext);
         }
 
         protected override void InternalOnImportAssetCompleted()
         {
-            m_RendererSorter = null;
+            RendererSorter = null;
             m_NumberOfObjectsImported = SuperImportContext.GetNumberOfObjects();
 
             // Assets should be dirtied upon importing so that their meta files are serialized

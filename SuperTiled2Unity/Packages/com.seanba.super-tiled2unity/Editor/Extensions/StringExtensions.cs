@@ -40,8 +40,11 @@ namespace SuperTiled2Unity.Editor
 
         public static void CopyToClipboard(this string str)
         {
-            TextEditor te = new TextEditor();
-            te.text = str;
+            TextEditor te = new TextEditor
+            {
+                text = str
+            };
+
             te.SelectAll();
             te.Copy();
         }

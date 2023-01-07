@@ -22,15 +22,21 @@ namespace SuperTiled2Unity
 #if UNITY_EDITOR
         public void AddPolygonShape(IEnumerable<Vector2> points)
         {
-            var shape = new Shape();
-            shape.m_Points = points.ToArray();
+            var shape = new Shape
+            {
+                m_Points = points.ToArray()
+            };
+
             m_PolygonShapes.Add(shape);
         }
 
         public void AddOutline(IEnumerable<Vector2> points)
         {
-            var shape = new Shape();
-            shape.m_Points = points.ToArray();
+            var shape = new Shape
+            {
+                m_Points = points.ToArray()
+            };
+
             m_OutlineShapes.Add(shape);
         }
 

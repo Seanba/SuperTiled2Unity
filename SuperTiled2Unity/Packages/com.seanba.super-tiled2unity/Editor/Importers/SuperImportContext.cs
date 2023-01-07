@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.AssetImporters;
 using UnityEngine;
-
-#if UNITY_2020_2_OR_NEWER
-using AssetImportContext = UnityEditor.AssetImporters.AssetImportContext;
-#else
-using AssetImportContext = UnityEditor.Experimental.AssetImporters.AssetImportContext;
-#endif
 
 namespace SuperTiled2Unity.Editor
 {
     public class SuperImportContext
     {
-        private static Vector2 NegateY = new Vector2(1, -1);
+        private static readonly Vector2 NegateY = new Vector2(1, -1);
 
-        private AssetImportContext m_Context;
+        private readonly AssetImportContext m_Context;
         private bool? m_IsTriggerOverride;
 
         public SuperImportContext(AssetImportContext context, ST2USettings settings)
@@ -24,7 +19,7 @@ namespace SuperTiled2Unity.Editor
             Settings = settings;
         }
 
-        public ST2USettings Settings { get; private set; }
+        public ST2USettings Settings { get; }
 
         public LayerIgnoreMode LayerIgnoreMode { get; private set; }
 
@@ -48,9 +43,7 @@ namespace SuperTiled2Unity.Editor
         public int GetNumberOfObjects()
         {
             var objects = new List<UnityEngine.Object>();
-#if UNITY_2018_3_OR_NEWER
             m_Context.GetObjects(objects);
-#endif
             return objects.Count;
         }
 
@@ -128,8 +121,7 @@ namespace SuperTiled2Unity.Editor
                 return null;
             }
 
-            CustomProperty property;
-            if (go.TryGetCustomPropertySafe(StringConstants.Unity_IsTrigger, out property))
+            if (go.TryGetCustomPropertySafe(StringConstants.Unity_IsTrigger, out CustomProperty property))
             {
                 m_IsTriggerOverride = property.GetValueAsBool();
                 return new ScopedIsTriggerOverride(this);
@@ -150,7 +142,7 @@ namespace SuperTiled2Unity.Editor
 
         private class ScopedIsTriggerOverride : IDisposable
         {
-            private SuperImportContext m_SuperContext;
+            private readonly SuperImportContext m_SuperContext;
 
             public ScopedIsTriggerOverride(SuperImportContext superContext)
             {
@@ -165,8 +157,8 @@ namespace SuperTiled2Unity.Editor
 
         private class ScopedLayerIgnoreMode : IDisposable
         {
-            private SuperImportContext m_SuperContext;
-            private LayerIgnoreMode m_RestoreIgnoreMode;
+            private readonly SuperImportContext m_SuperContext;
+            private readonly LayerIgnoreMode m_RestoreIgnoreMode;
 
             public ScopedLayerIgnoreMode(SuperImportContext superContext, LayerIgnoreMode newIgnoreMode)
             {
