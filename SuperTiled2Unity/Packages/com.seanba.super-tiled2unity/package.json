@@ -1,10 +1,13 @@
 {
-  "name": "com.seanba.supertiled2unity",
+  "name": "com.seanba.super-tiled2unity",
   "version": "2.0.0",
   "displayName": "Super Tiled2Unity",
-  "description": "Imports Tiled Map Editor assets to Unity",
+  "description": "Imports Tiled Map Editor assets into Unity",
   "unity": "2020.3",
   "dependencies": {
+    "com.unity.modules.animation": "1.0.0",
+    "com.unity.modules.physics2d": "1.0.0",
+    "com.unity.modules.tilemap": "1.0.0"
  },
  "keywords": [
     "Tiled",
@@ -16,6 +19,9 @@
     "email": "sean@seanba.com",
     "url": "https://seanba.com/"
   },
+  "documentationUrl": "https://github.com/Seanba/SuperTiled2Unity/wiki",
+  "changelogUrl": "https://github.com/Seanba/SuperTiled2Unity/blob/package_refactor/SuperTiled2Unity/Packages/com.seanba.super-tiled2unity/CHANGELOG.md",
+  "licensesUrl": "https://github.com/Seanba/SuperTiled2Unity/blob/package_refactor/SuperTiled2Unity/Packages/com.seanba.super-tiled2unity/LICENSE.md",
   "samples": [
       {
           "displayName": "Overhead",
