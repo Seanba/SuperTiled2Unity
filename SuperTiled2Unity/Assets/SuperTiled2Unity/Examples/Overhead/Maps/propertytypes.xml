@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objecttypes>
+ <objecttype name="Script" color="#aa0000">
+  <property name="CorrespondType" type="int" propertytype="TriggerType" default="0"/>
+  <property name="ScriptFile" type="file" default=""/>
+ </objecttype>
+ <objecttype name="TestClass" color="#a0a0a4">
+  <property name="Field1" type="int" default="0"/>
+  <property name="Field2" type="int" default="0"/>
+  <property name="Field3" type="string" default="a string"/>
+  <property name="SubClass" type="class" propertytype="TestSubClass" default=""/>
+ </objecttype>
+ <objecttype name="TestSubClass" color="#a0a0a4">
+  <property name="Value" type="string" default="the value"/>
+ </objecttype>
+</objecttypes>

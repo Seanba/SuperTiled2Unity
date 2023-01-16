@@ -165,7 +165,7 @@ namespace SuperTiled2Unity.Editor
             }
             else
             {
-                objValue = property.GetValueAsString();
+                objValue = property.m_JObject.ToString();
             }
 
             // Use properties on all types in hierary that inherit from MonoBehaviour

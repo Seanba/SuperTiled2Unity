@@ -46,7 +46,7 @@ namespace SuperTiled2Unity.Editor
         {
             // Load our "local" properties first
             var component = go.AddComponent<SuperCustomProperties>();
-            var properties = CustomPropertyLoader.LoadCustomPropertyList(xProperties);
+            var properties = CustomPropertyLoader.LoadCustomPropertyListWithExpansion(xProperties, SuperImportContext);
 
             // Do we have any properties from a tile to add?
             if (tile != null)
@@ -55,7 +55,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             // Add properties from our object type (this should be last)
-            properties.AddPropertiesFromType(typeName, SuperImportContext);
+            // properties.AddPropertiesFromType(typeName, SuperImportContext);
 
             // Sort the properties alphabetically
             component.m_Properties = properties.OrderBy(p => p.m_Name).ToList();
@@ -140,7 +140,7 @@ namespace SuperTiled2Unity.Editor
             CustomProperty prop;
             if (properties.TryGetCustomProperty(StringConstants.Unity_Tag, out prop))
             {
-                string tag = prop.m_Value;
+                string tag = prop.GetValueAsString();
                 CheckTagName(tag);
                 properties.gameObject.tag = tag;
             }
@@ -152,7 +152,7 @@ namespace SuperTiled2Unity.Editor
             CustomProperty prop;
             if (properties.TryGetCustomProperty(StringConstants.Unity_Layer, out prop))
             {
-                string layer = prop.m_Value;
+                string layer = prop.GetValueAsString();
                 if (!UnityEditorInternal.InternalEditorUtility.layers.Contains(layer))
                 {
                     string report = string.Format("Layer '{0}' is not defined in the Tags and Layers settings.", layer);

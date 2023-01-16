@@ -17,7 +17,7 @@ MonoBehaviour:
   m_AnimationFramerate: 20
   m_DefaultMaterial: {fileID: 0}
   m_MaterialMatchings: []
-  m_ObjectTypesXml: {fileID: 0}
+  m_ObjectTypesXml: {fileID: 4900000, guid: 3f5cc66e901a6884e889e72b17751b14, type: 3}
   m_ParseXmlError: 
   m_CollisionGeometryType: 1
   m_LayerColors:
@@ -53,5 +53,35 @@ MonoBehaviour:
   - {r: 1, g: 0.64705884, b: 0, a: 1}
   - {r: 0, g: 1, b: 1, a: 1}
   - {r: 0.7372549, g: 0.56078434, b: 0.56078434, a: 1}
-  m_CustomObjectTypes: []
+  m_CustomObjectTypes:
+  - m_Name: Script
+    m_Color: {r: 0.6666667, g: 0, b: 0, a: 1}
+    m_CustomProperties:
+    - m_Name: CorrespondType
+      m_Type: int
+      m_Value: 
+    - m_Name: ScriptFile
+      m_Type: file
+      m_Value: 
+  - m_Name: TestClass
+    m_Color: {r: 0.627451, g: 0.627451, b: 0.6431373, a: 1}
+    m_CustomProperties:
+    - m_Name: Field1
+      m_Type: int
+      m_Value: 
+    - m_Name: Field2
+      m_Type: int
+      m_Value: 
+    - m_Name: Field3
+      m_Type: string
+      m_Value: 
+    - m_Name: SubClass
+      m_Type: class
+      m_Value: 
+  - m_Name: TestSubClass
+    m_Color: {r: 0.627451, g: 0.627451, b: 0.6431373, a: 1}
+    m_CustomProperties:
+    - m_Name: Value
+      m_Type: string
+      m_Value: 
   m_PrefabReplacements: []
