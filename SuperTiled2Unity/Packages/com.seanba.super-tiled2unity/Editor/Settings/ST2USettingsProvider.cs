@@ -1,16 +1,8 @@
 ﻿using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
-
-#if UNITY_2019_1_OR_NEWER
 using UnityEngine.UIElements;
 
-#elif UNITY_2018_3_OR_NEWER
-using UnityEngine.Experimental.UIElements;
-
-#endif
-
-#if UNITY_2018_3_OR_NEWER
 namespace SuperTiled2Unity.Editor
 {
     public class ST2USettingsProvider : SettingsProvider
@@ -110,7 +102,7 @@ namespace SuperTiled2Unity.Editor
             var content = new GUIContent(tex, "Go to SuperTiled2Unity Documentation");
             if (GUILayout.Button(content, EditorStyles.helpBox))
             {
-                Application.OpenURL("https://supertiled2unity.readthedocs.io");
+                Application.OpenURL("https://supertiled2unity.readthedocs.io"); // fixit - use github docs
             }
         }
 
@@ -344,8 +336,7 @@ namespace SuperTiled2Unity.Editor
                 foreach (var guid in AssetDatabase.FindAssets("t:SuperAsset"))
                 {
                     var path = AssetDatabase.GUIDToAssetPath(guid);
-                    var importer = AssetImporter.GetAtPath(path) as TiledAssetImporter;
-                    if (importer != null)
+                    if (AssetImporter.GetAtPath(path) is TiledAssetImporter importer)
                     {
                         importer.ApplyDefaultSettings();
                     }
@@ -379,8 +370,11 @@ namespace SuperTiled2Unity.Editor
         {
             if (ST2USettings.GetOrCreateST2USettings())
             {
-                var provider = new ST2USettingsProvider();
-                provider.keywords = GetSearchKeywordsFromGUIContentProperties<SettingsContent>();
+                var provider = new ST2USettingsProvider()
+                {
+                    keywords = GetSearchKeywordsFromGUIContentProperties<SettingsContent>()
+                };
+
                 return provider;
             }
 
@@ -389,4 +383,3 @@ namespace SuperTiled2Unity.Editor
         }
     }
 }
-#endif

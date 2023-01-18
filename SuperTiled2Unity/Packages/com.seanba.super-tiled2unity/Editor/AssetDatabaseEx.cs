@@ -18,7 +18,7 @@ namespace SuperTiled2Unity.Editor
             return null;
         }
 
-        public static T LoadFirstAssetByFilterAndExtension<T>(string filter, string extension) where T : UnityEngine.Object
+        public static T LoadFirstAssetByFilterAndExtension<T>(string filter, string extension) where T : UnityEngine.Object // fixit - will I even need this?
         {
             var guids = AssetDatabase.FindAssets(filter);
             foreach (var guid in guids)
@@ -36,7 +36,7 @@ namespace SuperTiled2Unity.Editor
         }
 
         // Note this returns the first match so be careful if you have multiple scripts with the same class name
-        public static string GetFirstPathOfScriptAsset<T>()
+        public static string GetFirstPathOfScriptAsset<T>() // fixit - do we even need this once settings are put in their place?
         {
             var name = typeof(T).Name;
             var guids = AssetDatabase.FindAssets("t: script " + name);

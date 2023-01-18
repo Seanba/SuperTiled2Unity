@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,7 +7,7 @@ namespace SuperTiled2Unity.Editor
 {
     internal class SuperTiled2Unity_Config
     {
-        internal const string Version = "1.10.7";
+        public const string Version = "1.10.7"; // fixit - how to get version of package in package.json?
         internal const string DefaultSettingsFileName = "ST2U Settings.asset";
 
         public static ST2USettings CreateDefaultSettings()
@@ -30,7 +28,7 @@ namespace SuperTiled2Unity.Editor
             return string.Format("SuperTiled2Unity requires Unity 2020.3 or later. You are using {0}", Application.unityVersion);
         }
 
-        [MenuItem("Assets/SuperTiled2Unity/Export ST2U Asset...", true)]
+        [MenuItem("Assets/Super Tiled2Unity/Export ST2U Asset...", true)]
         public static bool ExportSuperAssetValidate()
         {
             var path = AssetDatabase.GetAssetPath(Selection.activeObject);
@@ -42,7 +40,7 @@ namespace SuperTiled2Unity.Editor
             return false;
         }
 
-        [MenuItem("Assets/SuperTiled2Unity/Export ST2U Asset...")]
+        [MenuItem("Assets/Super Tiled2Unity/Export ST2U Asset...")]
         public static void ExportSuperAsset()
         {
             var path = AssetDatabase.GetAssetPath(Selection.activeObject);
@@ -50,7 +48,7 @@ namespace SuperTiled2Unity.Editor
             SuperPackageExport.ShowWindow(Path.GetFileNameWithoutExtension(path), tracker.Dependencies);
         }
 
-        [MenuItem("Assets/SuperTiled2Unity/Apply Default Settings to ST2U Assets")]
+        [MenuItem("Assets/Super Tiled2Unity/Apply Default Settings to ST2U Assets")]
         public static void ReimportWithDefaults()
         {
             UnityEngine.Object[] selectedAsset = Selection.GetFiltered(typeof(UnityEngine.Object), SelectionMode.DeepAssets);
@@ -75,21 +73,6 @@ namespace SuperTiled2Unity.Editor
             {
                 importer.SaveAndReimport();
             }
-        }
-
-        // This is only invoked by a deployment batch file
-        public static void DeploySuperTiled2Unity()
-        {
-            var path = string.Format("{0}/../../deploy/SuperTiled2Unity.{1}.unitypackage", Application.dataPath, SuperTiled2Unity_Config.Version);
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-
-            var files = Directory.GetFiles("Assets/SuperTiled2Unity", "*.*", SearchOption.AllDirectories).ToList();
-
-            // Do not export meta files nor the default settings (which will be created)
-            files.RemoveAll(f => f.EndsWith("*.meta", StringComparison.OrdinalIgnoreCase));
-            files.RemoveAll(f => f.EndsWith(DefaultSettingsFileName, StringComparison.OrdinalIgnoreCase));
-
-            AssetDatabase.ExportPackage(files.ToArray(), path);
         }
     }
 }
