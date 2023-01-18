@@ -73,7 +73,7 @@ namespace SuperTiled2Unity.Editor
         public void AssignMaterial(Renderer renderer, string match)
         {
             // Do we have a registered material match?
-            var matchedMaterial = SuperImportContext.Settings.MaterialMatchings.FirstOrDefault(m => m.m_LayerName.Equals(match, StringComparison.OrdinalIgnoreCase));
+            var matchedMaterial = ST2USettings.instance.MaterialMatchings.FirstOrDefault(m => m.m_LayerName.Equals(match, StringComparison.OrdinalIgnoreCase));
             if (matchedMaterial != null)
             {
                 renderer.material = matchedMaterial.m_Material;
@@ -81,9 +81,9 @@ namespace SuperTiled2Unity.Editor
             }
 
             // Has the user chosen to override the material used for our tilemaps and sprite objects?
-            if (SuperImportContext.Settings.DefaultMaterial != null)
+            if (ST2USettings.instance.DefaultMaterial != null)
             {
-                renderer.material = SuperImportContext.Settings.DefaultMaterial;
+                renderer.material = ST2USettings.instance.DefaultMaterial;
             }
         }
 
@@ -106,9 +106,8 @@ namespace SuperTiled2Unity.Editor
 
         public void ApplyDefaultSettings()
         {
-            var settings = ST2USettings.GetOrCreateST2USettings();
-            m_PixelsPerUnit = settings.PixelsPerUnit;
-            m_EdgesPerEllipse = settings.EdgesPerEllipse;
+            m_PixelsPerUnit = ST2USettings.instance.PixelsPerUnit;
+            m_EdgesPerEllipse = ST2USettings.instance.EdgesPerEllipse;
             EditorUtility.SetDirty(this);
         }
 
@@ -170,26 +169,27 @@ namespace SuperTiled2Unity.Editor
 
         private void WrapImportContext(AssetImportContext ctx)
         {
-            var settings = ST2USettings.GetOrCreateST2USettings();
-            settings.RefreshCustomObjectTypes();
+            ST2USettings.instance.RefreshCustomObjectTypes();
 
+            // fixit - you must not copy a singleton like this!
             // Create a copy of our settings that we can override based on importer settings
-            settings = Instantiate(settings);
+            // investigate furter and temporarily set the values if you need with a using pattern
+            // figure out what I'm really trying to do here and fix it
+            //var settings = Instantiate(ST2USettings.instance);
+            //if (m_PixelsPerUnit == 0)
+            //{
+            //    m_PixelsPerUnit = settings.PixelsPerUnit;
+            //}
 
-            if (m_PixelsPerUnit == 0)
-            {
-                m_PixelsPerUnit = settings.PixelsPerUnit;
-            }
+            //if (m_EdgesPerEllipse == 0)
+            //{
+            //    m_EdgesPerEllipse = settings.EdgesPerEllipse;
+            //}
 
-            if (m_EdgesPerEllipse == 0)
-            {
-                m_EdgesPerEllipse = settings.EdgesPerEllipse;
-            }
+            //settings.PixelsPerUnit = m_PixelsPerUnit; // fixit - nope! Don't like it
+            //settings.EdgesPerEllipse = m_EdgesPerEllipse;
 
-            settings.PixelsPerUnit = m_PixelsPerUnit;
-            settings.EdgesPerEllipse = m_EdgesPerEllipse;
-
-            SuperImportContext = new SuperImportContext(ctx, settings);
+            SuperImportContext = new SuperImportContext(ctx);
         }
     }
 }

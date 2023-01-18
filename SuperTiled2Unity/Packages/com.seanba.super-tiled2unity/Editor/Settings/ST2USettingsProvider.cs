@@ -5,10 +5,11 @@ using UnityEngine.UIElements;
 
 namespace SuperTiled2Unity.Editor
 {
+    // fixit - why are the settings readonly?
+    // see this: https://www.listechblog.com/2022/02/use-settingsprovider-to-save-and-load-settings-in-unity-project-settings-or-preferences-window
     public class ST2USettingsProvider : SettingsProvider
     {
-        private ST2USettings m_ST2USettings;
-        private SerializedObject m_S2TUSettingsObject;
+        private SerializedObject m_SerializedObject;
         private ReorderableList m_MaterialMatchingsList;
         private ReorderableList m_PrefabReplacementList;
         private bool m_ShowMaterialMatchings;
@@ -38,20 +39,20 @@ namespace SuperTiled2Unity.Editor
         {
             base.OnActivate(searchContext, rootElement);
 
-            m_ST2USettings = ST2USettings.GetOrCreateST2USettings();
-            m_S2TUSettingsObject = new SerializedObject(m_ST2USettings);
+            ST2USettings.instance.SaveSettings();
+            m_SerializedObject = new SerializedObject(ST2USettings.instance);
 
             // Prepare our list of material matchings
-            var matchings = m_S2TUSettingsObject.FindProperty("m_MaterialMatchings");
-            m_MaterialMatchingsList = new ReorderableList(m_S2TUSettingsObject, matchings, true, false, true, true)
+            var matchings = m_SerializedObject.FindProperty("m_MaterialMatchings");
+            m_MaterialMatchingsList = new ReorderableList(m_SerializedObject, matchings, true, false, true, true)
             {
                 headerHeight = 0,
                 drawElementCallback = OnDrawMaterialMatchingElement,
             };
 
             // Prepare our list of prefab replacements
-            var replacements = m_S2TUSettingsObject.FindProperty("m_PrefabReplacements");
-            m_PrefabReplacementList = new ReorderableList(m_S2TUSettingsObject, replacements, true, false, true, true)
+            var replacements = m_SerializedObject.FindProperty("m_PrefabReplacements");
+            m_PrefabReplacementList = new ReorderableList(m_SerializedObject, replacements, true, false, true, true)
             {
                 headerHeight = 0,
                 drawElementCallback = OnDrawPrefabReplacementElement,
@@ -62,7 +63,7 @@ namespace SuperTiled2Unity.Editor
         {
             EditorGUIUtility.labelWidth = 200;
 
-            m_S2TUSettingsObject.Update();
+            m_SerializedObject.Update();
 
             using (new GuiScopedIndent())
             {
@@ -90,9 +91,9 @@ namespace SuperTiled2Unity.Editor
                 DoGuiReimportAssets();
             }
 
-            if (m_S2TUSettingsObject.ApplyModifiedProperties())
+            if (m_SerializedObject.ApplyModifiedProperties())
             {
-                ST2USettings.GetOrCreateST2USettings().RefreshCustomObjectTypes();
+                ST2USettings.instance.RefreshCustomObjectTypes();
             }
         }
 
@@ -113,10 +114,13 @@ namespace SuperTiled2Unity.Editor
 
         private void DoGuiSettings()
         {
-            var ppuProperty = m_S2TUSettingsObject.FindProperty("m_PixelsPerUnit");
-            var edgesProperty = m_S2TUSettingsObject.FindProperty("m_EdgesPerEllipse");
-            var materialProperty = m_S2TUSettingsObject.FindProperty("m_DefaultMaterial");
-            var animationPrpoerty = m_S2TUSettingsObject.FindProperty("m_AnimationFramerate");
+            // fixit - why readonly?
+            //var ppuProperty = m_S2TUSettingsObject.FindProperty("m_PixelsPerUnit");
+            var ppuProperty = m_SerializedObject.FindProperty(nameof(ST2USettings.m_PixelsPerUnit));
+
+            var edgesProperty = m_SerializedObject.FindProperty("m_EdgesPerEllipse");
+            var materialProperty = m_SerializedObject.FindProperty("m_DefaultMaterial");
+            var animationPrpoerty = m_SerializedObject.FindProperty("m_AnimationFramerate");
 
             EditorGUILayout.LabelField("Default Import Settings", EditorStyles.boldLabel);
 
@@ -170,8 +174,8 @@ namespace SuperTiled2Unity.Editor
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("Sort Alphabetically"))
                     {
-                        m_ST2USettings.SortMaterialMatchings();
-                        EditorUtility.SetDirty(m_ST2USettings);
+                        ST2USettings.instance.SortMaterialMatchings();
+                        EditorUtility.SetDirty(ST2USettings.instance); // fixit - look into CreateSettingsWindowGUIScope
                     }
                 }
 
@@ -193,14 +197,14 @@ namespace SuperTiled2Unity.Editor
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("Add From Object Types Xml"))
                     {
-                        m_ST2USettings.AddObjectsToPrefabReplacements();
-                        EditorUtility.SetDirty(m_ST2USettings);
+                        ST2USettings.instance.AddObjectsToPrefabReplacements();
+                        EditorUtility.SetDirty(ST2USettings.instance);
                     }
 
                     if (GUILayout.Button("Sort Alphabetically"))
                     {
-                        m_ST2USettings.SortPrefabReplacements();
-                        EditorUtility.SetDirty(m_ST2USettings);
+                        ST2USettings.instance.SortPrefabReplacements();
+                        EditorUtility.SetDirty(ST2USettings.instance);
                     }
                 }
 
@@ -212,13 +216,13 @@ namespace SuperTiled2Unity.Editor
         {
             EditorGUILayout.LabelField("Collider Settings", EditorStyles.boldLabel);
 
-            SerializedProperty geoTypeProperty = m_S2TUSettingsObject.FindProperty("m_CollisionGeometryType");
+            SerializedProperty geoTypeProperty = m_SerializedObject.FindProperty("m_CollisionGeometryType");
             geoTypeProperty.intValue = (int)(CompositeCollider2D.GeometryType)EditorGUILayout.EnumPopup(SettingsContent.m_CollisionGeometryTypeContent, (CompositeCollider2D.GeometryType)geoTypeProperty.intValue);
 
             m_ShowLayerColors = EditorGUILayout.Foldout(m_ShowLayerColors, SettingsContent.m_LayerColorsContent);
             if (m_ShowLayerColors)
             {
-                SerializedProperty listProperty = m_S2TUSettingsObject.FindProperty("m_LayerColors");
+                SerializedProperty listProperty = m_SerializedObject.FindProperty("m_LayerColors");
 
                 using (new GuiScopedIndent())
                 {
@@ -241,15 +245,15 @@ namespace SuperTiled2Unity.Editor
 
         private void DoCustomPropertySettings()
         {
-            var xmlProperty = m_S2TUSettingsObject.FindProperty("m_ObjectTypesXml");
+            var xmlProperty = m_SerializedObject.FindProperty("m_ObjectTypesXml");
 
             EditorGUILayout.LabelField("Custom Property Settings", EditorStyles.boldLabel);
 
             EditorGUILayout.PropertyField(xmlProperty, SettingsContent.m_ObjectTypesXmlContent);
 
-            if (!string.IsNullOrEmpty(m_ST2USettings.ParseXmlError))
+            if (!string.IsNullOrEmpty(ST2USettings.instance.ParseXmlError))
             {
-                EditorGUILayout.HelpBox(m_ST2USettings.ParseXmlError, MessageType.Error);
+                EditorGUILayout.HelpBox(ST2USettings.instance.ParseXmlError, MessageType.Error);
             }
 
             EditorGUILayout.Space();
@@ -258,7 +262,7 @@ namespace SuperTiled2Unity.Editor
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Refresh"))
                 {
-                    ST2USettings.GetOrCreateST2USettings().RefreshCustomObjectTypes();
+                    ST2USettings.instance.RefreshCustomObjectTypes();
                 }
 
                 if (GUILayout.Button("View Custom Properties"))
@@ -368,18 +372,12 @@ namespace SuperTiled2Unity.Editor
         [SettingsProvider]
         public static SettingsProvider CreateCustomSettingsProvider()
         {
-            if (ST2USettings.GetOrCreateST2USettings())
+            var provider = new ST2USettingsProvider()
             {
-                var provider = new ST2USettingsProvider()
-                {
-                    keywords = GetSearchKeywordsFromGUIContentProperties<SettingsContent>()
-                };
+                keywords = GetSearchKeywordsFromGUIContentProperties<SettingsContent>()
+            };
 
-                return provider;
-            }
-
-            // Settings Asset doesn't exist yet; no need to display anything in the Settings window.
-            return null;
+            return provider;
         }
     }
 }

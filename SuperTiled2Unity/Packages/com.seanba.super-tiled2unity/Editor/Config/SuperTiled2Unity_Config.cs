@@ -10,19 +10,6 @@ namespace SuperTiled2Unity.Editor
         public const string Version = "1.10.7"; // fixit - how to get version of package in package.json?
         internal const string DefaultSettingsFileName = "ST2U Settings.asset";
 
-        public static ST2USettings CreateDefaultSettings()
-        {
-            var scriptPath = AssetDatabaseEx.GetFirstPathOfScriptAsset<SuperTiled2Unity_Config>();
-            var settingsPath = Path.GetDirectoryName(scriptPath);
-            settingsPath = Path.Combine(settingsPath, DefaultSettingsFileName).SanitizePath();
-
-            var settings = ScriptableObject.CreateInstance<ST2USettings>();
-            AssetDatabase.CreateAsset(settings, settingsPath);
-            AssetDatabase.SaveAssets();
-
-            return settings;
-        }
-
         public static string GetVersionError()
         {
             return string.Format("SuperTiled2Unity requires Unity 2020.3 or later. You are using {0}", Application.unityVersion);

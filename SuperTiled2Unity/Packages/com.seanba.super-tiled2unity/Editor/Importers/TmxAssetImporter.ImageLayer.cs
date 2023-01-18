@@ -35,7 +35,7 @@ namespace SuperTiled2Unity.Editor
                     // Create a sprite for the image
                     try
                     {
-                        var sprite = Sprite.Create(tex2d, new Rect(0, 0, tex2d.width, tex2d.height), new Vector2(0, 1.0f), SuperImportContext.Settings.PixelsPerUnit);
+                        var sprite = Sprite.Create(tex2d, new Rect(0, 0, tex2d.width, tex2d.height), new Vector2(0, 1.0f), ST2USettings.instance.PixelsPerUnit);
                         SuperImportContext.AddObjectToAsset("_sprite", sprite);
 
                         var renderer = goLayer.AddComponent<SpriteRenderer>();

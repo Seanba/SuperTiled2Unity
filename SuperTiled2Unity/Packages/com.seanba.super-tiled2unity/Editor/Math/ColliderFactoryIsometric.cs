@@ -52,7 +52,7 @@ namespace SuperTiled2Unity.Editor
         public override Collider2D MakeEllipse(GameObject go, float width, float height)
         {
             // Ellipses are always approximated with polygons in isometric maps
-            int count = ImportContext.Settings.EdgesPerEllipse;
+            int count = ST2USettings.instance.EdgesPerEllipse;
             float theta = ((float)Math.PI * 2.0f) / count;
 
             Vector2[] points = new Vector2[count];

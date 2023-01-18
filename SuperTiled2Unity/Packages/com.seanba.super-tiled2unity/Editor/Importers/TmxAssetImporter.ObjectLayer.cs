@@ -9,7 +9,7 @@ namespace SuperTiled2Unity.Editor
         {
             // Have our super object layer loader take care of things
             var loader = new SuperObjectLayerLoader(xObjectLayer);
-            loader.AnimationFramerate = SuperImportContext.Settings.AnimationFramerate;
+            loader.AnimationFramerate = ST2USettings.instance.AnimationFramerate;
             loader.ColliderFactory = CreateColliderFactory();
             loader.SuperMap = m_MapComponent;
             loader.Importer = this;

@@ -5,8 +5,6 @@ namespace SuperTiled2Unity.Editor
     [CustomEditor(typeof(SuperColliderComponent))]
     class SuperColliderComponentEditor : UnityEditor.Editor
     {
-        private static ST2USettings m_Settings;
-
         [DrawGizmo(GizmoType.InSelectionHierarchy)]
         private static void DrawHandles(SuperColliderComponent component, GizmoType gizmoType)
         {
@@ -21,27 +19,13 @@ namespace SuperTiled2Unity.Editor
                 SuperColliderComponent.GizmoDrawCommands.Remove(component);
             }
 
-            if (m_Settings == null)
+            if (component.m_PolygonShapes.Count > 0)
             {
-                m_Settings = ST2USettings.GetOrCreateST2USettings();
-
-                if (m_Settings == null)
-                {
-                    // If something goes wrong use some dummy settings
-                    m_Settings = CreateInstance<ST2USettings>();
-                }
+                ColliderGizmos.DrawColliderShapes(component);
             }
-
-            if (m_Settings != null)
+            else
             {
-                if (component.m_PolygonShapes.Count > 0)
-                {
-                    ColliderGizmos.DrawColliderShapes(component, m_Settings);
-                }
-                else
-                {
-                    ColliderGizmos.DrawColliders(component.gameObject, m_Settings);
-                }
+                ColliderGizmos.DrawColliders(component.gameObject);
             }
         }
     }

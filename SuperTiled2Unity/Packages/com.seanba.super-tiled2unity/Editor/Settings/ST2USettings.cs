@@ -8,12 +8,13 @@ using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
 {
-    public class ST2USettings : ScriptableObject
+    [FilePath("ProjectSettings/SuperTiled2Unity.asset", FilePathAttribute.Location.ProjectFolder)]
+    public class ST2USettings : ScriptableSingleton<ST2USettings>
     {
-        public const string ProjectSettingsPath = "Project/SuperTiled2Unity";
+        public const string ProjectSettingsPath = "Project/SuperTiled2Unity"; // fixit - is this needed?
 
-        [SerializeField]
-        private float m_PixelsPerUnit = 100.0f;
+        //[SerializeField]
+        public float m_PixelsPerUnit = 100.0f; // fixit - needs to be public?
         public float PixelsPerUnit
         {
             get => m_PixelsPerUnit;
@@ -100,19 +101,6 @@ namespace SuperTiled2Unity.Editor
 
         public float InversePPU => 1.0f / PixelsPerUnit;
 
-        internal static ST2USettings GetOrCreateST2USettings()
-        {
-            var settings = AssetDatabaseEx.LoadFirstAssetByFilterAndExtension<ST2USettings>("t: ST2USettings", "asset");
-            if (settings == null)
-            {
-                // This should only happen when we are first installing SuperTiled2Unity
-                // However, should our settings be deleted we would like them to be recreated
-                settings = SuperTiled2Unity_Config.CreateDefaultSettings();
-            }
-
-            return settings;
-        }
-
         // Invoke this to ensure that Xml Object Types are up-to-date
         // Our importers that depend on Object Types from tiled will want to call this early in their import process
         internal void RefreshCustomObjectTypes()
@@ -188,6 +176,18 @@ namespace SuperTiled2Unity.Editor
             }
 
             return null;
+        }
+
+        internal void SaveSettings()
+        {
+            Debug.Log($"fixit - saved to: {GetFilePath()}"); // fixit - this works
+            Save(true);
+        }
+
+        [MenuItem("SingletonTest/Modify")] // fixit - remove this when done testing
+        static void ModifyMySingletonState()
+        {
+            ST2USettings.instance.SaveSettings();
         }
     }
 }

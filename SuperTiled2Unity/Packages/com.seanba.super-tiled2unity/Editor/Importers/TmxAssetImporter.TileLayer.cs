@@ -131,7 +131,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             tilemap = go.AddComponent<Tilemap>();
-            tilemap.animationFrameRate = SuperImportContext.Settings.AnimationFramerate;
+            tilemap.animationFrameRate = ST2USettings.instance.AnimationFramerate;
             tilemap.tileAnchor = new Vector3(0, 0, 0);
 
             AddTilemapRendererComponent(go);
@@ -310,7 +310,7 @@ namespace SuperTiled2Unity.Editor
             if (!tile.m_AnimationSprites.IsEmpty())
             {
                 var tileAnimator = goTRS.AddComponent<TileObjectAnimator>();
-                tileAnimator.m_AnimationFramerate = SuperImportContext.Settings.AnimationFramerate;
+                tileAnimator.m_AnimationFramerate = ST2USettings.instance.AnimationFramerate;
                 tileAnimator.m_AnimationSprites = tile.m_AnimationSprites;
             }
 

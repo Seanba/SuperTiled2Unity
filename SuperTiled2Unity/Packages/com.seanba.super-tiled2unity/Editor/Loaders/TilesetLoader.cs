@@ -256,7 +256,7 @@ namespace SuperTiled2Unity.Editor
 
         private void ProcessAnimationElement(SuperTile tile, XElement xAnimation)
         {
-            var fps = m_Importer.SuperImportContext.Settings.AnimationFramerate;
+            var fps = ST2USettings.instance.AnimationFramerate;
             var animations = new AnimationBuilder(fps);
 
             foreach (var xFrame in xAnimation.Elements("frame"))
@@ -343,7 +343,7 @@ namespace SuperTiled2Unity.Editor
                         }
                         else
                         {
-                            collision.MakePointsFromEllipse(m_Importer.SuperImportContext.Settings.EdgesPerEllipse);
+                            collision.MakePointsFromEllipse(ST2USettings.instance.EdgesPerEllipse);
                         }
                     }
                     else if (xObject.Element("point") != null)

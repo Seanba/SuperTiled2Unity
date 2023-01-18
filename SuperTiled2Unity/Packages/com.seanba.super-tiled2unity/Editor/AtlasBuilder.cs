@@ -218,7 +218,7 @@ namespace SuperTiled2Unity.Editor
                 string tileName = string.Format("Tile_{0}_{1}", m_TilesetScript.name, t.Index + 1);
 
                 // Create the sprite with the anchor at (0, 0)
-                var sprite = Sprite.Create(t.PreferredTexture2D, t.PreferredRectangle, Vector2.zero, m_TiledAssetImporter.SuperImportContext.Settings.PixelsPerUnit);
+                var sprite = Sprite.Create(t.PreferredTexture2D, t.PreferredRectangle, Vector2.zero, ST2USettings.instance.PixelsPerUnit);
 
                 sprite.name = spriteName;
                 sprite.hideFlags = HideFlags.HideInHierarchy;

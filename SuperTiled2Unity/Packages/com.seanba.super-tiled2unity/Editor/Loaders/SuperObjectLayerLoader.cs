@@ -223,7 +223,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             // Construct the game objects for displaying a single tile
-            var inversePPU = Importer.SuperImportContext.Settings.InversePPU;
+            var inversePPU = ST2USettings.instance.InversePPU;
             bool flip_h = tileId.HasHorizontalFlip;
             bool flip_v = tileId.HasVerticalFlip;
 

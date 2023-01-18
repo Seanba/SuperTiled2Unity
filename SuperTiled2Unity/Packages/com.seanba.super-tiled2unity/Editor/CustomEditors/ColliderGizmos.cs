@@ -11,69 +11,69 @@ namespace SuperTiled2Unity.Editor
         private const float FillOpcacity = 0.25f;
         private const float LineThickness = 5.0f;
 
-        public static void DrawColliderShapes(SuperColliderComponent collider, ST2USettings settings)
+        public static void DrawColliderShapes(SuperColliderComponent collider)
         {
             foreach (var shape in collider.m_PolygonShapes)
             {
-                FillShape(collider.gameObject, shape.m_Points, settings);
+                FillShape(collider.gameObject, shape.m_Points);
             }
 
             foreach (var shape in collider.m_OutlineShapes)
             {
-                OutlineShape(collider.gameObject, shape.m_Points, settings);
+                OutlineShape(collider.gameObject, shape.m_Points);
             }
         }
 
-        public static void DrawColliders(GameObject go, ST2USettings settings)
+        public static void DrawColliders(GameObject go)
         {
             foreach (var polygon in go.GetComponentsInChildren<PolygonCollider2D>())
             {
-                DrawPolygon(polygon, settings);
+                DrawPolygon(polygon);
             }
 
             foreach (var box in go.GetComponentsInChildren<BoxCollider2D>())
             {
-                DrawBox(box, settings);
+                DrawBox(box);
             }
 
             foreach (var circle in go.GetComponentsInChildren<CircleCollider2D>())
             {
-                DrawCircle(circle, settings);
+                DrawCircle(circle);
             }
 
             foreach (var edge in go.GetComponentsInChildren<EdgeCollider2D>())
             {
-                DrawLines(edge, settings);
+                DrawLines(edge);
             }
         }
 
-        private static void FillShape(GameObject go, Vector2[] points, ST2USettings settings)
+        private static void FillShape(GameObject go, Vector2[] points)
         {
             CheckHelpers();
 
             var transformed = points.Select(pt => go.transform.TransformPoint(pt)).ToArray();
-            DrawAsConvexPolygonFill(go, transformed, settings);
+            DrawAsConvexPolygonFill(go, transformed);
         }
 
-        private static void OutlineShape(GameObject go, Vector2[] points, ST2USettings settings)
+        private static void OutlineShape(GameObject go, Vector2[] points)
         {
             CheckHelpers();
 
             var transformed = points.Select(pt => go.transform.TransformPoint(pt)).ToArray();
-            DrawAsConvexPolygonOutline(go, transformed, settings);
+            DrawAsConvexPolygonOutline(go, transformed);
         }
 
-        private static void DrawPolygon(PolygonCollider2D polygon, ST2USettings settings)
+        private static void DrawPolygon(PolygonCollider2D polygon)
         {
             CheckHelpers();
 
             // Note: we are assuming the PolygonCollider2D is convex when using this function
             Vector3 offset = polygon.transform.TransformVector(polygon.offset);
             var points = polygon.GetPath(0).Select(pt => polygon.transform.TransformPoint(pt) + offset).ToArray();
-            DrawAsConvexPolygon(polygon.gameObject, points, settings);
+            DrawAsConvexPolygon(polygon.gameObject, points);
         }
 
-        private static void DrawBox(BoxCollider2D box, ST2USettings settings)
+        private static void DrawBox(BoxCollider2D box)
         {
             CheckHelpers();
             Vector3 offset = box.offset;
@@ -87,10 +87,10 @@ namespace SuperTiled2Unity.Editor
             };
 
             var points = corners.Select(pt => box.transform.TransformPoint(pt)).ToArray();
-            DrawAsConvexPolygon(box.gameObject, points, settings);
+            DrawAsConvexPolygon(box.gameObject, points);
         }
 
-        private static void DrawCircle(CircleCollider2D circle, ST2USettings settings)
+        private static void DrawCircle(CircleCollider2D circle)
         {
             CheckHelpers();
             const int count = 50;
@@ -107,15 +107,15 @@ namespace SuperTiled2Unity.Editor
             }
 
             points = points.Select(pt => circle.transform.TransformPoint(pt)).ToArray();
-            DrawAsConvexPolygon(circle.gameObject, points, settings);
+            DrawAsConvexPolygon(circle.gameObject, points);
         }
 
-        private static void DrawLines(EdgeCollider2D edge, ST2USettings settings)
+        private static void DrawLines(EdgeCollider2D edge)
         {
             Vector3 offset = edge.transform.TransformVector(edge.offset);
             var points = edge.points.Select(pt => edge.transform.TransformPoint(pt) + offset).ToArray();
 
-            Handles.color = GetColorFromObject(edge.gameObject, settings);
+            Handles.color = GetColorFromObject(edge.gameObject);
             Handles.DrawAAPolyLine(LineTexture, LineThickness, points);
         }
 
@@ -129,25 +129,25 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private static void DrawAsConvexPolygonOutline(GameObject go, Vector3[] points, ST2USettings settings)
+        private static void DrawAsConvexPolygonOutline(GameObject go, Vector3[] points)
         {
-            var color = GetColorFromObject(go, settings);
+            var color = GetColorFromObject(go);
             Handles.color = color;
             Handles.DrawAAPolyLine(LineTexture, LineThickness, points);
             Handles.DrawAAPolyLine(LineTexture, LineThickness, points[0], points[points.Length - 1]);
         }
 
-        private static void DrawAsConvexPolygonFill(GameObject go, Vector3[] points, ST2USettings settings)
+        private static void DrawAsConvexPolygonFill(GameObject go, Vector3[] points)
         {
-            var color = GetColorFromObject(go, settings);
+            var color = GetColorFromObject(go);
             color.a *= FillOpcacity;
             Handles.color = color;
             Handles.DrawAAConvexPolygon(points);
         }
 
-        private static void DrawAsConvexPolygon(GameObject go, Vector3[] points, ST2USettings settings)
+        private static void DrawAsConvexPolygon(GameObject go, Vector3[] points)
         {
-            var color = GetColorFromObject(go, settings);
+            var color = GetColorFromObject(go);
             Handles.color = color;
             Handles.DrawAAPolyLine(LineTexture, LineThickness, points);
             Handles.DrawAAPolyLine(LineTexture, LineThickness, points[0], points[points.Length - 1]);
@@ -157,14 +157,14 @@ namespace SuperTiled2Unity.Editor
             Handles.DrawAAConvexPolygon(points);
         }
 
-        private static Color GetColorFromObject(GameObject go, ST2USettings settings)
+        private static Color GetColorFromObject(GameObject go)
         {
             // Tile layers go first
             var tileLayer = go.GetComponentInParent<SuperTileLayer>();
             if (tileLayer != null)
             {
                 // Use the color of our object in the layer
-                var color = settings.LayerColors.ElementAtOrDefault(go.layer);
+                var color = ST2USettings.instance.LayerColors.ElementAtOrDefault(go.layer);
                 color.a = tileLayer.CalculateOpacity();
                 return color;
             }
@@ -180,7 +180,7 @@ namespace SuperTiled2Unity.Editor
                 if (superObject != null)
                 {
                     CustomObjectType objectType;
-                    if (settings.CustomObjectTypes.TryGetCustomObjectType(superObject.m_Type, out objectType))
+                    if (ST2USettings.instance.CustomObjectTypes.TryGetCustomObjectType(superObject.m_Type, out objectType))
                     {
                         color = objectType.m_Color;
                     }

@@ -12,7 +12,7 @@ namespace SuperTiled2Unity.Editor
 
         public static void ShowCustomPropertiesWindow()
         {
-            ST2USettings.GetOrCreateST2USettings().RefreshCustomObjectTypes();
+            ST2USettings.instance.RefreshCustomObjectTypes();
             GetWindow<CustomPropertiesWindow>("SuperTiled2Unity Custom Properties Viewer");
         }
 
@@ -30,8 +30,7 @@ namespace SuperTiled2Unity.Editor
         {
             EditorGUILayout.LabelField(m_TitleContent, EditorStyles.boldLabel);
 
-            var settings = ST2USettings.GetOrCreateST2USettings();
-            foreach (var obj in settings.CustomObjectTypes)
+            foreach (var obj in ST2USettings.instance.CustomObjectTypes)
             {
                 EditorGUILayout.Space();
                 OnGUICustomObjectType(obj);
@@ -80,7 +79,7 @@ namespace SuperTiled2Unity.Editor
 
                 if (GUILayout.Button("Refresh Properties"))
                 {
-                    ST2USettings.GetOrCreateST2USettings().RefreshCustomObjectTypes();
+                    ST2USettings.instance.RefreshCustomObjectTypes();
                 }
 
                 if (GUILayout.Button("Close Custom Properties Viewer"))

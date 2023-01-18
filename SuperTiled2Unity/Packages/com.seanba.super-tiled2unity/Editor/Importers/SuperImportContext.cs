@@ -13,13 +13,10 @@ namespace SuperTiled2Unity.Editor
         private readonly AssetImportContext m_Context;
         private bool? m_IsTriggerOverride;
 
-        public SuperImportContext(AssetImportContext context, ST2USettings settings)
+        public SuperImportContext(AssetImportContext context)
         {
             m_Context = context;
-            Settings = settings;
         }
-
-        public ST2USettings Settings { get; }
 
         public LayerIgnoreMode LayerIgnoreMode { get; private set; }
 
@@ -52,7 +49,7 @@ namespace SuperTiled2Unity.Editor
         // Our Unity projects have +y going up and points are transformed by a Pixels Per Unity constant
         public float MakeScalar(float s)
         {
-            return s * Settings.InversePPU;
+            return s * ST2USettings.instance.InversePPU;
         }
 
         // Does not negate y
@@ -63,7 +60,7 @@ namespace SuperTiled2Unity.Editor
 
         public Vector2 MakeSize(Vector2 size)
         {
-            return size * Settings.InversePPU;
+            return size * ST2USettings.instance.InversePPU;
         }
 
         public Vector2 MakePoint(float x, float y)
@@ -75,7 +72,7 @@ namespace SuperTiled2Unity.Editor
         {
             pt.x *= NegateY.x;
             pt.y *= NegateY.y;
-            return pt * Settings.InversePPU;
+            return pt * ST2USettings.instance.InversePPU;
         }
 
         // Applies PPU multiple but does not invert Y
@@ -86,7 +83,7 @@ namespace SuperTiled2Unity.Editor
 
         public Vector2 MakePointPPU(Vector2 pt)
         {
-            return pt * Settings.InversePPU;
+            return pt * ST2USettings.instance.InversePPU;
         }
 
         public Vector2[] MakePoints(Vector2[] points)

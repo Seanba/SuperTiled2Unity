@@ -400,7 +400,7 @@ namespace SuperTiled2Unity.Editor
 
             foreach (var so in supers)
             {
-                var prefab = SuperImportContext.Settings.GetPrefabReplacement(so.m_Type);
+                var prefab = ST2USettings.instance.GetPrefabReplacement(so.m_Type);
                 if (prefab != null)
                 {
                     // Replace the super object with the instantiated prefab
