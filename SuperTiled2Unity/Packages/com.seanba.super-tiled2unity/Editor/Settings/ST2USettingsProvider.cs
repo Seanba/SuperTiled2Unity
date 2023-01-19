@@ -114,35 +114,38 @@ namespace SuperTiled2Unity.Editor
 
         private void DoGuiSettings()
         {
-            // fixit - why readonly?
-            //var ppuProperty = m_S2TUSettingsObject.FindProperty("m_PixelsPerUnit");
-            var ppuProperty = m_SerializedObject.FindProperty(nameof(ST2USettings.m_PixelsPerUnit));
-
-            var edgesProperty = m_SerializedObject.FindProperty("m_EdgesPerEllipse");
-            var materialProperty = m_SerializedObject.FindProperty("m_DefaultMaterial");
+            // fixit - wrap being/end the right way?
             var animationPrpoerty = m_SerializedObject.FindProperty("m_AnimationFramerate");
 
             EditorGUILayout.LabelField("Default Import Settings", EditorStyles.boldLabel);
 
             // Pixels Per Unit
-            EditorGUI.BeginChangeCheck();
-            EditorGUILayout.PropertyField(ppuProperty, SettingsContent.m_PixelsPerUnitContent);
-            if (EditorGUI.EndChangeCheck())
             {
-                ppuProperty.floatValue = Mathf.Clamp(ppuProperty.floatValue, 0.01f, 2048);
+                var ppuProperty = m_SerializedObject.FindProperty("m_PixelsPerUnit");
+                ppuProperty.floatValue = EditorGUILayout.FloatField(SettingsContent.m_PixelsPerUnitContent, ppuProperty.floatValue);
+                ppuProperty.floatValue = Mathf.Clamp(ppuProperty.floatValue, 0.001f, 2048);
             }
 
             // Edges Per Ellipse
-            EditorGUI.BeginChangeCheck();
-            EditorGUILayout.PropertyField(edgesProperty, SettingsContent.m_EdgesPerEllipseContent);
-            if (EditorGUI.EndChangeCheck())
             {
-                edgesProperty.intValue = Mathf.Clamp(edgesProperty.intValue, 6, 256);
+                var edgesProperty = m_SerializedObject.FindProperty("m_EdgesPerEllipse");
+                EditorGUI.BeginChangeCheck();
+                edgesProperty.intValue = EditorGUILayout.IntField(SettingsContent.m_EdgesPerEllipseContent, edgesProperty.intValue);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    edgesProperty.intValue = Mathf.Clamp(edgesProperty.intValue, 6, 256);
+                }
             }
 
             // Default Material
-            EditorGUILayout.PropertyField(materialProperty, SettingsContent.m_DefaultMaterialContent);
-            EditorGUILayout.Space();
+            {
+                var materialProperty = m_SerializedObject.FindProperty("m_DefaultMaterial");
+
+                //public static UnityEngine.Object ObjectField(GUIContent label, UnityEngine.Object obj, Type objType, bool allowSceneObjects, params GUILayoutOption[] options);
+                materialProperty.objectReferenceValue = EditorGUILayout.ObjectField(SettingsContent.m_DefaultMaterialContent, materialProperty.objectReferenceValue, typeof(Material), false);
+                EditorGUILayout.Space();
+            }
+
 
             DoGuiMaterialMatchings();
             EditorGUILayout.Space();

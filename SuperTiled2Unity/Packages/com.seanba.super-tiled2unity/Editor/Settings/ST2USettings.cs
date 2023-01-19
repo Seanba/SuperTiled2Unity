@@ -13,8 +13,8 @@ namespace SuperTiled2Unity.Editor
     {
         public const string ProjectSettingsPath = "Project/SuperTiled2Unity"; // fixit - is this needed?
 
-        //[SerializeField]
-        public float m_PixelsPerUnit = 100.0f; // fixit - needs to be public?
+        [SerializeField]
+        private float m_PixelsPerUnit = 100.0f; // fixit - needs to be public?
         public float PixelsPerUnit
         {
             get => m_PixelsPerUnit;
