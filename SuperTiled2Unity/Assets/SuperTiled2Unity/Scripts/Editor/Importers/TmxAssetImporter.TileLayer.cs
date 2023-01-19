@@ -272,6 +272,7 @@ namespace SuperTiled2Unity.Editor
                 var tileObject = goTRS.AddComponent<SuperObject>();
                 tileObject.m_Id = m_NextTileAsObjectId++;
                 tileObject.m_TiledName = string.Format("AsObject_{0}", tileObject.m_Id);
+                tileObject.m_Type = tile.m_Type;
                 tileObject.m_X = pos3.x * superMap.m_TileWidth;
                 tileObject.m_Y = -pos3.y * superMap.m_TileHeight;
                 tileObject.m_Width = tile.m_Width;
