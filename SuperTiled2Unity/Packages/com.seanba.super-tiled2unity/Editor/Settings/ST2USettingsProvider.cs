@@ -114,7 +114,7 @@ namespace SuperTiled2Unity.Editor
 
         private void DoGuiSettings()
         {
-            // fixit - wrap being/end the right way?
+            // fixit - wrap being/end the right way? Maybe just one big one that we save on?
             var animationPrpoerty = m_SerializedObject.FindProperty("m_AnimationFramerate");
 
             EditorGUILayout.LabelField("Default Import Settings", EditorStyles.boldLabel);
@@ -154,7 +154,7 @@ namespace SuperTiled2Unity.Editor
 
             // Animation Framerate
             EditorGUI.BeginChangeCheck();
-            EditorGUILayout.PropertyField(animationPrpoerty, SettingsContent.m_AnimationFramerateContent);
+            animationPrpoerty.intValue = EditorGUILayout.IntField(SettingsContent.m_AnimationFramerateContent, animationPrpoerty.intValue);
             if (EditorGUI.EndChangeCheck())
             {
                 animationPrpoerty.intValue = Mathf.Clamp(animationPrpoerty.intValue, 1, 125);
@@ -178,7 +178,7 @@ namespace SuperTiled2Unity.Editor
                     if (GUILayout.Button("Sort Alphabetically"))
                     {
                         ST2USettings.instance.SortMaterialMatchings();
-                        EditorUtility.SetDirty(ST2USettings.instance); // fixit - look into CreateSettingsWindowGUIScope
+                        EditorUtility.SetDirty(ST2USettings.instance);
                     }
                 }
 
@@ -313,8 +313,8 @@ namespace SuperTiled2Unity.Editor
 
                 rect.y += 2;
 
-                EditorGUI.PropertyField(new Rect(rect.x, rect.y, fieldWidth, EditorGUIUtility.singleLineHeight), nameProperty, GUIContent.none);
-                EditorGUI.PropertyField(new Rect(rect.x + fieldWidth + kMargin, rect.y, fieldWidth, EditorGUIUtility.singleLineHeight), materialProperty, GUIContent.none);
+                nameProperty.stringValue = EditorGUI.TextField(new Rect(rect.x, rect.y, fieldWidth, EditorGUIUtility.singleLineHeight), nameProperty.stringValue);
+                materialProperty.objectReferenceValue = EditorGUI.ObjectField(new Rect(rect.x + fieldWidth + kMargin, rect.y, fieldWidth, EditorGUIUtility.singleLineHeight), GUIContent.none, materialProperty.objectReferenceValue, typeof(Material), false);
             }
         }
 
