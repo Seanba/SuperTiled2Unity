@@ -11,8 +11,6 @@ namespace SuperTiled2Unity.Editor
     [FilePath("ProjectSettings/SuperTiled2Unity.asset", FilePathAttribute.Location.ProjectFolder)]
     public class ST2USettings : ScriptableSingleton<ST2USettings>
     {
-        public const string ProjectSettingsPath = "Project/SuperTiled2Unity"; // fixit - is this needed?
-
         [SerializeField]
         private float m_PixelsPerUnit = 100.0f;
         public float PixelsPerUnit
@@ -180,14 +178,7 @@ namespace SuperTiled2Unity.Editor
 
         internal void SaveSettings()
         {
-            Debug.Log($"fixit - saved to: {GetFilePath()}"); // fixit - this works
             Save(true);
-        }
-
-        [MenuItem("SingletonTest/Modify")] // fixit - remove this when done testing
-        static void ModifyMySingletonState()
-        {
-            ST2USettings.instance.SaveSettings();
         }
     }
 }

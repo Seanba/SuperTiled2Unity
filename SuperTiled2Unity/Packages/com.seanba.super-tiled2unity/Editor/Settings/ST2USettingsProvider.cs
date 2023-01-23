@@ -7,6 +7,8 @@ namespace SuperTiled2Unity.Editor
 {
     public class ST2USettingsProvider : SettingsProvider
     {
+        private const string k_ProjectSettingsPath = "Project/SuperTiled2Unity";
+
         private SerializedObject m_SerializedObject;
         private ReorderableList m_MaterialMatchingsList;
         private ReorderableList m_PrefabReplacementList;
@@ -29,7 +31,7 @@ namespace SuperTiled2Unity.Editor
             public static readonly GUIContent m_ApplyDefaultSettingsContent = new GUIContent("Apply Default Settings", "Default Import Settings will be applied to every ST2U that is imported. Beware!");
         }
 
-        public ST2USettingsProvider() : base(ST2USettings.ProjectSettingsPath, SettingsScope.Project)
+        public ST2USettingsProvider() : base(k_ProjectSettingsPath, SettingsScope.Project)
         {
         }
 

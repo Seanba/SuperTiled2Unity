@@ -171,7 +171,7 @@ namespace SuperTiled2Unity.Editor
         {
             ST2USettings.instance.RefreshCustomObjectTypes();
 
-            // fixit - you must not copy a singleton like this!
+            // fixit - you must not copy a singleton like this! This whole way to overwriting settings was stupid anyways.
             // Create a copy of our settings that we can override based on importer settings
             // investigate furter and temporarily set the values if you need with a using pattern
             // figure out what I'm really trying to do here and fix it
@@ -186,7 +186,7 @@ namespace SuperTiled2Unity.Editor
             //    m_EdgesPerEllipse = settings.EdgesPerEllipse;
             //}
 
-            //settings.PixelsPerUnit = m_PixelsPerUnit; // fixit - nope! Don't like it
+            //settings.PixelsPerUnit = m_PixelsPerUnit;
             //settings.EdgesPerEllipse = m_EdgesPerEllipse;
 
             SuperImportContext = new SuperImportContext(ctx);
