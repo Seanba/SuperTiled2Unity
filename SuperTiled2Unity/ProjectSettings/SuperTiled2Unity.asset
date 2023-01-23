@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff72ddc2da234e244a8e96eb44e4c03d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PixelsPerUnit: 1
+  m_PixelsPerUnit: 100
   m_EdgesPerEllipse: 32
   m_AnimationFramerate: 20
   m_DefaultMaterial: {fileID: 0}
@@ -27,9 +27,9 @@ MonoBehaviour:
   m_LayerColors:
   - {r: 0.27450982, g: 0.50980395, b: 0.7058824, a: 1}
   - {r: 1, g: 0.3882353, b: 0.2784314, a: 1}
-  - {r: 0.9411765, g: 0.972549, b: 1, a: 1}
+  - {r: 0.02114594, g: 1, b: 0, a: 1}
   - {r: 0.5764706, g: 0.4392157, b: 0.85882354, a: 1}
-  - {r: 0.6901961, g: 0.8784314, b: 0.9019608, a: 1}
+  - {r: 0.74297935, g: 0.74509805, b: 0.3137255, a: 1}
   - {r: 0.56078434, g: 0.7372549, b: 0.54509807, a: 1}
   - {r: 0.9411765, g: 0.9019608, b: 0.54901963, a: 1}
   - {r: 0.8039216, g: 0.36078432, b: 0.36078432, a: 1}

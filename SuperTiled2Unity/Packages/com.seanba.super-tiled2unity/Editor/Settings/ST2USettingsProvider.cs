@@ -5,8 +5,6 @@ using UnityEngine.UIElements;
 
 namespace SuperTiled2Unity.Editor
 {
-    // fixit - why are the settings readonly?
-    // see this: https://www.listechblog.com/2022/02/use-settingsprovider-to-save-and-load-settings-in-unity-project-settings-or-preferences-window
     public class ST2USettingsProvider : SettingsProvider
     {
         private SerializedObject m_SerializedObject;
@@ -64,6 +62,7 @@ namespace SuperTiled2Unity.Editor
             EditorGUIUtility.labelWidth = 200;
 
             m_SerializedObject.Update();
+            EditorGUI.BeginChangeCheck();
 
             using (new GuiScopedIndent())
             {
@@ -91,9 +90,13 @@ namespace SuperTiled2Unity.Editor
                 DoGuiReimportAssets();
             }
 
-            if (m_SerializedObject.ApplyModifiedProperties())
+            if (EditorGUI.EndChangeCheck())
             {
-                ST2USettings.instance.RefreshCustomObjectTypes();
+                if (m_SerializedObject.ApplyModifiedProperties())
+                {
+                    ST2USettings.instance.RefreshCustomObjectTypes();
+                    ST2USettings.instance.SaveSettings();
+                }
             }
         }
 
@@ -103,7 +106,7 @@ namespace SuperTiled2Unity.Editor
             var content = new GUIContent(tex, "Go to SuperTiled2Unity Documentation");
             if (GUILayout.Button(content, EditorStyles.helpBox))
             {
-                Application.OpenURL("https://supertiled2unity.readthedocs.io"); // fixit - use github docs
+                Application.OpenURL("https://github.com/Seanba/SuperTiled2Unity/wiki");
             }
         }
 
@@ -114,9 +117,6 @@ namespace SuperTiled2Unity.Editor
 
         private void DoGuiSettings()
         {
-            // fixit - wrap being/end the right way? Maybe just one big one that we save on?
-            var animationPrpoerty = m_SerializedObject.FindProperty("m_AnimationFramerate");
-
             EditorGUILayout.LabelField("Default Import Settings", EditorStyles.boldLabel);
 
             // Pixels Per Unit
@@ -129,38 +129,32 @@ namespace SuperTiled2Unity.Editor
             // Edges Per Ellipse
             {
                 var edgesProperty = m_SerializedObject.FindProperty("m_EdgesPerEllipse");
-                EditorGUI.BeginChangeCheck();
                 edgesProperty.intValue = EditorGUILayout.IntField(SettingsContent.m_EdgesPerEllipseContent, edgesProperty.intValue);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    edgesProperty.intValue = Mathf.Clamp(edgesProperty.intValue, 6, 256);
-                }
+                edgesProperty.intValue = Mathf.Clamp(edgesProperty.intValue, 6, 256);
             }
 
             // Default Material
             {
                 var materialProperty = m_SerializedObject.FindProperty("m_DefaultMaterial");
-
-                //public static UnityEngine.Object ObjectField(GUIContent label, UnityEngine.Object obj, Type objType, bool allowSceneObjects, params GUILayoutOption[] options);
                 materialProperty.objectReferenceValue = EditorGUILayout.ObjectField(SettingsContent.m_DefaultMaterialContent, materialProperty.objectReferenceValue, typeof(Material), false);
+                EditorGUILayout.Space();
+
+                DoGuiMaterialMatchings();
                 EditorGUILayout.Space();
             }
 
-
-            DoGuiMaterialMatchings();
-            EditorGUILayout.Space();
-
-            EditorGUILayout.LabelField("Animation Settings", EditorStyles.boldLabel);
-
-            // Animation Framerate
-            EditorGUI.BeginChangeCheck();
-            animationPrpoerty.intValue = EditorGUILayout.IntField(SettingsContent.m_AnimationFramerateContent, animationPrpoerty.intValue);
-            if (EditorGUI.EndChangeCheck())
+            // Animation settings
             {
-                animationPrpoerty.intValue = Mathf.Clamp(animationPrpoerty.intValue, 1, 125);
-            }
+                var animationPrpoerty = m_SerializedObject.FindProperty("m_AnimationFramerate");
 
-            EditorGUILayout.HelpBox("In frames-per-second. Note: You will need to reimport all your tilesets after making changes to the animation framerate for tiles.", MessageType.None);
+                EditorGUILayout.LabelField("Animation Settings", EditorStyles.boldLabel);
+
+                // Animation Framerate
+                animationPrpoerty.intValue = EditorGUILayout.IntField(SettingsContent.m_AnimationFramerateContent, animationPrpoerty.intValue);
+                animationPrpoerty.intValue = Mathf.Clamp(animationPrpoerty.intValue, 1, 125);
+
+                EditorGUILayout.HelpBox("In frames-per-second. Note: You will need to reimport all your tilesets after making changes to the animation framerate for tiles.", MessageType.None);
+            }
         }
 
         private void DoGuiMaterialMatchings()
@@ -240,7 +234,7 @@ namespace SuperTiled2Unity.Editor
                         // For each layer that is named give the user a change to modify its color
                         SerializedProperty indexProperty = listProperty.GetArrayElementAtIndex(i);
                         GUIContent indexPropertyContext = new GUIContent(layerName, string.Format("Select color for {0} tile layer colliders", layerName));
-                        EditorGUILayout.PropertyField(indexProperty, indexPropertyContext);
+                        indexProperty.colorValue = EditorGUILayout.ColorField(indexPropertyContext, indexProperty.colorValue);
                     }
                 }
             }
@@ -252,7 +246,8 @@ namespace SuperTiled2Unity.Editor
 
             EditorGUILayout.LabelField("Custom Property Settings", EditorStyles.boldLabel);
 
-            EditorGUILayout.PropertyField(xmlProperty, SettingsContent.m_ObjectTypesXmlContent);
+            // fixit - test this out with a real object types xml file
+            xmlProperty.objectReferenceValue = EditorGUILayout.ObjectField(SettingsContent.m_ObjectTypesXmlContent, xmlProperty.objectReferenceValue, typeof(TextAsset), false);
 
             if (!string.IsNullOrEmpty(ST2USettings.instance.ParseXmlError))
             {
@@ -331,8 +326,8 @@ namespace SuperTiled2Unity.Editor
 
                 rect.y += 2;
 
-                EditorGUI.PropertyField(new Rect(rect.x, rect.y, fieldWidth, EditorGUIUtility.singleLineHeight), nameProperty, GUIContent.none);
-                EditorGUI.PropertyField(new Rect(rect.x + fieldWidth + kMargin, rect.y, fieldWidth, EditorGUIUtility.singleLineHeight), prefabProperty, GUIContent.none);
+                nameProperty.stringValue = EditorGUI.TextField(new Rect(rect.x, rect.y, fieldWidth, EditorGUIUtility.singleLineHeight), nameProperty.stringValue);
+                prefabProperty.objectReferenceValue = EditorGUI.ObjectField(new Rect(rect.x + fieldWidth + kMargin, rect.y, fieldWidth, EditorGUIUtility.singleLineHeight), GUIContent.none, prefabProperty.objectReferenceValue, typeof(GameObject), false);
             }
         }
 
