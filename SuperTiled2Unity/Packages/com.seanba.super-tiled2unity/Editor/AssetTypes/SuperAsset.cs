@@ -11,7 +11,7 @@ namespace SuperTiled2Unity.Editor
         [SerializeField]
         private List<string> m_AssetDependencies = new List<string>();
 
-        public List<String> AssetDependencies => m_AssetDependencies;
+        public List<string> AssetDependencies => m_AssetDependencies;
 
         public void AddDependency(AssetImportContext context, string assetPath)
         {

@@ -12,24 +12,11 @@ namespace SuperTiled2Unity.Editor
         private SerializedObject m_SerializedObject;
         private ReorderableList m_MaterialMatchingsList;
         private ReorderableList m_PrefabReplacementList;
+
         private bool m_ShowMaterialMatchings;
         private bool m_ShowPrefabReplacements;
         private bool m_ShowLayerColors;
         private bool m_ApplyDefaultSettings;
-
-        public class SettingsContent
-        {
-            public static readonly GUIContent m_PixelsPerUnitContent = new GUIContent("Default Pixels Per Unit", "How many pixels in the sprite correspond to one unit in the world. (Default Setting)");
-            public static readonly GUIContent m_EdgesPerEllipseContent = new GUIContent("Default Edges Per Ellipse", "How many edges to use when appromixating ellipse/circle colliders. (Default Setting)");
-            public static readonly GUIContent m_AnimationFramerateContent = new GUIContent("Animation Framerate", "How many frames per second for tile animations.");
-            public static readonly GUIContent m_DefaultMaterialContent = new GUIContent("Default Material", "Set to the material you want to use for sprites and tiles imported by SuperTiled2Unity. Leave empy to use built-in sprite material.");
-            public static readonly GUIContent m_MaterialMatchingsContent = new GUIContent("Material Matchings", "Match these materials by Tiled Layer names.");
-            public static readonly GUIContent m_ObjectTypesXmlContent = new GUIContent("Object Types Xml", "Set to an Object Types Xml file exported from Tiled Object Type Editor.");
-            public static readonly GUIContent m_PrefabReplacmentsContent = new GUIContent("Prefab Replacements", "List of prefabs to replace Tiled Object Types during import.");
-            public static readonly GUIContent m_CollisionGeometryTypeContent = new GUIContent("Collision Geometry Type", "The type of geometry used by CompositeCollider2D components.");
-            public static readonly GUIContent m_LayerColorsContent = new GUIContent("Layer Colors", "These colors will be used for drawing colliders in your imported Tiled maps.");
-            public static readonly GUIContent m_ApplyDefaultSettingsContent = new GUIContent("Apply Default Settings", "Default Import Settings will be applied to every ST2U that is imported. Beware!");
-        }
 
         public ST2USettingsProvider() : base(k_ProjectSettingsPath, SettingsScope.Project)
         {
@@ -124,21 +111,21 @@ namespace SuperTiled2Unity.Editor
             // Pixels Per Unit
             {
                 var ppuProperty = m_SerializedObject.FindProperty("m_PixelsPerUnit");
-                ppuProperty.floatValue = EditorGUILayout.FloatField(SettingsContent.m_PixelsPerUnitContent, ppuProperty.floatValue);
+                ppuProperty.floatValue = EditorGUILayout.FloatField(SettingsContent.PixelsPerUnitContent, ppuProperty.floatValue);
                 ppuProperty.floatValue = Mathf.Clamp(ppuProperty.floatValue, 0.001f, 2048);
             }
 
             // Edges Per Ellipse
             {
                 var edgesProperty = m_SerializedObject.FindProperty("m_EdgesPerEllipse");
-                edgesProperty.intValue = EditorGUILayout.IntField(SettingsContent.m_EdgesPerEllipseContent, edgesProperty.intValue);
+                edgesProperty.intValue = EditorGUILayout.IntField(SettingsContent.EdgesPerEllipseContent, edgesProperty.intValue);
                 edgesProperty.intValue = Mathf.Clamp(edgesProperty.intValue, 6, 256);
             }
 
             // Default Material
             {
                 var materialProperty = m_SerializedObject.FindProperty("m_DefaultMaterial");
-                materialProperty.objectReferenceValue = EditorGUILayout.ObjectField(SettingsContent.m_DefaultMaterialContent, materialProperty.objectReferenceValue, typeof(Material), false);
+                materialProperty.objectReferenceValue = EditorGUILayout.ObjectField(SettingsContent.DefaultMaterialContent, materialProperty.objectReferenceValue, typeof(Material), false);
                 EditorGUILayout.Space();
 
                 DoGuiMaterialMatchings();
@@ -152,7 +139,7 @@ namespace SuperTiled2Unity.Editor
                 EditorGUILayout.LabelField("Animation Settings", EditorStyles.boldLabel);
 
                 // Animation Framerate
-                animationPrpoerty.intValue = EditorGUILayout.IntField(SettingsContent.m_AnimationFramerateContent, animationPrpoerty.intValue);
+                animationPrpoerty.intValue = EditorGUILayout.IntField(SettingsContent.AnimationFramerateContent, animationPrpoerty.intValue);
                 animationPrpoerty.intValue = Mathf.Clamp(animationPrpoerty.intValue, 1, 125);
 
                 EditorGUILayout.HelpBox("In frames-per-second. Note: You will need to reimport all your tilesets after making changes to the animation framerate for tiles.", MessageType.None);
@@ -163,7 +150,7 @@ namespace SuperTiled2Unity.Editor
         {
             EditorGUILayout.LabelField("Material Matchings", EditorStyles.boldLabel);
 
-            m_ShowMaterialMatchings = EditorGUILayout.Foldout(m_ShowMaterialMatchings, SettingsContent.m_MaterialMatchingsContent);
+            m_ShowMaterialMatchings = EditorGUILayout.Foldout(m_ShowMaterialMatchings, SettingsContent.MaterialMatchingsContent);
             if (m_ShowMaterialMatchings)
             {
                 m_MaterialMatchingsList.DoLayoutList();
@@ -186,7 +173,7 @@ namespace SuperTiled2Unity.Editor
         {
             EditorGUILayout.LabelField("Prefab Settings", EditorStyles.boldLabel);
 
-            m_ShowPrefabReplacements = EditorGUILayout.Foldout(m_ShowPrefabReplacements, SettingsContent.m_PrefabReplacmentsContent);
+            m_ShowPrefabReplacements = EditorGUILayout.Foldout(m_ShowPrefabReplacements, SettingsContent.PrefabReplacmentsContent);
             if (m_ShowPrefabReplacements)
             {
                 m_PrefabReplacementList.DoLayoutList();
@@ -216,9 +203,9 @@ namespace SuperTiled2Unity.Editor
             EditorGUILayout.LabelField("Collider Settings", EditorStyles.boldLabel);
 
             SerializedProperty geoTypeProperty = m_SerializedObject.FindProperty("m_CollisionGeometryType");
-            geoTypeProperty.intValue = (int)(CompositeCollider2D.GeometryType)EditorGUILayout.EnumPopup(SettingsContent.m_CollisionGeometryTypeContent, (CompositeCollider2D.GeometryType)geoTypeProperty.intValue);
+            geoTypeProperty.intValue = (int)(CompositeCollider2D.GeometryType)EditorGUILayout.EnumPopup(SettingsContent.CollisionGeometryTypeContent, (CompositeCollider2D.GeometryType)geoTypeProperty.intValue);
 
-            m_ShowLayerColors = EditorGUILayout.Foldout(m_ShowLayerColors, SettingsContent.m_LayerColorsContent);
+            m_ShowLayerColors = EditorGUILayout.Foldout(m_ShowLayerColors, SettingsContent.LayerColorsContent);
             if (m_ShowLayerColors)
             {
                 SerializedProperty listProperty = m_SerializedObject.FindProperty("m_LayerColors");
@@ -249,7 +236,7 @@ namespace SuperTiled2Unity.Editor
             EditorGUILayout.LabelField("Custom Property Settings", EditorStyles.boldLabel);
 
             // fixit - test this out with a real object types xml file
-            xmlProperty.objectReferenceValue = EditorGUILayout.ObjectField(SettingsContent.m_ObjectTypesXmlContent, xmlProperty.objectReferenceValue, typeof(TextAsset), false);
+            xmlProperty.objectReferenceValue = EditorGUILayout.ObjectField(SettingsContent.ObjectTypesXmlContent, xmlProperty.objectReferenceValue, typeof(TextAsset), false);
 
             if (!string.IsNullOrEmpty(ST2USettings.instance.ParseXmlError))
             {
@@ -284,7 +271,7 @@ namespace SuperTiled2Unity.Editor
             using (new GUILayout.HorizontalScope())
             {
                 GUILayout.FlexibleSpace();
-                m_ApplyDefaultSettings = GUILayout.Toggle(m_ApplyDefaultSettings, SettingsContent.m_ApplyDefaultSettingsContent);
+                m_ApplyDefaultSettings = GUILayout.Toggle(m_ApplyDefaultSettings, SettingsContent.ApplyDefaultSettingsContent);
             }
 
             using (new GUILayout.HorizontalScope())
@@ -378,6 +365,20 @@ namespace SuperTiled2Unity.Editor
             };
 
             return provider;
+        }
+
+        private class SettingsContent
+        {
+            public static readonly GUIContent PixelsPerUnitContent = new GUIContent("Default Pixels Per Unit", "How many pixels in the sprite correspond to one unit in the world. (Default Setting)");
+            public static readonly GUIContent EdgesPerEllipseContent = new GUIContent("Default Edges Per Ellipse", "How many edges to use when appromixating ellipse/circle colliders. (Default Setting)");
+            public static readonly GUIContent AnimationFramerateContent = new GUIContent("Animation Framerate", "How many frames per second for tile animations.");
+            public static readonly GUIContent DefaultMaterialContent = new GUIContent("Default Material", "Set to the material you want to use for sprites and tiles imported by SuperTiled2Unity. Leave empy to use built-in sprite material.");
+            public static readonly GUIContent MaterialMatchingsContent = new GUIContent("Material Matchings", "Match these materials by Tiled Layer names.");
+            public static readonly GUIContent ObjectTypesXmlContent = new GUIContent("Object Types Xml", "Set to an Object Types Xml file exported from Tiled Object Type Editor.");
+            public static readonly GUIContent PrefabReplacmentsContent = new GUIContent("Prefab Replacements", "List of prefabs to replace Tiled Object Types during import.");
+            public static readonly GUIContent CollisionGeometryTypeContent = new GUIContent("Collision Geometry Type", "The type of geometry used by CompositeCollider2D components.");
+            public static readonly GUIContent LayerColorsContent = new GUIContent("Layer Colors", "These colors will be used for drawing colliders in your imported Tiled maps.");
+            public static readonly GUIContent ApplyDefaultSettingsContent = new GUIContent("Apply Default Settings", "Default Import Settings will be applied to every ST2U that is imported. Beware!");
         }
     }
 }

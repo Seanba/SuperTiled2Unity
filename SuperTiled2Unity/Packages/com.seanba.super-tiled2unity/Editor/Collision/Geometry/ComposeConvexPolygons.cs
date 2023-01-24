@@ -8,17 +8,17 @@ namespace SuperTiled2Unity.Editor.Geometry
     // We remove shared edges along triangles were we can using the Hertel-Mehlhorn Algorithm
     public class ComposeConvexPolygons
     {
-        public PolygonEdgeGroup PolygonEdgeGroup { get; private set; }
+        public PolygonEdgeGroup PolygonEdgeGroup { get; }
         public List<Vector2[]> ConvexPolygons { get; private set; }
 
         public ComposeConvexPolygons()
         {
-            this.PolygonEdgeGroup = new PolygonEdgeGroup();
+            PolygonEdgeGroup = new PolygonEdgeGroup();
         }
 
         public List<Vector2[]> Compose(List<Vector2[]> triangles)
         {
-            this.PolygonEdgeGroup.Initialize(triangles);
+            PolygonEdgeGroup.Initialize(triangles);
             CombinePolygons();
             return this.ConvexPolygons;
         }
@@ -27,7 +27,7 @@ namespace SuperTiled2Unity.Editor.Geometry
         {
             // Before we start merging polygons keep a list of all the ones we have
             List<CompositionPolygon> convexPolygons = new List<CompositionPolygon>();
-            foreach (var edge in this.PolygonEdgeGroup.PolygonEdges)
+            foreach (var edge in PolygonEdgeGroup.PolygonEdges)
             {
                 if (edge.MajorPartner != null)
                 {
@@ -42,11 +42,11 @@ namespace SuperTiled2Unity.Editor.Geometry
             convexPolygons = convexPolygons.Distinct().ToList();
 
             // Remove edges that don't have both partners since we can't possibly merge on them
-            this.PolygonEdgeGroup.PolygonEdges.RemoveAll(e => e.MinorPartner == null || e.MajorPartner == null);
+            PolygonEdgeGroup.PolygonEdges.RemoveAll(e => e.MinorPartner == null || e.MajorPartner == null);
 
             // Now try to remove edges by merging the polygons on both sides
             // We try to remove the longest edges first as, in general, it gives us solutions that avoid long splinters
-            var edgesByLength = this.PolygonEdgeGroup.PolygonEdges.OrderByDescending(edge => edge.Length2);
+            var edgesByLength = PolygonEdgeGroup.PolygonEdges.OrderByDescending(edge => edge.Length2);
 
             foreach (var edge in edgesByLength)
             {
@@ -59,7 +59,7 @@ namespace SuperTiled2Unity.Editor.Geometry
                 }
             }
 
-            this.ConvexPolygons = convexPolygons.Select(cp => cp.Points.ToArray()).ToList();
+            ConvexPolygons = convexPolygons.Select(cp => cp.Points.ToArray()).ToList();
         }
     }
 }
