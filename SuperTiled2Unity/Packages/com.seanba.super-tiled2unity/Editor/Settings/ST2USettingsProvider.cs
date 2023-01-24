@@ -7,7 +7,7 @@ namespace SuperTiled2Unity.Editor
 {
     public class ST2USettingsProvider : SettingsProvider
     {
-        private const string k_ProjectSettingsPath = "Project/SuperTiled2Unity";
+        private const string k_ProjectSettingsPath = "Project/Super Tiled2Unity";
 
         private SerializedObject m_SerializedObject;
         private ReorderableList m_MaterialMatchingsList;

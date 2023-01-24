@@ -114,7 +114,7 @@ namespace SuperTiled2Unity.Editor
         protected override void InternalOnImportAsset()
         {
             RendererSorter = new RendererSorter();
-            WrapImportContext(AssetImportContext);
+            SuperImportContext = new SuperImportContext(AssetImportContext);
         }
 
         protected override void InternalOnImportAssetCompleted()
@@ -167,29 +167,43 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private void WrapImportContext(AssetImportContext ctx)
+        protected override IDisposable ImportWrapping()
         {
+            // fixit - test out this stuff
             ST2USettings.instance.RefreshCustomObjectTypes();
 
-            // fixit - you must not copy a singleton like this! This whole way to overwriting settings was stupid anyways.
-            // Create a copy of our settings that we can override based on importer settings
-            // investigate furter and temporarily set the values if you need with a using pattern
-            // figure out what I'm really trying to do here and fix it
-            //var settings = Instantiate(ST2USettings.instance);
-            //if (m_PixelsPerUnit == 0)
-            //{
-            //    m_PixelsPerUnit = settings.PixelsPerUnit;
-            //}
+            if (m_PixelsPerUnit == 0)
+            {
+                m_PixelsPerUnit = ST2USettings.instance.PixelsPerUnit;
+            }
 
-            //if (m_EdgesPerEllipse == 0)
-            //{
-            //    m_EdgesPerEllipse = settings.EdgesPerEllipse;
-            //}
+            if (m_EdgesPerEllipse == 0)
+            {
+                m_EdgesPerEllipse = ST2USettings.instance.EdgesPerEllipse;
+            }
 
-            //settings.PixelsPerUnit = m_PixelsPerUnit;
-            //settings.EdgesPerEllipse = m_EdgesPerEllipse;
+            return new ScopedSettings(this);
+        }
 
-            SuperImportContext = new SuperImportContext(ctx);
+        private class ScopedSettings : IDisposable
+        {
+            private float m_PreviousPixelsPerUnity;
+            private int m_PreviousEdgesPerEllipse;
+
+            internal ScopedSettings(TiledAssetImporter importer)
+            {
+                m_PreviousPixelsPerUnity = ST2USettings.instance.PixelsPerUnit;
+                m_PreviousEdgesPerEllipse = ST2USettings.instance.EdgesPerEllipse;
+
+                ST2USettings.instance.PixelsPerUnit = importer.PixelsPerUnit;
+                ST2USettings.instance.EdgesPerEllipse = importer.m_EdgesPerEllipse;
+            }
+
+            public void Dispose()
+            {
+                ST2USettings.instance.PixelsPerUnit = m_PreviousPixelsPerUnity;
+                ST2USettings.instance.EdgesPerEllipse = m_PreviousEdgesPerEllipse;
+            }
         }
     }
 }

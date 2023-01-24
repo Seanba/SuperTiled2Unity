@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,8 +8,13 @@ namespace SuperTiled2Unity.Editor
 {
     internal class SuperTiled2Unity_Config
     {
-        public const string Version = "1.10.7"; // fixit - how to get version of package in package.json?
-        internal const string DefaultSettingsFileName = "ST2U Settings.asset";
+        public static readonly string Version;
+
+        static SuperTiled2Unity_Config()
+        {
+            var info = UnityEditor.PackageManager.PackageInfo.FindForAssembly(Assembly.GetExecutingAssembly());
+            Version = info?.version ?? "unknown";
+        }
 
         public static string GetVersionError()
         {
