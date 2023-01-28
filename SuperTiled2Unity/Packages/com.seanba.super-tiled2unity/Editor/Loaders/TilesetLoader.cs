@@ -12,11 +12,11 @@ namespace SuperTiled2Unity.Editor
     // This helper loader class gives us the flexibility we need to load tileset data
     public class TilesetLoader
     {
-        private SuperTileset m_TilesetScript;
-        private TiledAssetImporter m_Importer;
-        private bool m_UseSpriteAtlas;
-        private int m_AtlasWidth;
-        private int m_AtlasHeight;
+        private readonly SuperTileset m_TilesetScript;
+        private readonly TiledAssetImporter m_Importer;
+        private readonly bool m_UseSpriteAtlas;
+        private readonly int m_AtlasWidth;
+        private readonly int m_AtlasHeight;
 
         public TilesetLoader(SuperTileset tileset, TiledAssetImporter importer, bool useAtlas, int atlasWidth, int atlasHeight)
         {
@@ -96,7 +96,7 @@ namespace SuperTiled2Unity.Editor
 
             // We're done collecting all the tile data. Build our atlas.
             // (Note that we call build even if we are not using texture atlases)
-            atlas.Build();
+            atlas.Build(m_Importer.PixelsPerUnit);
         }
 
         private void BuildTilesetFromImage(XElement xTileset, AtlasBuilder atlas)
@@ -256,7 +256,7 @@ namespace SuperTiled2Unity.Editor
 
         private void ProcessAnimationElement(SuperTile tile, XElement xAnimation)
         {
-            var fps = ST2USettings.instance.AnimationFramerate;
+            var fps = ST2USettings.instance.m_AnimationFramerate;
             var animations = new AnimationBuilder(fps);
 
             foreach (var xFrame in xAnimation.Elements("frame"))
@@ -343,7 +343,7 @@ namespace SuperTiled2Unity.Editor
                         }
                         else
                         {
-                            collision.MakePointsFromEllipse(ST2USettings.instance.EdgesPerEllipse);
+                            collision.MakePointsFromEllipse(m_Importer.EdgesPerEllipse);
                         }
                     }
                     else if (xObject.Element("point") != null)

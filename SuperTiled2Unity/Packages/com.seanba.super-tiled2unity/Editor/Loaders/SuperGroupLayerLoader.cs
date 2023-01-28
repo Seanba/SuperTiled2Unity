@@ -5,8 +5,8 @@ namespace SuperTiled2Unity.Editor
 {
     public class SuperGroupLayerLoader : SuperLayerLoader
     {
-        public SuperGroupLayerLoader(XElement xml)
-            : base(xml)
+        public SuperGroupLayerLoader(XElement xml, TiledAssetImporter importer)
+            : base(xml, importer)
         {
         }
 

@@ -6,8 +6,8 @@ namespace SuperTiled2Unity.Editor
 {
     public class ColliderFactoryIsometric : ColliderFactory
     {
-        private float m_MapTileWidth;
-        private float m_MapTileHeight;
+        private readonly float m_MapTileWidth;
+        private readonly float m_MapTileHeight;
 
         public ColliderFactoryIsometric(float mapTileWidth, float mapTileHeight, SuperImportContext importContext)
             : base(importContext)
@@ -52,7 +52,7 @@ namespace SuperTiled2Unity.Editor
         public override Collider2D MakeEllipse(GameObject go, float width, float height)
         {
             // Ellipses are always approximated with polygons in isometric maps
-            int count = ST2USettings.instance.EdgesPerEllipse;
+            int count = ImportContext.EdgesPerEllipse;
             float theta = ((float)Math.PI * 2.0f) / count;
 
             Vector2[] points = new Vector2[count];

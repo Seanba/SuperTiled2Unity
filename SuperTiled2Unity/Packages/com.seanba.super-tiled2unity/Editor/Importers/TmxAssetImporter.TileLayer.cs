@@ -33,7 +33,7 @@ namespace SuperTiled2Unity.Editor
             Assert.IsNotNull(goParent);
 
             // Create the game object that contains the layer and add it to the grid parent
-            var layerComponent = goParent.AddSuperLayerGameObject<SuperTileLayer>(new SuperTileLayerLoader(xLayer), SuperImportContext);
+            var layerComponent = goParent.AddSuperLayerGameObject<SuperTileLayer>(new SuperTileLayerLoader(xLayer, this), SuperImportContext);
 
             AddSuperCustomProperties(layerComponent.gameObject, xLayer.Element("properties"));
             RendererSorter.BeginTileLayer(layerComponent);
@@ -131,7 +131,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             tilemap = go.AddComponent<Tilemap>();
-            tilemap.animationFrameRate = ST2USettings.instance.AnimationFramerate;
+            tilemap.animationFrameRate = ST2USettings.instance.m_AnimationFramerate;
             tilemap.tileAnchor = new Vector3(0, 0, 0);
 
             AddTilemapRendererComponent(go);
@@ -310,7 +310,7 @@ namespace SuperTiled2Unity.Editor
             if (!tile.m_AnimationSprites.IsEmpty())
             {
                 var tileAnimator = goTRS.AddComponent<TileObjectAnimator>();
-                tileAnimator.m_AnimationFramerate = ST2USettings.instance.AnimationFramerate;
+                tileAnimator.m_AnimationFramerate = ST2USettings.instance.m_AnimationFramerate;
                 tileAnimator.m_AnimationSprites = tile.m_AnimationSprites;
             }
 

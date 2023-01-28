@@ -8,11 +8,10 @@ namespace SuperTiled2Unity.Editor
         private SuperLayer ProcessObjectLayer(GameObject goParent, XElement xObjectLayer)
         {
             // Have our super object layer loader take care of things
-            var loader = new SuperObjectLayerLoader(xObjectLayer);
-            loader.AnimationFramerate = ST2USettings.instance.AnimationFramerate;
+            var loader = new SuperObjectLayerLoader(xObjectLayer, this);
+            loader.AnimationFramerate = ST2USettings.instance.m_AnimationFramerate;
             loader.ColliderFactory = CreateColliderFactory();
             loader.SuperMap = m_MapComponent;
-            loader.Importer = this;
             loader.GlobalTileDatabase = m_GlobalTileDatabase;
 
             // Create our layer and objects

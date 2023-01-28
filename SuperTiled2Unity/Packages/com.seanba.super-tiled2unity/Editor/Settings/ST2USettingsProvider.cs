@@ -30,7 +30,7 @@ namespace SuperTiled2Unity.Editor
             m_SerializedObject = new SerializedObject(ST2USettings.instance);
 
             // Prepare our list of material matchings
-            var matchings = m_SerializedObject.FindProperty("m_MaterialMatchings");
+            var matchings = m_SerializedObject.FindProperty(nameof(ST2USettings.m_MaterialMatchings));
             m_MaterialMatchingsList = new ReorderableList(m_SerializedObject, matchings, true, false, true, true)
             {
                 headerHeight = 0,
@@ -38,7 +38,7 @@ namespace SuperTiled2Unity.Editor
             };
 
             // Prepare our list of prefab replacements
-            var replacements = m_SerializedObject.FindProperty("m_PrefabReplacements");
+            var replacements = m_SerializedObject.FindProperty(nameof(ST2USettings.m_PrefabReplacements));
             m_PrefabReplacementList = new ReorderableList(m_SerializedObject, replacements, true, false, true, true)
             {
                 headerHeight = 0,
@@ -110,21 +110,21 @@ namespace SuperTiled2Unity.Editor
 
             // Pixels Per Unit
             {
-                var ppuProperty = m_SerializedObject.FindProperty("m_PixelsPerUnit");
-                ppuProperty.floatValue = EditorGUILayout.FloatField(SettingsContent.PixelsPerUnitContent, ppuProperty.floatValue);
+                var ppuProperty = m_SerializedObject.FindProperty(nameof(ST2USettings.m_DefaultPixelsPerUnit));
+                ppuProperty.floatValue = EditorGUILayout.FloatField(SettingsContent.DefaultPixelsPerUnitContent, ppuProperty.floatValue);
                 ppuProperty.floatValue = Mathf.Clamp(ppuProperty.floatValue, 0.001f, 2048);
             }
 
             // Edges Per Ellipse
             {
-                var edgesProperty = m_SerializedObject.FindProperty("m_EdgesPerEllipse");
-                edgesProperty.intValue = EditorGUILayout.IntField(SettingsContent.EdgesPerEllipseContent, edgesProperty.intValue);
+                var edgesProperty = m_SerializedObject.FindProperty(nameof(ST2USettings.m_DefaultEdgesPerEllipse));
+                edgesProperty.intValue = EditorGUILayout.IntField(SettingsContent.DefaultEdgesPerEllipseContent, edgesProperty.intValue);
                 edgesProperty.intValue = Mathf.Clamp(edgesProperty.intValue, 6, 256);
             }
 
             // Default Material
             {
-                var materialProperty = m_SerializedObject.FindProperty("m_DefaultMaterial");
+                var materialProperty = m_SerializedObject.FindProperty(nameof(ST2USettings.m_DefaultMaterial));
                 materialProperty.objectReferenceValue = EditorGUILayout.ObjectField(SettingsContent.DefaultMaterialContent, materialProperty.objectReferenceValue, typeof(Material), false);
                 EditorGUILayout.Space();
 
@@ -134,7 +134,7 @@ namespace SuperTiled2Unity.Editor
 
             // Animation settings
             {
-                var animationPrpoerty = m_SerializedObject.FindProperty("m_AnimationFramerate");
+                var animationPrpoerty = m_SerializedObject.FindProperty(nameof(ST2USettings.m_AnimationFramerate));
 
                 EditorGUILayout.LabelField("Animation Settings", EditorStyles.boldLabel);
 
@@ -202,13 +202,13 @@ namespace SuperTiled2Unity.Editor
         {
             EditorGUILayout.LabelField("Collider Settings", EditorStyles.boldLabel);
 
-            SerializedProperty geoTypeProperty = m_SerializedObject.FindProperty("m_CollisionGeometryType");
+            SerializedProperty geoTypeProperty = m_SerializedObject.FindProperty(nameof(ST2USettings.m_CollisionGeometryType));
             geoTypeProperty.intValue = (int)(CompositeCollider2D.GeometryType)EditorGUILayout.EnumPopup(SettingsContent.CollisionGeometryTypeContent, (CompositeCollider2D.GeometryType)geoTypeProperty.intValue);
 
             m_ShowLayerColors = EditorGUILayout.Foldout(m_ShowLayerColors, SettingsContent.LayerColorsContent);
             if (m_ShowLayerColors)
             {
-                SerializedProperty listProperty = m_SerializedObject.FindProperty("m_LayerColors");
+                SerializedProperty listProperty = m_SerializedObject.FindProperty(nameof(ST2USettings.m_LayerColors));
 
                 using (new GuiScopedIndent())
                 {
@@ -231,16 +231,16 @@ namespace SuperTiled2Unity.Editor
 
         private void DoCustomPropertySettings()
         {
-            var xmlProperty = m_SerializedObject.FindProperty("m_ObjectTypesXml");
+            var xmlProperty = m_SerializedObject.FindProperty(nameof(ST2USettings.m_ObjectTypesXml));
 
             EditorGUILayout.LabelField("Custom Property Settings", EditorStyles.boldLabel);
 
             // fixit - test this out with a real object types xml file
             xmlProperty.objectReferenceValue = EditorGUILayout.ObjectField(SettingsContent.ObjectTypesXmlContent, xmlProperty.objectReferenceValue, typeof(TextAsset), false);
 
-            if (!string.IsNullOrEmpty(ST2USettings.instance.ParseXmlError))
+            if (!string.IsNullOrEmpty(ST2USettings.instance.m_ParseXmlError))
             {
-                EditorGUILayout.HelpBox(ST2USettings.instance.ParseXmlError, MessageType.Error);
+                EditorGUILayout.HelpBox(ST2USettings.instance.m_ParseXmlError, MessageType.Error);
             }
 
             EditorGUILayout.Space();
@@ -369,8 +369,8 @@ namespace SuperTiled2Unity.Editor
 
         private class SettingsContent
         {
-            public static readonly GUIContent PixelsPerUnitContent = new GUIContent("Default Pixels Per Unit", "How many pixels in the sprite correspond to one unit in the world. (Default Setting)");
-            public static readonly GUIContent EdgesPerEllipseContent = new GUIContent("Default Edges Per Ellipse", "How many edges to use when appromixating ellipse/circle colliders. (Default Setting)");
+            public static readonly GUIContent DefaultPixelsPerUnitContent = new GUIContent("Default Pixels Per Unit", "How many pixels in the sprite correspond to one unit in the world. (Default Setting)");
+            public static readonly GUIContent DefaultEdgesPerEllipseContent = new GUIContent("Default Edges Per Ellipse", "How many edges to use when appromixating ellipse/circle colliders. (Default Setting)");
             public static readonly GUIContent AnimationFramerateContent = new GUIContent("Animation Framerate", "How many frames per second for tile animations.");
             public static readonly GUIContent DefaultMaterialContent = new GUIContent("Default Material", "Set to the material you want to use for sprites and tiles imported by SuperTiled2Unity. Leave empy to use built-in sprite material.");
             public static readonly GUIContent MaterialMatchingsContent = new GUIContent("Material Matchings", "Match these materials by Tiled Layer names.");

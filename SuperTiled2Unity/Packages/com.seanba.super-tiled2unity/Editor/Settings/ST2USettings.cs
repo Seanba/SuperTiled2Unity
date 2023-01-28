@@ -11,48 +11,16 @@ namespace SuperTiled2Unity.Editor
     [FilePath("ProjectSettings/SuperTiled2Unity.asset", FilePathAttribute.Location.ProjectFolder)]
     public class ST2USettings : ScriptableSingleton<ST2USettings>
     {
-        [SerializeField]
-        private float m_PixelsPerUnit = 100.0f;
-        public float PixelsPerUnit
-        {
-            get => m_PixelsPerUnit;
-            set => m_PixelsPerUnit = value;
-        }
+        public float m_DefaultPixelsPerUnit = 100.0f;
+        public int m_DefaultEdgesPerEllipse = 32;
+        public int m_AnimationFramerate = 20;
+        public Material m_DefaultMaterial = null;
+        public List<LayerMaterialMatch> m_MaterialMatchings = new List<LayerMaterialMatch>();
+        public TextAsset m_ObjectTypesXml = null;
+        public string m_ParseXmlError = string.Empty;
+        public CompositeCollider2D.GeometryType m_CollisionGeometryType = CompositeCollider2D.GeometryType.Polygons;
 
-        [SerializeField]
-        private int m_EdgesPerEllipse = 32;
-        public int EdgesPerEllipse
-        {
-            get => m_EdgesPerEllipse;
-            set => m_EdgesPerEllipse = value;
-        }
-
-        [SerializeField]
-        private int m_AnimationFramerate = 20;
-        public int AnimationFramerate => m_AnimationFramerate;
-
-        [SerializeField]
-        private Material m_DefaultMaterial = null;
-        public Material DefaultMaterial => m_DefaultMaterial;
-
-        [SerializeField]
-        private List<LayerMaterialMatch> m_MaterialMatchings = new List<LayerMaterialMatch>();
-        public List<LayerMaterialMatch> MaterialMatchings => m_MaterialMatchings;
-
-        [SerializeField]
-        private TextAsset m_ObjectTypesXml = null;
-        public TextAsset ObjectTypesXml => m_ObjectTypesXml;
-
-        [SerializeField]
-        private string m_ParseXmlError = string.Empty;
-        public string ParseXmlError => m_ParseXmlError;
-
-        [SerializeField]
-        private CompositeCollider2D.GeometryType m_CollisionGeometryType = CompositeCollider2D.GeometryType.Polygons;
-        public CompositeCollider2D.GeometryType CollisionGeometryType => m_CollisionGeometryType;
-
-        [SerializeField]
-        private List<Color> m_LayerColors = new List<Color>()
+        public List<Color> m_LayerColors = new List<Color>()
         {
             NamedColors.SteelBlue,          // Builtin - Default
             NamedColors.Tomato,             // Builtin - TransparentFX
@@ -87,17 +55,10 @@ namespace SuperTiled2Unity.Editor
             NamedColors.Cyan,
             NamedColors.RosyBrown,
         };
-        public List<Color> LayerColors => m_LayerColors;
 
-        [SerializeField]
-        private List<CustomObjectType> m_CustomObjectTypes;
-        public List<CustomObjectType> CustomObjectTypes => m_CustomObjectTypes;
+        public List<CustomObjectType> m_CustomObjectTypes;
 
-        [SerializeField]
-        private List<TypePrefabReplacement> m_PrefabReplacements = new List<TypePrefabReplacement>();
-        public List<TypePrefabReplacement> PrefabReplacements => m_PrefabReplacements;
-
-        public float InversePPU => 1.0f / PixelsPerUnit;
+        public List<TypePrefabReplacement> m_PrefabReplacements = new List<TypePrefabReplacement>();
 
         // Invoke this to ensure that Xml Object Types are up-to-date
         // Our importers that depend on Object Types from tiled will want to call this early in their import process
@@ -158,16 +119,16 @@ namespace SuperTiled2Unity.Editor
             RefreshCustomObjectTypes();
             foreach (var cot in m_CustomObjectTypes)
             {
-                if (!PrefabReplacements.Any(c => string.Equals(c.m_TypeName, cot.m_Name, StringComparison.OrdinalIgnoreCase)))
+                if (!m_PrefabReplacements.Any(c => string.Equals(c.m_TypeName, cot.m_Name, StringComparison.OrdinalIgnoreCase)))
                 {
-                    PrefabReplacements.Add(new TypePrefabReplacement { m_TypeName = cot.m_Name });
+                    m_PrefabReplacements.Add(new TypePrefabReplacement { m_TypeName = cot.m_Name });
                 }
             }
         }
 
         internal GameObject GetPrefabReplacement(string type)
         {
-            var replacement = PrefabReplacements.FirstOrDefault(r => r.m_TypeName == type);
+            var replacement = m_PrefabReplacements.FirstOrDefault(r => r.m_TypeName == type);
             if (replacement != null)
             {
                 return replacement.m_Prefab;

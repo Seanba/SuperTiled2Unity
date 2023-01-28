@@ -7,7 +7,7 @@ namespace SuperTiled2Unity.Editor
     {
         private SuperLayer ProcessGroupLayer(GameObject goParent, XElement xGroup)
         {
-            var groupLayerComponent = goParent.AddSuperLayerGameObject<SuperGroupLayer>(new SuperGroupLayerLoader(xGroup), SuperImportContext);
+            var groupLayerComponent = goParent.AddSuperLayerGameObject<SuperGroupLayer>(new SuperGroupLayerLoader(xGroup, this), SuperImportContext);
             AddSuperCustomProperties(groupLayerComponent.gameObject, xGroup.Element("properties"));
 
             // Group layers can contain other layers

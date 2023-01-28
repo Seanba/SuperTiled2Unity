@@ -11,12 +11,11 @@ namespace SuperTiled2Unity.Editor
         private SuperObjectLayer m_ObjectLayer;
         private float m_AnimationFramerate = 1.0f;
 
-        public SuperObjectLayerLoader(XElement xml)
-            : base(xml)
+        public SuperObjectLayerLoader(XElement xml, TiledAssetImporter importer)
+            : base(xml, importer)
         {
         }
 
-        public TiledAssetImporter Importer { get; set; }
         public ColliderFactory ColliderFactory { get; set; }
         public GlobalTileDatabase GlobalTileDatabase { get; set; }
         public SuperMap SuperMap { get; set; }
@@ -29,13 +28,13 @@ namespace SuperTiled2Unity.Editor
 
         public void CreateObjects()
         {
-            Assert.IsNotNull(m_Xml);
+            Assert.IsNotNull(Xml);
             Assert.IsNotNull(m_ObjectLayer);
             Assert.IsNotNull(Importer);
             Assert.IsNotNull(ColliderFactory);
 
-            var xObjects = m_Xml.Elements("object");
-            var drawOrder = m_Xml.GetAttributeAs<DrawOrder>("draworder", DrawOrder.TopDown);
+            var xObjects = Xml.Elements("object");
+            var drawOrder = Xml.GetAttributeAs<DrawOrder>("draworder", DrawOrder.TopDown);
 
             if (drawOrder == DrawOrder.TopDown)
             {
@@ -63,7 +62,7 @@ namespace SuperTiled2Unity.Editor
 
         protected override void InternalLoadFromXml(GameObject go)
         {
-            m_ObjectLayer.m_Color = m_Xml.GetAttributeAsColor("color", Color.grey);
+            m_ObjectLayer.m_Color = Xml.GetAttributeAsColor("color", Color.grey);
         }
 
         private void CreateObject(XElement xObject)
@@ -223,7 +222,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             // Construct the game objects for displaying a single tile
-            var inversePPU = ST2USettings.instance.InversePPU;
+            var inversePPU = Importer.InversePPU;
             bool flip_h = tileId.HasHorizontalFlip;
             bool flip_v = tileId.HasVerticalFlip;
 

@@ -4,15 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using UnityEditor;
+using UnityEditor.AssetImporters;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Tilemaps;
-
-#if UNITY_2020_2_OR_NEWER
-using ScriptedImporterAttribute = UnityEditor.AssetImporters.ScriptedImporterAttribute;
-#else
-using ScriptedImporterAttribute = UnityEditor.Experimental.AssetImporters.ScriptedImporterAttribute;
-#endif
 
 namespace SuperTiled2Unity.Editor
 {

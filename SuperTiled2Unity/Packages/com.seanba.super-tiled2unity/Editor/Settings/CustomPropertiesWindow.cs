@@ -30,7 +30,7 @@ namespace SuperTiled2Unity.Editor
         {
             EditorGUILayout.LabelField(m_TitleContent, EditorStyles.boldLabel);
 
-            foreach (var obj in ST2USettings.instance.CustomObjectTypes)
+            foreach (var obj in ST2USettings.instance.m_CustomObjectTypes)
             {
                 EditorGUILayout.Space();
                 OnGUICustomObjectType(obj);

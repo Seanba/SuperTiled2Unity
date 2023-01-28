@@ -68,11 +68,8 @@ namespace SuperTiled2Unity.Editor
 #if UNITY_2020_3_OR_NEWER
             try
             {
-                using (ImportWrapping())
-                {
-                    InternalOnImportAsset();
-                    InternalOnImportAssetCompleted();
-                }
+                InternalOnImportAsset();
+                InternalOnImportAssetCompleted();
             }
             catch (TiledException tiled)
             {
@@ -230,11 +227,6 @@ namespace SuperTiled2Unity.Editor
             m_SuperAsset = ScriptableObject.CreateInstance<T>();
             m_SuperAsset.name = Path.GetFileNameWithoutExtension(assetPath);
             AssetImportContext.AddObjectToAsset("_superAsset", m_SuperAsset);
-        }
-
-        protected virtual IDisposable ImportWrapping()
-        {
-            return null;
         }
 
         protected abstract void InternalOnImportAsset();

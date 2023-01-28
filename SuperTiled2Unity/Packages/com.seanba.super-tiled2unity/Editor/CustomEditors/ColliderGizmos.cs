@@ -164,7 +164,7 @@ namespace SuperTiled2Unity.Editor
             if (tileLayer != null)
             {
                 // Use the color of our object in the layer
-                var color = ST2USettings.instance.LayerColors.ElementAtOrDefault(go.layer);
+                var color = ST2USettings.instance.m_LayerColors.ElementAtOrDefault(go.layer);
                 color.a = tileLayer.CalculateOpacity();
                 return color;
             }
@@ -180,7 +180,7 @@ namespace SuperTiled2Unity.Editor
                 if (superObject != null)
                 {
                     CustomObjectType objectType;
-                    if (ST2USettings.instance.CustomObjectTypes.TryGetCustomObjectType(superObject.m_Type, out objectType))
+                    if (ST2USettings.instance.m_CustomObjectTypes.TryGetCustomObjectType(superObject.m_Type, out objectType))
                     {
                         color = objectType.m_Color;
                     }

@@ -94,7 +94,7 @@ namespace SuperTiled2Unity.Editor
                     // This way we have convex polygon paths (in the children) if needed
                     // And we can have complex polygons represented by one object
                     var composite = goCollider.AddComponent<CompositeCollider2D>();
-                    composite.geometryType = ST2USettings.instance.CollisionGeometryType;
+                    composite.geometryType = ST2USettings.instance.m_CollisionGeometryType;
                     composite.isTrigger = key.IsTrigger;
                     composite.generationType = CompositeCollider2D.GenerationType.Manual;
 

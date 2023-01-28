@@ -13,7 +13,7 @@ namespace SuperTiled2Unity.Editor
             Assert.IsNotNull(goParent);
 
             // Create the game object that contains the layer and add it to the grid parent
-            var layerComponent = goParent.AddSuperLayerGameObject<SuperImageLayer>(new SuperImageLayerLoader(xLayer), SuperImportContext);
+            var layerComponent = goParent.AddSuperLayerGameObject<SuperImageLayer>(new SuperImageLayerLoader(xLayer, this), SuperImportContext);
             var goLayer = layerComponent.gameObject;
 
             AddSuperCustomProperties(goLayer, xLayer.Element("properties"));
@@ -35,7 +35,7 @@ namespace SuperTiled2Unity.Editor
                     // Create a sprite for the image
                     try
                     {
-                        var sprite = Sprite.Create(tex2d, new Rect(0, 0, tex2d.width, tex2d.height), new Vector2(0, 1.0f), ST2USettings.instance.PixelsPerUnit);
+                        var sprite = Sprite.Create(tex2d, new Rect(0, 0, tex2d.width, tex2d.height), new Vector2(0, 1.0f), PixelsPerUnit);
                         SuperImportContext.AddObjectToAsset("_sprite", sprite);
 
                         var renderer = goLayer.AddComponent<SpriteRenderer>();

@@ -35,22 +35,20 @@ namespace SuperTiled2Unity.Editor
                 }
             }
 
-            public Rect PreferredRectangle
-            {
-                get { return AtlasTexture != null ? AtlasRectangle : SourceRectangle; }
-            }
+            public Rect PreferredRectangle => AtlasTexture != null ? AtlasRectangle : SourceRectangle;
         }
 
-        private TiledAssetImporter m_TiledAssetImporter;
-        private bool m_UseSpriteAtlas;
-        private int m_AtlasWidth;
-        private int m_AtlasHeight;
-        private SuperTileset m_TilesetScript;
+        private readonly TiledAssetImporter m_TiledAssetImporter;
+        private readonly bool m_UseSpriteAtlas;
+        private readonly int m_AtlasWidth;
+        private readonly int m_AtlasHeight;
+        private readonly SuperTileset m_TilesetScript;
 
-        private List<AtlasTile> m_AtlasTiles = new List<AtlasTile>();
-        private List<Texture2D> m_AtlasTextures = new List<Texture2D>();
-        private Texture2D m_CurrentAtlas = null;
-        private Packer m_CurrentPacker = null;
+        private readonly List<AtlasTile> m_AtlasTiles = new List<AtlasTile>();
+        private readonly List<Texture2D> m_AtlasTextures = new List<Texture2D>();
+
+        private Texture2D m_CurrentAtlas;
+        private Packer m_CurrentPacker;
 
 
         public AtlasBuilder(TiledAssetImporter importer, bool useSpriteAtlas, int atlasWidth, int atlasHeight, SuperTileset tilesetScript)
@@ -64,11 +62,17 @@ namespace SuperTiled2Unity.Editor
 
         public void AddTile(int index, Texture2D texSource, Rect rcSource)
         {
-            var atlasTile = new AtlasTile() { Index = index, SourceTexture = texSource, SourceRectangle = rcSource };
+            var atlasTile = new AtlasTile
+            {
+                Index = index,
+                SourceTexture = texSource,
+                SourceRectangle = rcSource
+            };
+
             m_AtlasTiles.Add(atlasTile);
         }
 
-        public void Build()
+        public void Build(float ppu)
         {
             if (!m_AtlasTiles.Any())
             {
@@ -81,7 +85,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             // We have everything we need to create our sprites and tiles, including their texture dependencies. Commit.
-            Commit();
+            Commit(ppu);
 
             // Clear everything out
             m_AtlasTiles.Clear();
@@ -204,7 +208,7 @@ namespace SuperTiled2Unity.Editor
             m_CurrentPacker = new Packer(m_AtlasWidth, m_AtlasHeight, false);
         }
 
-        private void Commit()
+        private void Commit(float ppu)
         {
             // Done manipulating our atlas textures. Update all changes. No mipmaps and no more reading.
             m_AtlasTextures.ForEach(t => t.Apply(false, true));
@@ -218,7 +222,7 @@ namespace SuperTiled2Unity.Editor
                 string tileName = string.Format("Tile_{0}_{1}", m_TilesetScript.name, t.Index + 1);
 
                 // Create the sprite with the anchor at (0, 0)
-                var sprite = Sprite.Create(t.PreferredTexture2D, t.PreferredRectangle, Vector2.zero, ST2USettings.instance.PixelsPerUnit);
+                var sprite = Sprite.Create(t.PreferredTexture2D, t.PreferredRectangle, Vector2.zero, ppu);
 
                 sprite.name = spriteName;
                 sprite.hideFlags = HideFlags.HideInHierarchy;

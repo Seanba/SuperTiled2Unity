@@ -49,7 +49,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             CustomObjectType objectType;
-            if (ST2USettings.instance.CustomObjectTypes.TryGetCustomObjectType(typeName, out objectType))
+            if (ST2USettings.instance.m_CustomObjectTypes.TryGetCustomObjectType(typeName, out objectType))
             {
                 return CombineFromSource(list, objectType.m_CustomProperties);
             }

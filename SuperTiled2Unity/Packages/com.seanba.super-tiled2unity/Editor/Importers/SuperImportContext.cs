@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.AssetImporters;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace SuperTiled2Unity.Editor
 {
@@ -11,11 +12,21 @@ namespace SuperTiled2Unity.Editor
         private static readonly Vector2 NegateY = new Vector2(1, -1);
 
         private readonly AssetImportContext m_Context;
+
         private bool? m_IsTriggerOverride;
 
-        public SuperImportContext(AssetImportContext context)
+        public float PixelsPerUnit { get; }
+        public float InversePPU => 1.0f / PixelsPerUnit;
+        public int EdgesPerEllipse { get; }
+
+        public SuperImportContext(AssetImportContext context, float pixelsPerUnit, int edgesPerEllipse)
         {
+            Assert.IsTrue(pixelsPerUnit > 0);
+            Assert.IsTrue(edgesPerEllipse > 0);
+
             m_Context = context;
+            PixelsPerUnit = pixelsPerUnit;
+            EdgesPerEllipse = edgesPerEllipse;
         }
 
         public LayerIgnoreMode LayerIgnoreMode { get; private set; }
@@ -49,7 +60,7 @@ namespace SuperTiled2Unity.Editor
         // Our Unity projects have +y going up and points are transformed by a Pixels Per Unity constant
         public float MakeScalar(float s)
         {
-            return s * ST2USettings.instance.InversePPU;
+            return s * InversePPU;
         }
 
         // Does not negate y
@@ -60,7 +71,7 @@ namespace SuperTiled2Unity.Editor
 
         public Vector2 MakeSize(Vector2 size)
         {
-            return size * ST2USettings.instance.InversePPU;
+            return size * InversePPU;
         }
 
         public Vector2 MakePoint(float x, float y)
@@ -72,7 +83,7 @@ namespace SuperTiled2Unity.Editor
         {
             pt.x *= NegateY.x;
             pt.y *= NegateY.y;
-            return pt * ST2USettings.instance.InversePPU;
+            return pt * InversePPU;
         }
 
         // Applies PPU multiple but does not invert Y
@@ -83,7 +94,7 @@ namespace SuperTiled2Unity.Editor
 
         public Vector2 MakePointPPU(Vector2 pt)
         {
-            return pt * ST2USettings.instance.InversePPU;
+            return pt * InversePPU;
         }
 
         public Vector2[] MakePoints(Vector2[] points)

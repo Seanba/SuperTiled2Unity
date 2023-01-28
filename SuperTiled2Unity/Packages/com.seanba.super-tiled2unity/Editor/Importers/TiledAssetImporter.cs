@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Xml.Linq;
 using UnityEditor;
-using UnityEditor.AssetImporters;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -11,15 +10,19 @@ namespace SuperTiled2Unity.Editor
 {
     public abstract class TiledAssetImporter : SuperImporter
     {
-        [SerializeField] private float m_PixelsPerUnit = 0.0f;
+        [SerializeField]
+        private float m_PixelsPerUnit = 0.0f;
         public float PixelsPerUnit => m_PixelsPerUnit;
 
         public float InversePPU => 1.0f / PixelsPerUnit;
 
-        [SerializeField] private int m_EdgesPerEllipse = 0;
+        [SerializeField]
+        private int m_EdgesPerEllipse = 0;
+        public int EdgesPerEllipse => m_EdgesPerEllipse;
 
 #pragma warning disable 414
-        [SerializeField] private int m_NumberOfObjectsImported = 0;
+        [SerializeField]
+        private int m_NumberOfObjectsImported = 0;
 #pragma warning restore 414
 
         public RendererSorter RendererSorter { get; private set; }
@@ -73,7 +76,7 @@ namespace SuperTiled2Unity.Editor
         public void AssignMaterial(Renderer renderer, string match)
         {
             // Do we have a registered material match?
-            var matchedMaterial = ST2USettings.instance.MaterialMatchings.FirstOrDefault(m => m.m_LayerName.Equals(match, StringComparison.OrdinalIgnoreCase));
+            var matchedMaterial = ST2USettings.instance.m_MaterialMatchings.FirstOrDefault(m => m.m_LayerName.Equals(match, StringComparison.OrdinalIgnoreCase));
             if (matchedMaterial != null)
             {
                 renderer.material = matchedMaterial.m_Material;
@@ -81,9 +84,9 @@ namespace SuperTiled2Unity.Editor
             }
 
             // Has the user chosen to override the material used for our tilemaps and sprite objects?
-            if (ST2USettings.instance.DefaultMaterial != null)
+            if (ST2USettings.instance.m_DefaultMaterial != null)
             {
-                renderer.material = ST2USettings.instance.DefaultMaterial;
+                renderer.material = ST2USettings.instance.m_DefaultMaterial;
             }
         }
 
@@ -106,15 +109,25 @@ namespace SuperTiled2Unity.Editor
 
         public void ApplyDefaultSettings()
         {
-            m_PixelsPerUnit = ST2USettings.instance.PixelsPerUnit;
-            m_EdgesPerEllipse = ST2USettings.instance.EdgesPerEllipse;
+            m_PixelsPerUnit = ST2USettings.instance.m_DefaultPixelsPerUnit;
+            m_EdgesPerEllipse = ST2USettings.instance.m_DefaultEdgesPerEllipse;
             EditorUtility.SetDirty(this);
         }
 
         protected override void InternalOnImportAsset()
         {
+            if (m_PixelsPerUnit == 0)
+            {
+                m_PixelsPerUnit = ST2USettings.instance.m_DefaultPixelsPerUnit;
+            }
+
+            if (m_EdgesPerEllipse == 0)
+            {
+                m_EdgesPerEllipse = ST2USettings.instance.m_DefaultEdgesPerEllipse;
+            }
+
             RendererSorter = new RendererSorter();
-            SuperImportContext = new SuperImportContext(AssetImportContext);
+            SuperImportContext = new SuperImportContext(AssetImportContext, m_PixelsPerUnit, m_EdgesPerEllipse);
         }
 
         protected override void InternalOnImportAssetCompleted()
@@ -164,45 +177,6 @@ namespace SuperTiled2Unity.Editor
                 {
                     properties.gameObject.layer = parent.gameObject.layer;
                 }
-            }
-        }
-
-        protected override IDisposable ImportWrapping()
-        {
-            // fixit - test out this stuff
-            ST2USettings.instance.RefreshCustomObjectTypes();
-
-            if (m_PixelsPerUnit == 0)
-            {
-                m_PixelsPerUnit = ST2USettings.instance.PixelsPerUnit;
-            }
-
-            if (m_EdgesPerEllipse == 0)
-            {
-                m_EdgesPerEllipse = ST2USettings.instance.EdgesPerEllipse;
-            }
-
-            return new ScopedSettings(this);
-        }
-
-        private class ScopedSettings : IDisposable
-        {
-            private float m_PreviousPixelsPerUnity;
-            private int m_PreviousEdgesPerEllipse;
-
-            internal ScopedSettings(TiledAssetImporter importer)
-            {
-                m_PreviousPixelsPerUnity = ST2USettings.instance.PixelsPerUnit;
-                m_PreviousEdgesPerEllipse = ST2USettings.instance.EdgesPerEllipse;
-
-                ST2USettings.instance.PixelsPerUnit = importer.PixelsPerUnit;
-                ST2USettings.instance.EdgesPerEllipse = importer.m_EdgesPerEllipse;
-            }
-
-            public void Dispose()
-            {
-                ST2USettings.instance.PixelsPerUnit = m_PreviousPixelsPerUnity;
-                ST2USettings.instance.EdgesPerEllipse = m_PreviousEdgesPerEllipse;
             }
         }
     }
