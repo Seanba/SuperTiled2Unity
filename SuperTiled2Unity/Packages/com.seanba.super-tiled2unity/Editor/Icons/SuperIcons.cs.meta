@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 035702ede6747284cbd71dcd9331db46
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_TmxIcon: {fileID: 2800000, guid: 3bbe1872cdca28840b24eb648e071bcb, type: 3}
+  - m_TsxIcon: {fileID: 2800000, guid: 456cd7fe3f53df64da488af63fed1de2, type: 3}
+  - m_TxIcon: {fileID: 2800000, guid: 8917742d33b8e744f91ec41c4dbb44bc, type: 3}
+  - m_WorldIcon: {fileID: 2800000, guid: f7af46740b1964f4ab9520d050bdde12, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

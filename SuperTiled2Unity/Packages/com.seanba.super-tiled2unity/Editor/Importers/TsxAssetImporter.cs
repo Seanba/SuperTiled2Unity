@@ -55,7 +55,7 @@ namespace SuperTiled2Unity.Editor
         {
             Assert.IsNull(Tileset);
 
-            var icon = SuperIcons.GetTsxIcon();
+            var icon = SuperIcons.instance.m_TsxIcon;
 
             Tileset = ScriptableObject.CreateInstance<SuperTileset>();
             Tileset.m_IsInternal = false;

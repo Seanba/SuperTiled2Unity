@@ -28,10 +28,10 @@ namespace SuperTiled2Unity.Editor
 
         public void CreateObjects()
         {
-            Assert.IsNotNull(Xml);
-            Assert.IsNotNull(m_ObjectLayer);
-            Assert.IsNotNull(Importer);
-            Assert.IsNotNull(ColliderFactory);
+            Assert.IsNotNull(Xml, "Xml exlement is null");
+            Assert.IsNotNull(m_ObjectLayer, "Object layer is null");
+            Assert.IsNotNull(Importer, "Importer is null");
+            Assert.IsNotNull(ColliderFactory, "ColliderFactory is null");
 
             var xObjects = Xml.Elements("object");
             var drawOrder = Xml.GetAttributeAs<DrawOrder>("draworder", DrawOrder.TopDown);

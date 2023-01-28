@@ -12,7 +12,7 @@ namespace SuperTiled2Unity.Editor
         protected SuperLayerLoader(XElement xml, TiledAssetImporter importer)
         {
             Xml = xml;
-            Importer = Importer;
+            Importer = importer;
         }
 
         public SuperLayer CreateLayer(GameObject go)

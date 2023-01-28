@@ -61,7 +61,7 @@ namespace SuperTiled2Unity.Editor
 
             var goWorld = new GameObject("world");
 
-            var icon = SuperIcons.GetWorldIcon();
+            var icon = SuperIcons.instance.m_WorldIcon;
             SuperImportContext.AddObjectToAsset("_world", goWorld, icon);
             SuperImportContext.SetMainObject(goWorld);
 

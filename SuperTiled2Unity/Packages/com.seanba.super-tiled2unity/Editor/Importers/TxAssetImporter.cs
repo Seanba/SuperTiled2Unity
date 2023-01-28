@@ -19,7 +19,7 @@ namespace SuperTiled2Unity.Editor
 
         protected override void InternalOnImportAsset()
         {
-            var icon = AssetDatabaseEx.LoadFirstAssetByFilter<Texture2D>("tx-file-icon-0x1badd00d");
+            var icon = SuperIcons.instance.m_TxIcon;
             AddSuperAsset<SuperAssetTemplate>();
 
             // Create our asset and build it out
