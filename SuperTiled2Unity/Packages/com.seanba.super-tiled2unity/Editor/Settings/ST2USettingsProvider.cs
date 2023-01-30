@@ -235,7 +235,6 @@ namespace SuperTiled2Unity.Editor
 
             EditorGUILayout.LabelField("Custom Property Settings", EditorStyles.boldLabel);
 
-            // fixit - test this out with a real object types xml file
             xmlProperty.objectReferenceValue = EditorGUILayout.ObjectField(SettingsContent.ObjectTypesXmlContent, xmlProperty.objectReferenceValue, typeof(TextAsset), false);
 
             if (!string.IsNullOrEmpty(ST2USettings.instance.m_ParseXmlError))
