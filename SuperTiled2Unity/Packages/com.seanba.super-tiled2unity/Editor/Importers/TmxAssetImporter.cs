@@ -21,6 +21,8 @@ namespace SuperTiled2Unity.Editor
         private Dictionary<uint, TilePolygonCollection> m_TilePolygonDatabase;
         private int m_NextTileAsObjectId;
 
+        private Dictionary<int, GameObject> m_ObjectsById;
+
         [SerializeField]
         private bool m_TilesAsObjects = false;
         public bool TilesAsObjects { get { return m_TilesAsObjects; } }
@@ -38,6 +40,17 @@ namespace SuperTiled2Unity.Editor
 
         [SerializeField]
         private List<SuperTileset> m_InternalTilesets;
+
+        /// Returns the game object corresponding to a Tiled object ID.
+        public GameObject GetObject(int targetId)
+        {
+            if (m_ObjectsById.TryGetValue(targetId, out var go))
+            {
+                return go;
+            }
+
+            return null;
+        }
 
         protected override void InternalOnImportAsset()
         {
@@ -390,7 +403,7 @@ namespace SuperTiled2Unity.Editor
         {
             // Should any of our objects (from Tiled) be replaced by instantiated prefabs?
             var supers = m_MapComponent.GetComponentsInChildren<SuperObject>();
-            var objectsById = supers.ToDictionary(so => so.m_Id, so => so.gameObject);
+            m_ObjectsById = supers.ToDictionary(so => so.m_Id, so => so.gameObject);
             var goToDestroy = new List<GameObject>();
 
             foreach (var so in supers)
@@ -409,7 +422,7 @@ namespace SuperTiled2Unity.Editor
 
                     // Update bookkeeping for later custom property replacement.
                     goToDestroy.Add(so.gameObject);
-                    objectsById[so.m_Id] = instance;
+                    m_ObjectsById[so.m_Id] = instance;
                 }
             }
 
@@ -423,7 +436,7 @@ namespace SuperTiled2Unity.Editor
                 {
                     foreach (var p in props.m_Properties)
                     {
-                        objectsById[so.m_Id].BroadcastProperty(p, objectsById);
+                        m_ObjectsById[so.m_Id].BroadcastProperty(p, m_ObjectsById);
                     }
                 }
             }

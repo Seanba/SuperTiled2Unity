@@ -92,11 +92,13 @@ namespace SuperTiled2Unity.Editor
             comp.m_TiledName = xObject.GetAttributeAs("name", string.Format("Object_{0}", comp.m_Id));
 
             comp.m_Type = xObject.GetAttributeAs("class", "");
-            
+
             //As of Tiled 1.9 types have been merged with classes
             //As a simple way to support both version we can fall back like this to the old < 1.9 way
-            if(string.IsNullOrWhiteSpace(comp.m_Type))
+            if (string.IsNullOrWhiteSpace(comp.m_Type))
+            {
                 comp.m_Type = xObject.GetAttributeAs("type", "");
+            }
 
             comp.m_X = xObject.GetAttributeAs("x", 0.0f);
             comp.m_Y = xObject.GetAttributeAs("y", 0.0f);

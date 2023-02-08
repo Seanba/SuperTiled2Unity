@@ -10,10 +10,7 @@ namespace SuperTiled2Unity
         public string m_Type;
         public string m_Value;
 
-        public bool IsEmpty
-        {
-            get { return string.IsNullOrEmpty(m_Name); }
-        }
+        public bool IsEmpty => string.IsNullOrEmpty(m_Name);
     }
 
     // Helper extension methods
