@@ -52,6 +52,14 @@ namespace SuperTiled2Unity.Editor
             m_ShowAtlasSettings.value = m_UseSpriteAtlas.boolValue;
         }
 
+#if UNITY_2022_2_OR_NEWER
+        public override void DiscardChanges()
+        {
+            base.DiscardChanges();
+            CacheSerializedProperites();
+        }
+#endif
+
         private void CacheSerializedProperites()
         {
             m_UseSpriteAtlas = serializedObject.FindProperty("m_UseSpriteAtlas");
@@ -64,11 +72,13 @@ namespace SuperTiled2Unity.Editor
             Assert.IsNotNull(m_AtlasHeight);
         }
 
+#if !UNITY_2022_2_OR_NEWER
         protected override void ResetValues()
         {
             base.ResetValues();
             CacheSerializedProperites();
         }
+#endif
 
         protected override void InternalOnInspectorGUI()
         {

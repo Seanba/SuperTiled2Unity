@@ -42,6 +42,14 @@ namespace SuperTiled2Unity.Editor
             base.OnEnable();
         }
 
+#if UNITY_2022_2_OR_NEWER
+        public override void DiscardChanges() // fixit - make sure this works
+        {
+            base.DiscardChanges();
+            CacheSerializedProperites();
+        }
+#endif
+
         protected override void InternalOnInspectorGUI()
         {
             EditorGUILayout.LabelField("Tiled Map Importer Settings", EditorStyles.boldLabel);
@@ -62,11 +70,13 @@ namespace SuperTiled2Unity.Editor
             InternalApplyRevertGUI();
         }
 
+#if !UNITY_2022_2_OR_NEWER
         protected override void ResetValues()
         {
             base.ResetValues();
             CacheSerializedProperites();
         }
+#endif
 
         private void CacheSerializedProperites()
         {

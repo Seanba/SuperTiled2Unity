@@ -18,6 +18,14 @@ namespace SuperTiled2Unity.Editor
             base.OnEnable();
         }
 
+#if UNITY_2022_2_OR_NEWER
+        public override void DiscardChanges()
+        {
+            base.DiscardChanges();
+            CacheSerializedProperites();
+        }
+#endif
+
         protected void ShowTiledAssetGui()
         {
             EditorGUI.BeginChangeCheck();
@@ -35,11 +43,13 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
+#if !UNITY_2022_2_OR_NEWER
         protected override void ResetValues()
         {
             base.ResetValues();
             CacheSerializedProperites();
         }
+#endif
 
         private void CacheSerializedProperites()
         {

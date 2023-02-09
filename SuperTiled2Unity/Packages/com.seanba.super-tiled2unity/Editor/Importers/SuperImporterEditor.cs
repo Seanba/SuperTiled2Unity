@@ -118,7 +118,7 @@ namespace SuperTiled2Unity.Editor
 
                         if (GUILayout.Button("Reimport"))
                         {
-                            ApplyAndImport();
+                            InternalSaveChanges();
                         }
                     }
 
@@ -252,7 +252,7 @@ namespace SuperTiled2Unity.Editor
 
                 if (GUILayout.Button("Reimport"))
                 {
-                    ApplyAndImport();
+                    InternalSaveChanges();
                 }
             }
 
@@ -377,6 +377,15 @@ namespace SuperTiled2Unity.Editor
             // This is unfortunate but necessary under re-import edge conditions
             Selection.objects = new UnityEngine.Object[0];
             GUIUtility.ExitGUI();
+        }
+
+        private void InternalSaveChanges()
+        {
+#if UNITY_2022_2_OR_NEWER
+            SaveChanges(); // fixit - make sure this re-imports for us
+#else
+            ApplyAndImport();
+#endif
         }
     }
 }
