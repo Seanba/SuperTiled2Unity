@@ -188,7 +188,7 @@ namespace SuperTiled2Unity.Editor
                     continue;
                 }
 
-                // Finally, look for public fields
+                // Finally, look for fields
                 var csfield = FindFieldBySignature(comp, property.m_Name, objValue.GetType());
                 if (csfield != null)
                 {
@@ -200,7 +200,7 @@ namespace SuperTiled2Unity.Editor
 
         private static MethodInfo FindMethodBySignature(MonoBehaviour component, string name, Type paramType)
         {
-            return component.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public).Where(info =>
+            return component.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(info =>
             {
                 // Name must match
                 if (info.Name != name)
@@ -233,8 +233,7 @@ namespace SuperTiled2Unity.Editor
 
         private static PropertyInfo FindPropertyBySignature(MonoBehaviour component, string name, Type valueType)
         {
-            // Property must be public and instanced and writable
-            return component.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(
+            return component.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(
                 info =>
                 info.CanWrite &&
                 info.Name == name &&
@@ -244,7 +243,7 @@ namespace SuperTiled2Unity.Editor
 
         private static FieldInfo FindFieldBySignature(MonoBehaviour component, string name, Type valueType)
         {
-            return component.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public).Where(
+            return component.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(
                 info =>
                 !info.IsInitOnly &&
                 info.Name == name &&
