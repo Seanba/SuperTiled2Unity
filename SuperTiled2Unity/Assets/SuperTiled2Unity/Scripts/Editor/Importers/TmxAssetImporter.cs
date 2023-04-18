@@ -31,7 +31,7 @@ namespace SuperTiled2Unity.Editor
         public bool TilesAsObjects { get { return m_TilesAsObjects; } }
 
         [SerializeField]
-        private SortingMode m_SortingMode = SortingMode.Stacked;
+        private SortingMode m_SortingMode;
         public SortingMode SortingMode { get { return m_SortingMode; } }
 
         [SerializeField]
@@ -43,6 +43,23 @@ namespace SuperTiled2Unity.Editor
 
         [SerializeField]
         private List<SuperTileset> m_InternalTilesets;
+
+        override public void ApplyDefaultSettings()
+        {
+            base.ApplyDefaultSettings();
+            var settings = ST2USettings.GetOrCreateST2USettings();
+            m_SortingMode = settings.SortingMode;
+            EditorUtility.SetDirty(this);
+        }
+
+        override protected void WrapImportContext(UnityEditor.AssetImporters.AssetImportContext ctx) {
+            base.WrapImportContext(ctx);
+
+            if ((int)m_SortingMode == 0)
+            {
+                m_SortingMode = SuperImportContext.Settings.SortingMode;
+            }
+        }
 
         protected override void InternalOnImportAsset()
         {
