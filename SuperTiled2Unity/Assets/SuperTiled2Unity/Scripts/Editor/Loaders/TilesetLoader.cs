@@ -294,7 +294,7 @@ namespace SuperTiled2Unity.Editor
                     collision.m_ObjectType = xObject.GetAttributeAs("class", "");
                     //As of Tiled 1.9 types have been merged with classes
                     //As a simple way to support both version we can fall back like this to the old < 1.9 way
-                    if (string.IsNullOrWhiteSpace(collision.m_ObjectName))
+                    if (string.IsNullOrWhiteSpace(collision.m_ObjectType))
                         collision.m_ObjectType = xObject.GetAttributeAs("type", "");
                     collision.m_Position.x = xObject.GetAttributeAs("x", 0.0f);
                     collision.m_Position.y = xObject.GetAttributeAs("y", 0.0f);
