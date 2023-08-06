@@ -155,7 +155,6 @@ namespace SuperTiled2Unity.Editor
             AssignMaterial(renderer, m_CurrentTileLayer.m_TiledName);
             AssignTilemapSorting(renderer);
 
-#if UNITY_2018_3_OR_NEWER
             if (m_SortingMode == SortingMode.CustomSortAxis)
             {
                 renderer.mode = TilemapRenderer.Mode.Individual;
@@ -164,7 +163,6 @@ namespace SuperTiled2Unity.Editor
             {
                 renderer.mode = TilemapRenderer.Mode.Chunk;
             }
-#endif
             return renderer;
         }
 
@@ -331,13 +329,11 @@ namespace SuperTiled2Unity.Editor
                 tilemap.SetTile(pos3, tile);
                 tilemap.SetTransformMatrix(pos3, tile.GetTransformMatrix(tileId.FlipFlags, m_MapComponent.m_Orientation));
 
-#if UNITY_2018_3_OR_NEWER
                 if (tilemapRenderer.mode == TilemapRenderer.Mode.Individual)
                 {
                     // Each tile color must be set individually
                     tilemap.SetColor(pos3, tilemap.color);
                 }
-#endif
 
                 tilemap.SetTileFlags(pos3, TileFlags.LockAll);
             }

@@ -381,11 +381,7 @@ namespace SuperTiled2Unity.Editor
 
         private void InternalSaveChanges()
         {
-#if UNITY_2022_2_OR_NEWER
-            SaveChanges(); // fixit - make sure this re-imports for us
-#else
-            ApplyAndImport();
-#endif
+            SaveChanges();
         }
     }
 }

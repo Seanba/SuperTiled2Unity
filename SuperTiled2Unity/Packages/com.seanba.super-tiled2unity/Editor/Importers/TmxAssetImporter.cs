@@ -165,7 +165,6 @@ namespace SuperTiled2Unity.Editor
 
             switch (m_MapComponent.m_Orientation)
             {
-#if UNITY_2018_3_OR_NEWER
                 case MapOrientation.Isometric:
                     m_GridComponent.cellLayout = GridLayout.CellLayout.Isometric;
                     tilemapOffset = new Vector3(-sx * 0.5f, -sy, 0);
@@ -239,7 +238,7 @@ namespace SuperTiled2Unity.Editor
                         }
                     }
                     break;
-#endif
+
                 default:
                     m_GridComponent.cellLayout = GridLayout.CellLayout.Rectangle;
                     tilemapOffset = new Vector3(0, -sy, 0);

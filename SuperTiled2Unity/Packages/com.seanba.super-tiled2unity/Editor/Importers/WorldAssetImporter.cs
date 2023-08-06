@@ -4,12 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
-
-#if UNITY_2020_2_OR_NEWER
-using ScriptedImporterAttribute = UnityEditor.AssetImporters.ScriptedImporterAttribute;
-#else
-using ScriptedImporterAttribute = UnityEditor.Experimental.AssetImporters.ScriptedImporterAttribute;
-#endif
+using UnityEditor.AssetImporters;
 
 namespace SuperTiled2Unity.Editor
 {

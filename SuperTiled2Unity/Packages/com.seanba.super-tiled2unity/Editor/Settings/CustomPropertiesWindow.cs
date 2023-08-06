@@ -90,18 +90,9 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-#if UNITY_2018_1_OR_NEWER
         internal static void EditorGUILayout_ColorFieldNoEdit(GUIContent label, Color color)
         {
             EditorGUILayout.ColorField(label, color, false, true, false);
         }
-#else
-        private static ColorPickerHDRConfig m_DummyHDRConfig = new ColorPickerHDRConfig(0, 0, 0, 0);
-
-        internal static void EditorGUILayout_ColorFieldNoEdit(GUIContent label, Color color)
-        {
-            EditorGUILayout.ColorField(label, color, false, true, false, m_DummyHDRConfig);
-        }
-#endif
     }
 }
