@@ -229,8 +229,8 @@ namespace SuperTiled2Unity.Editor
                 // A tile may have a class associated with it
                 tile.m_Type = xTile.GetAttributeAs("class", "");
 
-                //As of Tiled 1.9 types have been merged with classes
-                //As a simple way to support both version we can fall back like this to the old < 1.9 way
+                // As of Tiled 1.9 types have been merged with classes
+                // As a simple way to support both version we can fall back like this to the old < 1.9 way
                 if (string.IsNullOrWhiteSpace(tile.m_Type))
                 {
                     tile.m_Type = xTile.GetAttributeAs("type", "");
@@ -293,7 +293,15 @@ namespace SuperTiled2Unity.Editor
 
                     collision.m_ObjectId = xObject.GetAttributeAs("id", 0);
                     collision.m_ObjectName = xObject.GetAttributeAs("name", string.Format("Object_{0}", collision.m_ObjectId));
-                    collision.m_ObjectType = xObject.GetAttributeAs("type", "");
+
+                    // As of Tiled 1.9 types have been merged with classes
+                    // As a simple way to support both version we can fall back like this to the old < 1.9 way
+                    collision.m_ObjectType = xObject.GetAttributeAs("class", "");
+                    if (string.IsNullOrWhiteSpace(collision.m_ObjectType))
+                    {
+                        collision.m_ObjectType = xObject.GetAttributeAs("type", "");
+                    }
+
                     collision.m_Position.x = xObject.GetAttributeAs("x", 0.0f);
                     collision.m_Position.y = xObject.GetAttributeAs("y", 0.0f);
                     collision.m_Size.x = xObject.GetAttributeAs("width", 0.0f);
