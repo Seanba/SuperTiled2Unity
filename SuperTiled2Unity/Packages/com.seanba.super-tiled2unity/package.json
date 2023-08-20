@@ -20,8 +20,8 @@
     "url": "https://seanba.com/"
   },
   "documentationUrl": "https://github.com/Seanba/SuperTiled2Unity/wiki",
-  "changelogUrl": "https://github.com/Seanba/SuperTiled2Unity/blob/package_refactor/SuperTiled2Unity/Packages/com.seanba.super-tiled2unity/CHANGELOG.md",
-  "licensesUrl": "https://github.com/Seanba/SuperTiled2Unity/blob/package_refactor/SuperTiled2Unity/Packages/com.seanba.super-tiled2unity/LICENSE.md",
+  "changelogUrl": "https://github.com/Seanba/SuperTiled2Unity/SuperTiled2Unity/Packages/com.seanba.super-tiled2unity/CHANGELOG.md",
+  "licensesUrl": "https://github.com/Seanba/SuperTiled2Unity/SuperTiled2Unity/Packages/com.seanba.super-tiled2unity/LICENSE.md",
   "samples": [
       {
           "displayName": "Overhead",
