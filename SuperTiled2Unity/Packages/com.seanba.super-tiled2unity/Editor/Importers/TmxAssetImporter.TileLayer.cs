@@ -327,7 +327,7 @@ namespace SuperTiled2Unity.Editor
             {
                 // Set the tile (sprite, transform matrix, flags)
                 tilemap.SetTile(pos3, tile);
-                tilemap.SetTransformMatrix(pos3, tile.GetTransformMatrix(tileId.FlipFlags, m_MapComponent.m_Orientation));
+                tilemap.SetTransformMatrix(pos3, tile.GetTransformMatrix(tileId.FlipFlags, m_MapComponent.m_Orientation)); // fixit - here is where additional offset and scale could go
 
                 if (tilemapRenderer.mode == TilemapRenderer.Mode.Individual)
                 {
