@@ -42,11 +42,13 @@ namespace SuperTiled2Unity.Editor
             base.OnEnable();
         }
 
+#if UNITY_2022_2_OR_NEWER
         public override void DiscardChanges()
         {
             base.DiscardChanges();
             CacheSerializedProperites();
         }
+#endif
 
         protected override void InternalOnInspectorGUI()
         {
