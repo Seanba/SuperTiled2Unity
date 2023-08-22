@@ -52,11 +52,13 @@ namespace SuperTiled2Unity.Editor
             m_ShowAtlasSettings.value = m_UseSpriteAtlas.boolValue;
         }
 
+#if UNITY_2022_2_OR_NEWER
         public override void DiscardChanges()
         {
             base.DiscardChanges();
             CacheSerializedProperites();
         }
+#endif
 
         private void CacheSerializedProperites()
         {

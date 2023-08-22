@@ -14,7 +14,7 @@ try
     Write-Host $output
 
     $compress = @{
-        Path = $package_dir
+        Path = "$package_dir/*"
         CompressionLevel = "Fastest"
         DestinationPath = $output
     }
