@@ -239,6 +239,8 @@ namespace SuperTiled2Unity.Editor
                 tile.m_TileOffsetX = m_TilesetScript.m_TileOffset.x;
                 tile.m_TileOffsetY = m_TilesetScript.m_TileOffset.y;
                 tile.m_ObjectAlignment = m_TilesetScript.m_ObjectAlignment;
+                tile.m_TileRenderSize = m_TilesetScript.m_TileRenderSize;
+                tile.m_FillMode = m_TilesetScript.m_FillMode;
 
                 m_TilesetScript.m_Tiles.Add(tile);
                 m_TiledAssetImporter.SuperImportContext.AddObjectToAsset(tileName, tile);

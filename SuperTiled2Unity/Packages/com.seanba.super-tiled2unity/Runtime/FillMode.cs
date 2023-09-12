@@ -1,4 +1,4 @@
-﻿namespace SuperTiled2Unity.Editor
+﻿namespace SuperTiled2Unity
 {
     public enum FillMode
     {

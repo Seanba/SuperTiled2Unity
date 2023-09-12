@@ -27,7 +27,7 @@ namespace SuperTiled2Unity.Editor
             var childPolygons = go.GetComponentsInChildren<PolygonCollider2D>();
             foreach (var poly in childPolygons)
             {
-                if (poly.usedByComposite == true)
+                if (poly.GetMergeWithComposite() == true)
                 {
                     Object.DestroyImmediate(poly.gameObject);
                 }
@@ -86,7 +86,7 @@ namespace SuperTiled2Unity.Editor
             var childPolygons = go.GetComponentsInChildren<PolygonCollider2D>();
             foreach (var poly in childPolygons)
             {
-                if (poly.usedByComposite == true)
+                if (poly.GetMergeWithComposite() == true)
                 {
                     super.AddPolygonShape(poly.GetPath(0));
                 }

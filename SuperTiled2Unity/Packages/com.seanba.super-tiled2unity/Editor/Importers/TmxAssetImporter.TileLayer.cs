@@ -168,8 +168,10 @@ namespace SuperTiled2Unity.Editor
 
         private void ProcessLayerDataChunk(GameObject goTilemap, Chunk chunk)
         {
+            Assert.IsNotNull(m_MapComponent);
+
             // Instantiate object to build all colliders for this chunk
-            m_CurrentCollisionBuilder = new CollisionBuilder(goTilemap, m_TilePolygonDatabase, SuperImportContext);
+            m_CurrentCollisionBuilder = new CollisionBuilder(goTilemap, m_TilePolygonDatabase, SuperImportContext, m_MapComponent);
 
             var tileIds = ReadTileIdsFromChunk(chunk);
             PlaceTiles(goTilemap, chunk, tileIds);
@@ -287,8 +289,7 @@ namespace SuperTiled2Unity.Editor
                 }
             }
 
-            Vector3 translate, rotate, scale;
-            tile.GetTRS(tileId.FlipFlags, m_MapComponent.m_Orientation, out translate, out rotate, out scale);
+            tile.GetTRS(tileId.FlipFlags, m_MapComponent.m_Orientation, m_MapComponent, out Vector3 translate, out Vector3 rotate, out Vector3 scale);
 
             var cellPos = superMap.CellPositionToLocalPosition(pos3.x, pos3.y, SuperImportContext);
             translate.x += cellPos.x;
@@ -328,8 +329,7 @@ namespace SuperTiled2Unity.Editor
                 // Set the tile (sprite, transform matrix, flags)
                 tilemap.SetTile(pos3, tile);
 
-                // fixit - here is where additional offset and scale could go
-                tilemap.SetTransformMatrix(pos3, tile.GetTransformMatrix(tileId.FlipFlags, m_MapComponent.m_Orientation));
+                tilemap.SetTransformMatrix(pos3, tile.GetTransformMatrix(tileId.FlipFlags, m_MapComponent));
 
                 if (tilemapRenderer.mode == TilemapRenderer.Mode.Individual)
                 {

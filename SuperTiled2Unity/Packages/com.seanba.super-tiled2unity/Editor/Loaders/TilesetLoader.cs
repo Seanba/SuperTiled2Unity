@@ -211,11 +211,6 @@ namespace SuperTiled2Unity.Editor
                     int tile_w = xTile.GetAttributeAs<int>("width", texture_w);
                     int tile_h = xTile.GetAttributeAs<int>("height", texture_h);
 
-                    // fixit - This subrect works but need to handle tileset properties 'Tile Render Size' and 'Fill Mode'
-                    // I think those properties need to go on each tile so they know how to rendered (dependent on map)
-                    // This might make matrix multiplcation stuff on the tile
-                    // Or maybe this can be handled with scaling the size and setting the offset?
-                    // fixit - don't forget to handle for tile-as-object too
                     var rcSource = new Rect(tile_x, tile_y, tile_w, tile_h);
                     atlas.AddTile(tileIndex, tex2d, rcSource);
                 }
