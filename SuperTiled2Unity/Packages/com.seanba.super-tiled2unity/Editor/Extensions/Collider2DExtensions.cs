@@ -6,7 +6,7 @@ namespace SuperTiled2Unity.Editor
     {
         public static void SetMergeWithComposite(this Collider2D collider2d, bool merge)
         {
-#if UNITY_2022_3_OR_NEWER
+#if UNITY_2023_1_OR_NEWER
             if (merge && !collider2d.compositeCapable)
             {
                 Debug.LogWarning($"Super Tiled2Unity warning: Collider2D '{collider2d.name}' is not composite capable");
@@ -19,7 +19,7 @@ namespace SuperTiled2Unity.Editor
 
         public static bool GetMergeWithComposite(this Collider2D collider2d)
         {
-#if UNITY_2022_3_OR_NEWER
+#if UNITY_2023_1_OR_NEWER
             return collider2d.compositeOperation == Collider2D.CompositeOperation.Merge;
 #else
             return collider2d.usedByComposite;
