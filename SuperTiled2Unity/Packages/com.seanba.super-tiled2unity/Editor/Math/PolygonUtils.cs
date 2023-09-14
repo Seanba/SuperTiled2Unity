@@ -36,7 +36,7 @@ namespace SuperTiled2Unity.Editor
                     go.AddChildWithUniqueName(goPolygon);
 
                     var polyCollider = goPolygon.AddComponent<PolygonCollider2D>();
-                    polyCollider.usedByComposite = true;
+                    polyCollider.SetMergeWithComposite(true);
                     polyCollider.SetPath(0, path);
 
                     polyCollider.gameObject.AddComponent<SuperColliderComponent>();

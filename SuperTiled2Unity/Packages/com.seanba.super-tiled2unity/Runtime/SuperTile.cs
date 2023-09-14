@@ -40,99 +40,34 @@ namespace SuperTiled2Unity
         [ReadOnly]
         public ObjectAlignment m_ObjectAlignment;
 
+        [ReadOnly]
+        public TileRenderSize m_TileRenderSize;
+
+        [ReadOnly]
+        public FillMode m_FillMode;
+
         public List<CustomProperty> m_CustomProperties;
 
         public List<CollisionObject> m_CollisionObjects;
 
-        public Matrix4x4 GetTransformMatrix(FlipFlags ff, MapOrientation orientation)
+        public Matrix4x4 GetTransformMatrix(FlipFlags flipFlags, SuperMap superMap)
         {
-            var inversePPU = 1.0f / m_Sprite.pixelsPerUnit;
-            var offset = new Vector2(m_TileOffsetX * inversePPU, -m_TileOffsetY * inversePPU);
-            var matOffset = Matrix4x4.Translate(offset);
-
-            if (ff == FlipFlags.None)
+            if (m_TileRenderSize == TileRenderSize.Tile && m_TileOffsetX == 0 && m_TileOffsetY == 0 && flipFlags == FlipFlags.None)
             {
-                return matOffset;
+                // No special transform needed for this tile
+                return Matrix4x4.identity;
             }
 
-            bool flipHorizontal = FlipFlagsMask.FlippedHorizontally(ff);
-            bool flipVertical = FlipFlagsMask.FlippedVertically(ff);
-            bool flipDiagonal = FlipFlagsMask.RotatedDiagonally(ff);
-            bool rotateHex120 = FlipFlagsMask.RotatedHexagonally120(ff);
+            var matOffset = CalculateTileOffsetMatrix();
+            var matFlip = CacluateFlipMatrix(flipFlags, superMap);
+            var matRenderSize = CalculateRenderSizeMatrix(superMap);
 
-            float width = m_Width * inversePPU;
-            float height = m_Height * inversePPU;
-
-            var tileCenter = new Vector2(width, height) * 0.5f;
-
-            Matrix4x4 matTransIn = Matrix4x4.identity;
-            Matrix4x4 matFlip = Matrix4x4.identity;
-            Matrix4x4 matTransOut = Matrix4x4.identity;
-
-            // Go to the tile center
-            matTransIn = Matrix4x4.Translate(-tileCenter);
-
-            if (orientation == MapOrientation.Hexagonal)
-            {
-                if (flipDiagonal)
-                {
-                    matFlip *= Rotate60Matrix;
-                }
-
-                if (rotateHex120)
-                {
-                    matFlip *= Rotate120Matrix;
-                }
-
-                if (flipHorizontal)
-                {
-                    matFlip *= HorizontalFlipMatrix;
-                }
-
-                if (flipVertical)
-                {
-                    matFlip *= VerticalFlipMatrix;
-                }
-
-                matTransOut = Matrix4x4.Translate(tileCenter);
-            }
-            else
-            {
-                if (flipHorizontal)
-                {
-                    matFlip *= HorizontalFlipMatrix;
-                }
-
-                if (flipVertical)
-                {
-                    matFlip *= VerticalFlipMatrix;
-                }
-
-                if (flipDiagonal)
-                {
-                    matFlip *= DiagonalFlipMatrix;
-                }
-
-                // Go out of the tile center
-                if (!flipDiagonal)
-                {
-                    matTransOut = Matrix4x4.Translate(tileCenter);
-                }
-                else
-                {
-                    // Compensate for width and height being different dimensions
-                    float diff = (height - width) * 0.5f;
-                    tileCenter.x += diff;
-                    tileCenter.y -= diff;
-                    matTransOut = Matrix4x4.Translate(tileCenter);
-                }
-            }
-
-            // Put it all together
-            return matOffset * matTransOut * matFlip * matTransIn;
+            return matOffset * matRenderSize * matFlip;
         }
 
-        public void GetTRS(FlipFlags flags, MapOrientation orientation, out Vector3 xfTranslate, out Vector3 xfRotate, out Vector3 xfScale)
+        // fixit - todo
+        // Update changelog
+        public void GetTRS(FlipFlags flags, MapOrientation orientation, SuperMap superMap, out Vector3 xfTranslate, out Vector3 xfRotate, out Vector3 xfScale)
         {
             float inversePPU = 1.0f / m_Sprite.pixelsPerUnit;
             float width = m_Width * inversePPU;
@@ -210,6 +145,35 @@ namespace SuperTiled2Unity
             // Each tile may have an additional offset
             xfTranslate.x += m_TileOffsetX * inversePPU;
             xfTranslate.y -= m_TileOffsetY * inversePPU;
+
+            if (m_TileRenderSize == TileRenderSize.Grid)
+            {
+                // Additional translation/scales needed for grid render size
+                float mapTileWidth = superMap.m_TileWidth * inversePPU;
+                float mapTileHeight = superMap.m_TileHeight * inversePPU;
+                float scale_w = mapTileWidth / width;
+                float scale_h = mapTileHeight / height;
+
+                if (m_FillMode == FillMode.Stretch)
+                {
+                    // The tile should be scaled to fill the grid cell
+                    xfScale.x *= scale_w;
+                    xfScale.y *= scale_h;
+                }
+                else if (m_FillMode == FillMode.Preserve_Aspect_Fit)
+                {
+                    // Scale the tile by the minimum amount needed to fill the grid cell along one axis
+                    float scale = Mathf.Min(scale_w, scale_h);
+                    xfScale.x *= scale;
+                    xfScale.y *= scale;
+
+                    // We also have to offset the tile so that is centered in the grid
+                    float offset_x = (mapTileWidth - scale * width) * 0.5f;
+                    float offset_y = (mapTileHeight - scale * height) * 0.5f;
+                    xfTranslate.x += offset_x;
+                    xfTranslate.y -= offset_y;
+                }
+            }
         }
 
         public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData)
@@ -227,6 +191,141 @@ namespace SuperTiled2Unity
                 return true;
             }
             return false;
+        }
+
+        private Matrix4x4 CalculateTileOffsetMatrix()
+        {
+            float inversePPU = 1.0f / m_Sprite.pixelsPerUnit;
+            var offset = new Vector2(m_TileOffsetX * inversePPU, -m_TileOffsetY * inversePPU);
+            var matOffset = Matrix4x4.Translate(offset);
+            return matOffset;
+        }
+
+        private Matrix4x4 CalculateRenderSizeMatrix(SuperMap superMap)
+        {
+            if (m_TileRenderSize == TileRenderSize.Tile)
+            {
+                // No need to offset and/or scale the tile to fit into the map grid
+                return Matrix4x4.identity;
+            }
+
+            // Todo: Render size'd tiles don't look right when they are rotated but I don't think they look right in Tiled either
+
+            var matRenderSizeOffset = Matrix4x4.identity;
+            var matRenderSizeScale = Matrix4x4.identity;
+
+            float inversePPU = 1.0f / m_Sprite.pixelsPerUnit;
+            float mapTileWidth = superMap.m_TileWidth * inversePPU;
+            float mapTileHeight = superMap.m_TileHeight * inversePPU;
+            float width = m_Width * inversePPU;
+            float height = m_Height * inversePPU;
+
+            float scale_w = mapTileWidth / width;
+            float scale_h = mapTileHeight / height;
+
+            if (m_FillMode == FillMode.Stretch)
+            {
+                // The tile should be scaled to fill the grid cell
+                matRenderSizeScale = Matrix4x4.Scale(new Vector3(scale_w, scale_h, 1));
+            }
+            else if (m_FillMode == FillMode.Preserve_Aspect_Fit)
+            {
+                // Scale the tile by the minimum amount needed to fill the grid cell along one axis
+                float scale = Mathf.Min(scale_w, scale_h);
+                matRenderSizeScale = Matrix4x4.Scale(new Vector3(scale, scale, 1));
+
+                // We also have to offset the tile so that is centered in the grid
+                float offset_x = (mapTileWidth - scale * width) * 0.5f;
+                float offset_y = (mapTileHeight - scale * height) * 0.5f;
+                matRenderSizeOffset = Matrix4x4.Translate(new Vector3(offset_x, -offset_y, 0));
+            }
+
+            return matRenderSizeOffset * matRenderSizeScale;
+        }
+
+        private Matrix4x4 CacluateFlipMatrix(FlipFlags flags, SuperMap superMap)
+        {
+            if (flags == FlipFlags.None)
+            {
+                // Not flipping
+                return Matrix4x4.identity;
+            }
+
+            float inversePPU = 1.0f / m_Sprite.pixelsPerUnit;
+
+            bool flipHorizontal = FlipFlagsMask.FlippedHorizontally(flags);
+            bool flipVertical = FlipFlagsMask.FlippedVertically(flags);
+            bool flipDiagonal = FlipFlagsMask.RotatedDiagonally(flags);
+            bool rotateHex120 = FlipFlagsMask.RotatedHexagonally120(flags);
+
+            float width = m_Width * inversePPU;
+            float height = m_Height * inversePPU;
+            var tileCenter = new Vector2(width, height) * 0.5f;
+
+            Matrix4x4 matTransIn = Matrix4x4.identity;
+            Matrix4x4 matFlip = Matrix4x4.identity;
+            Matrix4x4 matTransOut = Matrix4x4.identity;
+
+            // Go to the tile center
+            matTransIn = Matrix4x4.Translate(-tileCenter);
+
+            if (superMap.m_Orientation == MapOrientation.Hexagonal)
+            {
+                if (flipDiagonal)
+                {
+                    matFlip *= Rotate60Matrix;
+                }
+
+                if (rotateHex120)
+                {
+                    matFlip *= Rotate120Matrix;
+                }
+
+                if (flipHorizontal)
+                {
+                    matFlip *= HorizontalFlipMatrix;
+                }
+
+                if (flipVertical)
+                {
+                    matFlip *= VerticalFlipMatrix;
+                }
+
+                matTransOut = Matrix4x4.Translate(tileCenter);
+            }
+            else
+            {
+                if (flipHorizontal)
+                {
+                    matFlip *= HorizontalFlipMatrix;
+                }
+
+                if (flipVertical)
+                {
+                    matFlip *= VerticalFlipMatrix;
+                }
+
+                if (flipDiagonal)
+                {
+                    matFlip *= DiagonalFlipMatrix;
+                }
+
+                // Go off of the tile center
+                if (!flipDiagonal)
+                {
+                    matTransOut = Matrix4x4.Translate(tileCenter);
+                }
+                else
+                {
+                    // Compensate for width and height being different dimensions
+                    float diff = (height - width) * 0.5f;
+                    tileCenter.x += diff;
+                    tileCenter.y -= diff;
+                    matTransOut = Matrix4x4.Translate(tileCenter);
+                }
+            }
+
+            return matTransOut * matFlip * matTransIn;
         }
     }
 }

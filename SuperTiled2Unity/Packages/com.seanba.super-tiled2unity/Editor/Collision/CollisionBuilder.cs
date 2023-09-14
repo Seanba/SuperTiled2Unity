@@ -7,16 +7,18 @@ namespace SuperTiled2Unity.Editor
     // Tile Layer importer uses CollisionBuilder to combine all like-minded collision objects together
     public class CollisionBuilder
     {
-        private GameObject m_TilemapGameObject;
-        private Dictionary<uint, TilePolygonCollection> m_TilePolygonDatabase;
-        private Dictionary<CollisionClipperKey, CollisionClipper> m_CollisionClippers = new Dictionary<CollisionClipperKey, CollisionClipper>();
-        private SuperImportContext m_ImportContext;
+        private readonly GameObject m_TilemapGameObject;
+        private readonly Dictionary<uint, TilePolygonCollection> m_TilePolygonDatabase;
+        private readonly Dictionary<CollisionClipperKey, CollisionClipper> m_CollisionClippers = new Dictionary<CollisionClipperKey, CollisionClipper>();
+        private readonly SuperImportContext m_ImportContext;
+        private readonly SuperMap m_MapComponent;
 
-        public CollisionBuilder(GameObject goTilemap, Dictionary<uint, TilePolygonCollection> tilePolygonDatabase, SuperImportContext importContext)
+        public CollisionBuilder(GameObject goTilemap, Dictionary<uint, TilePolygonCollection> tilePolygonDatabase, SuperImportContext importContext, SuperMap mapComponent)
         {
             m_TilemapGameObject = goTilemap;
             m_TilePolygonDatabase = tilePolygonDatabase;
             m_ImportContext = importContext;
+            m_MapComponent = mapComponent;
         }
 
         public void PlaceTileColliders(SuperMap map, SuperTile tile, TileIdMath tileId, Vector3Int pos)
@@ -24,7 +26,7 @@ namespace SuperTiled2Unity.Editor
             // Do we have any collider objects defined for this tile?
             if (!tile.m_CollisionObjects.IsEmpty())
             {
-                var polygons = AcquireTilePolygonCollection(tile, tileId, map.m_Orientation);
+                var polygons = AcquireTilePolygonCollection(tile, tileId);
 
                 foreach (var poly in polygons.Polygons)
                 {
@@ -106,7 +108,7 @@ namespace SuperTiled2Unity.Editor
                         goCollider.AddChildWithUniqueName(goPolygon);
 
                         var polyCollider = goPolygon.AddComponent<PolygonCollider2D>();
-                        polyCollider.usedByComposite = true;
+                        polyCollider.SetMergeWithComposite(true);
                         polyCollider.SetPath(0, path);
                         polyCollider.gameObject.AddComponent<SuperColliderComponent>();
                     }
@@ -128,7 +130,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private TilePolygonCollection AcquireTilePolygonCollection(SuperTile tile, TileIdMath tileId, MapOrientation orientation)
+        private TilePolygonCollection AcquireTilePolygonCollection(SuperTile tile, TileIdMath tileId)
         {
             TilePolygonCollection polygons;
             if (m_TilePolygonDatabase.TryGetValue(tileId.ImportedlTileId, out polygons))
@@ -137,7 +139,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             // If we're here then we don't have a polygon collection for this tile yet
-            polygons = new TilePolygonCollection(tile, tileId, m_ImportContext, orientation);
+            polygons = new TilePolygonCollection(tile, tileId, m_ImportContext, m_MapComponent);
             m_TilePolygonDatabase.Add(tileId.ImportedlTileId, polygons);
             return polygons;
         }

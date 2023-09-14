@@ -45,6 +45,12 @@ namespace SuperTiled2Unity.Editor
         [ReadOnly]
         public ObjectAlignment m_ObjectAlignment;
 
+        [ReadOnly]
+        public TileRenderSize m_TileRenderSize;
+
+        [ReadOnly]
+        public FillMode m_FillMode;
+
         public List<CustomProperty> m_CustomProperties;
 
         [ReadOnly]

@@ -54,6 +54,8 @@ namespace SuperTiled2Unity.Editor
             m_TilesetScript.m_TileCount = xTileset.GetAttributeAs<int>("tilecount");
             m_TilesetScript.m_TileColumns = xTileset.GetAttributeAs<int>("columns");
             m_TilesetScript.m_ObjectAlignment = xTileset.GetAttributeAs<ObjectAlignment>("objectalignment", ObjectAlignment.Unspecified);
+            m_TilesetScript.m_TileRenderSize = xTileset.GetAttributeAs<TileRenderSize>("tilerendersize", TileRenderSize.Tile);
+            m_TilesetScript.m_FillMode = xTileset.GetAttributeAs<FillMode>("fillmode", FillMode.Stretch);
 
             var xTileOffset = xTileset.Element("tileoffset");
             if (xTileOffset != null)
@@ -182,8 +184,8 @@ namespace SuperTiled2Unity.Editor
                 if (xImage != null)
                 {
                     string textureAssetPath = xImage.GetAttributeAs<string>("source");
-                    int textureWidth = xImage.GetAttributeAs<int>("width");
-                    int textureHeight = xImage.GetAttributeAs<int>("height");
+                    int texture_w = xImage.GetAttributeAs<int>("width");
+                    int texture_h = xImage.GetAttributeAs<int>("height");
 
                     // Load the texture. We will make sprites and tiles out of this image.
                     var tex2d = m_Importer.RequestAssetAtPath<Texture2D>(textureAssetPath);
@@ -195,16 +197,21 @@ namespace SuperTiled2Unity.Editor
                         return;
                     }
 
-                    if (tex2d.width < textureWidth || tex2d.height < textureHeight)
+                    if (tex2d.width < texture_w || tex2d.height < texture_h)
                     {
                         // Texture was not imported into Unity correctly
-                        var max = Mathf.Max(textureWidth, textureHeight);
+                        var max = Mathf.Max(texture_w, texture_h);
                         m_Importer.ReportError("Texture was imported at a smaller size. Make sure 'Max Size' on '{0}' is at least '{1}'", textureAssetPath, max);
                         m_TilesetScript.m_HasErrors = true;
                         return;
                     }
 
-                    var rcSource = new Rect(0, 0, tex2d.width, tex2d.height);
+                    int tile_x = xTile.GetAttributeAs<int>("x", 0);
+                    int tile_y = xTile.GetAttributeAs<int>("y", 0);
+                    int tile_w = xTile.GetAttributeAs<int>("width", texture_w);
+                    int tile_h = xTile.GetAttributeAs<int>("height", texture_h);
+
+                    var rcSource = new Rect(tile_x, tile_y, tile_w, tile_h);
                     atlas.AddTile(tileIndex, tex2d, rcSource);
                 }
             }

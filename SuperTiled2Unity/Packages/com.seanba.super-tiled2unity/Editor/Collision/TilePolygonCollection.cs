@@ -11,22 +11,22 @@ namespace SuperTiled2Unity.Editor
         private static readonly Matrix4x4 VerticalFlipMatrix = MatrixUtils.Rotate2d(1, 0, 0, -1);
         private static readonly Matrix4x4 DiagonalFlipMatrix = MatrixUtils.Rotate2d(0, -1, -1, 0);
 
-        private SuperTile m_Tile;
-        private TileIdMath m_TileId;
-        private Matrix4x4 m_Transform;
+        private readonly SuperTile m_Tile;
+        private readonly TileIdMath m_TileId;
+        private readonly Matrix4x4 m_Transform;
 
         private List<TilePolygon> m_Polygons = new List<TilePolygon>();
 
         private SuperImportContext m_ImportContext;
 
-        public TilePolygonCollection(SuperTile tile, TileIdMath tileId, SuperImportContext importContext, MapOrientation orientation)
+        public TilePolygonCollection(SuperTile tile, TileIdMath tileId, SuperImportContext importContext, SuperMap mapComponent)
         {
             m_ImportContext = importContext;
 
             m_Tile = tile;
             m_TileId = tileId;
 
-            m_Transform = m_Tile.GetTransformMatrix(m_TileId.FlipFlags, orientation);
+            m_Transform = m_Tile.GetTransformMatrix(m_TileId.FlipFlags, mapComponent);
 
             CollectTilePolygons();
         }

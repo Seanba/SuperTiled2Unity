@@ -23,7 +23,7 @@ MonoBehaviour:
     m_Material: {fileID: 0}
   m_ObjectTypesXml: {fileID: 0}
   m_ParseXmlError: 
-  m_CollisionGeometryType: 0
+  m_CollisionGeometryType: 1
   m_LayerColors:
   - {r: 0.27450982, g: 0.50980395, b: 0.7058824, a: 1}
   - {r: 1, g: 0.3882353, b: 0.2784314, a: 1}

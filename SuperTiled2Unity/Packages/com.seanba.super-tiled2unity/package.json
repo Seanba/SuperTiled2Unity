@@ -1,6 +1,6 @@
 {
   "name": "com.seanba.super-tiled2unity",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "displayName": "Super Tiled2Unity",
   "description": "Imports Tiled Map Editor assets into Unity",
   "unity": "2020.3",
@@ -8,8 +8,8 @@
     "com.unity.modules.animation": "1.0.0",
     "com.unity.modules.physics2d": "1.0.0",
     "com.unity.modules.tilemap": "1.0.0"
- },
- "keywords": [
+  },
+  "keywords": [
     "Tiled",
     "Importer",
     "Plugin"
@@ -23,10 +23,10 @@
   "changelogUrl": "https://github.com/Seanba/SuperTiled2Unity/blob/master/SuperTiled2Unity/Packages/com.seanba.super-tiled2unity/CHANGELOG.md",
   "licensesUrl": "https://github.com/Seanba/SuperTiled2Unity/blob/master/SuperTiled2Unity/Packages/com.seanba.super-tiled2unity/LICENSE.md",
   "samples": [
-      {
-          "displayName": "Overhead",
-          "description": "Simple overhead map. Uses a custom depth sort axis for sprite that can move behind columns.",
-          "path": "Samples~/Overhead"
-      }
+    {
+      "displayName": "Overhead",
+      "description": "Simple overhead map. Uses a custom depth sort axis for sprite that can move behind columns.",
+      "path": "Samples~/Overhead"
+    }
   ]
 }
