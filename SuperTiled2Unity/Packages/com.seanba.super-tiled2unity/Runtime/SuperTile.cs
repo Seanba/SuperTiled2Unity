@@ -65,7 +65,8 @@ namespace SuperTiled2Unity
             return matOffset * matRenderSize * matFlip;
         }
 
-        // fixit - changes to samples have to be made in project folder
+        // fixit - todo
+        // Update changelog
         public void GetTRS(FlipFlags flags, MapOrientation orientation, SuperMap superMap, out Vector3 xfTranslate, out Vector3 xfRotate, out Vector3 xfScale)
         {
             float inversePPU = 1.0f / m_Sprite.pixelsPerUnit;
