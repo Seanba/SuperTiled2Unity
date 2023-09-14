@@ -1,5 +1,8 @@
 # Changelog
 
+## [2.1.1] - 2023-09-14
+- Bug fix: Compile errors in Collider2DExtensions.cs fixed for Unity 2022.3.9
+
 ## [2.1.0] - 2023-09-13
 - Feature: Tileset Image Collection Subrects are now supported
 - Bug fix: Compiler warnings for Unity Version 2022.3 and newer fixed
