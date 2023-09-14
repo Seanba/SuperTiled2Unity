@@ -45,7 +45,11 @@ namespace MegaDad
             SetOverheadCamera();
 
             // Find the position on the game map we're supposed to spawn at
+#if UNITY_2023_1_OR_NEWER
+            var spawner = FindObjectsByType<SuperTiled2Unity.SuperObject>(FindObjectsSortMode.None).FirstOrDefault(s => s.m_TiledName == "Spawn");
+#else
             var spawner = FindObjectsOfType<SuperTiled2Unity.SuperObject>().FirstOrDefault(s => s.m_TiledName == "Spawn");
+#endif
             if (spawner != null)
             {
                 m_SpawnPoint = spawner.transform.position;
