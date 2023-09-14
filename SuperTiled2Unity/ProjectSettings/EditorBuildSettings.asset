@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: 
     guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Samples/Super Tiled2Unity/2.0.1/Overhead/overhead.unity
+    path: Assets/Samples/Super Tiled2Unity/2.1.0/Overhead/overhead.unity
     guid: 834ee709162f89a4ba9e99a106fc2c00
   m_configObjects: {}
