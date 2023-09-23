@@ -1391,10 +1391,10 @@ ScriptedImporter:
   missingSortingLayers: []
   missingLayers: []
   missingTags: []
-  importerVersion: 14
+  importerVersion: 15
   pixelsPerUnit: 1
   edgesPerEllipse: 32
-  numberOfObjectsImported: 459
-  useSpriteAtlas: 1
+  numberOfObjectsImported: 458
+  useSpriteAtlas: 0
   atlasWidth: 512
   atlasHeight: 512

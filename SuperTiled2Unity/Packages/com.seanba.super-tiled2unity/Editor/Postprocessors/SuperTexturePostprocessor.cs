@@ -7,6 +7,9 @@ namespace SuperTiled2Unity.Editor
     {
         private void OnPreprocessTexture()
         {
+            // fixit - The texture knows if it is referenced by Tiled assets here
+            //TiledAssetDependencies.Instance.GetAssetDependencies(assetImporter.assetPath, out AssetDependencies depends)
+
             if (assetImporter.importSettingsMissing)
             {
                 // The texture is being imported for the first time

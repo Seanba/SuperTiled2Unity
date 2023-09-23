@@ -225,14 +225,14 @@ namespace SuperTiled2Unity.Editor
                 var sprite = Sprite.Create(t.PreferredTexture2D, t.PreferredRectangle, Vector2.zero, ppu);
 
                 sprite.name = spriteName;
-                sprite.hideFlags = HideFlags.HideInHierarchy;
+                //sprite.hideFlags = HideFlags.HideInHierarchy; // fixit - for now show all sprites but they should be added to texture importer
                 m_TiledAssetImporter.SuperImportContext.AddObjectToAsset(spriteName, sprite);
 
                 // Create the tile that uses the sprite
                 var tile = ScriptableObject.CreateInstance<SuperTile>();
                 tile.m_TileId = t.Index;
                 tile.name = tileName;
-                tile.hideFlags = HideFlags.HideInHierarchy;
+                //tile.hideFlags = HideFlags.HideInHierarchy; // fixit - for now show all tiles
                 tile.m_Sprite = sprite;
                 tile.m_Width = t.SourceRectangle.width;
                 tile.m_Height = t.SourceRectangle.height;

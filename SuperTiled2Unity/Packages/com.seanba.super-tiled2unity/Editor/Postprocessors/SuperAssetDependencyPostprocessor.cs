@@ -10,7 +10,7 @@ namespace SuperTiled2Unity.Editor
             // Refresh dependencies for our imported object
             foreach (var assetPath in importedAssets)
             {
-                if (assetPath.StartsWith("Assets", StringComparison.OrdinalIgnoreCase))
+                if (assetPath.StartsWith("Assets/", StringComparison.OrdinalIgnoreCase))
                 {
                     TiledAssetDependencies.Instance.TrackDependencies(assetPath);
                 }

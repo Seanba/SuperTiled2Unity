@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace SuperTiled2Unity.Editor
+namespace SuperTiled2Unity
 {
     public class SuperTileset : ScriptableObject
     {
