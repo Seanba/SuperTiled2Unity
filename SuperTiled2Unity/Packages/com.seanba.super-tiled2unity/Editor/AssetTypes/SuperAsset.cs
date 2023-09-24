@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor.AssetImporters;
 using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
 {
-    // SuperAssets give us the ability to search for Tiled asset types
+    // SuperAsset classes give us the ability to search for Tiled asset types
+    // They also keep track of references and dependencies
     public class SuperAsset : ScriptableObject
     {
         [SerializeField]

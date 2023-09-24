@@ -606,7 +606,17 @@ ScriptedImporter:
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 1fa25d03934ea624a82bf2fcee6f0873, type: 3}
   missingFiles: []
-  errors: []
+  errors:
+  - Could not find tile 193. Make sure the tilesets were successfully imported.
+  - Could not find tile 205. Make sure the tilesets were successfully imported.
+  - Could not find tile 25. Make sure the tilesets were successfully imported.
+  - Could not find tile 26. Make sure the tilesets were successfully imported.
+  - Could not find tile 37. Make sure the tilesets were successfully imported.
+  - Could not find tile 1. Make sure the tilesets were successfully imported.
+  - Could not find tile 38. Make sure the tilesets were successfully imported.
+  - Could not find tile 49. Make sure the tilesets were successfully imported.
+  - Could not find tile 123. Make sure the tilesets were successfully imported.
+  - Could not find tile 50. Make sure the tilesets were successfully imported.
   warnings: []
   missingSortingLayers: []
   missingLayers: []

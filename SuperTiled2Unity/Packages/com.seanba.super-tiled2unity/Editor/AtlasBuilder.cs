@@ -229,7 +229,7 @@ namespace SuperTiled2Unity.Editor
                 //sprite.hideFlags = HideFlags.HideInHierarchy; // fixit - for now show all sprites but they should be added to texture importer
                 m_TiledAssetImporter.SuperImportContext.AddObjectToAsset(spriteName, sprite);
 
-                // Create the tile that uses the sprite
+                // Create the tile that uses the sprite // fixit - so stupid that the AtlasBuilder is responsible for creating tiles, ffs
                 var tile = ScriptableObject.CreateInstance<SuperTile>();
                 tile.m_TileId = t.Index;
                 tile.name = tileName;
