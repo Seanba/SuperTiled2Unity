@@ -38,7 +38,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             ProcessAttributes(xTileset);
-            BuildTileset(xTileset);
+            BuildTileset(xTileset); // fixit - get sprites for tiles from textures before processing the elements. Here we decide to carry on or wait for textures to re-import.
             ProcessTileElements(xTileset);
 
             return true;
@@ -80,12 +80,14 @@ namespace SuperTiled2Unity.Editor
 
         private void BuildTileset(XElement xTileset)
         {
+            //SpriteRect rect = new SpriteRect(); // fixit
+
             // Build the initial database of tiles and the image components that make them
             // There are two ways that our collection of tiles can be created from images
             // 1) From one image broken down into parts (many tiles in one image)
             // 2) From a collection of images (one tile per image)
 
-            var atlas = new AtlasBuilder(m_Importer, m_UseSpriteAtlas, (int)m_AtlasWidth, (int)m_AtlasHeight, m_TilesetScript);
+            var atlas = new AtlasBuilder(m_Importer, m_UseSpriteAtlas, (int)m_AtlasWidth, (int)m_AtlasHeight, m_TilesetScript); // fixit - this stupid AtlasBuilder class. What was I thinking?
 
             if (xTileset.Element("image") != null)
             {
@@ -162,13 +164,13 @@ namespace SuperTiled2Unity.Editor
 
                 if (srcy < 0)
                 {
-                    // This is an edge condition in Tiled if a tileset's texture may have been resized
+                    // This is an edge condition in Tiled if a tileset's texture has been resized
                     break;
                 }
 
                 // Add the tile to our atlas
                 Rect rcSource = new Rect(srcx, srcy, m_TilesetScript.m_TileWidth, m_TilesetScript.m_TileHeight);
-                atlas.AddTile(i, tex2d, rcSource);
+                atlas.AddTile(i, tex2d, rcSource); // fixit - tile from piece of tileset 
             }
         }
 
@@ -212,7 +214,7 @@ namespace SuperTiled2Unity.Editor
                     int tile_h = xTile.GetAttributeAs<int>("height", texture_h);
 
                     var rcSource = new Rect(tile_x, tile_y, tile_w, tile_h);
-                    atlas.AddTile(tileIndex, tex2d, rcSource);
+                    atlas.AddTile(tileIndex, tex2d, rcSource); // fixit - one tile made from one image
                 }
             }
         }

@@ -11,6 +11,7 @@ namespace SuperTiled2Unity.Editor
     // Creates a group of texture atlases for tiles
     // This is our best defense against visual artifacts for maps built on tiles
     // Users can decide in the TSX import settings to forgo atlases or use their own
+    // fixit - this class must be eventually removed as well as the code it uses to write textures
     public class AtlasBuilder
     {
         private class AtlasTile
@@ -60,7 +61,7 @@ namespace SuperTiled2Unity.Editor
             m_TilesetScript = tilesetScript;
         }
 
-        public void AddTile(int index, Texture2D texSource, Rect rcSource)
+        public void AddTile(int index, Texture2D texSource, Rect rcSource) // fixit - AddTile provides guidance on how sprites are mode from a source texture
         {
             var atlasTile = new AtlasTile
             {

@@ -2,7 +2,8 @@
     "name": "Super Tiled2Unity Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:06e56dbbb8dec4d43a0b85b0fe0dd0ca"
+        "GUID:06e56dbbb8dec4d43a0b85b0fe0dd0ca",
+        "GUID:2c573e6b271651846a79655161004c5b"
     ],
     "includePlatforms": [
         "Editor"
