@@ -10,7 +10,10 @@ namespace SuperTiled2Unity
     public class SpriteRectsPerTexture
     {
         [SerializeField]
-        public Texture2D m_Texture2D;
+        public Texture2D m_Texture2D; // fixit - don't think this works because it is nulled out while texture is (re)imported
+
+        [SerializeField]
+        public string m_TextureAssetPath;
 
         [SerializeField]
         public List<SpriteRect> m_SpriteRects = new List<SpriteRect>();

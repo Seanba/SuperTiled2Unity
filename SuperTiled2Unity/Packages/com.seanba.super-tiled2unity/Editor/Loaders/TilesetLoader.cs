@@ -137,6 +137,7 @@ namespace SuperTiled2Unity.Editor
             // The texture has passed our checks
             var spriteRectsPerTexture = new SpriteRectsPerTexture();
             spriteRectsPerTexture.m_Texture2D = texture2d;
+            spriteRectsPerTexture.m_TextureAssetPath = AssetDatabase.GetAssetPath(texture2d);
             tilesetSpriteData.m_SpriteRectsPerTextures.Add(spriteRectsPerTexture);
 
             for (int i = 0; i < m_SuperTileset.m_TileCount; i++)
