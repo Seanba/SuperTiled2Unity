@@ -1,10 +1,19 @@
 ﻿using System;
 using UnityEngine;
 
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading;
+
+
 namespace SuperTiled2Unity.Editor
 {
     public static class StringExtensions
     {
+        private static readonly char[] SeparatorArray = new char[] { '/' };
+
         public static bool IsNullOrWhiteSpace(this string value)
         {
 #if NET_LEGACY
@@ -35,7 +44,13 @@ namespace SuperTiled2Unity.Editor
                 return string.Empty;
             }
 
-            return path.Replace('\\', '/');
+            // Only forward slashes
+            path = path.Replace('\\', '/');
+
+            // Remove repeated slashes, slash at start, and slash at end
+            path = string.Join("/", path.Split(SeparatorArray, StringSplitOptions.RemoveEmptyEntries));
+
+            return path;
         }
 
         public static void CopyToClipboard(this string str)

@@ -49,7 +49,7 @@ namespace SuperTiled2Unity
 
         private void Start()
         {
-            // This is a hack so that Unity does not falsely report prefab instance differences from our importer map
+            // This is a hack so that Unity does not falsely report prefab instance differences from our importer map // fixit - still needed?
             // Look for where renderer.detectChunkCullingBounds is set to Manual in the importer code which is the other part of this hack
             foreach (var renderer in GetComponentsInChildren<TilemapRenderer>())
             {

@@ -5,6 +5,7 @@ using UnityEngine;
 namespace SuperTiled2Unity.Editor
 {
     // fixit - note that 2021.2 or newer has some special needs: https://docs.unity3d.com/Packages/com.unity.2d.sprite@1.0/manual/DataProvider.html
+    // fixit - see this for cutting up sprites: https://docs.unity3d.com/Manual/Sprite-data-provider-api.html
     public class SuperTexturePostprocessor : AssetPostprocessor
     {
         private void OnPreprocessTexture()
@@ -26,39 +27,14 @@ namespace SuperTiled2Unity.Editor
                 textureImporter.SetTextureSettings(settings);
             }
 
-            //ApplySpriteDataProvider();
-        }
+            // fixit - handle a texture being moved
+            // fixit - handle changes to the tileset/map that force the texture to be re-imported (need to know when texture should be imported)
 
-        private void ApplySpriteDataProvider()
-        {
-            // fixit - The texture knows if it is referenced by Tiled assets here
-            if (TiledAssetDependencies.Instance.GetAssetDependencies(assetImporter.assetPath, out AssetDependencies depends))
-            {
-                foreach (var referenceAssetpath in depends.References)
-                {
-                    var tilesetSpriteData = AssetDatabase.LoadAssetAtPath<TilesetSpriteData>(referenceAssetpath);
-                    if (tilesetSpriteData != null)
-                    {
-                        Debug.Log($"fixit - found referenceAssetpath = {referenceAssetpath}, texture = {tilesetSpriteData.m_SpriteRectsPerTextures[0].m_Texture2D}");
-                    }
-                }
-            }
 
-            /*
-            var factory = new SpriteDataProviderFactories();
-            factory.Init();
-            var dataProvider = factory.GetSpriteEditorDataProviderFromObject(assetImporter);
-            dataProvider.InitSpriteEditorDataProvider();
-
-            // fixit testing
-            SpriteRect spriteRect = new SpriteRect();
-            spriteRect.alignment = SpriteAlignment.BottomLeft;
-            spriteRect.name = "MySprite32";
-            spriteRect.rect = new Rect(Vector2.zero, new Vector2(32, 32));
-            dataProvider.SetSpriteRects(new SpriteRect[] { spriteRect });
-
-            dataProvider.Apply();
-            */
+            // Get the list of sprite rects that our Tiled tilesets expect us to have
+            // Remove old ST2U sprite rects that are no longer needed
+            // Add new ST2U sprite rects
+            SpriteRectsManager.Instance.GetSpriteRectsForTexture(assetPath);
         }
     }
 }

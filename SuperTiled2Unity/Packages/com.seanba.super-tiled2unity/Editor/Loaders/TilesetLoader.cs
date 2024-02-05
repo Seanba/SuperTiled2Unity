@@ -38,17 +38,8 @@ namespace SuperTiled2Unity.Editor
             }
 
             ProcessAttributes(xTileset);
-
-            // fixit - Fill out TilesetSpriteData
-            // Keep track of textures that must be re-imported and put ourselves into a lightweight imported state
-            ProcessTilesetSpriteData(xTileset);
-
-            // fixit    - get sprites for tiles from textures before processing the elements. Here we decide to carry on or wait for textures to re-import.
-            //          - I think the TilesetSpriteData can help us with BuildTileset too
-            //BuildTileset(xTileset);
-
-            // fixit - process elements once the Tileset is built up again
-            //ProcessTileElements(xTileset);
+            BuildTileset(xTileset);
+            ProcessTileElements(xTileset);
             return true;
         }
 
@@ -86,95 +77,6 @@ namespace SuperTiled2Unity.Editor
             m_SuperTileset.m_CustomProperties = CustomPropertyLoader.LoadCustomPropertyList(xTileset.Element("properties"));
         }
 
-        private void ProcessTilesetSpriteData(XElement xTileset)
-        {
-            if (xTileset.Element("image") == null)
-            {
-                return; // fixit - just handle single image for now
-            }
-
-            m_SuperTileset.m_IsImageCollection = false;
-
-            var tilesetSpriteData = ScriptableObject.CreateInstance<TilesetSpriteData>();
-            tilesetSpriteData.name = nameof(TilesetSpriteData);
-
-            XElement xImage = xTileset.Element("image");
-            string textureAssetPath = xImage.GetAttributeAs<string>("source");
-            int textureWidth = xImage.GetAttributeAs<int>("width");
-            int textureHeight = xImage.GetAttributeAs<int>("height");
-
-            // Load the texture. We will make sprites and tiles out of this image.
-            var texture2d = m_Importer.RequestAssetAtPath<Texture2D>(textureAssetPath);
-            if (texture2d == null)
-            {
-                // Texture was not found so report the error to the importer UI and bail
-                m_Importer.ReportError("Missing texture asset: {0}", textureAssetPath);
-                m_SuperTileset.m_HasErrors = true;
-                return;
-            }
-
-            // This is annoying: A tileset may have recently changed but Tiled hasn't been updated on the status yet
-            var texAssetPath = AssetDatabase.GetAssetPath(texture2d);
-            var texFullPath = Path.GetFullPath(texAssetPath);
-            var imgHeaderDims = ImageHeader.GetDimensions(texFullPath);
-            if (imgHeaderDims.x != textureWidth || imgHeaderDims.y != textureHeight)
-            {
-                // Tileset needs to be resaved in Tiled
-                m_Importer.ReportError("Mismatching width/height detected. Tileset = ({0}, {1}), image = {2}. This may happen when a tileset image has been resized. Open map and tileset in Tiled Map Editor and resave.", textureWidth, textureHeight, imgHeaderDims);
-                m_SuperTileset.m_HasErrors = true;
-                return;
-            }
-
-            if (texture2d.width < textureWidth || texture2d.height < textureHeight)
-            {
-                // Texture was not imported into Unity correctly
-                var max = Mathf.Max(textureWidth, textureHeight);
-                m_Importer.ReportError("Texture was imported at a smaller size. Make sure 'Max Size' on '{0}' is at least '{1}'", textureAssetPath, max);
-                m_SuperTileset.m_HasErrors = true;
-                return;
-            }
-
-            // The texture has passed our checks
-            var spriteRectsPerTexture = new SpriteRectsPerTexture();
-            spriteRectsPerTexture.m_Texture2D = texture2d;
-            spriteRectsPerTexture.m_TextureAssetPath = AssetDatabase.GetAssetPath(texture2d);
-            tilesetSpriteData.m_SpriteRectsPerTextures.Add(spriteRectsPerTexture);
-
-            for (int i = 0; i < m_SuperTileset.m_TileCount; i++)
-            {
-                // Get grid x,y coords
-                int x = i % m_SuperTileset.m_TileColumns;
-                int y = i / m_SuperTileset.m_TileColumns;
-
-                // Get x source on texture
-                int srcx = x * m_SuperTileset.m_TileWidth;
-                srcx += x * m_SuperTileset.m_Spacing;
-                srcx += m_SuperTileset.m_Margin;
-
-                // Get y source on texture
-                int srcy = y * m_SuperTileset.m_TileHeight;
-                srcy += y * m_SuperTileset.m_Spacing;
-                srcy += m_SuperTileset.m_Margin;
-
-                // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
-                srcy = (textureHeight - srcy) - m_SuperTileset.m_TileHeight;
-
-                if (srcy < 0)
-                {
-                    // This is an edge condition in Tiled if a tileset's texture has been resized
-                    break;
-                }
-
-                var spriteRect = new SpriteRect();
-                spriteRect.alignment = SpriteAlignment.BottomLeft;
-                spriteRect.rect = new Rect(srcx, srcy, m_SuperTileset.m_TileWidth, m_SuperTileset.m_TileHeight);
-
-                spriteRectsPerTexture.m_SpriteRects.Add(spriteRect);
-            }
-
-            m_Importer.SuperImportContext.AddObjectToAsset(TilesetSpriteData.AssetObjectName, tilesetSpriteData);
-        }
-
         private void BuildTileset(XElement xTileset)
         {
             // Build the initial database of tiles and the image components that make them
@@ -182,7 +84,7 @@ namespace SuperTiled2Unity.Editor
             // 1) From one image broken down into parts (many tiles in one image)
             // 2) From a collection of images (one tile per image)
 
-            var atlas = new AtlasBuilder(m_Importer, m_UseSpriteAtlas, (int)m_AtlasWidth, (int)m_AtlasHeight, m_SuperTileset); // fixit - this stupid AtlasBuilder class. What was I thinking?
+            var atlas = new AtlasBuilder(m_Importer, m_UseSpriteAtlas, (int)m_AtlasWidth, (int)m_AtlasHeight, m_SuperTileset);
 
             if (xTileset.Element("image") != null)
             {
@@ -265,7 +167,7 @@ namespace SuperTiled2Unity.Editor
 
                 // Add the tile to our atlas
                 Rect rcSource = new Rect(srcx, srcy, m_SuperTileset.m_TileWidth, m_SuperTileset.m_TileHeight);
-                atlas.AddTile(i, tex2d, rcSource); // fixit - tile from piece of tileset 
+                atlas.AddTile(i, tex2d, rcSource);
             }
         }
 
@@ -309,7 +211,7 @@ namespace SuperTiled2Unity.Editor
                     int tile_h = xTile.GetAttributeAs<int>("height", texture_h);
 
                     var rcSource = new Rect(tile_x, tile_y, tile_w, tile_h);
-                    atlas.AddTile(tileIndex, tex2d, rcSource); // fixit - one tile made from one image
+                    atlas.AddTile(tileIndex, tex2d, rcSource);
                 }
             }
         }

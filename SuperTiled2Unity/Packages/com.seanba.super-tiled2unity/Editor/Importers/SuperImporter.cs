@@ -100,7 +100,6 @@ namespace SuperTiled2Unity.Editor
 #endif
         }
 
-        // fixit - rename this function to make it clearer we are introducing a dependency
         public T RequestAssetAtPath<T>(string path) where T : UnityEngine.Object
         {
             Assert.IsNotNull(m_SuperAsset, "Must be a SuperAsset type if we are requesting dependencies.");

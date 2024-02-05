@@ -11,8 +11,7 @@ namespace SuperTiled2Unity.Editor
     // Creates a group of texture atlases for tiles
     // This is our best defense against visual artifacts for maps built on tiles
     // Users can decide in the TSX import settings to forgo atlases or use their own
-    // fixit - this class must be eventually removed as well as the code it uses to write textures
-    public class AtlasBuilder
+    public class AtlasBuilder // fixit - this class must be eventually removed as well as the code it uses to write textures
     {
         private class AtlasTile
         {
@@ -61,7 +60,7 @@ namespace SuperTiled2Unity.Editor
             m_TilesetScript = tilesetScript;
         }
 
-        public void AddTile(int index, Texture2D texSource, Rect rcSource) // fixit - AddTile provides guidance on how sprites are mode from a source texture
+        public void AddTile(int index, Texture2D texSource, Rect rcSource)
         {
             var atlasTile = new AtlasTile
             {
@@ -226,14 +225,14 @@ namespace SuperTiled2Unity.Editor
                 var sprite = Sprite.Create(t.PreferredTexture2D, t.PreferredRectangle, Vector2.zero, ppu);
 
                 sprite.name = spriteName;
-                //sprite.hideFlags = HideFlags.HideInHierarchy; // fixit - for now show all sprites but they should be added to texture importer
+                sprite.hideFlags = HideFlags.HideInHierarchy;
                 m_TiledAssetImporter.SuperImportContext.AddObjectToAsset(spriteName, sprite);
 
                 // Create the tile that uses the sprite // fixit - so stupid that the AtlasBuilder is responsible for creating tiles, ffs
                 var tile = ScriptableObject.CreateInstance<SuperTile>();
                 tile.m_TileId = t.Index;
                 tile.name = tileName;
-                //tile.hideFlags = HideFlags.HideInHierarchy; // fixit - for now show all tiles
+                tile.hideFlags = HideFlags.HideInHierarchy;
                 tile.m_Sprite = sprite;
                 tile.m_Width = t.SourceRectangle.width;
                 tile.m_Height = t.SourceRectangle.height;
