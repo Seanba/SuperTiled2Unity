@@ -150,7 +150,7 @@ namespace SuperTiled2Unity.Editor
 
             // This is a hack so that Unity does not falsely detect prefab instance differences.
             // See the SuperMap.Start method where this is put to Auto to make up for this.
-            renderer.detectChunkCullingBounds = TilemapRenderer.DetectChunkCullingBounds.Manual;
+            renderer.detectChunkCullingBounds = TilemapRenderer.DetectChunkCullingBounds.Manual; // fixit - still needed?
 
             AssignMaterial(renderer, m_CurrentTileLayer.m_TiledName);
             AssignTilemapSorting(renderer);
