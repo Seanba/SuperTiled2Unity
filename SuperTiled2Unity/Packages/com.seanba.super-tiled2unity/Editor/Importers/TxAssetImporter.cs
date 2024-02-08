@@ -54,6 +54,8 @@ namespace SuperTiled2Unity.Editor
 
         private void ProcessTileset(XElement xTileset)
         {
+            m_GlobalTileDatabase = new GlobalTileDatabase();
+
             var firstId = xTileset.GetAttributeAs<int>("firstgid");
             var source = xTileset.GetAttributeAs<string>("source");
 
@@ -68,7 +70,6 @@ namespace SuperTiled2Unity.Editor
             else
             {
                 // Register all the tiles with the tile database for this map
-                m_GlobalTileDatabase = new GlobalTileDatabase();
                 m_GlobalTileDatabase.RegisterTileset(firstId, tileset);
             }
         }

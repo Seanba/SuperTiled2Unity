@@ -134,7 +134,8 @@ namespace SuperTiled2Unity.Editor
                 return null;
             }
 
-            // Keep track that the the asset is a dependency
+            // Keep track that the asset is a dependency
+            // We do this even if the asset doesn't exist
             m_SuperAsset.AddDependency(AssetImportContext, requestedAssetPath);
 
             // In most cases our dependency is already known by the AssetDatabase
