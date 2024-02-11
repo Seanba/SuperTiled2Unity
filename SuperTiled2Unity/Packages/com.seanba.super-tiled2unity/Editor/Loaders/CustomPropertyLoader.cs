@@ -31,7 +31,28 @@ namespace SuperTiled2Unity.Editor
 
             property.m_Name = xProperty.GetAttributeAs("name", "");
             property.m_Type = xProperty.GetAttributeAs("type", "string");
-
+			
+            if (property.m_Type == "class")
+            {
+                var classProperty = new ClassCustomProperty
+                {
+                    m_Name = property.m_Name,
+                    m_Type = property.m_Type
+                };
+                var elements = xProperty.Descendants();
+                if (elements != null)
+                {
+                    foreach (var element in elements)
+                    {
+                        var childProperty = LoadCustomProperty(element);
+                        if (!childProperty.IsEmpty)
+                        {
+                            classProperty.m_CustomProperties.Add(childProperty.m_Name, childProperty);
+                        }
+                    }
+                }
+                return classProperty;
+            }
             // In some cases, value may be in the default attribute
             property.m_Value = xProperty.GetAttributeAs("default", "");
 
