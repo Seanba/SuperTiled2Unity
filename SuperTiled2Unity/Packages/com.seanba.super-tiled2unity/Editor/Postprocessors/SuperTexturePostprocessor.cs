@@ -27,14 +27,11 @@ namespace SuperTiled2Unity.Editor
                 textureImporter.SetTextureSettings(settings);
             }
 
-            // fixit - handle a texture being moved
-            // fixit - handle changes to the tileset/map that force the texture to be re-imported (need to know when texture should be imported)
-
 
             // Get the list of sprite rects that our Tiled tilesets expect us to have
             // Remove old ST2U sprite rects that are no longer needed
             // Add new ST2U sprite rects
-            SpriteRectsManager.Instance.GetSpriteRectsForTexture(assetPath);
+            SpriteRectsManager.Instance.GetSpriteRectsForTexture(assetPath); // fixit - use this to cut up the sprite
         }
     }
 }
