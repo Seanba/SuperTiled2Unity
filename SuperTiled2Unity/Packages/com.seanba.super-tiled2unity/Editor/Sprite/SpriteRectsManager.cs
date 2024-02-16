@@ -10,7 +10,7 @@ namespace SuperTiled2Unity.Editor
 {
     internal class SpriteRectsManager
     {
-        private class TsxRectangles
+        private class TsxRectangles // fixit - work on these names
         {
             internal string TsxAbsolutePath { get; }
             internal List<Rect> RectCollection { get; } = new List<Rect>();
@@ -19,9 +19,17 @@ namespace SuperTiled2Unity.Editor
             {
                 TsxAbsolutePath = tsxAbsolutePath;
             }
+
+            internal void AddRectangle(Rect rectangle)
+            {
+                if (!RectCollection.Contains(rectangle))
+                {
+                    RectCollection.Add(rectangle);
+                }
+            }
         }
 
-        private class TextureData
+        private class TextureData // fixit - work on these names
         {
             internal string TextureAbsolutePath { get; }
             internal List<TsxRectangles> TsxRectanglesCollection { get; } = new List<TsxRectangles>();
@@ -41,7 +49,7 @@ namespace SuperTiled2Unity.Editor
                     TsxRectanglesCollection.Add(tsxRectangles);
                 }
 
-                //tsxRectangles.AddRectangle(rectangle); // fixit:left off here
+                tsxRectangles.AddRectangle(rectangle);
             }
         }
 
@@ -54,9 +62,16 @@ namespace SuperTiled2Unity.Editor
             Instance = CreateInstance();
         }
 
-        internal IEnumerable<SpriteRect> GetSpriteRectsForTexture(string textureAssetPath)
+        internal IEnumerable<Rect> GetSpriteRectsForTexture(string textureAssetPath)
         {
-            return Enumerable.Empty<SpriteRect>(); // fixit - use a cache when this is figured out
+            var absoluteAssetPath = Path.GetFullPath(textureAssetPath).SanitizePath().ToLower();
+            var textureData = m_TextureDataCollection.FirstOrDefault(t => t.TextureAbsolutePath == absoluteAssetPath);
+            if (textureData != null)
+            {
+                return textureData.TsxRectanglesCollection.SelectMany(t => t.RectCollection);
+            }
+
+            return Enumerable.Empty<Rect>();
         }
 
         private void AddRectangle(string absTsxPath, string absTexturePath, Rect rectangle)

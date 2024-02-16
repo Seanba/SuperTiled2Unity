@@ -31,7 +31,7 @@ namespace SuperTiled2Unity.Editor
             // Get the list of sprite rects that our Tiled tilesets expect us to have
             // Remove old ST2U sprite rects that are no longer needed
             // Add new ST2U sprite rects
-            SpriteRectsManager.Instance.GetSpriteRectsForTexture(assetPath); // fixit - use this to cut up the sprite
+            SpriteRectsManager.Instance.GetSpriteRectsForTexture(assetPath); // fixit:left - use this to cut up the sprite
         }
     }
 }
