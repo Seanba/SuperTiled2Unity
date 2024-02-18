@@ -1,13 +1,17 @@
-﻿using UnityEditor;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.Profiling;
+using UnityEditor;
 using UnityEditor.U2D.Sprites;
 using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
 {
-    // fixit - note that 2021.2 or newer has some special needs: https://docs.unity3d.com/Packages/com.unity.2d.sprite@1.0/manual/DataProvider.html
-    // fixit - see this for cutting up sprites: https://docs.unity3d.com/Manual/Sprite-data-provider-api.html
     public class SuperTexturePostprocessor : AssetPostprocessor
     {
+        private static ProfilerMarker ProfilerMarker_AddSprites = new ProfilerMarker("AddSprites");
+
         private void OnPreprocessTexture()
         {
             if (assetImporter.importSettingsMissing)
@@ -27,11 +31,89 @@ namespace SuperTiled2Unity.Editor
                 textureImporter.SetTextureSettings(settings);
             }
 
+            AddSprites();
+        }
 
-            // Get the list of sprite rects that our Tiled tilesets expect us to have
-            // Remove old ST2U sprite rects that are no longer needed
-            // Add new ST2U sprite rects
-            SpriteRectsManager.Instance.GetSpriteRectsForTexture(assetPath); // fixit:left - use this to cut up the sprite
+        private void AddSprites()
+        {
+            using (ProfilerMarker_AddSprites.Auto())
+            {
+                var rects = SpriteRectsManager.Instance.GetSpriteRectsForTexture(assetPath);
+                if (!rects.Any())
+                {
+                    // This texture is not (currently) used by Tiled map or tileset files
+                    return;
+                }
+
+                // Texture must be imported so that it is made up of multiple sprites
+                TextureImporter textureImporter = assetImporter as TextureImporter;
+                textureImporter.textureType = TextureImporterType.Sprite;
+                textureImporter.spriteImportMode = SpriteImportMode.Multiple;
+
+                // Use the sprite editor data provider to add/remove sprite rects
+                using (var provider = new SpriteDataProviderWrapper(assetImporter))
+                {
+                    //var spriteRects = provider.GetSpriteRects();
+                    var spriteRects = new List<SpriteRect>();
+
+                    foreach (var rect in rects)
+                    {
+                        // fixit - add/remove
+                        var newSpriteRect = new SpriteRect
+                        {
+                            name = $"_st2u-x{rect.x}y{rect.y}w{rect.width}h{rect.height}_",
+                            spriteID = GUID.Generate(),
+                            rect = new Rect(rect.x, rect.y, rect.width, rect.height),
+                        };
+
+                        spriteRects.Add(newSpriteRect);
+                    }
+
+                    provider.SetSpriteRects(spriteRects);
+                }
+            }
+        }
+
+        private class SpriteDataProviderWrapper : IDisposable
+        {
+            private static ProfilerMarker ProfilerMarker_SpriteDataProviderWrapper = new ProfilerMarker("SpriteDataProviderWrapper");
+
+            private ISpriteEditorDataProvider m_DataProvider;
+
+#if UNITY_2021_2_OR_NEWER
+            // fixit - ISpriteNameFileIdDataProvider, https://docs.unity3d.com/Manual/Sprite-data-provider-api.html
+#endif
+
+            public SpriteDataProviderWrapper(AssetImporter assetImporter)
+            {
+                ProfilerMarker_SpriteDataProviderWrapper.Begin();
+
+                var factory = new SpriteDataProviderFactories();
+                factory.Init();
+
+                m_DataProvider = factory.GetSpriteEditorDataProviderFromObject(assetImporter);
+                m_DataProvider.InitSpriteEditorDataProvider();
+            }
+
+            public void Dispose()
+            {
+                // fixit - only apply if changes were made because this is surprisingly expensive
+                // fixit - SetNameFileIdPairs (2021 or newer)
+                //m_DataProvider.Apply();
+
+                ProfilerMarker_SpriteDataProviderWrapper.End();
+            }
+
+            public List<SpriteRect> GetSpriteRects()
+            {
+                return m_DataProvider.GetSpriteRects().ToList();
+            }
+
+            public void SetSpriteRects(IEnumerable<SpriteRect> spriteRects)
+            {
+                // fixit SpriteNameFileIdPair https://docs.unity3d.com/Manual/Sprite-data-provider-api.html
+                m_DataProvider.SetSpriteRects(spriteRects.ToArray());
+            }
         }
     }
 }

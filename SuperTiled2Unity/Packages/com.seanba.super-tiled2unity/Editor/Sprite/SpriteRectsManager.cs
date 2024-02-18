@@ -10,94 +10,55 @@ namespace SuperTiled2Unity.Editor
 {
     internal class SpriteRectsManager
     {
-        private class TsxRectangles // fixit - work on these names
-        {
-            internal string TsxAbsolutePath { get; }
-            internal List<Rect> RectCollection { get; } = new List<Rect>();
-
-            internal TsxRectangles(string tsxAbsolutePath)
-            {
-                TsxAbsolutePath = tsxAbsolutePath;
-            }
-
-            internal void AddRectangle(Rect rectangle)
-            {
-                if (!RectCollection.Contains(rectangle))
-                {
-                    RectCollection.Add(rectangle);
-                }
-            }
-        }
-
-        private class TextureData // fixit - work on these names
-        {
-            internal string TextureAbsolutePath { get; }
-            internal List<TsxRectangles> TsxRectanglesCollection { get; } = new List<TsxRectangles>();
-
-            internal TextureData(string textureAbsolutePath)
-            {
-                TextureAbsolutePath = textureAbsolutePath;
-            }
-
-            internal void AddRectangle(string absTsxPath, Rect rectangle)
-            {
-                absTsxPath = absTsxPath.SanitizePath().ToLower();
-                var tsxRectangles = TsxRectanglesCollection.FirstOrDefault(r => r.TsxAbsolutePath == absTsxPath);
-                if (tsxRectangles == null)
-                {
-                    tsxRectangles = new TsxRectangles(absTsxPath);
-                    TsxRectanglesCollection.Add(tsxRectangles);
-                }
-
-                tsxRectangles.AddRectangle(rectangle);
-            }
-        }
-
-        private readonly List<TextureData> m_TextureDataCollection = new List<TextureData>();
-
         internal static SpriteRectsManager Instance { get; }
+
+        private readonly HashSet<RectangleEntry> m_RectangleEntries = new HashSet<RectangleEntry>();
+        private readonly Dictionary<string, List<Rect>> m_RectsCache = new Dictionary<string, List<Rect>>();
 
         static SpriteRectsManager()
         {
             Instance = CreateInstance();
         }
 
-        internal IEnumerable<Rect> GetSpriteRectsForTexture(string textureAssetPath)
+        internal IEnumerable<Rect> GetSpriteRectsForTexture(string assetPathTexture)
         {
-            var absoluteAssetPath = Path.GetFullPath(textureAssetPath).SanitizePath().ToLower();
-            var textureData = m_TextureDataCollection.FirstOrDefault(t => t.TextureAbsolutePath == absoluteAssetPath);
-            if (textureData != null)
+            // fixit - are rects upside down?
+            // fixit - use a cache and make the list unique
+            var absolutePathTexture = Path.GetFullPath(assetPathTexture).SanitizePath().ToLower();
+            return m_RectangleEntries.Where(r => r.AbsolutePathTexture == absolutePathTexture).Select(r => new Rect(r.X, r.Y, r.Width, r.Height));
+
+            /*
+            if (m_RectsCache.TryGetValue(absolutePathTexture, out List<Rect> rects))
             {
-                return textureData.TsxRectanglesCollection.SelectMany(t => t.RectCollection);
+                return rects;
             }
 
-            return Enumerable.Empty<Rect>();
+            // fixit - remove cache entry where necessary
+            rects = m_RectangleEntries.Where(r => r.AbsolutePathTexture == absolutePathTexture).Select(r => new Rect(r.X, r.Y, r.Width, r.Height)).ToList();
+            m_RectsCache.Add(absolutePathTexture, rects);
+            return rects;
+            */
         }
 
-        private void AddRectangle(string absTsxPath, string absTexturePath, Rect rectangle)
+        private static string GetSanitizedAbsolutePathFromRelative(string absolutePathParent, string relativeImagePath)
         {
-            absTexturePath = absTexturePath.SanitizePath().ToLower();
-            var textureData = m_TextureDataCollection.FirstOrDefault(t => t.TextureAbsolutePath == absTexturePath);
-            if (textureData == null)
+            using (ChDir.FromFilename(absolutePathParent))
             {
-                textureData = new TextureData(absTexturePath);
-                m_TextureDataCollection.Add(textureData);
+                return Path.GetFullPath(relativeImagePath).SanitizePath();
             }
-
-            textureData.AddRectangle(absTsxPath, rectangle);
         }
 
         private void ProcessTiledFile(string path) // fixit - starting point that covers the full contribution/influence of a single tiled resource (so remove that influce here and build it back up)
         {
-            var abspath = Path.GetFullPath(path).SanitizePath();
+            var absoluteTsxPath = Path.GetFullPath(path).SanitizePath();
 
             try
             {
                 // Open up the filed file and look for "tileset" elements
-                XDocument doc = XDocument.Load(abspath);
+                XDocument doc = XDocument.Load(absoluteTsxPath);
                 if (doc == null)
                 {
-                    Debug.LogError($"'Looking for tilesets: {abspath}' failed to load.");
+                    Debug.LogError($"'Looking for tilesets: {absoluteTsxPath}' failed to load.");
                     return;
                 }
 
@@ -107,13 +68,13 @@ namespace SuperTiled2Unity.Editor
                     var source = xTileset.GetAttributeAs<string>("source");
                     if (string.IsNullOrEmpty(source))
                     {
-                        ProcessTileset(abspath, xTileset);
+                        ProcessTileset(absoluteTsxPath, xTileset);
                     }
                 }
             }
             catch (Exception e)
             {
-                Debug.Log($"Looking for tilesets. Unknown error processing Tiled file '{abspath}': {e.Message}");
+                Debug.Log($"Looking for tilesets. Unknown error processing Tiled file '{absoluteTsxPath}': {e.Message}");
             }
         }
 
@@ -132,11 +93,10 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private void ProcessTilesetSingle(string absath, XElement xTileset, XElement xImage)
+        private void ProcessTilesetSingle(string absolutePathTsx, XElement xTileset, XElement xImage)
         {
-            // fixit:left
-            var relImage = xImage.GetAttributeAs<string>("source");
-            var absImage = GetFullPathFromRelative(abspath, relImage);
+            var relativePathTexture = xImage.GetAttributeAs<string>("source");
+            var absolutePathTexture = GetSanitizedAbsolutePathFromRelative(absolutePathTsx, relativePathTexture);
 
             var tileCount = xTileset.GetAttributeAs<int>("tilecount");
             var tileWidth = xTileset.GetAttributeAs<int>("tilewidth");
@@ -172,9 +132,17 @@ namespace SuperTiled2Unity.Editor
                     break;
                 }
 
-                // fixit - what to do with this?
-                // abspath is adding this rectangle to absimage
-                Rect rcSource = new Rect(srcx, srcy, tileWidth, tileHeight);
+                var entry = new RectangleEntry
+                {
+                    AbsolutePathTsx = absolutePathTsx.ToLower(),
+                    AbsolutePathTexture = absolutePathTexture.ToLower(),
+                    X = srcx,
+                    Y = srcy,
+                    Width = tileWidth,
+                    Height = tileHeight,
+                };
+
+                m_RectangleEntries.Add(entry);
             }
         }
 
@@ -221,12 +189,36 @@ namespace SuperTiled2Unity.Editor
             return instance;
         }
 
-
-        private static string GetFullPathFromRelative(string absolutionPathParent, string relativeImagePath)
+        private struct RectangleEntry : IEquatable<RectangleEntry>
         {
-            using (ChDir.FromFilename(absolutionPathParent))
+            public string AbsolutePathTsx { get; set; }
+            public string AbsolutePathTexture { get; set; }
+            public int X { get; set; }
+            public int Y { get; set; }
+            public int Width { get; set; }
+            public int Height { get; set; }
+
+            public static bool operator ==(RectangleEntry lhs, RectangleEntry rhs) => lhs.Equals(rhs);
+            public static bool operator !=(RectangleEntry lhs, RectangleEntry rhs) => !(lhs == rhs);
+
+            public override bool Equals(object obj)
             {
-                return Path.GetFullPath(relativeImagePath).SanitizePath();
+                return obj is RectangleEntry other && this.Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                return (AbsolutePathTsx, AbsolutePathTexture, X, Y, Width, Height).GetHashCode();
+            }
+
+            public bool Equals(RectangleEntry other)
+            {
+                return AbsolutePathTsx == other.AbsolutePathTsx &&
+                    AbsolutePathTexture == other.AbsolutePathTexture &&
+                    X == other.X &&
+                    Y == other.Y &&
+                    Width == other.Width &&
+                    Height == other.Height;
             }
         }
 
