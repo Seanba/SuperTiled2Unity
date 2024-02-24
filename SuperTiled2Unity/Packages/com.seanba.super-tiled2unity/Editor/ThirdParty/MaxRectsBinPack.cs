@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace SuperTiled2Unity.Editor.ThirdParty
 {
-    public class MaxRectsBinPack
+    public class MaxRectsBinPack // fixit - shouldn't need this
     {
 
         public int binWidth = 0;

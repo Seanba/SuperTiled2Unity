@@ -155,7 +155,8 @@ namespace SuperTiled2Unity.Editor
         {
             // How to handle this?
             // We need to (somehow) detect which textures need to be reimported because their sprite rect collection is dirty
-            //Debug.Log($"fixit Imported tiled (tsx or tmx) file: {path}");
+            Debug.Log($"fixit Imported tiled (tsx or tmx) file: {path}");
+            ProcessTiledFile(path);
         }
 
         private void ImportImageFile(string path)
@@ -179,12 +180,12 @@ namespace SuperTiled2Unity.Editor
                 instance.ProcessTiledFile(path);
             }
 
-            //var tsxFiles = Directory.EnumerateFiles(Application.dataPath, "*.tsx", SearchOption.AllDirectories).ToList(); // fixit - get working with tmx first
-            //foreach (string file in tsxFiles)
-            //{
-            //    var path = file.SanitizePath();
-            //    instance.ProcessTiledFile(path);
-            //}
+            var tsxFiles = Directory.EnumerateFiles(Application.dataPath, "*.tsx", SearchOption.AllDirectories).ToList();
+            foreach (string file in tsxFiles)
+            {
+                var path = file.SanitizePath();
+                instance.ProcessTiledFile(path);
+            }
 
             return instance;
         }

@@ -221,7 +221,9 @@ namespace SuperTiled2Unity.Editor
                 string spriteName = string.Format("Sprite_{0}_{1}", m_TilesetScript.name, t.Index + 1);
                 string tileName = string.Format("Tile_{0}_{1}", m_TilesetScript.name, t.Index + 1);
 
+                // fixit - get the sprite from the source texture instead of creating it and adding it to the asset
                 // Create the sprite with the anchor at (0, 0)
+                //t.SourceRectangle
                 var sprite = Sprite.Create(t.PreferredTexture2D, t.PreferredRectangle, Vector2.zero, ppu);
 
                 sprite.name = spriteName;

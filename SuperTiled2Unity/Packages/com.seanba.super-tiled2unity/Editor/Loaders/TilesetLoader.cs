@@ -84,6 +84,7 @@ namespace SuperTiled2Unity.Editor
             // 1) From one image broken down into parts (many tiles in one image)
             // 2) From a collection of images (one tile per image)
 
+            // fixit - stupid atlas builder starts here
             var atlas = new AtlasBuilder(m_Importer, m_UseSpriteAtlas, (int)m_AtlasWidth, (int)m_AtlasHeight, m_SuperTileset);
 
             if (xTileset.Element("image") != null)
@@ -110,7 +111,7 @@ namespace SuperTiled2Unity.Editor
             int textureHeight = xImage.GetAttributeAs<int>("height");
 
             // Load the texture. We will make sprites and tiles out of this image.
-            var tex2d = m_Importer.RequestAssetAtPath<Texture2D>(textureAssetPath);
+            var tex2d = m_Importer.RequestAssetAtPath<Texture2D>(textureAssetPath); // fixit - we really want the sprites in the texture though
             if (tex2d == null)
             {
                 // Texture was not found so report the error to the importer UI and bail
@@ -165,6 +166,7 @@ namespace SuperTiled2Unity.Editor
                     break;
                 }
 
+                // fixit - find the sprite with a rectangle name that matches against the rcSource and add it to our tileset (shouldn't need the atlas at all)
                 // Add the tile to our atlas
                 Rect rcSource = new Rect(srcx, srcy, m_SuperTileset.m_TileWidth, m_SuperTileset.m_TileHeight);
                 atlas.AddTile(i, tex2d, rcSource);

@@ -10,6 +10,7 @@ namespace SuperTiled2Unity.Editor
 {
     public class SuperTexturePostprocessor : AssetPostprocessor
     {
+        // fixit - I need to do more profiling on this. How could this be so much slower then the cut-ups I was doing?
         private static ProfilerMarker ProfilerMarker_AddSprites = new ProfilerMarker("AddSprites");
 
         private void OnPreprocessTexture()
@@ -53,7 +54,7 @@ namespace SuperTiled2Unity.Editor
                 // Use the sprite editor data provider to add/remove sprite rects
                 using (var provider = new SpriteDataProviderWrapper(assetImporter))
                 {
-                    //var spriteRects = provider.GetSpriteRects();
+                    //var spriteRects = provider.GetSpriteRects(); // fixit - zero out for now but we should be smarter about adding and removing and detecting changes
                     var spriteRects = new List<SpriteRect>();
 
                     foreach (var rect in rects)
@@ -64,6 +65,8 @@ namespace SuperTiled2Unity.Editor
                             name = $"_st2u-x{rect.x}y{rect.y}w{rect.width}h{rect.height}_",
                             spriteID = GUID.Generate(),
                             rect = new Rect(rect.x, rect.y, rect.width, rect.height),
+                            pivot = Vector2.zero,
+                            alignment = SpriteAlignment.BottomLeft,
                         };
 
                         spriteRects.Add(newSpriteRect);
@@ -99,7 +102,7 @@ namespace SuperTiled2Unity.Editor
             {
                 // fixit - only apply if changes were made because this is surprisingly expensive
                 // fixit - SetNameFileIdPairs (2021 or newer)
-                //m_DataProvider.Apply();
+                m_DataProvider.Apply();
 
                 ProfilerMarker_SpriteDataProviderWrapper.End();
             }
