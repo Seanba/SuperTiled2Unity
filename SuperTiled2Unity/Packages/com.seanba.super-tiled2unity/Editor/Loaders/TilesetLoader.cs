@@ -14,9 +14,6 @@ namespace SuperTiled2Unity.Editor
     {
         private readonly SuperTileset m_SuperTileset;
         private readonly TiledAssetImporter m_Importer;
-        private readonly bool m_UseSpriteAtlas;
-        private readonly int m_AtlasWidth;
-        private readonly int m_AtlasHeight;
 
         // Make this an ugly name that shouldn't collide with sprites named by the user
         internal static string RectToSpriteName(Rect rect)
@@ -24,13 +21,10 @@ namespace SuperTiled2Unity.Editor
             return $"_st2u-x{rect.x}y{rect.y}-w{rect.width}h{rect.height}_";
         }
 
-        public TilesetLoader(SuperTileset tileset, TiledAssetImporter importer, bool useAtlas, int atlasWidth, int atlasHeight)
+        public TilesetLoader(SuperTileset tileset, TiledAssetImporter importer)
         {
             m_SuperTileset = tileset;
             m_Importer = importer;
-            m_UseSpriteAtlas = useAtlas;
-            m_AtlasWidth = atlasWidth;
-            m_AtlasHeight = atlasHeight;
         }
 
         public bool LoadFromXml(XElement xTileset)
@@ -262,7 +256,7 @@ namespace SuperTiled2Unity.Editor
                 var tile = ScriptableObject.CreateInstance<SuperTile>();
                 tile.m_TileId = tileId;
                 tile.name = spriteName;
-                tile.hideFlags = HideFlags.None; // fixit HideFlags.HideInHierarchy;
+                tile.hideFlags = HideFlags.HideInHierarchy;
                 tile.m_Sprite = tileSprite;
                 tile.m_Width = rect.width;
                 tile.m_Height = rect.height;
