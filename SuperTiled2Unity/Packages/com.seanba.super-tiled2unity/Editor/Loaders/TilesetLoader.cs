@@ -18,6 +18,12 @@ namespace SuperTiled2Unity.Editor
         private readonly int m_AtlasWidth;
         private readonly int m_AtlasHeight;
 
+        // Make this an ugly name that shouldn't collide with sprites named by the user
+        internal static string RectToSpriteName(Rect rect)
+        {
+            return $"_st2u-x{rect.x}y{rect.y}-w{rect.width}h{rect.height}_";
+        }
+
         public TilesetLoader(SuperTileset tileset, TiledAssetImporter importer, bool useAtlas, int atlasWidth, int atlasHeight)
         {
             m_SuperTileset = tileset;
@@ -83,47 +89,39 @@ namespace SuperTiled2Unity.Editor
             // There are two ways that our collection of tiles can be created from images
             // 1) From one image broken down into parts (many tiles in one image)
             // 2) From a collection of images (one tile per image)
-
-            // fixit - stupid atlas builder starts here
-            var atlas = new AtlasBuilder(m_Importer, m_UseSpriteAtlas, (int)m_AtlasWidth, (int)m_AtlasHeight, m_SuperTileset);
-
             if (xTileset.Element("image") != null)
             {
-                BuildTilesetFromImage(xTileset, atlas);
+                BuildTilesetFromImage(xTileset);
             }
             else
             {
-                BuildTilesetFromCollection(xTileset, atlas);
+                BuildTilesetFromCollection(xTileset);
             }
-
-            // We're done collecting all the tile data. Build our atlas.
-            // (Note that we call build even if we are not using texture atlases)
-            atlas.Build(m_Importer.PixelsPerUnit);
         }
 
-        private void BuildTilesetFromImage(XElement xTileset, AtlasBuilder atlas)
+        private void BuildTilesetFromImage(XElement xTileset)
         {
             m_SuperTileset.m_IsImageCollection = false;
 
             XElement xImage = xTileset.Element("image");
-            string textureAssetPath = xImage.GetAttributeAs<string>("source");
+            string textureLocalPath = xImage.GetAttributeAs<string>("source");
             int textureWidth = xImage.GetAttributeAs<int>("width");
             int textureHeight = xImage.GetAttributeAs<int>("height");
 
             // Load the texture. We will make sprites and tiles out of this image.
-            var tex2d = m_Importer.RequestAssetAtPath<Texture2D>(textureAssetPath); // fixit - we really want the sprites in the texture though
+            var tex2d = m_Importer.RequestAssetAtPath<Texture2D>(textureLocalPath);
             if (tex2d == null)
             {
                 // Texture was not found so report the error to the importer UI and bail
-                m_Importer.ReportError("Missing texture asset: {0}", textureAssetPath);
+                m_Importer.ReportError("Missing texture asset: {0}", textureLocalPath);
                 m_SuperTileset.m_HasErrors = true;
                 return;
             }
 
             // This is annoying: A tileset may have recently changed but Tiled hasn't been updated on the status yet
-            var texAssetPath = AssetDatabase.GetAssetPath(tex2d);
-            var texFullPath = Path.GetFullPath(texAssetPath);
-            var imgHeaderDims = ImageHeader.GetDimensions(texFullPath);
+            var textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
+            var textureFullPath = Path.GetFullPath(textureAssetPath);
+            var imgHeaderDims = ImageHeader.GetDimensions(textureFullPath);
             if (imgHeaderDims.x != textureWidth || imgHeaderDims.y != textureHeight)
             {
                 // Tileset needs to be resaved in Tiled
@@ -139,6 +137,19 @@ namespace SuperTiled2Unity.Editor
                 m_Importer.ReportError("Texture was imported at a smaller size. Make sure 'Max Size' on '{0}' is at least '{1}'", textureAssetPath, max);
                 m_SuperTileset.m_HasErrors = true;
                 return;
+            }
+
+            // The pixels per unit of the sprites must match the pixels per unit of the tileset
+            var sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => s.name);
+            if (sprites.Any())
+            {
+                var firstSprite = sprites.First().Value;
+                if (firstSprite.pixelsPerUnit != m_SuperTileset.m_PixelsPerUnit)
+                {
+                    m_Importer.ReportError($"Texture '{textureAssetPath}' Pixels Per Unit '{firstSprite.pixelsPerUnit}' does not match setting '{m_SuperTileset.m_PixelsPerUnit}'");
+                    m_SuperTileset.m_HasErrors = true;
+                    return;
+                }
             }
 
             for (int i = 0; i < m_SuperTileset.m_TileCount; i++)
@@ -166,14 +177,17 @@ namespace SuperTiled2Unity.Editor
                     break;
                 }
 
-                // fixit - find the sprite with a rectangle name that matches against the rcSource and add it to our tileset (shouldn't need the atlas at all)
-                // Add the tile to our atlas
-                Rect rcSource = new Rect(srcx, srcy, m_SuperTileset.m_TileWidth, m_SuperTileset.m_TileHeight);
-                atlas.AddTile(i, tex2d, rcSource);
+                if (!TryAddTile(i, srcx, srcy, m_SuperTileset.m_TileWidth, m_SuperTileset.m_TileHeight, sprites))
+                {
+                    // Early-out if the source texture is missing sprites to make tiles out of
+                    m_Importer.ReportError($"Texture '{textureAssetPath}' is missing sprite x={srcx}, y={srcy}, w={m_SuperTileset.m_TileWidth}, h={m_SuperTileset.m_TileHeight} from spritesheet. Does the texture need to be re-imported?");
+                    m_SuperTileset.m_HasErrors = true;
+                    break;
+                }
             }
         }
 
-        private void BuildTilesetFromCollection(XElement xTileset, AtlasBuilder atlas)
+        private void BuildTilesetFromCollection(XElement xTileset)
         {
             m_SuperTileset.m_IsImageCollection = true;
 
@@ -184,16 +198,16 @@ namespace SuperTiled2Unity.Editor
 
                 if (xImage != null)
                 {
-                    string textureAssetPath = xImage.GetAttributeAs<string>("source");
+                    string textureLocalPath = xImage.GetAttributeAs<string>("source");
                     int texture_w = xImage.GetAttributeAs<int>("width");
                     int texture_h = xImage.GetAttributeAs<int>("height");
 
                     // Load the texture. We will make sprites and tiles out of this image.
-                    var tex2d = m_Importer.RequestAssetAtPath<Texture2D>(textureAssetPath);
+                    var tex2d = m_Importer.RequestAssetAtPath<Texture2D>(textureLocalPath);
                     if (tex2d == null)
                     {
                         // Texture was not found yet so report the error to the importer UI and bail
-                        m_Importer.ReportError("Missing texture asset for tile {0}: {1}", tileIndex, textureAssetPath);
+                        m_Importer.ReportError("Missing texture asset for tile {0}: {1}", tileIndex, textureLocalPath);
                         m_SuperTileset.m_HasErrors = true;
                         return;
                     }
@@ -202,9 +216,24 @@ namespace SuperTiled2Unity.Editor
                     {
                         // Texture was not imported into Unity correctly
                         var max = Mathf.Max(texture_w, texture_h);
-                        m_Importer.ReportError("Texture was imported at a smaller size. Make sure 'Max Size' on '{0}' is at least '{1}'", textureAssetPath, max);
+                        m_Importer.ReportError("Texture was imported at a smaller size. Make sure 'Max Size' on '{0}' is at least '{1}'", textureLocalPath, max);
                         m_SuperTileset.m_HasErrors = true;
                         return;
+                    }
+
+                    var textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
+
+                    // The pixels per unit of the sprites must match the pixels per unit of the tileset
+                    var sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => s.name);
+                    if (sprites.Any())
+                    {
+                        var firstSprite = sprites.First().Value;
+                        if (firstSprite.pixelsPerUnit != m_SuperTileset.m_PixelsPerUnit)
+                        {
+                            m_Importer.ReportError($"Texture '{textureAssetPath}' Pixels Per Unit '{firstSprite.pixelsPerUnit}' does not match setting '{m_SuperTileset.m_PixelsPerUnit}'");
+                            m_SuperTileset.m_HasErrors = true;
+                            return;
+                        }
                     }
 
                     int tile_x = xTile.GetAttributeAs<int>("x", 0);
@@ -212,11 +241,45 @@ namespace SuperTiled2Unity.Editor
                     int tile_w = xTile.GetAttributeAs<int>("width", texture_w);
                     int tile_h = xTile.GetAttributeAs<int>("height", texture_h);
 
-                    var rcSource = new Rect(tile_x, tile_y, tile_w, tile_h);
-                    atlas.AddTile(tileIndex, tex2d, rcSource);
+                    if (!TryAddTile(tileIndex, tile_x, tile_y, tile_w, tile_h, sprites))
+                    { 
+                        // Early-out if the source texture is missing sprites
+                        m_Importer.ReportError($"Texture '{textureAssetPath}' is missing sprite x={tile_x}, y={tile_y}, width={tile_w}, height={tile_h}. Does the texture need to be re-imported?");
+                        m_SuperTileset.m_HasErrors = true;
+                        break;
+                    }
                 }
             }
         }
+
+        private bool TryAddTile(int tileId, int x, int y, int width, int height, Dictionary<string, Sprite> sprites)
+        {
+            var rect = new Rect(x, y, width, height);
+            var spriteName = RectToSpriteName(rect);
+            if (sprites.TryGetValue(spriteName, out Sprite tileSprite))
+            {
+                // Create the tile that uses the sprite
+                var tile = ScriptableObject.CreateInstance<SuperTile>();
+                tile.m_TileId = tileId;
+                tile.name = spriteName;
+                tile.hideFlags = HideFlags.None; // fixit HideFlags.HideInHierarchy;
+                tile.m_Sprite = tileSprite;
+                tile.m_Width = rect.width;
+                tile.m_Height = rect.height;
+                tile.m_TileOffsetX = m_SuperTileset.m_TileOffset.x;
+                tile.m_TileOffsetY = m_SuperTileset.m_TileOffset.y;
+                tile.m_ObjectAlignment = m_SuperTileset.m_ObjectAlignment;
+                tile.m_TileRenderSize = m_SuperTileset.m_TileRenderSize;
+                tile.m_FillMode = m_SuperTileset.m_FillMode;
+
+                m_SuperTileset.m_Tiles.Add(tile);
+                m_Importer.SuperImportContext.AddObjectToAsset(spriteName, tile);
+                return true;
+            }
+
+            return false;
+        }
+
 
         private void ProcessTileElements(XElement xTileset)
         {

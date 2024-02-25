@@ -22,7 +22,6 @@ namespace SuperTiled2Unity.Editor
 
         internal IEnumerable<Rect> GetSpriteRectsForTexture(string assetPathTexture)
         {
-            // fixit - are rects upside down?
             // fixit - use a cache and make the list unique
             var absolutePathTexture = Path.GetFullPath(assetPathTexture).SanitizePath().ToLower();
             return m_RectangleEntries.Where(r => r.AbsolutePathTexture == absolutePathTexture).Select(r => new Rect(r.X, r.Y, r.Width, r.Height));
@@ -146,9 +145,37 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private void ProcessTilesetMultiple(string abspath, XElement xTileset, IEnumerable<XElement> xTiles)
+        private void ProcessTilesetMultiple(string absolutePathTsx, XElement xTileset, IEnumerable<XElement> xTiles)
         {
-            Debug.Log("fixit - figure this out");
+            foreach (var xTile in xTiles)
+            {
+                var xImage = xTile.Element("image");
+                if (xImage != null)
+                {
+                    var relativePathTexture = xImage.GetAttributeAs<string>("source");
+                    var absolutePathTexture = GetSanitizedAbsolutePathFromRelative(absolutePathTsx, relativePathTexture);
+
+                    int texture_w = xImage.GetAttributeAs<int>("width");
+                    int texture_h = xImage.GetAttributeAs<int>("height");
+
+                    int tile_x = xTile.GetAttributeAs<int>("x", 0);
+                    int tile_y = xTile.GetAttributeAs<int>("y", 0);
+                    int tile_w = xTile.GetAttributeAs<int>("width", texture_w);
+                    int tile_h = xTile.GetAttributeAs<int>("height", texture_h);
+
+                    var entry = new RectangleEntry
+                    {
+                        AbsolutePathTsx = absolutePathTsx.ToLower(),
+                        AbsolutePathTexture = absolutePathTexture.ToLower(),
+                        X = tile_x,
+                        Y = tile_y,
+                        Width = tile_w,
+                        Height = tile_h,
+                    };
+
+                    m_RectangleEntries.Add(entry);
+                }
+            }
         }
 
         private void ImportTiledFile(string path)

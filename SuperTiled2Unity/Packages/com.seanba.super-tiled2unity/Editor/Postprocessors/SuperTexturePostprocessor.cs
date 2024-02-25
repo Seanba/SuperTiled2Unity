@@ -32,17 +32,17 @@ namespace SuperTiled2Unity.Editor
                 textureImporter.SetTextureSettings(settings);
             }
 
-            AddSprites();
+            AddSpritesFromTiledFiles();
         }
 
-        private void AddSprites()
+        private void AddSpritesFromTiledFiles()
         {
             using (ProfilerMarker_AddSprites.Auto())
             {
                 var rects = SpriteRectsManager.Instance.GetSpriteRectsForTexture(assetPath);
                 if (!rects.Any())
                 {
-                    // This texture is not (currently) used by Tiled map or tileset files
+                    // This texture is not (currently) used by Tiled files (maps or tilesets)
                     return;
                 }
 
@@ -62,7 +62,7 @@ namespace SuperTiled2Unity.Editor
                         // fixit - add/remove
                         var newSpriteRect = new SpriteRect
                         {
-                            name = $"_st2u-x{rect.x}y{rect.y}w{rect.width}h{rect.height}_",
+                            name = TilesetLoader.RectToSpriteName(rect),
                             spriteID = GUID.Generate(),
                             rect = new Rect(rect.x, rect.y, rect.width, rect.height),
                             pivot = Vector2.zero,
