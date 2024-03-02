@@ -10,7 +10,6 @@ namespace SuperTiled2Unity.Editor
 {
     public class SuperTexturePostprocessor : AssetPostprocessor
     {
-        // fixit - I need to do more profiling on this. How could this be so much slower then the cut-ups I was doing?
         private static ProfilerMarker ProfilerMarker_AddSprites = new ProfilerMarker("AddSprites");
 
         private void OnPreprocessTexture()
@@ -59,7 +58,6 @@ namespace SuperTiled2Unity.Editor
 
                     foreach (var rect in rects)
                     {
-                        // fixit - add/remove
                         var newSpriteRect = new SpriteRect
                         {
                             name = TilesetLoader.RectToSpriteName(rect),

@@ -13,7 +13,6 @@ namespace SuperTiled2Unity.Editor
         internal static SpriteRectsManager Instance { get; }
 
         private readonly HashSet<RectangleEntry> m_RectangleEntries = new HashSet<RectangleEntry>();
-        private readonly Dictionary<string, List<Rect>> m_RectsCache = new Dictionary<string, List<Rect>>();
 
         static SpriteRectsManager()
         {
@@ -22,21 +21,8 @@ namespace SuperTiled2Unity.Editor
 
         internal IEnumerable<Rect> GetSpriteRectsForTexture(string assetPathTexture)
         {
-            // fixit - use a cache and make the list unique
             var absolutePathTexture = Path.GetFullPath(assetPathTexture).SanitizePath().ToLower();
             return m_RectangleEntries.Where(r => r.AbsolutePathTexture == absolutePathTexture).Select(r => new Rect(r.X, r.Y, r.Width, r.Height));
-
-            /*
-            if (m_RectsCache.TryGetValue(absolutePathTexture, out List<Rect> rects))
-            {
-                return rects;
-            }
-
-            // fixit - remove cache entry where necessary
-            rects = m_RectangleEntries.Where(r => r.AbsolutePathTexture == absolutePathTexture).Select(r => new Rect(r.X, r.Y, r.Width, r.Height)).ToList();
-            m_RectsCache.Add(absolutePathTexture, rects);
-            return rects;
-            */
         }
 
         private static string GetSanitizedAbsolutePathFromRelative(string absolutePathParent, string relativeImagePath)
@@ -47,9 +33,10 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private void ProcessTiledFile(string path) // fixit - starting point that covers the full contribution/influence of a single tiled resource (so remove that influce here and build it back up)
+        private void ProcessTiledFile(string path)
         {
             var absoluteTsxPath = Path.GetFullPath(path).SanitizePath();
+            m_RectangleEntries.RemoveWhere(r => r.AbsolutePathTsx == absoluteTsxPath);
 
             try
             {
@@ -180,16 +167,27 @@ namespace SuperTiled2Unity.Editor
 
         private void ImportTiledFile(string path)
         {
-            // How to handle this?
-            // We need to (somehow) detect which textures need to be reimported because their sprite rect collection is dirty
-            Debug.Log($"fixit Imported tiled (tsx or tmx) file: {path}");
             ProcessTiledFile(path);
         }
 
         private void ImportImageFile(string path)
         {
-            // What needs to be updated? Anything?
-            //Debug.Log($"fixit Imported image (texture) file: {path}");
+        }
+
+        private void DeleteTiledFile(string path)
+        {
+        }
+
+        private void DeleteImageFile(string path)
+        {
+        }
+
+        private void MoveTiledFile(string oldPath, string newPath)
+        {
+        }
+
+        private void MoveImageFile(string oldPath, string newPath)
+        {
         }
 
         // Seed the collection of sprite rectangles needed to make tiles
@@ -277,11 +275,11 @@ namespace SuperTiled2Unity.Editor
                 {
                     if (TiledExtensions.Any(x => imported.EndsWith(x)))
                     {
-                        SpriteRectsManager.Instance.ImportTiledFile(imported);
+                        Instance.ImportTiledFile(imported);
                     }
                     else if (ImageExtensions.Any(x => imported.EndsWith(x)))
                     {
-                        SpriteRectsManager.Instance.ImportImageFile(imported);
+                        Instance.ImportImageFile(imported);
                     }
                 }
 
@@ -290,11 +288,11 @@ namespace SuperTiled2Unity.Editor
                 {
                     if (TiledExtensions.Any(x => deleted.EndsWith(x)))
                     {
-                        Debug.Log($"fixit Deleted tiled file: {deleted}");
+                        Instance.DeleteTiledFile(deleted);
                     }
                     else if (ImageExtensions.Any(x => deleted.EndsWith(x)))
                     {
-                        Debug.Log($"fixit Deleted image file: {deleted}");
+                        Instance.DeleteImageFile(deleted);
                     }
                 }
 
@@ -306,11 +304,11 @@ namespace SuperTiled2Unity.Editor
 
                     if (TiledExtensions.Any(x => moved.EndsWith(x)))
                     {
-                        Debug.Log($"fixit Moved tiled file: {movedFrom} -> {moved}");
+                        Instance.MoveTiledFile(movedFrom, moved);
                     }
                     else if (ImageExtensions.Any(x => moved.EndsWith(x)))
                     {
-                        Debug.Log($"fixit Moved image file: {movedFrom} -> {moved}");
+                        Instance.MoveImageFile(movedFrom, moved);
                     }
                 }
             }

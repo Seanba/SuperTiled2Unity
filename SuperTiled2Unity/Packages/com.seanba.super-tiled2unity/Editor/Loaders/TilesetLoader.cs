@@ -174,9 +174,10 @@ namespace SuperTiled2Unity.Editor
                 if (!TryAddTile(i, srcx, srcy, m_SuperTileset.m_TileWidth, m_SuperTileset.m_TileHeight, sprites))
                 {
                     // Early-out if the source texture is missing sprites to make tiles out of
-                    m_Importer.ReportError($"Texture '{textureAssetPath}' is missing sprite x={srcx}, y={srcy}, w={m_SuperTileset.m_TileWidth}, h={m_SuperTileset.m_TileHeight} from spritesheet. Does the texture need to be re-imported?");
-                    m_SuperTileset.m_HasErrors = true;
-                    break;
+                    //m_Importer.ReportError($"Texture '{textureAssetPath}' is missing sprite x={srcx}, y={srcy}, w={m_SuperTileset.m_TileWidth}, h={m_SuperTileset.m_TileHeight} from spritesheet. Does the texture need to be reimported?");
+                    //m_SuperTileset.m_HasErrors = true;
+                    //break;
+                    AddErrorTile(i, srcx, srcy, m_SuperTileset.m_TileWidth, m_SuperTileset.m_TileHeight); // fixit
                 }
             }
         }
@@ -238,7 +239,7 @@ namespace SuperTiled2Unity.Editor
                     if (!TryAddTile(tileIndex, tile_x, tile_y, tile_w, tile_h, sprites))
                     { 
                         // Early-out if the source texture is missing sprites
-                        m_Importer.ReportError($"Texture '{textureAssetPath}' is missing sprite x={tile_x}, y={tile_y}, width={tile_w}, height={tile_h}. Does the texture need to be re-imported?");
+                        m_Importer.ReportError($"Texture '{textureAssetPath}' is missing sprite x={tile_x}, y={tile_y}, width={tile_w}, height={tile_h}. Does the texture need to be reimported?");
                         m_SuperTileset.m_HasErrors = true;
                         break;
                     }
@@ -272,6 +273,36 @@ namespace SuperTiled2Unity.Editor
             }
 
             return false;
+        }
+
+        private void AddErrorTile(int tileId, int x, int y, int width, int height)
+        {
+            // fixit - add an error tile (properly sized) so that user sees "something"
+            // Guess that 8x8 is the smallest tile someone will use (but just use red for now?)
+            var rect = new Rect(x, y, width, height);
+            var spriteName = RectToSpriteName(rect);
+
+            var errorSprite = Sprite.Create(Texture2D.redTexture, new Rect(0, 0, 1, 1), Vector2.zero, m_Importer.PixelsPerUnit);
+            errorSprite.name = $"error-sprite-{spriteName}";
+            //errorSprite.hideFlags = HideFlags.HideInHierarchy; // fixit
+            m_Importer.SuperImportContext.AddObjectToAsset(errorSprite.name, errorSprite);
+
+
+            var tile = ScriptableObject.CreateInstance<SuperBadTile>();
+            tile.m_TileId = tileId;
+            tile.name = spriteName;
+            //tile.hideFlags = HideFlags.HideInHierarchy; // fixit
+            tile.m_Sprite = errorSprite;
+            tile.m_Width = rect.width;
+            tile.m_Height = rect.height;
+            tile.m_TileOffsetX = m_SuperTileset.m_TileOffset.x;
+            tile.m_TileOffsetY = m_SuperTileset.m_TileOffset.y;
+            tile.m_ObjectAlignment = m_SuperTileset.m_ObjectAlignment;
+            tile.m_TileRenderSize = m_SuperTileset.m_TileRenderSize;
+            tile.m_FillMode = m_SuperTileset.m_FillMode;
+
+            m_SuperTileset.m_Tiles.Add(tile);
+            m_Importer.SuperImportContext.AddObjectToAsset(spriteName, tile);
         }
 
 
