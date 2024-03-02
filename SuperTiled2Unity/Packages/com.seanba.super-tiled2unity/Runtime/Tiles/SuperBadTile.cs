@@ -3,20 +3,16 @@ using UnityEngine.Tilemaps;
 
 namespace SuperTiled2Unity
 {
-    // A tile that just "looks" wrong and lets us know that the map or tileset was not imported correctly
-    // fixit - stretch goal: Can this look like tv snow?
+    // A tile that "looks wrong", indicationg that the map or tileset was not imported correctly
     public class SuperBadTile : SuperTile
     {
+        public Color m_Color = Color.white;
+
         public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData)
         {
-            tileData.color = Color.red;
+            tileData.flags = TileFlags.LockColor;
+            tileData.color = m_Color;
             tileData.sprite = m_Sprite;
-            Debug.Log("fixit - getting tile data");
-        }
-
-        public override bool GetTileAnimationData(Vector3Int position, ITilemap tilemap, ref TileAnimationData tileAnimationData)
-        {
-            return base.GetTileAnimationData(position, tilemap, ref tileAnimationData);
         }
     }
 }

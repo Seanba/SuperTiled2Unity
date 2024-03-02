@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 2f81b9cd0c9a2da4b9dc9b4c25308dc9
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_BadTileTexture: {fileID: 2800000, guid: 02cd1fd3645fee540b694708cab781c2, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
