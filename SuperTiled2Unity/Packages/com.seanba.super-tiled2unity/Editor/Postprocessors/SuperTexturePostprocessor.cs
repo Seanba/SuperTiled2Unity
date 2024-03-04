@@ -31,7 +31,7 @@ namespace SuperTiled2Unity.Editor
                 textureImporter.SetTextureSettings(settings);
             }
 
-            //AddSpritesFromTiledFiles(); // fixit
+            //AddSpritesFromTiledFiles(); // fixit - disabled while we test out improvements to helping out the user with tracking errors
         }
 
         private void AddSpritesFromTiledFiles()

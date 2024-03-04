@@ -173,7 +173,6 @@ namespace SuperTiled2Unity.Editor
 
                 if (!TryAddTile(i, srcx, srcy, m_SuperTileset.m_TileWidth, m_SuperTileset.m_TileHeight, sprites))
                 {
-                    // fixit - use error tiles if texture asset was not found
                     // fixit - add the texture to the set that may need to be re-imported
                     AddErrorTile(i, NamedColors.HotPink, m_SuperTileset.m_TileWidth, m_SuperTileset.m_TileHeight);
                 }
