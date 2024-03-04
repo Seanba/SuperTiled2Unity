@@ -173,8 +173,9 @@ namespace SuperTiled2Unity.Editor
 
                 if (!TryAddTile(i, srcx, srcy, m_SuperTileset.m_TileWidth, m_SuperTileset.m_TileHeight, sprites))
                 {
+                    // fixit - use error tiles if texture asset was not found
                     // fixit - add the texture to the set that may need to be re-imported
-                    AddErrorTile(i, m_SuperTileset.m_TileWidth, m_SuperTileset.m_TileHeight);
+                    AddErrorTile(i, NamedColors.HotPink, m_SuperTileset.m_TileWidth, m_SuperTileset.m_TileHeight);
                 }
             }
         }
@@ -236,7 +237,7 @@ namespace SuperTiled2Unity.Editor
                     if (!TryAddTile(tileIndex, tile_x, tile_y, tile_w, tile_h, sprites))
                     {
                         // fixit - add the texture to the set that may need to be re-imported
-                        AddErrorTile(tileIndex, tile_w, tile_h);
+                        AddErrorTile(tileIndex, NamedColors.DeepPink, tile_w, tile_h);
                     }
                 }
             }
@@ -270,9 +271,9 @@ namespace SuperTiled2Unity.Editor
             return false;
         }
 
-        private void AddErrorTile(int tileId, int width, int height)
+        private void AddErrorTile(int tileId, Color tint, int width, int height)
         {
-            BadTileSpriteProvider.instance.CreateSpriteAndTile(tileId, width, height, m_SuperTileset, out Sprite sprite, out SuperBadTile tile);
+            BadTileSpriteProvider.instance.CreateSpriteAndTile(tileId, tint, width, height, m_SuperTileset, out Sprite sprite, out SuperBadTile tile);
 
             sprite.hideFlags = HideFlags.HideInHierarchy;
             tile.hideFlags = HideFlags.HideInHierarchy;

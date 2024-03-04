@@ -392,6 +392,36 @@ namespace SuperTiled2Unity.Editor
             foreach (var tilemap in goParent.GetComponentsInChildren<Tilemap>())
             {
                 tilemap.RefreshAllTiles();
+                CalculateChunkCullingBounds(tilemap);
+            }
+        }
+
+        private static void CalculateChunkCullingBounds(Tilemap tilemap)
+        {
+            // Each tilemap gameobject should have a tilemap renderer
+            // Set the chunk culling bounds of the renderer using the size of the largest sprite in the tilemap
+            var tilemapRenderer = tilemap.gameObject.GetComponent<TilemapRenderer>();
+            if (tilemapRenderer != null)
+            {
+                tilemapRenderer.detectChunkCullingBounds = TilemapRenderer.DetectChunkCullingBounds.Manual;
+                float maxWidth = 0;
+                float maxHeight = 0;
+
+                var allTiles = tilemap.GetTilesBlock(tilemap.cellBounds);
+                foreach (var tile in allTiles.OfType<SuperTile>())
+                {
+                    maxWidth = Mathf.Max(tile.m_Sprite.bounds.size.x, maxWidth);
+                    maxHeight = Mathf.Max(tile.m_Sprite.bounds.size.y, maxHeight);
+
+                    // Look out for animated tiles
+                    foreach (var sprite in tile.m_AnimationSprites)
+                    {
+                        maxWidth = Mathf.Max(sprite.bounds.size.x, maxWidth);
+                        maxHeight = Mathf.Max(sprite.bounds.size.y, maxHeight);
+                    }
+                }
+
+                tilemapRenderer.chunkCullingBounds = new Vector3(maxWidth, maxHeight, 0);
             }
         }
 

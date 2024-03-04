@@ -9,15 +9,14 @@ namespace SuperTiled2Unity.Editor
     {
         public BadTileTextures m_BadTileTextures;
 
-        private static readonly Color32 m_BadColor = NamedColors.HotPink;
         private static readonly Dictionary<string, int> m_NamesToHash = new Dictionary<string, int>();
 
-        internal bool CreateSpriteAndTile(int tileId, int width, int height, SuperTileset superTileset, out Sprite sprite, out SuperBadTile tile)
+        internal bool CreateSpriteAndTile(int tileId, Color tint, int width, int height, SuperTileset superTileset, out Sprite sprite, out SuperBadTile tile)
         {
             Assert.IsNotNull(m_BadTileTextures);
             Assert.IsTrue(m_BadTileTextures.m_Textures.Length > 0);
 
-            // fixit - base determinstic assignment off of superTileset.name too
+            // Use the hash of the tileset in an attempt to better randomize the deterministic assignment of bad tiles
             int hash = GetTilesetHash(superTileset.name);
             var badTileTexture = m_BadTileTextures.m_Textures[(tileId + hash) % m_BadTileTextures.m_Textures.Length];
 
@@ -36,7 +35,7 @@ namespace SuperTiled2Unity.Editor
             tile.m_ObjectAlignment = superTileset.m_ObjectAlignment;
             tile.m_TileRenderSize = superTileset.m_TileRenderSize;
             tile.m_FillMode = superTileset.m_FillMode;
-            tile.m_Color = m_BadColor;
+            tile.m_Color = tint;
 
             return true;
         }
@@ -51,7 +50,6 @@ namespace SuperTiled2Unity.Editor
             // C# strings do not generate a deterministic hash code
             hash = Mathf.Abs(Hash128.Compute(name).GetHashCode());
             m_NamesToHash.Add(name, hash);
-            Debug.Log($"hash ({name}) = {hash}");
             return hash;
         }
     }

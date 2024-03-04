@@ -146,7 +146,6 @@ namespace SuperTiled2Unity.Editor
         private TilemapRenderer AddTilemapRendererComponent(GameObject go)
         {
             var renderer = go.AddComponent<TilemapRenderer>();
-            renderer.detectChunkCullingBounds = TilemapRenderer.DetectChunkCullingBounds.Auto; // fixit - is there a way to get these to figure out their chunks?
             renderer.sortOrder = MapRenderConverter.Tiled2Unity(m_MapComponent.m_RenderOrder);
 
             AssignMaterial(renderer, m_CurrentTileLayer.m_TiledName);
