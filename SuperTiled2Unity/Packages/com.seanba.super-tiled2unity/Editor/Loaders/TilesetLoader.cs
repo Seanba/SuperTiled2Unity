@@ -106,8 +106,14 @@ namespace SuperTiled2Unity.Editor
             var tex2d = m_Importer.RequestAssetAtPath<Texture2D>(textureLocalPath);
             if (tex2d == null)
             {
+                // fixit:error - keep going but report error
+                // fixit - good example of a missing asset (texture) that breaks another asset (tsx) that breaks the final prefab (tmx)
+                // TSX - needs to know texture asset is missing
+                // TMX (internal) - needs to know texture asset is missing
+                // TMX (external) - needs to know TSX has errors (select it)
+                // TMX (prefab instance) - needs to know TMX has issues (select it)
                 // Texture was not found so report the error to the importer UI and bail
-                m_Importer.ReportError("Missing texture asset: {0}", textureLocalPath);
+                m_Importer.ReportError("Missing texture asset: {0}", textureLocalPath); // fixit TMX or TSX importer
                 m_SuperTileset.m_HasErrors = true;
                 return;
             }
@@ -118,6 +124,7 @@ namespace SuperTiled2Unity.Editor
             var imgHeaderDims = ImageHeader.GetDimensions(textureFullPath);
             if (imgHeaderDims.x != textureWidth || imgHeaderDims.y != textureHeight)
             {
+                // fixit - I don't think this matters anymore
                 // Tileset needs to be resaved in Tiled
                 m_Importer.ReportError("Mismatching width/height detected. Tileset = ({0}, {1}), image = {2}. This may happen when a tileset image has been resized. Open map and tileset in Tiled Map Editor and resave.", textureWidth, textureHeight, imgHeaderDims);
                 m_SuperTileset.m_HasErrors = true;
@@ -126,6 +133,7 @@ namespace SuperTiled2Unity.Editor
 
             if (tex2d.width < textureWidth || tex2d.height < textureHeight)
             {
+                // fixit - I don't think this matters anymore
                 // Texture was not imported into Unity correctly
                 var max = Mathf.Max(textureWidth, textureHeight);
                 m_Importer.ReportError("Texture was imported at a smaller size. Make sure 'Max Size' on '{0}' is at least '{1}'", textureAssetPath, max);
@@ -137,6 +145,7 @@ namespace SuperTiled2Unity.Editor
             var sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => s.name);
             if (sprites.Any())
             {
+                // fixit - report and carry on with error tiles
                 var firstSprite = sprites.First().Value;
                 if (firstSprite.pixelsPerUnit != m_SuperTileset.m_PixelsPerUnit)
                 {
@@ -167,6 +176,7 @@ namespace SuperTiled2Unity.Editor
 
                 if (srcy < 0)
                 {
+                    // fixit - error tile can go here. Continue.
                     // This is an edge condition in Tiled if a tileset's texture has been resized
                     break;
                 }

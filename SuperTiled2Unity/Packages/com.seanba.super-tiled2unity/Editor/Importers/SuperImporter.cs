@@ -41,8 +41,8 @@ namespace SuperTiled2Unity.Editor
         private int m_ImporterVersion = 0;
         public int ImporterVersion
         {
-            get { return m_ImporterVersion; }
-            protected set { m_ImporterVersion = value; }
+            get => m_ImporterVersion;
+            protected set => m_ImporterVersion = value;
         }
 
         // Keep track of loaded database objects by type
@@ -130,7 +130,7 @@ namespace SuperTiled2Unity.Editor
             string requestedAssetPath = absPath;
             if (!AssetPath.TryAbsoluteToAsset(ref requestedAssetPath))
             {
-                ReportError($"Could not generate asset path for '{path}'");
+                // fixit - what kind of error do we put here? This for when we're referencing a path completely outisde our /Assets/ directory.
                 return null;
             }
 
@@ -154,7 +154,7 @@ namespace SuperTiled2Unity.Editor
             return null;
         }
 
-        public void ReportMissingFile(string path)
+        public void ReportMissingFile(string path) // fixit - missing file reporting
         {
             m_MissingFiles.Add(path);
         }

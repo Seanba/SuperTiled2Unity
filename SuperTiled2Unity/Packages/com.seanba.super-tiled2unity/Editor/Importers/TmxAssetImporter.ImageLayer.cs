@@ -24,7 +24,7 @@ namespace SuperTiled2Unity.Editor
                 var source = xImage.GetAttributeAs<string>("source");
                 layerComponent.m_ImageFilename = source;
 
-                var tex2d = RequestAssetAtPath<Texture2D>(source);
+                var tex2d = RequestAssetAtPath<Texture2D>(source); // fixit - better error reporting if missing (can use error sprite?)
                 if (tex2d == null)
                 {
                     // Texture was not found yet so report the error to the importer UI and bail

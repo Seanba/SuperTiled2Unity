@@ -95,7 +95,7 @@ namespace SuperTiled2Unity.Editor
             var template = xObject.GetAttributeAs("template", "");
             if (!string.IsNullOrEmpty(template))
             {
-                var asset = RequestAssetAtPath<ObjectTemplate>(template);
+                var asset = RequestAssetAtPath<ObjectTemplate>(template);  // fixit - better error reporting if missing
                 if (asset != null)
                 {
                     xObject.CombineWithTemplate(asset.m_ObjectXml);

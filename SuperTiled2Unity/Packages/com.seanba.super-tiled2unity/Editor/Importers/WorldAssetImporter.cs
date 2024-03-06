@@ -102,7 +102,7 @@ namespace SuperTiled2Unity.Editor
         private void InstantiateMap(GameObject goWorld, JsonMap jsonMap)
         {
             var path = jsonMap.fileName;
-            var superMap = RequestAssetAtPath<SuperMap>(path);
+            var superMap = RequestAssetAtPath<SuperMap>(path); // fixit - better reporting if missing
 
             if (superMap != null)
             {

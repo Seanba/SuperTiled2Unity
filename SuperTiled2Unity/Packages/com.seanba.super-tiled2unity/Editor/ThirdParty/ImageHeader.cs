@@ -8,7 +8,7 @@ using UnityEngine;
 // I found this on the Unity forums. Thanks, Diablo404!
 // https://forum.unity.com/threads/getting-original-size-of-texture-asset-in-pixels.165295/#post-2568840
 
-namespace SuperTiled2Unity.Editor.Diablo404
+namespace SuperTiled2Unity.Editor.Diablo404 // fixit - get rid of this
 {
     /// <summary>
     /// Taken from http://stackoverflow.com/questions/111345/getting-image-dimensions-without-reading-the-entire-file/111349
