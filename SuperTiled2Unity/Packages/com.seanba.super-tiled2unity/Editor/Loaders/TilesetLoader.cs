@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using SuperTiled2Unity.Editor.Diablo404;
 using UnityEditor;
 using UnityEngine;
 
@@ -118,18 +116,7 @@ namespace SuperTiled2Unity.Editor
                 return;
             }
 
-            // This is annoying: A tileset may have recently changed but Tiled hasn't been updated on the status yet
             var textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
-            var textureFullPath = Path.GetFullPath(textureAssetPath);
-            var imgHeaderDims = ImageHeader.GetDimensions(textureFullPath);
-            if (imgHeaderDims.x != textureWidth || imgHeaderDims.y != textureHeight)
-            {
-                // fixit - I don't think this matters anymore
-                // Tileset needs to be resaved in Tiled
-                m_Importer.ReportError("Mismatching width/height detected. Tileset = ({0}, {1}), image = {2}. This may happen when a tileset image has been resized. Open map and tileset in Tiled Map Editor and resave.", textureWidth, textureHeight, imgHeaderDims);
-                m_SuperTileset.m_HasErrors = true;
-                return;
-            }
 
             if (tex2d.width < textureWidth || tex2d.height < textureHeight)
             {
