@@ -51,6 +51,9 @@ namespace SuperTiled2Unity.Editor
         // For tracking assets and dependencies imported by SuperTiled2Unity
         private SuperAsset m_SuperAsset;
 
+        // For keeping track of errors while our asset and dependencies are being imported
+        private ImportErrors m_ImportErrors;
+
         protected AssetImportContext AssetImportContext { get; private set; }
 
         public override sealed void OnImportAsset(AssetImportContext ctx)
@@ -63,6 +66,7 @@ namespace SuperTiled2Unity.Editor
             m_MissingLayers.Clear();
             m_MissingTags.Clear();
             m_SuperAsset = null;
+            m_ImportErrors = null;
             AssetImportContext = ctx;
 
 #if UNITY_2020_3_OR_NEWER
@@ -221,6 +225,18 @@ namespace SuperTiled2Unity.Editor
             }
 
             return true;
+        }
+
+        public void AddError(string error) // fixit
+        {
+            if (m_ImportErrors == null)
+            {
+                m_ImportErrors = ScriptableObject.CreateInstance<ImportErrors>();
+                m_ImportErrors.name = "import-errors";
+                AssetImportContext.AddObjectToAsset("_errors", m_ImportErrors);
+            }
+
+            m_ImportErrors.AddError(error);
         }
 
         protected void AddSuperAsset<T>() where T : SuperAsset

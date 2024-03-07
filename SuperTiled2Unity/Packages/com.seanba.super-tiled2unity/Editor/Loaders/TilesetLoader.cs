@@ -16,7 +16,7 @@ namespace SuperTiled2Unity.Editor
         // Make this an ugly name that shouldn't collide with sprites named by the user
         internal static string RectToSpriteName(Rect rect)
         {
-            return $"_st2u-x{rect.x}y{rect.y}-w{rect.width}h{rect.height}_";
+            return $"st2u-x{rect.x}y{rect.y}-w{rect.width}h{rect.height}";
         }
 
         public TilesetLoader(SuperTileset tileset, TiledAssetImporter importer)
@@ -129,7 +129,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             // The pixels per unit of the sprites must match the pixels per unit of the tileset
-            var sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => s.name);
+            var sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => s.rect);
             if (sprites.Any())
             {
                 // fixit - report and carry on with error tiles
@@ -171,7 +171,8 @@ namespace SuperTiled2Unity.Editor
                 if (!TryAddTile(i, srcx, srcy, m_SuperTileset.m_TileWidth, m_SuperTileset.m_TileHeight, sprites))
                 {
                     // fixit:error - These are the errors we're experiencing right now
-                    // fixit - add the texture to the set that may need to be re-imported
+                    // fixit - add the texture to the set that may need to be re-imported (Reimport may fix, give option to select, give option to reimport)
+                    m_Importer.AddError($"fixit - error tile {srcx}, {srcy}, {m_SuperTileset.m_TileWidth}, {m_SuperTileset.m_TileHeight}");
                     AddErrorTile(i, NamedColors.HotPink, m_SuperTileset.m_TileWidth, m_SuperTileset.m_TileHeight);
                 }
             }
@@ -214,7 +215,7 @@ namespace SuperTiled2Unity.Editor
                     var textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
 
                     // The pixels per unit of the sprites must match the pixels per unit of the tileset
-                    var sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => s.name);
+                    var sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => s.rect);
                     if (sprites.Any())
                     {
                         var firstSprite = sprites.First().Value;
@@ -240,16 +241,15 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private bool TryAddTile(int tileId, int x, int y, int width, int height, Dictionary<string, Sprite> sprites)
+        private bool TryAddTile(int tileId, int x, int y, int width, int height, Dictionary<Rect, Sprite> sprites)
         {
             var rect = new Rect(x, y, width, height);
-            var spriteName = RectToSpriteName(rect);
-            if (sprites.TryGetValue(spriteName, out Sprite tileSprite))
+            if (sprites.TryGetValue(rect, out Sprite tileSprite))
             {
                 // Create the tile that uses the sprite
                 var tile = ScriptableObject.CreateInstance<SuperTile>();
                 tile.m_TileId = tileId;
-                tile.name = spriteName;
+                tile.name = tileSprite.name;
                 tile.hideFlags = HideFlags.HideInHierarchy;
                 tile.m_Sprite = tileSprite;
                 tile.m_Width = rect.width;
@@ -261,7 +261,7 @@ namespace SuperTiled2Unity.Editor
                 tile.m_FillMode = m_SuperTileset.m_FillMode;
 
                 m_SuperTileset.m_Tiles.Add(tile);
-                m_Importer.SuperImportContext.AddObjectToAsset(spriteName, tile);
+                m_Importer.SuperImportContext.AddObjectToAsset($"Tile{tileId}_spriteName", tile);
                 return true;
             }
 

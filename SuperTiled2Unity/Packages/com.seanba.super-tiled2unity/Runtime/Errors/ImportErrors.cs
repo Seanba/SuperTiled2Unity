@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace SuperTiled2Unity
 {
-    internal class ImportErrors : ScriptableObject
+    public class ImportErrors : ScriptableObject
     {
         [SerializeField]
-        private List<string> m_Errors;
+        private List<string> m_Errors = new List<string>();
 
         public void AddError(string error)
         {
