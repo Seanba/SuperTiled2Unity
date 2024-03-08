@@ -7,8 +7,7 @@ namespace SuperTiled2Unity
 {
     public class ImportErrors : ScriptableObject
     {
-        [SerializeField]
-        private List<MissingTileSprites> m_MissingTileSprites = new List<MissingTileSprites>();
+        public List<MissingTileSprites> m_MissingTileSprites = new List<MissingTileSprites>();
 
         public void ReportMissingSprite(string textureAssetPath, int spriteId, int x, int y, int w, int h)
         {

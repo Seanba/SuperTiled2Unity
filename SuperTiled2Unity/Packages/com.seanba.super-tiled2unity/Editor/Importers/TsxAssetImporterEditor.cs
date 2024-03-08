@@ -21,6 +21,8 @@ namespace SuperTiled2Unity.Editor
             EditorGUILayout.LabelField("Tileset Importer Settings", EditorStyles.boldLabel);
             EditorGUILayout.Space();
 
+            // fixit - show errors with tileset (and what if the tileset is internal?)
+
             ShowTiledAssetGui();
             InternalApplyRevertGUI();
         }

@@ -21,7 +21,7 @@ namespace SuperTiled2Unity.Editor
         {
             if (assetTarget != null)
             {
-                // If we have importer errors then they should be front and center
+                // If we have importer errors then they should be front and center // fixit - check out this old-style reporting (assetTarget is SuperTilet or SuperMap or whatever)
                 DisplayMissingFileErrors();
                 DisplayErrorsAndWarnings();
                 DisplayTagManagerErrors();
