@@ -148,18 +148,21 @@ namespace SuperTiled2Unity.Editor
                 int x = i % m_SuperTileset.m_TileColumns;
                 int y = i / m_SuperTileset.m_TileColumns;
 
+                int tileWidth = m_SuperTileset.m_TileWidth;
+                int tileHeight = m_SuperTileset.m_TileHeight;
+
                 // Get x source on texture
-                int srcx = x * m_SuperTileset.m_TileWidth;
+                int srcx = x * tileWidth;
                 srcx += x * m_SuperTileset.m_Spacing;
                 srcx += m_SuperTileset.m_Margin;
 
                 // Get y source on texture
-                int srcy = y * m_SuperTileset.m_TileHeight;
+                int srcy = y * tileHeight;
                 srcy += y * m_SuperTileset.m_Spacing;
                 srcy += m_SuperTileset.m_Margin;
 
                 // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
-                srcy = (textureHeight - srcy) - m_SuperTileset.m_TileHeight;
+                srcy = (textureHeight - srcy) - tileHeight;
 
                 if (srcy < 0)
                 {
@@ -168,12 +171,12 @@ namespace SuperTiled2Unity.Editor
                     break;
                 }
 
-                if (!TryAddTile(i, srcx, srcy, m_SuperTileset.m_TileWidth, m_SuperTileset.m_TileHeight, sprites))
+                if (!TryAddTile(i, srcx, srcy, tileWidth, tileHeight, sprites))
                 {
                     // fixit:error - These are the errors we're experiencing right now
                     // fixit - add the texture to the set that may need to be re-imported (Reimport may fix, give option to select, give option to reimport)
-                    m_Importer.AddError($"fixit - error tile {srcx}, {srcy}, {m_SuperTileset.m_TileWidth}, {m_SuperTileset.m_TileHeight}");
-                    AddErrorTile(i, NamedColors.HotPink, m_SuperTileset.m_TileWidth, m_SuperTileset.m_TileHeight);
+                    m_Importer.ReportMissingSprite(textureAssetPath, i, srcx, srcy, tileWidth, tileHeight);
+                    AddErrorTile(i, NamedColors.HotPink, tileWidth, tileHeight);
                 }
             }
         }

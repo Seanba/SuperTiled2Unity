@@ -227,16 +227,20 @@ namespace SuperTiled2Unity.Editor
             return true;
         }
 
-        public void AddError(string error) // fixit
+        public void ReportMissingSprite(string textureAssetPath, int spriteId, int x, int y, int w, int h)
+        {
+            AddImportErrorsScriptableObjectIfNeeded();
+            m_ImportErrors.ReportMissingSprite(textureAssetPath, spriteId, x, y, w, h);
+        }
+
+        private void AddImportErrorsScriptableObjectIfNeeded()
         {
             if (m_ImportErrors == null)
             {
                 m_ImportErrors = ScriptableObject.CreateInstance<ImportErrors>();
                 m_ImportErrors.name = "import-errors";
-                AssetImportContext.AddObjectToAsset("_errors", m_ImportErrors);
+                AssetImportContext.AddObjectToAsset("_import-errors", m_ImportErrors);
             }
-
-            m_ImportErrors.AddError(error);
         }
 
         protected void AddSuperAsset<T>() where T : SuperAsset
