@@ -13,6 +13,9 @@ namespace SuperTiled2Unity
         // Missing sprites in this import
         public List<MissingTileSprites> m_MissingTileSprites = new List<MissingTileSprites>();
 
+        // Dependency assets that are using the wrong pixels per unit. Maps, tilesets, and textures must use matching pixels per unit.
+        public List<WrongPixelsPerUnit> m_WrongPixelsPerUnits = new List<WrongPixelsPerUnit>();
+
         public void ReportErrorsInDependency(string assetPath)
         {
             if (!m_ErrorsInAssetDependencies.Contains(assetPath))
@@ -34,11 +37,27 @@ namespace SuperTiled2Unity
             missing.AddMissingSprite(spriteId, x, y, w, h);
         }
 
+        public void ReportWrongPixelsPerUnit(string dependencyAssetPath, float dependencyPPU, float ourPPU)
+        {
+            var wrongPPU = m_WrongPixelsPerUnits.FirstOrDefault(w => w.m_DependencyAssetPath == dependencyAssetPath);
+            if (wrongPPU == null)
+            {
+                wrongPPU = new WrongPixelsPerUnit
+                {
+                    m_DependencyAssetPath = dependencyAssetPath,
+                    m_DependencyPPU = dependencyPPU,
+                    m_ExpectingPPU = ourPPU,
+                };
+
+                m_WrongPixelsPerUnits.Add(wrongPPU);
+            }
+        }
+
         [Serializable]
         public class MissingTileSprites
         {
             public string m_TextureAssetPath;
-            public List<MissingSprite> m_MissingTiles = new List<MissingSprite>();
+            public List<MissingSprite> m_MissingSprites = new List<MissingSprite>();
 
             public void AddMissingSprite(int spriteId, int x, int y, int w, int h)
             {
@@ -48,7 +67,7 @@ namespace SuperTiled2Unity
                     m_Rect = new Rect(x, y, w, h),
                 };
 
-                m_MissingTiles.Add(missing);
+                m_MissingSprites.Add(missing);
             }
 
             [Serializable]
@@ -58,5 +77,14 @@ namespace SuperTiled2Unity
                 public Rect m_Rect;
             }
         }
+
+        [Serializable]
+        public class WrongPixelsPerUnit
+        {
+            public string m_DependencyAssetPath;
+            public float m_DependencyPPU;
+            public float m_ExpectingPPU;
+        }
+
     }
 }

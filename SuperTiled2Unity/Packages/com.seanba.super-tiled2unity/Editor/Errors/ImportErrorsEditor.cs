@@ -20,8 +20,29 @@ namespace SuperTiled2Unity.Editor
             {
                 ui.HelpBox("Errors Detected. Your Tiled asset may not look or function correctly. Please follow directions to fix.");
 
+                DisplayWrongPixelsPerUnit(ui, importErrors);
                 DisplayDependencyErrors(ui, importErrors);
                 DisplayMissingSprites(ui, importErrors);
+            }
+        }
+
+        private static void DisplayWrongPixelsPerUnit(MessageBuilderUI ui, ImportErrors importErrors)
+        {
+            if (importErrors.m_WrongPixelsPerUnits.Count > 0)
+            {
+                ui.BoldLabel("Mismatched Pixels Per Unit");
+                foreach (var wrongPPU in importErrors.m_WrongPixelsPerUnits)
+                {
+                    var assetName = Path.GetFileName(wrongPPU.m_DependencyAssetPath);
+                    ui.HelpBox($"Our Pixels Per Unit setting is '{wrongPPU.m_ExpectingPPU}'\n{assetName} Pixels Per Unit setting is '{wrongPPU.m_DependencyPPU}'\nThese values must match for properly sized tiles.");
+                    using (new GuiScopedBackgroundColor(NamedColors.LightPink))
+                    {
+                        if (GUILayout.Button($"Inspect '{assetName}'"))
+                        {
+                            Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(wrongPPU.m_DependencyAssetPath);
+                        }
+                    }
+                }
             }
         }
 
@@ -58,14 +79,14 @@ namespace SuperTiled2Unity.Editor
                     msg.AppendLine(missing.m_TextureAssetPath);
 
                     int reportCount = 5;
-                    foreach (var tile in missing.m_MissingTiles.Take(reportCount))
+                    foreach (var tile in missing.m_MissingSprites.Take(reportCount))
                     {
-                        msg.AppendLine($"Missing tile {tile.m_SpriteId}: ({tile.m_Rect.x}, {tile.m_Rect.y}) ({tile.m_Rect.width}x{tile.m_Rect.height})");
+                        msg.AppendLine($"Missing sprite {tile.m_SpriteId}: Pos = ({tile.m_Rect.x}, {tile.m_Rect.y}), Size = ({tile.m_Rect.width}x{tile.m_Rect.height}), Pivot = (0, 0)");
                     }
 
-                    if (missing.m_MissingTiles.Count > reportCount)
+                    if (missing.m_MissingSprites.Count > reportCount)
                     {
-                        msg.AppendLine($"An additional {missing.m_MissingTiles.Count - reportCount} sprites are missing. Total = {missing.m_MissingTiles.Count}");
+                        msg.AppendLine($"An additional {missing.m_MissingSprites.Count - reportCount} sprites are missing. Total = {missing.m_MissingSprites.Count}");
                     }
 
                     msg.AppendLine("Super Tiled2Unity will attempt to automatically add these missing sprites on import. Try reimporting.");

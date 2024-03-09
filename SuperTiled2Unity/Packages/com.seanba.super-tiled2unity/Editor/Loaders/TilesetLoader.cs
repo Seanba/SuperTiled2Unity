@@ -13,10 +13,12 @@ namespace SuperTiled2Unity.Editor
         private readonly SuperTileset m_SuperTileset;
         private readonly TiledAssetImporter m_Importer;
 
+        public const string SpriteNameRoot = "st2u_";
+
         // Make this an ugly name that shouldn't collide with sprites named by the user
         internal static string RectToSpriteName(Rect rect)
         {
-            return $"st2u-x{rect.x}y{rect.y}-w{rect.width}h{rect.height}";
+            return $"{SpriteNameRoot}x{rect.x}y{rect.y}-w{rect.width}h{rect.height}";
         }
 
         public TilesetLoader(SuperTileset tileset, TiledAssetImporter importer)
@@ -99,6 +101,8 @@ namespace SuperTiled2Unity.Editor
             int textureWidth = xImage.GetAttributeAs<int>("width");
             int textureHeight = xImage.GetAttributeAs<int>("height");
 
+            bool forceErrorTiles = false;
+
             // Load the texture. We will make sprites and tiles out of this image.
             var tex2d = m_Importer.RequestDependencyAssetAtPath<Texture2D>(textureLocalPath);
             if (tex2d == null)
@@ -111,15 +115,15 @@ namespace SuperTiled2Unity.Editor
             var textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
 
             // The pixels per unit of the sprites must match the pixels per unit of the tileset
-            var sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => s.rect);
+            var sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => (s.rect, s.pivot));
             if (sprites.Any())
             {
                 // fixit - report and carry on with error tiles
                 var firstSprite = sprites.First().Value;
                 if (firstSprite.pixelsPerUnit != m_SuperTileset.m_PixelsPerUnit)
                 {
-                    m_Importer.ReportError($"Texture '{textureAssetPath}' Pixels Per Unit '{firstSprite.pixelsPerUnit}' does not match setting '{m_SuperTileset.m_PixelsPerUnit}'");
-                    return;
+                    m_Importer.ReportWrongPixelsPerUnit(textureAssetPath, firstSprite.pixelsPerUnit, m_SuperTileset.m_PixelsPerUnit);
+                    forceErrorTiles = true;
                 }
             }
 
@@ -152,7 +156,7 @@ namespace SuperTiled2Unity.Editor
                     break;
                 }
 
-                if (!TryAddTile(i, srcx, srcy, tileWidth, tileHeight, sprites))
+                if (forceErrorTiles || !TryAddTile(i, srcx, srcy, tileWidth, tileHeight, sprites))
                 {
                     // fixit:error - make sure this carries over to the prefab and prefab instance
                     m_Importer.ReportMissingSprite(textureAssetPath, i, srcx, srcy, tileWidth, tileHeight);
@@ -196,7 +200,7 @@ namespace SuperTiled2Unity.Editor
                     var textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
 
                     // The pixels per unit of the sprites must match the pixels per unit of the tileset
-                    var sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => s.rect);
+                    var sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => (s.rect, s.pivot));
                     if (sprites.Any())
                     {
                         var firstSprite = sprites.First().Value;
@@ -221,10 +225,10 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private bool TryAddTile(int tileId, int x, int y, int width, int height, Dictionary<Rect, Sprite> sprites)
+        private bool TryAddTile(int tileId, int x, int y, int width, int height, Dictionary<(Rect, Vector2), Sprite> sprites)
         {
             var rect = new Rect(x, y, width, height);
-            if (sprites.TryGetValue(rect, out Sprite tileSprite))
+            if (sprites.TryGetValue((rect, Vector2.zero), out Sprite tileSprite)) // fixit - make sure this works
             {
                 // Create the tile that uses the sprite
                 var tile = ScriptableObject.CreateInstance<SuperTile>();

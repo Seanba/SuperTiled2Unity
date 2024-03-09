@@ -247,6 +247,12 @@ namespace SuperTiled2Unity.Editor
             ImportErrors.ReportMissingSprite(textureAssetPath, spriteId, x, y, w, h);
         }
 
+        public void ReportWrongPixelsPerUnit(string dependencyAssetPath, float dependencyPPU, float ourPPU)
+        {
+            AddImportErrorsScriptableObjectIfNeeded();
+            ImportErrors.ReportWrongPixelsPerUnit(dependencyAssetPath, dependencyPPU, ourPPU);
+        }
+
         private void AddImportErrorsScriptableObjectIfNeeded()
         {
             if (ImportErrors == null)
