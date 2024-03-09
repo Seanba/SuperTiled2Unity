@@ -2,7 +2,7 @@
 
 namespace SuperTiled2Unity
 {
-    public class SuperMap : MonoBehaviour // fixit - need a custom editor for this so we can print them
+    public class SuperMap : MonoBehaviour
     {
         [ReadOnly]
         public string m_Version;

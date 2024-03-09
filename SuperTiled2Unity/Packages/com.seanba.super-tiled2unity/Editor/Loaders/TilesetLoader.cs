@@ -31,7 +31,6 @@ namespace SuperTiled2Unity.Editor
             if (xTileset.Attribute("tilecount") == null || xTileset.Attribute("columns") == null)
             {
                 m_Importer.ReportError("Old file format detected. You must save this file with a newer verion of Tiled.");
-                m_SuperTileset.m_HasErrors = true;
                 return false;
             }
 
@@ -106,7 +105,6 @@ namespace SuperTiled2Unity.Editor
             {
                 // fixit - keep going but report error
                 m_Importer.ReportError("Missing texture asset: {0}", textureLocalPath); // fixit TMX or TSX importer
-                m_SuperTileset.m_HasErrors = true;
                 return;
             }
 
@@ -121,7 +119,6 @@ namespace SuperTiled2Unity.Editor
                 if (firstSprite.pixelsPerUnit != m_SuperTileset.m_PixelsPerUnit)
                 {
                     m_Importer.ReportError($"Texture '{textureAssetPath}' Pixels Per Unit '{firstSprite.pixelsPerUnit}' does not match setting '{m_SuperTileset.m_PixelsPerUnit}'");
-                    m_SuperTileset.m_HasErrors = true;
                     return;
                 }
             }
@@ -185,7 +182,6 @@ namespace SuperTiled2Unity.Editor
                     {
                         // Texture was not found yet so report the error to the importer UI and bail
                         m_Importer.ReportError("Missing texture asset for tile {0}: {1}", tileIndex, textureLocalPath);
-                        m_SuperTileset.m_HasErrors = true;
                         return;
                     }
 
@@ -194,7 +190,6 @@ namespace SuperTiled2Unity.Editor
                         // Texture was not imported into Unity correctly
                         var max = Mathf.Max(texture_w, texture_h);
                         m_Importer.ReportError("Texture was imported at a smaller size. Make sure 'Max Size' on '{0}' is at least '{1}'", textureLocalPath, max);
-                        m_SuperTileset.m_HasErrors = true;
                         return;
                     }
 
@@ -208,7 +203,6 @@ namespace SuperTiled2Unity.Editor
                         if (firstSprite.pixelsPerUnit != m_SuperTileset.m_PixelsPerUnit)
                         {
                             m_Importer.ReportError($"Texture '{textureAssetPath}' Pixels Per Unit '{firstSprite.pixelsPerUnit}' does not match setting '{m_SuperTileset.m_PixelsPerUnit}'");
-                            m_SuperTileset.m_HasErrors = true;
                             return;
                         }
                     }
@@ -399,12 +393,10 @@ namespace SuperTiled2Unity.Editor
                         if (collision.m_Size.x == 0)
                         {
                             m_Importer.ReportError("Invalid ellipse (Tile ID ='{0}') in tileset '{1}' has zero width", tile.m_TileId, m_SuperTileset.name);
-                            m_SuperTileset.m_HasErrors = true;
                         }
                         else if (collision.m_Size.y == 0)
                         {
                             m_Importer.ReportError("Invalid ellipse (Tile ID ='{0}') in tileset '{1}' has zero height", tile.m_TileId, m_SuperTileset.name);
-                            m_SuperTileset.m_HasErrors = true;
                         }
                         else
                         {
@@ -421,12 +413,10 @@ namespace SuperTiled2Unity.Editor
                         if (collision.m_Size.x == 0)
                         {
                             m_Importer.ReportError("Invalid rectangle (Tile ID ='{0}') in tileset '{1}' has zero width", tile.m_TileId, m_SuperTileset.name);
-                            m_SuperTileset.m_HasErrors = true;
                         }
                         else if (collision.m_Size.y == 0)
                         {
                             m_Importer.ReportError("Invalid rectangle (Tile ID ='{0}') in tileset '{1}' has zero height", tile.m_TileId, m_SuperTileset.name);
-                            m_SuperTileset.m_HasErrors = true;
                         }
                         else
                         {

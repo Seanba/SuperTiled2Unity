@@ -293,7 +293,7 @@ namespace SuperTiled2Unity.Editor
                 return false;
             }
 
-            // fixit - better error reporting
+            // fixit - better error reporting for missing tileset
             // Load the tileset and process the tiles inside
             var tileset = RequestDependencyAssetAtPath<SuperTileset>(source);
 
@@ -309,11 +309,6 @@ namespace SuperTiled2Unity.Editor
                 if (PixelsPerUnit != tileset.m_PixelsPerUnit) // fixit - should be an error
                 {
                     ReportWarning("Pixels Per Unit mismatch between map ({0}) and tileset '{1}' ({2})", PixelsPerUnit, source, tileset.m_PixelsPerUnit);
-                }
-
-                if (tileset.m_HasErrors) // fixit - egad. Can we not "just" look for error in dependencies?
-                {
-                    ReportError("Errors detected in tileset '{0}'. Check the tileset inspector for more details. Your map may be broken until these are fixed.", source);
                 }
 
                 // Register all the tiles with the tile database for this map
