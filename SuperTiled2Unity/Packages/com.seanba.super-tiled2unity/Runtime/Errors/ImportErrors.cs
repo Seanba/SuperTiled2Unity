@@ -7,7 +7,19 @@ namespace SuperTiled2Unity
 {
     public class ImportErrors : ScriptableObject
     {
+        // Depenency assets that have errors
+        public List<string> m_ErrorsInAssetDependencies = new List<string>();
+
+        // Missing sprites in this import
         public List<MissingTileSprites> m_MissingTileSprites = new List<MissingTileSprites>();
+
+        public void ReportErrorsInDependency(string assetPath)
+        {
+            if (!m_ErrorsInAssetDependencies.Contains(assetPath))
+            {
+                m_ErrorsInAssetDependencies.Add(assetPath);
+            }
+        }
 
         public void ReportMissingSprite(string textureAssetPath, int spriteId, int x, int y, int w, int h)
         {

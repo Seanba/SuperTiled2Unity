@@ -57,7 +57,7 @@ namespace SuperTiled2Unity
         public List<SuperTile> m_Tiles = new List<SuperTile>();
 
         [ReadOnly]
-        public bool m_HasErrors;
+        public bool m_HasErrors; // fixit - get rid of this atrocity
 
         public bool TryGetTile(int tileId, out SuperTile tile)
         {

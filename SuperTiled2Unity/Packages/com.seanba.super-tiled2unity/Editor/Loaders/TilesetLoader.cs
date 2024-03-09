@@ -101,32 +101,16 @@ namespace SuperTiled2Unity.Editor
             int textureHeight = xImage.GetAttributeAs<int>("height");
 
             // Load the texture. We will make sprites and tiles out of this image.
-            var tex2d = m_Importer.RequestAssetAtPath<Texture2D>(textureLocalPath);
+            var tex2d = m_Importer.RequestDependencyAssetAtPath<Texture2D>(textureLocalPath);
             if (tex2d == null)
             {
-                // fixit:error - keep going but report error
-                // fixit - good example of a missing asset (texture) that breaks another asset (tsx) that breaks the final prefab (tmx)
-                // TSX - needs to know texture asset is missing
-                // TMX (internal) - needs to know texture asset is missing
-                // TMX (external) - needs to know TSX has errors (select it)
-                // TMX (prefab instance) - needs to know TMX has issues (select it)
-                // Texture was not found so report the error to the importer UI and bail
+                // fixit - keep going but report error
                 m_Importer.ReportError("Missing texture asset: {0}", textureLocalPath); // fixit TMX or TSX importer
                 m_SuperTileset.m_HasErrors = true;
                 return;
             }
 
             var textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
-
-            if (tex2d.width < textureWidth || tex2d.height < textureHeight)
-            {
-                // fixit - I don't think this matters anymore
-                // Texture was not imported into Unity correctly
-                var max = Mathf.Max(textureWidth, textureHeight);
-                m_Importer.ReportError("Texture was imported at a smaller size. Make sure 'Max Size' on '{0}' is at least '{1}'", textureAssetPath, max);
-                m_SuperTileset.m_HasErrors = true;
-                return;
-            }
 
             // The pixels per unit of the sprites must match the pixels per unit of the tileset
             var sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => s.rect);
@@ -173,8 +157,7 @@ namespace SuperTiled2Unity.Editor
 
                 if (!TryAddTile(i, srcx, srcy, tileWidth, tileHeight, sprites))
                 {
-                    // fixit:error - These are the errors we're experiencing right now
-                    // fixit - add the texture to the set that may need to be re-imported (Reimport may fix, give option to select, give option to reimport)
+                    // fixit:error - make sure this carries over to the prefab and prefab instance
                     m_Importer.ReportMissingSprite(textureAssetPath, i, srcx, srcy, tileWidth, tileHeight);
                     AddErrorTile(i, NamedColors.HotPink, tileWidth, tileHeight);
                 }
@@ -197,7 +180,7 @@ namespace SuperTiled2Unity.Editor
                     int texture_h = xImage.GetAttributeAs<int>("height");
 
                     // Load the texture. We will make sprites and tiles out of this image.
-                    var tex2d = m_Importer.RequestAssetAtPath<Texture2D>(textureLocalPath);
+                    var tex2d = m_Importer.RequestDependencyAssetAtPath<Texture2D>(textureLocalPath);
                     if (tex2d == null)
                     {
                         // Texture was not found yet so report the error to the importer UI and bail

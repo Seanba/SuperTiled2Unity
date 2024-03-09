@@ -21,10 +21,17 @@ namespace SuperTiled2Unity.Editor
         {
             if (assetTarget != null)
             {
-                // If we have importer errors then they should be front and center // fixit - check out this old-style reporting (assetTarget is SuperTilet or SuperMap or whatever)
+                // If we have importer errors then they should be front and center // fixit- replace all this with import errors eventually
                 DisplayMissingFileErrors();
                 DisplayErrorsAndWarnings();
                 DisplayTagManagerErrors();
+
+                // Do we have any import errors to report?
+                var importErrors = AssetDatabase.LoadAssetAtPath<ImportErrors>(TargetAssetImporter.assetPath);
+                if (importErrors != null)
+                {
+                    ImportErrorsEditor.ImportErrorsGui(importErrors);
+                }
 
                 EditorGUILayout.LabelField(EditorLabel, EditorStyles.boldLabel);
                 EditorGUILayout.HelpBox(EditorDefinition, MessageType.None);

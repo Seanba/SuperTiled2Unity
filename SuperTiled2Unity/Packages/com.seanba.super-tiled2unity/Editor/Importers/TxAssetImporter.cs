@@ -60,7 +60,7 @@ namespace SuperTiled2Unity.Editor
             var source = xTileset.GetAttributeAs<string>("source");
 
             // Load the tileset and process the tiles inside
-            var tileset = RequestAssetAtPath<SuperTileset>(source);
+            var tileset = RequestDependencyAssetAtPath<SuperTileset>(source);
 
             if (tileset == null)
             {

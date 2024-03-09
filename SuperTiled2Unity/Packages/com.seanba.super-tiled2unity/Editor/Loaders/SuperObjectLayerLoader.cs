@@ -190,7 +190,7 @@ namespace SuperTiled2Unity.Editor
             var template = xObject.GetAttributeAs("template", "");
             if (!string.IsNullOrEmpty(template))
             {
-                var asset = Importer.RequestAssetAtPath<ObjectTemplate>(template); // fixit - better reporting if missing
+                var asset = Importer.RequestDependencyAssetAtPath<ObjectTemplate>(template); // fixit - better reporting if missing
                 if (asset == null)
                 {
                     Importer.ReportError("Template file '{0}' was not found.", template);

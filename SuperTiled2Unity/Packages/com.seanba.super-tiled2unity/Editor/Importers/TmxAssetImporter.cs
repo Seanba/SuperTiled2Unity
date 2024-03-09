@@ -292,7 +292,7 @@ namespace SuperTiled2Unity.Editor
 
             // fixit - better error reporting
             // Load the tileset and process the tiles inside
-            var tileset = RequestAssetAtPath<SuperTileset>(source);
+            var tileset = RequestDependencyAssetAtPath<SuperTileset>(source);
 
             if (tileset == null)
             {

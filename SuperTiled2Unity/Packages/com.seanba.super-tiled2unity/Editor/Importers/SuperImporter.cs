@@ -104,7 +104,7 @@ namespace SuperTiled2Unity.Editor
 #endif
         }
 
-        public T RequestAssetAtPath<T>(string path) where T : UnityEngine.Object
+        public T RequestDependencyAssetAtPath<T>(string path) where T : UnityEngine.Object
         {
             Assert.IsNotNull(m_SuperAsset, "Must be a SuperAsset type if we are requesting dependencies.");
 
@@ -139,7 +139,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             // Keep track that the asset is a dependency
-            // We do this even if the asset doesn't exist
+            // We do this even if the asset doesn't exist (as long as we have a valid asset path)
             m_SuperAsset.AddDependency(AssetImportContext, requestedAssetPath);
 
             // In most cases our dependency is already known by the AssetDatabase
@@ -148,6 +148,9 @@ namespace SuperTiled2Unity.Editor
             {
                 // Add the asset to our cache for next time it is requested
                 m_CachedDatabase[key] = asset;
+
+                // We also need to know if the dependency asset itself has errors // fixit:error
+
                 return asset;
             }
             else
