@@ -75,6 +75,9 @@ namespace SuperTiled2Unity.Editor
 
             DoPrefabReplacements();
             DoCustomImporting();
+
+            // Were any import errors captured along the way?
+            m_MapComponent.m_ImportErrors = ImportErrors;
         }
 
         private void ProcessMap(XElement xMap)

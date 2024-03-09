@@ -52,7 +52,7 @@ namespace SuperTiled2Unity.Editor
         private SuperAsset m_SuperAsset;
 
         // For keeping track of errors while our asset and dependencies are being imported
-        private ImportErrors m_ImportErrors;
+        protected ImportErrors ImportErrors { get; private set; }
 
         protected AssetImportContext AssetImportContext { get; private set; }
 
@@ -66,7 +66,7 @@ namespace SuperTiled2Unity.Editor
             m_MissingLayers.Clear();
             m_MissingTags.Clear();
             m_SuperAsset = null;
-            m_ImportErrors = null;
+            ImportErrors = null;
             AssetImportContext = ctx;
 
 #if UNITY_2020_3_OR_NEWER
@@ -238,22 +238,22 @@ namespace SuperTiled2Unity.Editor
         public void ReportErrorsInDependency(string dependencyAssetPath)
         {
             AddImportErrorsScriptableObjectIfNeeded();
-            m_ImportErrors.ReportErrorsInDependency(dependencyAssetPath);
+            ImportErrors.ReportErrorsInDependency(dependencyAssetPath);
         }
 
         public void ReportMissingSprite(string textureAssetPath, int spriteId, int x, int y, int w, int h)
         {
             AddImportErrorsScriptableObjectIfNeeded();
-            m_ImportErrors.ReportMissingSprite(textureAssetPath, spriteId, x, y, w, h);
+            ImportErrors.ReportMissingSprite(textureAssetPath, spriteId, x, y, w, h);
         }
 
         private void AddImportErrorsScriptableObjectIfNeeded()
         {
-            if (m_ImportErrors == null)
+            if (ImportErrors == null)
             {
-                m_ImportErrors = ScriptableObject.CreateInstance<ImportErrors>();
-                m_ImportErrors.name = "import-errors";
-                AssetImportContext.AddObjectToAsset("_import-errors", m_ImportErrors);
+                ImportErrors = ScriptableObject.CreateInstance<ImportErrors>();
+                ImportErrors.name = "import-errors";
+                AssetImportContext.AddObjectToAsset("_import-errors", ImportErrors);
             }
         }
 

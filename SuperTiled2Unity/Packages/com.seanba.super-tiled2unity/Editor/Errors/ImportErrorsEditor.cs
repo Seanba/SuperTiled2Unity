@@ -50,7 +50,6 @@ namespace SuperTiled2Unity.Editor
         {
             if (importErrors.m_MissingTileSprites.Count > 0)
             {
-                // fixit - need opportunity to select and reimport the texture files in question
                 ui.BoldLabel("Missing Sprites - Reimporting Textures May Fix");
                 foreach (var missing in importErrors.m_MissingTileSprites)
                 {

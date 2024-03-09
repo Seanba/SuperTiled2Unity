@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-using UnityEngine.Tilemaps;
 
 namespace SuperTiled2Unity
 {
-    public class SuperMap : MonoBehaviour
+    public class SuperMap : MonoBehaviour // fixit - need a custom editor for this so we can print them
     {
         [ReadOnly]
         public string m_Version;
@@ -46,6 +45,9 @@ namespace SuperTiled2Unity
 
         [ReadOnly]
         public int m_NextObjectId;
+
+        [ReadOnly]
+        public ImportErrors m_ImportErrors;
 
         public Vector3Int TiledIndexToGridCell(int index, int offset_x, int offset_y, int stride)
         {
