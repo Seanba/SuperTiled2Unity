@@ -149,7 +149,12 @@ namespace SuperTiled2Unity.Editor
                 // Add the asset to our cache for next time it is requested
                 m_CachedDatabase[key] = asset;
 
-                // We also need to know if the dependency asset itself has errors // fixit:error
+                // We also need to know if the dependency asset itself has errors
+                var errors = AssetDatabase.LoadAssetAtPath<ImportErrors>(requestedAssetPath);
+                if (errors != null)
+                {
+                    ReportErrorsInDependency(requestedAssetPath);
+                }
 
                 return asset;
             }
@@ -228,6 +233,12 @@ namespace SuperTiled2Unity.Editor
             }
 
             return true;
+        }
+
+        public void ReportErrorsInDependency(string dependencyAssetPath)
+        {
+            AddImportErrorsScriptableObjectIfNeeded();
+            m_ImportErrors.ReportErrorsInDependency(dependencyAssetPath);
         }
 
         public void ReportMissingSprite(string textureAssetPath, int spriteId, int x, int y, int w, int h)

@@ -31,6 +31,7 @@ namespace SuperTiled2Unity.Editor
                 if (importErrors != null)
                 {
                     ImportErrorsEditor.ImportErrorsGui(importErrors);
+                    EditorGUILayout.Separator();
                 }
 
                 EditorGUILayout.LabelField(EditorLabel, EditorStyles.boldLabel);
