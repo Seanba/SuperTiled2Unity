@@ -7,6 +7,9 @@ namespace SuperTiled2Unity
 {
     public class ImportErrors : ScriptableObject
     {
+        // Dependencies that are missing or misplaced
+        public List<string> m_MissingDependencies = new List<string>();
+
         // Depenency assets that have errors
         public List<string> m_ErrorsInAssetDependencies = new List<string>();
 
@@ -15,6 +18,14 @@ namespace SuperTiled2Unity
 
         // Dependency assets that are using the wrong pixels per unit. Maps, tilesets, and textures must use matching pixels per unit.
         public List<WrongPixelsPerUnit> m_WrongPixelsPerUnits = new List<WrongPixelsPerUnit>();
+
+        public void ReportMissingDependency(string assetPath)
+        {
+            if (!m_MissingDependencies.Contains(assetPath))
+            {
+                m_MissingDependencies.Add(assetPath);
+            }
+        }
 
         public void ReportErrorsInDependency(string assetPath)
         {

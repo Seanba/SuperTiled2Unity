@@ -105,25 +105,28 @@ namespace SuperTiled2Unity.Editor
 
             // Load the texture. We will make sprites and tiles out of this image.
             var tex2d = m_Importer.RequestDependencyAssetAtPath<Texture2D>(textureLocalPath);
+            var textureAssetPath = string.Empty;
+            var sprites = new Dictionary<(Rect, Vector2), Sprite>();
+
             if (tex2d == null)
             {
-                // fixit - keep going but report error
-                m_Importer.ReportError("Missing texture asset: {0}", textureLocalPath); // fixit TMX or TSX importer
-                return;
+                m_Importer.ReportMissingDependency(textureLocalPath);
+                forceErrorTiles = true;
             }
-
-            var textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
-
-            // The pixels per unit of the sprites must match the pixels per unit of the tileset
-            var sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => (s.rect, s.pivot));
-            if (sprites.Any())
+            else
             {
-                // fixit - report and carry on with error tiles
-                var firstSprite = sprites.First().Value;
-                if (firstSprite.pixelsPerUnit != m_SuperTileset.m_PixelsPerUnit)
+                textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
+
+                // The pixels per unit of the sprites must match the pixels per unit of the tileset
+                sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => (s.rect, s.pivot));
+                if (sprites.Any())
                 {
-                    m_Importer.ReportWrongPixelsPerUnit(textureAssetPath, firstSprite.pixelsPerUnit, m_SuperTileset.m_PixelsPerUnit);
-                    forceErrorTiles = true;
+                    var firstSprite = sprites.First().Value;
+                    if (firstSprite.pixelsPerUnit != m_SuperTileset.m_PixelsPerUnit)
+                    {
+                        m_Importer.ReportWrongPixelsPerUnit(textureAssetPath, firstSprite.pixelsPerUnit, m_SuperTileset.m_PixelsPerUnit);
+                        forceErrorTiles = true;
+                    }
                 }
             }
 
@@ -158,7 +161,11 @@ namespace SuperTiled2Unity.Editor
 
                 if (forceErrorTiles || !TryAddTile(i, srcx, srcy, tileWidth, tileHeight, sprites))
                 {
-                    m_Importer.ReportMissingSprite(textureAssetPath, i, srcx, srcy, tileWidth, tileHeight);
+                    if (!string.IsNullOrEmpty(textureAssetPath))
+                    {
+                        m_Importer.ReportMissingSprite(textureAssetPath, i, srcx, srcy, tileWidth, tileHeight);
+                    }
+
                     AddErrorTile(i, NamedColors.HotPink, tileWidth, tileHeight);
                 }
             }

@@ -18,11 +18,34 @@ namespace SuperTiled2Unity.Editor
 
             using (var ui = new MessageBuilderUI())
             {
-                ui.HelpBox("Errors Detected. Your Tiled asset may not look or function correctly. Please follow directions to fix.");
+                ui.HelpBox($"SuperTiled2Unity version: {SuperTiled2Unity_Config.Version}, Unity version: {Application.unityVersion}\nErrors Detected. Your Tiled asset may not function correctly. Please follow directions to fix.");
 
+                DisplayMissingDependencies(ui, importErrors);
                 DisplayWrongPixelsPerUnit(ui, importErrors);
                 DisplayDependencyErrors(ui, importErrors);
                 DisplayMissingSprites(ui, importErrors);
+            }
+        }
+
+        private static void DisplayMissingDependencies(MessageBuilderUI ui, ImportErrors importErrors)
+        {
+            if (importErrors.m_MissingDependencies.Count > 0)
+            {
+                ui.BoldLabel("Missing Dependencies - Files Are Missing Or Misplaced");
+
+                StringBuilder msg = new StringBuilder(1024 * 4);
+                msg.AppendLine("The following assets are needed by Super Tiled2Unity.");
+                msg.AppendLine("This asset is dependent on other files that either cannot be found or they failed to be imported.");
+                msg.AppendLine("They may be missing entirely or they may be in the wrong folder.");
+                msg.AppendLine("Note that all Tiled assets must be imported to Unity in folder locations that keep their relative paths intact.");
+                msg.AppendLine();
+
+                foreach (var missing in importErrors.m_MissingDependencies)
+                {
+                    msg.AppendLine(missing);
+                }
+
+                ui.HelpBox(msg.ToString());
             }
         }
 
@@ -103,7 +126,7 @@ namespace SuperTiled2Unity.Editor
 
                         if (GUILayout.Button($"Reimport '{assetName}'"))
                         {
-                            AssetDatabase.ImportAsset(missing.m_TextureAssetPath); // fixit - SuperTexturePostprocessor not working correctly yet
+                            AssetDatabase.ImportAsset(missing.m_TextureAssetPath);
                         }
                     }
                 }

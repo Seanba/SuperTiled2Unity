@@ -22,7 +22,6 @@ namespace SuperTiled2Unity.Editor
             if (assetTarget != null)
             {
                 // If we have importer errors then they should be front and center // fixit- replace all this with import errors eventually
-                DisplayMissingFileErrors();
                 DisplayErrorsAndWarnings();
                 DisplayTagManagerErrors();
 
@@ -95,45 +94,6 @@ namespace SuperTiled2Unity.Editor
         }
 
         protected abstract void InternalOnInspectorGUI();
-
-        private void DisplayMissingFileErrors()
-        {
-            using (new GuiScopedBackgroundColor(Color.magenta))
-            {
-                if (TargetAssetImporter.MissingFiles.Any())
-                {
-                    var asset = Path.GetFileName(TargetAssetImporter.assetPath);
-                    EditorGUILayout.LabelField("Missing or misplaced assets!", EditorStyles.boldLabel);
-
-                    var msg = new StringBuilder();
-
-                    msg.AppendLine(TargetAssetImporter.GetReportHeader());
-                    msg.AppendLine("This asset is dependent on other files that either cannot be found or they failed to be imported.");
-                    msg.AppendLine("Note that all Tiled assets must be imported to Unity in folder locations that keep their relative paths intact.");
-                    msg.AppendLine("Reimport this asset once fixes are made.\n");
-                    msg.AppendFormat("Tip: Try opening {0} in Tiled to resolve location of missing assets.\n\n", asset);
-
-                    msg.AppendLine(string.Join("\n", TargetAssetImporter.MissingFiles.ToArray()));
-
-                    EditorGUILayout.HelpBox(msg.ToString(), MessageType.Error);
-
-                    using (new GUILayout.HorizontalScope())
-                    {
-                        if (GUILayout.Button("Copy Message to Clipboard"))
-                        {
-                            msg.ToString().CopyToClipboard();
-                        }
-
-                        if (GUILayout.Button("Reimport"))
-                        {
-                            InternalSaveChanges();
-                        }
-                    }
-
-                    EditorGUILayout.Separator();
-                }
-            }
-        }
 
         private void DisplayErrorsAndWarnings()
         {

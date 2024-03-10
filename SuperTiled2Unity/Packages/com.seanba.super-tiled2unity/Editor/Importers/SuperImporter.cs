@@ -12,10 +12,7 @@ namespace SuperTiled2Unity.Editor
 {
     public abstract class SuperImporter : ScriptedImporter
     {
-        [SerializeField]
-        private List<string> m_MissingFiles = new List<string>();
-        public IEnumerable<string> MissingFiles => m_MissingFiles;
-
+        // fixit - all these missing, errors, warnings, ect lists won't be needed
         [SerializeField]
         private List<string> m_Errors = new List<string>();
         public IEnumerable<string> Errors => m_Errors;
@@ -59,7 +56,6 @@ namespace SuperTiled2Unity.Editor
         public override sealed void OnImportAsset(AssetImportContext ctx)
         {
             m_CachedDatabase.Clear();
-            m_MissingFiles.Clear();
             m_Errors.Clear();
             m_Warnings.Clear();
             m_MissingSortingLayers.Clear();
@@ -97,7 +93,7 @@ namespace SuperTiled2Unity.Editor
             }
 #else
             {
-                string error = SuperTiled2Unity_Config.GetVersionError();
+                string error = SuperTiled2Unity_Config.GetVersionError(); // fixit - make sure this doesn't break with older versions
                 ReportError(error);
                 Debug.LogError(error);
             }
@@ -134,7 +130,7 @@ namespace SuperTiled2Unity.Editor
             string requestedAssetPath = absPath;
             if (!AssetPath.TryAbsoluteToAsset(ref requestedAssetPath))
             {
-                // fixit - what kind of error do we put here? This for when we're referencing a path completely outisde our /Assets/ directory.
+                ReportMissingDependency(absPath);
                 return null;
             }
 
@@ -160,15 +156,10 @@ namespace SuperTiled2Unity.Editor
             }
             else
             {
-                ReportMissingFile(path);
+                ReportMissingDependency(path);
             }
 
             return null;
-        }
-
-        public void ReportMissingFile(string path) // fixit - missing file reporting
-        {
-            m_MissingFiles.Add(path);
         }
 
         public void ReportError(string fmt, params object[] args)
@@ -183,7 +174,7 @@ namespace SuperTiled2Unity.Editor
             m_Warnings.Add(warning);
         }
 
-        public string GetReportHeader()
+        public string GetReportHeader() // fixit - won't need this eventually
         {
             return string.Format("SuperTiled2Unity version: {0}, Unity version: {1}", SuperTiled2Unity_Config.Version, Application.unityVersion);
         }
@@ -233,6 +224,12 @@ namespace SuperTiled2Unity.Editor
             }
 
             return true;
+        }
+
+        public void ReportMissingDependency(string dependencyAssetPath)
+        {
+            AddImportErrorsScriptableObjectIfNeeded();
+            ImportErrors.ReportMissingDependency(dependencyAssetPath);
         }
 
         public void ReportErrorsInDependency(string dependencyAssetPath)
