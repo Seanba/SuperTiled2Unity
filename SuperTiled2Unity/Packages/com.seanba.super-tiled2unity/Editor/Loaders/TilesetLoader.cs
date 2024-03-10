@@ -158,14 +158,13 @@ namespace SuperTiled2Unity.Editor
 
                 if (forceErrorTiles || !TryAddTile(i, srcx, srcy, tileWidth, tileHeight, sprites))
                 {
-                    // fixit:error - make sure this carries over to the prefab and prefab instance
                     m_Importer.ReportMissingSprite(textureAssetPath, i, srcx, srcy, tileWidth, tileHeight);
                     AddErrorTile(i, NamedColors.HotPink, tileWidth, tileHeight);
                 }
             }
         }
 
-        private void BuildTilesetFromCollection(XElement xTileset)
+        private void BuildTilesetFromCollection(XElement xTileset) // fixit - get this working too (mostly same as from image)
         {
             m_SuperTileset.m_IsImageCollection = true;
 
@@ -228,7 +227,7 @@ namespace SuperTiled2Unity.Editor
         private bool TryAddTile(int tileId, int x, int y, int width, int height, Dictionary<(Rect, Vector2), Sprite> sprites)
         {
             var rect = new Rect(x, y, width, height);
-            if (sprites.TryGetValue((rect, Vector2.zero), out Sprite tileSprite)) // fixit - make sure this works
+            if (sprites.TryGetValue((rect, Vector2.zero), out Sprite tileSprite))
             {
                 // Create the tile that uses the sprite
                 var tile = ScriptableObject.CreateInstance<SuperTile>();

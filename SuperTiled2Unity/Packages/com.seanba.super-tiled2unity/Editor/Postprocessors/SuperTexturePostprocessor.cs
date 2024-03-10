@@ -31,15 +31,15 @@ namespace SuperTiled2Unity.Editor
                 textureImporter.SetTextureSettings(settings);
             }
 
-            //AddSpritesFromTiledFiles(); // fixit - disabled while we test out improvements to helping out the user with tracking errors
+            AddSpritesFromTiledFiles();
         }
 
         private void AddSpritesFromTiledFiles()
         {
             using (ProfilerMarker_AddSprites.Auto())
             {
-                var rects = SpriteRectsManager.Instance.GetSpriteRectsForTexture(assetPath);
-                if (!rects.Any())
+                var tilesetRects = SpriteRectsManager.Instance.GetSpriteRectsForTexture(assetPath);
+                if (!tilesetRects.Any())
                 {
                     // This texture is not (currently) used by Tiled files (maps or tilesets)
                     return;
@@ -53,24 +53,10 @@ namespace SuperTiled2Unity.Editor
                 // Use the sprite editor data provider to add/remove sprite rects
                 using (var provider = new SpriteDataProviderWrapper(assetImporter))
                 {
-                    //var spriteRects = provider.GetSpriteRects(); // fixit - zero out for now but we should be smarter about adding and removing and detecting changes
-                    var spriteRects = new List<SpriteRect>();
-
-                    foreach (var rect in rects)
+                    foreach (var rect in tilesetRects)
                     {
-                        var newSpriteRect = new SpriteRect
-                        {
-                            name = TilesetLoader.RectToSpriteName(rect),
-                            spriteID = GUID.Generate(),
-                            rect = new Rect(rect.x, rect.y, rect.width, rect.height),
-                            pivot = Vector2.zero,
-                            alignment = SpriteAlignment.BottomLeft,
-                        };
-
-                        spriteRects.Add(newSpriteRect);
+                        provider.RequiresSuperTiled2UnitySpriteRect(rect);
                     }
-
-                    provider.SetSpriteRects(spriteRects);
                 }
             }
         }
@@ -80,6 +66,11 @@ namespace SuperTiled2Unity.Editor
             private static ProfilerMarker ProfilerMarker_SpriteDataProviderWrapper = new ProfilerMarker("SpriteDataProviderWrapper");
 
             private ISpriteEditorDataProvider m_DataProvider;
+            private List<SpriteRect> m_OriginalAllSpriteRects;
+            private List<SpriteRect> m_OriginalUserSpriteRects;
+            private List<SpriteRect> m_OriginalST2USpriteRects;
+            private List<SpriteRect> m_RequiredST2USpriteRects;
+            private bool m_ForceUpdate;
 
 #if UNITY_2021_2_OR_NEWER
             // fixit - ISpriteNameFileIdDataProvider, https://docs.unity3d.com/Manual/Sprite-data-provider-api.html
@@ -94,26 +85,57 @@ namespace SuperTiled2Unity.Editor
 
                 m_DataProvider = factory.GetSpriteEditorDataProviderFromObject(assetImporter);
                 m_DataProvider.InitSpriteEditorDataProvider();
+
+                // User rects are sprite rectangles the user created in the Sprite Editor
+                // ST2U rects are sprite rectangles that Super Tiled2Unity added
+                m_OriginalAllSpriteRects = m_DataProvider.GetSpriteRects().ToList();
+                m_OriginalUserSpriteRects = m_OriginalAllSpriteRects.Where(r => !r.name.StartsWith(TilesetLoader.SpriteNameRoot)).ToList();
+                m_OriginalST2USpriteRects = m_OriginalAllSpriteRects.Where(r => r.name.StartsWith(TilesetLoader.SpriteNameRoot)).ToList();
+                m_RequiredST2USpriteRects = new List<SpriteRect>();
+            }
+
+            public void RequiresSuperTiled2UnitySpriteRect(Rect rect)
+            {
+                // Note: We always use a bottom-left pivot
+                // Does the user list already have a sprite rect we can use?
+                if (m_OriginalUserSpriteRects.Any(r => r.rect == rect && r.pivot == Vector2.zero))
+                {
+                    return;
+                }
+
+                // Does the ST2U already have a sprite we can use? If so then add that to our required list.
+                var spriteName = TilesetLoader.RectToSpriteName(rect);
+                var requiredSpriteRect = m_OriginalST2USpriteRects.FirstOrDefault(s => s.name == spriteName);
+                if (requiredSpriteRect == null)
+                {
+                    // If we're creating a new sprite rect then we must invoke SetSpriteRects on the data provider
+                    m_ForceUpdate = true;
+                    requiredSpriteRect = new SpriteRect
+                    {
+                        name = spriteName,
+                        spriteID = GUID.Generate(),
+                        rect = new Rect(rect.x, rect.y, rect.width, rect.height),
+                        pivot = Vector2.zero,
+                        alignment = SpriteAlignment.BottomLeft,
+                    };
+                }
+
+                m_RequiredST2USpriteRects.Add(requiredSpriteRect);
             }
 
             public void Dispose()
             {
-                // fixit - only apply if changes were made because this is surprisingly expensive
-                // fixit - SetNameFileIdPairs (2021 or newer)
-                m_DataProvider.Apply();
+                if (m_ForceUpdate || m_RequiredST2USpriteRects.Count != m_OriginalST2USpriteRects.Count)
+                {
+                    // fixit SpriteNameFileIdPair (2021 or newer) https://docs.unity3d.com/Manual/Sprite-data-provider-api.html
+                    var updatedSpriteRects = m_OriginalUserSpriteRects;
+                    updatedSpriteRects.AddRange(m_RequiredST2USpriteRects);
+                    m_DataProvider.SetSpriteRects(updatedSpriteRects.ToArray());
+
+                    m_DataProvider.Apply();
+                }
 
                 ProfilerMarker_SpriteDataProviderWrapper.End();
-            }
-
-            public List<SpriteRect> GetSpriteRects()
-            {
-                return m_DataProvider.GetSpriteRects().ToList();
-            }
-
-            public void SetSpriteRects(IEnumerable<SpriteRect> spriteRects)
-            {
-                // fixit SpriteNameFileIdPair https://docs.unity3d.com/Manual/Sprite-data-provider-api.html
-                m_DataProvider.SetSpriteRects(spriteRects.ToArray());
             }
         }
     }
