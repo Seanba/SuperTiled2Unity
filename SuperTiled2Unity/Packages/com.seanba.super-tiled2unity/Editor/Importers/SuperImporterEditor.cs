@@ -22,7 +22,7 @@ namespace SuperTiled2Unity.Editor
             if (assetTarget != null)
             {
                 // If we have importer errors then they should be front and center // fixit- replace all this with import errors eventually
-                DisplayErrorsAndWarnings();
+                DisplayErrors();
                 DisplayTagManagerErrors();
 
                 // Do we have any import errors to report?
@@ -95,7 +95,7 @@ namespace SuperTiled2Unity.Editor
 
         protected abstract void InternalOnInspectorGUI();
 
-        private void DisplayErrorsAndWarnings()
+        private void DisplayErrors()
         {
             var asset = Path.GetFileName(TargetAssetImporter.assetPath);
 
@@ -112,23 +112,6 @@ namespace SuperTiled2Unity.Editor
                     EditorGUILayout.HelpBox(msg.ToString(), MessageType.Error);
 
                     if (GUILayout.Button("Copy Error Message to Clipboard"))
-                    {
-                        msg.ToString().CopyToClipboard();
-                    }
-
-                    EditorGUILayout.Separator();
-                }
-            }
-
-            using (new GuiScopedBackgroundColor(Color.yellow))
-            {
-                if (TargetAssetImporter.Warnings.Any())
-                {
-                    EditorGUILayout.LabelField("There were warnings importing " + asset, EditorStyles.boldLabel);
-                    var msg = string.Join("\n\n", TargetAssetImporter.Warnings.Take(10).ToArray());
-                    EditorGUILayout.HelpBox(msg, MessageType.Warning);
-
-                    if (GUILayout.Button("Copy Warning Message to Clipboard"))
                     {
                         msg.ToString().CopyToClipboard();
                     }

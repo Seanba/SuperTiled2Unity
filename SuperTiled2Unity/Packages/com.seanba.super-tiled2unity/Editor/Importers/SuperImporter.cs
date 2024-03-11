@@ -18,10 +18,6 @@ namespace SuperTiled2Unity.Editor
         public IEnumerable<string> Errors => m_Errors;
 
         [SerializeField]
-        private List<string> m_Warnings = new List<string>();
-        public IEnumerable<string> Warnings => m_Warnings;
-
-        [SerializeField]
         private List<string> m_MissingSortingLayers = new List<string>();
         public IEnumerable<string> MissingSortingLayers => m_MissingSortingLayers;
 
@@ -57,7 +53,6 @@ namespace SuperTiled2Unity.Editor
         {
             m_CachedDatabase.Clear();
             m_Errors.Clear();
-            m_Warnings.Clear();
             m_MissingSortingLayers.Clear();
             m_MissingLayers.Clear();
             m_MissingTags.Clear();
@@ -166,12 +161,6 @@ namespace SuperTiled2Unity.Editor
         {
             string error = string.Format(fmt, args);
             m_Errors.Add(error);
-        }
-
-        public void ReportWarning(string fmt, params object[] args)
-        {
-            string warning = string.Format(fmt, args);
-            m_Warnings.Add(warning);
         }
 
         public string GetReportHeader() // fixit - won't need this eventually
