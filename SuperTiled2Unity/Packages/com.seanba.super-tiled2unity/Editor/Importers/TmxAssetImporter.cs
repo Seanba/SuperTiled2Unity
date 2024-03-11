@@ -320,6 +320,7 @@ namespace SuperTiled2Unity.Editor
             var tileset = ScriptableObject.CreateInstance<SuperTileset>();
             tileset.m_IsInternal = true;
             tileset.name = name;
+            tileset.m_PixelsPerUnit = PixelsPerUnit;
             m_InternalTilesets.Add(tileset);
 
             string assetName = string.Format("_TilesetScriptObjectInternal_{0}", m_InternalTilesets.Count);
@@ -329,7 +330,6 @@ namespace SuperTiled2Unity.Editor
             if (loader.LoadFromXml(xTileset))
             {
                 m_GlobalTileDatabase.RegisterTileset(firstId, tileset);
-                ReportWarning("Tileset '{0}' is an embedded tileset. Exported tilesets are preferred.", tileset.name);
                 return true;
             }
 
@@ -407,10 +407,13 @@ namespace SuperTiled2Unity.Editor
                     maxHeight = Mathf.Max(tile.m_Sprite.bounds.size.y, maxHeight);
 
                     // Look out for animated tiles
-                    foreach (var sprite in tile.m_AnimationSprites)
+                    if (!tile.m_AnimationSprites.IsEmpty())
                     {
-                        maxWidth = Mathf.Max(sprite.bounds.size.x, maxWidth);
-                        maxHeight = Mathf.Max(sprite.bounds.size.y, maxHeight);
+                        foreach (var sprite in tile.m_AnimationSprites)
+                        {
+                            maxWidth = Mathf.Max(sprite.bounds.size.x, maxWidth);
+                            maxHeight = Mathf.Max(sprite.bounds.size.y, maxHeight);
+                        }
                     }
                 }
 

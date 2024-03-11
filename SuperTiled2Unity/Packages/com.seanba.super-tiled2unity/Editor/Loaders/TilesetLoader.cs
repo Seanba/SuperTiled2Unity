@@ -232,7 +232,7 @@ namespace SuperTiled2Unity.Editor
             if (sprites.TryGetValue((rect, Vector2.zero), out Sprite tileSprite))
             {
                 // Create the tile that uses the sprite
-                var tile = ScriptableObject.CreateInstance<SuperTile>();
+                var tile = SuperTile.CreateSuperTile();
                 tile.m_TileId = tileId;
                 tile.name = tileSprite.name;
                 tile.hideFlags = HideFlags.HideInHierarchy;

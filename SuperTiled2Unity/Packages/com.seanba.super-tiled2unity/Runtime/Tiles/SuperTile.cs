@@ -13,6 +13,11 @@ namespace SuperTiled2Unity
         private static readonly Matrix4x4 Rotate60Matrix = Matrix4x4.Rotate(Quaternion.Euler(0, 0, -60));
         private static readonly Matrix4x4 Rotate120Matrix = Matrix4x4.Rotate(Quaternion.Euler(0, 0, -120));
 
+        public static SuperTile CreateSuperTile()
+        {
+            return CreateInstance<SuperTile>();
+        }
+
         [ReadOnly]
         public int m_TileId;
 
