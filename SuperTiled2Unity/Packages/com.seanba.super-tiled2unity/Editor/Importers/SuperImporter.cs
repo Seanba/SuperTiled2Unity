@@ -88,8 +88,7 @@ namespace SuperTiled2Unity.Editor
             }
 #else
             {
-                string error = SuperTiled2Unity_Config.GetVersionError(); // fixit - make sure this doesn't break with older versions
-                ReportError(error);
+                string error = SuperTiled2Unity_Config.GetVersionError();
                 Debug.LogError(error);
             }
 #endif
@@ -237,6 +236,12 @@ namespace SuperTiled2Unity.Editor
         {
             AddImportErrorsScriptableObjectIfNeeded();
             ImportErrors.ReportWrongPixelsPerUnit(dependencyAssetPath, dependencyPPU, ourPPU);
+        }
+
+        public void ReportGenericError(string error)
+        {
+            AddImportErrorsScriptableObjectIfNeeded();
+            ImportErrors.ReportGenericError(error);
         }
 
         private void AddImportErrorsScriptableObjectIfNeeded()

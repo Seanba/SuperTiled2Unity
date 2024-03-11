@@ -21,7 +21,7 @@ namespace SuperTiled2Unity.Editor
         {
             if (assetTarget != null)
             {
-                // If we have importer errors then they should be front and center // fixit- replace all this with import errors eventually
+                // If we have importer errors then they should be front and center
                 DisplayErrors();
                 DisplayTagManagerErrors();
 

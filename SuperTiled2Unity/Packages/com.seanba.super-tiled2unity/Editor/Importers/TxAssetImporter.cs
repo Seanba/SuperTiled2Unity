@@ -61,13 +61,7 @@ namespace SuperTiled2Unity.Editor
 
             // Load the tileset and process the tiles inside
             var tileset = RequestDependencyAssetAtPath<SuperTileset>(source);
-
-            if (tileset == null)
-            {
-                // Tileset is either missing or is not yet ready
-                ReportError("Missing tileset asset: {0}", this.assetPath); // fixit - better reporting if missing
-            }
-            else
+            if (tileset != null)
             {
                 // Register all the tiles with the tile database for this map
                 m_GlobalTileDatabase.RegisterTileset(firstId, tileset);

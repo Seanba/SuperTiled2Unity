@@ -32,7 +32,7 @@ namespace SuperTiled2Unity.Editor
             // There are attributes we *must* have that older versions of Tiled did not serialize
             if (xTileset.Attribute("tilecount") == null || xTileset.Attribute("columns") == null)
             {
-                m_Importer.ReportError("Old file format detected. You must save this file with a newer verion of Tiled.");
+                m_Importer.ReportGenericError("Old Tiled file format detected. You must save this file with a newer verion of Tiled (At least 0.15).");
                 return false;
             }
 

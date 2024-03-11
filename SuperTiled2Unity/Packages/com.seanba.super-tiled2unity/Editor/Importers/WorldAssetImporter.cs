@@ -60,7 +60,7 @@ namespace SuperTiled2Unity.Editor
             SuperImportContext.AddObjectToAsset("_world", goWorld, icon);
             SuperImportContext.SetMainObject(goWorld);
 
-            goWorld.AddComponent<SuperWorld>();
+            var superWorld = goWorld.AddComponent<SuperWorld>();
 
             try
             {
@@ -70,6 +70,9 @@ namespace SuperTiled2Unity.Editor
             {
                 ReportError("Unknown error importing World file: {0}\n{1}\n{2}", assetPath, ex.Message, ex.StackTrace);
             }
+
+            // Were any import errors captured along the way?
+            superWorld.m_ImportErrors = ImportErrors;
         }
 
         private void ParseJsonAsset(GameObject goWorld)
@@ -102,7 +105,7 @@ namespace SuperTiled2Unity.Editor
         private void InstantiateMap(GameObject goWorld, JsonMap jsonMap)
         {
             var path = jsonMap.fileName;
-            var superMap = RequestDependencyAssetAtPath<SuperMap>(path); // fixit - better reporting if missing
+            var superMap = RequestDependencyAssetAtPath<SuperMap>(path);
 
             if (superMap != null)
             {

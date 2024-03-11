@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
 {
-    [CustomEditor(typeof(SuperMap))]
-    public class SuperMapEditor : UnityEditor.Editor
+    [CustomEditor(typeof(SuperWorld))]
+    public class SuperWorldEditor : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {
-            if (target is SuperMap map && map.m_ImportErrors != null)
+            if (target is SuperWorld world && world.m_ImportErrors != null)
             {
-                EditorGUILayout.LabelField("Errors Detected in Tiled TMX Prefab - Inspect For More Details", EditorStyles.boldLabel);
+                EditorGUILayout.LabelField("Errors Detected in Tiled World Prefab - Inspect For More Details", EditorStyles.boldLabel);
 
                 using (new GuiScopedBackgroundColor(NamedColors.Red))
                 {

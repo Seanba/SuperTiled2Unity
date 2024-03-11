@@ -24,13 +24,8 @@ namespace SuperTiled2Unity.Editor
                 var source = xImage.GetAttributeAs<string>("source");
                 layerComponent.m_ImageFilename = source;
 
-                var tex2d = RequestDependencyAssetAtPath<Texture2D>(source); // fixit - better error reporting if missing (can use error sprite?)
-                if (tex2d == null)
-                {
-                    // Texture was not found yet so report the error to the importer UI and bail
-                    ReportError("Missing texture asset for image layer: {0}", source);
-                }
-                else
+                var tex2d = RequestDependencyAssetAtPath<Texture2D>(source);
+                if (tex2d != null)
                 {
                     // Create a sprite for the image
                     try
@@ -46,7 +41,7 @@ namespace SuperTiled2Unity.Editor
                     }
                     catch (Exception e)
                     {
-                        ReportError("Error creating sprite '{0}' for image layer '{1}'\n{2}", source, layerComponent.m_TiledName, e.Message);
+                        ReportGenericError($"Error creating sprite '{source}' for image layer '{layerComponent.m_TiledName}'\n{e.Message}");
                     }
                 }
             }

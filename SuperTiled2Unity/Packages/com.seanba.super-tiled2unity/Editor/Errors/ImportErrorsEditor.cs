@@ -24,6 +24,7 @@ namespace SuperTiled2Unity.Editor
                 DisplayWrongPixelsPerUnit(ui, importErrors);
                 DisplayDependencyErrors(ui, importErrors);
                 DisplayMissingSprites(ui, importErrors);
+                DisplayGenericErrors(ui, importErrors);
             }
         }
 
@@ -129,6 +130,21 @@ namespace SuperTiled2Unity.Editor
                             AssetDatabase.ImportAsset(missing.m_TextureAssetPath);
                         }
                     }
+                }
+            }
+        }
+
+        private static void DisplayGenericErrors(MessageBuilderUI ui, ImportErrors importErrors)
+        {
+            if (importErrors.m_GenericErrors.Count > 0)
+            {
+                ui.BoldLabel("Generic Errors");
+
+                StringBuilder msg = new StringBuilder(1024 * 8);
+                foreach (var error in importErrors.m_GenericErrors)
+                {
+                    msg.AppendLine(error);
+                    ui.HelpBox(msg.ToString());
                 }
             }
         }
