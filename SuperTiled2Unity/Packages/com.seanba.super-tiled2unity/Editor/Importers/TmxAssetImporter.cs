@@ -293,14 +293,11 @@ namespace SuperTiled2Unity.Editor
                 return false;
             }
 
-            // fixit - better error reporting for missing tileset
             // Load the tileset and process the tiles inside
             var tileset = RequestDependencyAssetAtPath<SuperTileset>(source);
-
             if (tileset == null)
             {
-                // Tileset is either missing or is not yet ready
-                ReportError("Missing tileset asset: {0}", source);
+                // Tileset is missing or was not imported properly
                 return false;
             }
             else
