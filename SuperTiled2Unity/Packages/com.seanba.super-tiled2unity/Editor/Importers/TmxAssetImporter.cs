@@ -305,12 +305,6 @@ namespace SuperTiled2Unity.Editor
             }
             else
             {
-                // Warn the user of mismatching pixels per units
-                if (PixelsPerUnit != tileset.m_PixelsPerUnit) // fixit - should be an error
-                {
-                    ReportWarning("Pixels Per Unit mismatch between map ({0}) and tileset '{1}' ({2})", PixelsPerUnit, source, tileset.m_PixelsPerUnit);
-                }
-
                 // Register all the tiles with the tile database for this map
                 m_GlobalTileDatabase.RegisterTileset(firstId, tileset);
             }

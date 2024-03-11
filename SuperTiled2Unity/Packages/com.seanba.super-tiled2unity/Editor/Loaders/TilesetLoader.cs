@@ -152,13 +152,6 @@ namespace SuperTiled2Unity.Editor
                 // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
                 srcy = (textureHeight - srcy) - tileHeight;
 
-                if (srcy < 0)
-                {
-                    // fixit - error tile can go here. Continue.
-                    // This is an edge condition in Tiled if a tileset's texture has been resized
-                    break;
-                }
-
                 if (forceErrorTiles || !TryAddTile(i, srcx, srcy, tileWidth, tileHeight, sprites))
                 {
                     if (!string.IsNullOrEmpty(textureAssetPath))
@@ -171,7 +164,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private void BuildTilesetFromCollection(XElement xTileset) // fixit - get this working too (mostly same as from image)
+        private void BuildTilesetFromCollection(XElement xTileset)
         {
             m_SuperTileset.m_IsImageCollection = true;
 
@@ -186,34 +179,32 @@ namespace SuperTiled2Unity.Editor
                     int texture_w = xImage.GetAttributeAs<int>("width");
                     int texture_h = xImage.GetAttributeAs<int>("height");
 
-                    // Load the texture. We will make sprites and tiles out of this image.
+                    bool forceErrorTiles = false;
+
                     var tex2d = m_Importer.RequestDependencyAssetAtPath<Texture2D>(textureLocalPath);
+                    var textureAssetPath = string.Empty;
+                    var sprites = new Dictionary<(Rect, Vector2), Sprite>();
+
+                    // Load the texture. We will make sprites and tiles out of this image.
                     if (tex2d == null)
                     {
-                        // Texture was not found yet so report the error to the importer UI and bail
-                        m_Importer.ReportError("Missing texture asset for tile {0}: {1}", tileIndex, textureLocalPath);
-                        return;
+                        m_Importer.ReportMissingDependency(textureLocalPath);
+                        forceErrorTiles = true;
                     }
-
-                    if (tex2d.width < texture_w || tex2d.height < texture_h)
+                    else
                     {
-                        // Texture was not imported into Unity correctly
-                        var max = Mathf.Max(texture_w, texture_h);
-                        m_Importer.ReportError("Texture was imported at a smaller size. Make sure 'Max Size' on '{0}' is at least '{1}'", textureLocalPath, max);
-                        return;
-                    }
+                        textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
 
-                    var textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
-
-                    // The pixels per unit of the sprites must match the pixels per unit of the tileset
-                    var sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => (s.rect, s.pivot));
-                    if (sprites.Any())
-                    {
-                        var firstSprite = sprites.First().Value;
-                        if (firstSprite.pixelsPerUnit != m_SuperTileset.m_PixelsPerUnit)
+                        // The pixels per unit of the sprites must match the pixels per unit of the tileset
+                        sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => (s.rect, s.pivot));
+                        if (sprites.Any())
                         {
-                            m_Importer.ReportError($"Texture '{textureAssetPath}' Pixels Per Unit '{firstSprite.pixelsPerUnit}' does not match setting '{m_SuperTileset.m_PixelsPerUnit}'");
-                            return;
+                            var firstSprite = sprites.First().Value;
+                            if (firstSprite.pixelsPerUnit != m_SuperTileset.m_PixelsPerUnit)
+                            {
+                                m_Importer.ReportWrongPixelsPerUnit(textureAssetPath, firstSprite.pixelsPerUnit, m_SuperTileset.m_PixelsPerUnit);
+                                forceErrorTiles = true;
+                            }
                         }
                     }
 
@@ -222,9 +213,13 @@ namespace SuperTiled2Unity.Editor
                     int tile_w = xTile.GetAttributeAs<int>("width", texture_w);
                     int tile_h = xTile.GetAttributeAs<int>("height", texture_h);
 
-                    if (!TryAddTile(tileIndex, tile_x, tile_y, tile_w, tile_h, sprites))
+                    if (forceErrorTiles || !TryAddTile(tileIndex, tile_x, tile_y, tile_w, tile_h, sprites))
                     {
-                        // fixit - add the texture to the set that may need to be re-imported
+                        if (!string.IsNullOrEmpty(textureAssetPath))
+                        {
+                            m_Importer.ReportMissingSprite(textureAssetPath, tileIndex, tile_x, tile_y, tile_w, tile_h);
+                        }
+
                         AddErrorTile(tileIndex, NamedColors.DeepPink, tile_w, tile_h);
                     }
                 }

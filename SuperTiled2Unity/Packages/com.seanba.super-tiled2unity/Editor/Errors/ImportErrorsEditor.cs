@@ -141,7 +141,7 @@ namespace SuperTiled2Unity.Editor
             public void HelpBox(string msg)
             {
                 m_StringBuilder.AppendLine(msg);
-                EditorGUILayout.HelpBox(msg, MessageType.Error);
+                EditorGUILayout.HelpBox($"{msg}\n", MessageType.Error);
             }
 
             public void BoldLabel(string label)

@@ -5,6 +5,9 @@ TextureImporter:
   - first:
       213: -1548779989726198461
     second: _st2u-x0y0-w16h32_
+  - first:
+      213: -4159979909770435042
+    second: st2u_x0y0-w16h32
   externalObjects: {}
   serializedVersion: 12
   mipmaps:
@@ -105,7 +108,28 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: st2u_x0y0-w16h32
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 16
+        height: 32
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d36447a0838350b4682aeb8470585e13
+      internalID: -4159979909770435042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
