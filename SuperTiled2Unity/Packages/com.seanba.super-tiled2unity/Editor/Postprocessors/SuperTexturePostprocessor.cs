@@ -63,13 +63,13 @@ namespace SuperTiled2Unity.Editor
 
         private class SpriteDataProviderWrapper : IDisposable
         {
-            private static ProfilerMarker ProfilerMarker_SpriteDataProviderWrapper = new ProfilerMarker("SpriteDataProviderWrapper");
+            private static readonly ProfilerMarker ProfilerMarker_SpriteDataProviderWrapper = new ProfilerMarker("SpriteDataProviderWrapper");
 
-            private ISpriteEditorDataProvider m_DataProvider;
-            private List<SpriteRect> m_OriginalAllSpriteRects;
-            private List<SpriteRect> m_OriginalUserSpriteRects;
-            private List<SpriteRect> m_OriginalST2USpriteRects;
-            private List<SpriteRect> m_RequiredST2USpriteRects;
+            private readonly ISpriteEditorDataProvider m_DataProvider;
+            private readonly List<SpriteRect> m_OriginalAllSpriteRects;
+            private readonly List<SpriteRect> m_OriginalUserSpriteRects;
+            private readonly List<SpriteRect> m_OriginalST2USpriteRects;
+            private readonly List<SpriteRect> m_RequiredST2USpriteRects;
             private bool m_ForceUpdate;
 
 #if UNITY_2021_2_OR_NEWER

@@ -66,25 +66,15 @@ namespace SuperTiled2Unity.Editor
                 InternalOnImportAsset();
                 InternalOnImportAssetCompleted();
             }
-            catch (TiledException tiled)
-            {
-                // Exceptions that SuperTiled2Unity is aware of
-                // These are the kind of errors a user should be able to fix
-                m_Errors.Add(tiled.Message);
-            }
             catch (XmlException xml)
             {
                 // Xml exceptions are common if the Tiled data file somehow becomes corrupted
-                m_Errors.Add("Asset file may contained corrupted XML data. Trying opening in Tiled Map Editor to resolve.");
-                m_Errors.Add(xml.Message);
+                ReportGenericError($"Asset file may contain corrupted XML data. Trying opening in Tiled Map Editor to resolve.\n{xml.Message}");
             }
             catch (Exception ex)
             {
-                // Last-chance collection of unknown errors while importing
-                // This should be reported for bug fixing
-                m_Errors.Add("Unknown error encountered. Please report as bug. Stack track is in the console output.");
-                m_Errors.Add(ex.Message);
-                Debug.LogErrorFormat("Unknown error of type importing '{0}': {1}\nStack Trace:\n{2}", assetPath, ex.Message, ex.StackTrace);
+                // These errors should be reported for bug fixing
+                ReportGenericError($"Unknown error encountered. Please report as a bug.\nUnknown error importing '{assetPath}'\n{ex.Message}\nStack Trace:\n{ex.StackTrace}");
             }
 #else
             {
@@ -240,6 +230,7 @@ namespace SuperTiled2Unity.Editor
 
         public void ReportGenericError(string error)
         {
+            Debug.LogError(error);
             AddImportErrorsScriptableObjectIfNeeded();
             ImportErrors.ReportGenericError(error);
         }
