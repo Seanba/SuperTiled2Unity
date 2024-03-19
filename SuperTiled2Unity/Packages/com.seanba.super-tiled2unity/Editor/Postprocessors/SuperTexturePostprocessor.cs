@@ -65,6 +65,7 @@ namespace SuperTiled2Unity.Editor
         {
             private static readonly ProfilerMarker ProfilerMarker_SpriteDataProviderWrapper = new ProfilerMarker("SpriteDataProviderWrapper");
 
+            private readonly AssetImporter m_AssetImporter;
             private readonly ISpriteEditorDataProvider m_DataProvider;
             private readonly List<SpriteRect> m_OriginalAllSpriteRects;
             private readonly List<SpriteRect> m_OriginalUserSpriteRects;
@@ -72,14 +73,11 @@ namespace SuperTiled2Unity.Editor
             private readonly List<SpriteRect> m_RequiredST2USpriteRects;
             private bool m_ForceUpdate;
 
-#if UNITY_2021_2_OR_NEWER
-            // fixit - ISpriteNameFileIdDataProvider, https://docs.unity3d.com/Manual/Sprite-data-provider-api.html
-#endif
-
             public SpriteDataProviderWrapper(AssetImporter assetImporter)
             {
                 ProfilerMarker_SpriteDataProviderWrapper.Begin();
 
+                m_AssetImporter = assetImporter;
                 var factory = new SpriteDataProviderFactories();
                 factory.Init();
 
@@ -125,13 +123,22 @@ namespace SuperTiled2Unity.Editor
 
             public void Dispose()
             {
+                m_ForceUpdate = true; // fixit
                 if (m_ForceUpdate || m_RequiredST2USpriteRects.Count != m_OriginalST2USpriteRects.Count)
                 {
-                    // fixit SpriteNameFileIdPair (2021 or newer) https://docs.unity3d.com/Manual/Sprite-data-provider-api.html
                     var updatedSpriteRects = m_OriginalUserSpriteRects;
                     updatedSpriteRects.AddRange(m_RequiredST2USpriteRects);
-                    m_DataProvider.SetSpriteRects(updatedSpriteRects.ToArray());
+                    //updatedSpriteRects.Clear(); // fixit
 
+                    var updatedArray = updatedSpriteRects.ToArray();
+                    //m_DataProvider.SetSpriteRects(updatedArray);
+                    m_DataProvider.SetSpriteRects(new SpriteRect[0] { }); // fixit - empty but with fileIdPairs. Still a long time?
+
+#if UNITY_2021_2_OR_NEWER
+                    var fileIdDataProvider = m_DataProvider.GetDataProvider<ISpriteNameFileIdDataProvider>();
+                    var nameFileIdPairs = updatedSpriteRects.Select(r => new SpriteNameFileIdPair(r.name, r.spriteID));
+                    fileIdDataProvider.SetNameFileIdPairs(nameFileIdPairs); // fixit - this part alone is 3 minutes for 35k sprites (this could be the last step?)
+#endif
                     m_DataProvider.Apply();
                 }
 

@@ -118,7 +118,7 @@ namespace SuperTiled2Unity.Editor
                 textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
 
                 // The pixels per unit of the sprites must match the pixels per unit of the tileset
-                sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().ToDictionary(s => (s.rect, s.pivot));
+                sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().SafeToDictionary(s => (s.rect, s.pivot), s => s); // fixit:bug - Might have sprites that have the same pivot and rect?
                 if (sprites.Any())
                 {
                     var firstSprite = sprites.First().Value;

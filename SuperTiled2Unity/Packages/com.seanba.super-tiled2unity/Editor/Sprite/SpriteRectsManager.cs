@@ -22,7 +22,7 @@ namespace SuperTiled2Unity.Editor
         internal IEnumerable<Rect> GetSpriteRectsForTexture(string assetPathTexture)
         {
             var absolutePathTexture = Path.GetFullPath(assetPathTexture).SanitizePath().ToLower();
-            return m_RectangleEntries.Where(r => r.AbsolutePathTexture == absolutePathTexture).Select(r => new Rect(r.X, r.Y, r.Width, r.Height));
+            return m_RectangleEntries.Where(r => r.AbsolutePathTexture == absolutePathTexture).Select(r => new Rect(r.X, r.Y, r.Width, r.Height)).Distinct();
         }
 
         private static string GetSanitizedAbsolutePathFromRelative(string absolutePathParent, string relativeImagePath)
@@ -35,7 +35,7 @@ namespace SuperTiled2Unity.Editor
 
         private void ProcessTiledFile(string path)
         {
-            var absoluteTsxPath = Path.GetFullPath(path).SanitizePath();
+            var absoluteTsxPath = Path.GetFullPath(path).SanitizePath().ToLower();
             m_RectangleEntries.RemoveWhere(r => r.AbsolutePathTsx == absoluteTsxPath);
 
             try
