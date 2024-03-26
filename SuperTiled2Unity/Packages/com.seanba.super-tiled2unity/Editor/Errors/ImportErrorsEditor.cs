@@ -95,11 +95,12 @@ namespace SuperTiled2Unity.Editor
         {
             if (importErrors.m_MissingTileSprites.Count > 0)
             {
-                ui.BoldLabel("Missing Sprites - Reimporting Textures May Fix");
+                ui.BoldLabel("Missing Sprites");
                 foreach (var missing in importErrors.m_MissingTileSprites)
                 {
+                    var assetName = Path.GetFileName(missing.m_TextureAssetPath);
                     StringBuilder msg = new StringBuilder(1024 * 4);
-                    msg.AppendLine("The following texture is missing sprites that are needed for Super Tiled2Unity.");
+                    msg.AppendLine("The following texture is missing sprites that are needed for Tiled tilesets (in Super Tiled2Unity).");
                     msg.AppendLine(missing.m_TextureAssetPath);
 
                     int reportCount = 5;
@@ -113,21 +114,20 @@ namespace SuperTiled2Unity.Editor
                         msg.AppendLine($"An additional {missing.m_MissingSprites.Count - reportCount} sprites are missing. Total = {missing.m_MissingSprites.Count}");
                     }
 
-                    msg.AppendLine("Super Tiled2Unity will attempt to automatically add these missing sprites on import. Try reimporting.");
+                    msg.AppendLine($"Super Tiled2Unity will attempt to automatically add these missing sprites on import.\nTry selecting *Add Sprites To '{assetName}'* below.");
 
                     ui.HelpBox(msg.ToString());
 
                     using (new GuiScopedBackgroundColor(NamedColors.LightPink))
                     {
-                        var assetName = Path.GetFileName(missing.m_TextureAssetPath);
+                        if (GUILayout.Button($"Add Sprites To '{assetName}'"))
+                        {
+                            AddST2USpritesToTexture.AddSpritesToTextureAsset(missing.m_TextureAssetPath, missing.m_MissingSprites.Select(m => m.m_Rect));
+                        }
+
                         if (GUILayout.Button($"Inspect '{assetName}'"))
                         {
                             Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(missing.m_TextureAssetPath);
-                        }
-
-                        if (GUILayout.Button($"Reimport '{assetName}'"))
-                        {
-                            AssetDatabase.ImportAsset(missing.m_TextureAssetPath);
                         }
                     }
                 }

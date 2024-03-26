@@ -10,6 +10,9 @@ namespace SuperTiled2Unity.Editor
 {
     public abstract class TiledAssetImporter : SuperImporter
     {
+        public const string PixelsPerUnitSerializedName = nameof(m_PixelsPerUnit);
+        public const string EdgesPerEllipseSerializedName = nameof(m_EdgesPerEllipse);
+
         [SerializeField]
         private float m_PixelsPerUnit = 0.0f;
         public float PixelsPerUnit => m_PixelsPerUnit;

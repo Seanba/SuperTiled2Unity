@@ -13,7 +13,7 @@ namespace SuperTiled2Unity.Editor
 
         internal bool CreateSpriteAndTile(int tileId, Color tint, int width, int height, SuperTileset superTileset, out Sprite sprite, out SuperBadTile tile)
         {
-            Assert.IsNotNull(m_BadTileTextures);
+            Assert.IsNotNull(m_BadTileTextures, "Collection of bad tile textures is null.");
             Assert.IsTrue(m_BadTileTextures.m_Textures.Length > 0);
 
             // Use the hash of the tileset in an attempt to better randomize the deterministic assignment of bad tiles
