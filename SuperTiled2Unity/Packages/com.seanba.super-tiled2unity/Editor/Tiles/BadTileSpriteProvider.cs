@@ -14,8 +14,18 @@ namespace SuperTiled2Unity.Editor
 
         internal bool CreateSpriteAndTile(int tileId, Color tint, int width, int height, SuperTileset superTileset, out Sprite sprite, out SuperBadTile tile)
         {
-            Assert.IsNotNull(m_BadTileTextures, "Collection of bad tile textures is null.");
-            Assert.IsTrue(m_BadTileTextures.m_Textures.Length > 0);
+            // We can't take for granted that the collection of bad textures is always serialized even though that is my expectation, ffs
+            if (m_BadTileTextures == null)
+            {
+                string[] guids = AssetDatabase.FindAssets("t:BadTileTextures");
+                Assert.IsTrue(guids.Length > 0);
+
+                string assetPath = AssetDatabase.GUIDToAssetPath(guids[0]);
+                m_BadTileTextures = AssetDatabase.LoadAssetAtPath<BadTileTextures>(assetPath);
+
+                Assert.IsNotNull(m_BadTileTextures, "Collection of bad tile textures is null.");
+                Assert.IsTrue(m_BadTileTextures.m_Textures.Length > 0);
+            }
 
             // Use the hash of the tileset in an attempt to better randomize the deterministic assignment of bad tiles
             int hash = GetTilesetHash(superTileset.name);
