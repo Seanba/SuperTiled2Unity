@@ -14,6 +14,8 @@ namespace SuperTiled2Unity.Editor
 
         private readonly HashSet<RectangleEntry> m_RectangleEntries = new HashSet<RectangleEntry>();
 
+        private readonly List<string> m_TextureAssetsReimported = new List<string>();
+
         static SpriteRectsManager()
         {
             Instance = CreateInstance();
@@ -165,9 +167,42 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
+        private void CheckForTextureReimports(string tiledAssetPath)
+        {
+            // Does the the tiled asset have any import errors?
+            var importErrors = AssetDatabase.LoadAssetAtPath<ImportErrors>(tiledAssetPath);
+            if (importErrors != null)
+            {
+                // Do not try to reimport textures if pixels per unit settings don't match
+                // That requires user input
+                if (!importErrors.m_WrongPixelsPerUnits.Any())
+                {
+                    // Do we have any errors of the missing sprite variety?
+                    foreach (var missing in importErrors.m_MissingTileSprites)
+                    {
+                        // Only try to reimport these textures once
+                        // Otherwise we may introduce a cyclic depenency chain
+                        var textureAssetPath = missing.m_TextureAssetPath.ToLower();
+                        if (!m_TextureAssetsReimported.Contains(textureAssetPath))
+                        {
+                            m_TextureAssetsReimported.Add(textureAssetPath);
+                            AssetDatabase.ImportAsset(textureAssetPath);
+                        }
+                    }
+                }
+            }
+        }
+
         private void ImportTiledFile(string path)
         {
             ProcessTiledFile(path);
+
+            // Does the tiled file we've just imported require textures to have sprites in them?
+            // We can't have cyclic dependencies between textures -> tilesets -> textures
+            // But we can try a one-time reimport of textures here
+            // This will help in cases where users imported their tiled files before their textures
+            // Or they are upgrading from an older version of ST2U that created its own sprite atlases
+            CheckForTextureReimports(path);
         }
 
         private void ImportImageFile(string path)
