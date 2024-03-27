@@ -21,7 +21,13 @@ namespace SuperTiled2Unity.Editor
                 ui.HelpBox($"SuperTiled2Unity version: {SuperTiled2Unity_Config.Version}, Unity version: {Application.unityVersion}\nErrors Detected. Your Tiled asset may not function correctly. Please follow directions to fix.");
 
                 DisplayMissingDependencies(ui, importErrors);
-                DisplayWrongPixelsPerUnit(ui, importErrors);
+
+                if (DisplayWrongPixelsPerUnit(ui, importErrors))
+                {
+                    // Stop here as it must be fixed. Other errors will have to wait.
+                    return;
+                }
+
                 DisplayDependencyErrors(ui, importErrors);
                 DisplayMissingSprites(ui, importErrors);
                 DisplayGenericErrors(ui, importErrors);
@@ -50,7 +56,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private static void DisplayWrongPixelsPerUnit(MessageBuilderUI ui, ImportErrors importErrors)
+        private static bool DisplayWrongPixelsPerUnit(MessageBuilderUI ui, ImportErrors importErrors)
         {
             if (importErrors.m_WrongPixelsPerUnits.Count > 0)
             {
@@ -67,7 +73,11 @@ namespace SuperTiled2Unity.Editor
                         }
                     }
                 }
+
+                return true;
             }
+
+            return false;
         }
 
         private static void DisplayDependencyErrors(MessageBuilderUI ui, ImportErrors importErrors)

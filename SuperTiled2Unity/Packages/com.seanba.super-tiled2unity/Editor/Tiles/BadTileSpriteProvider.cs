@@ -7,7 +7,8 @@ namespace SuperTiled2Unity.Editor
 {
     public class BadTileSpriteProvider : ScriptableSingleton<BadTileSpriteProvider>
     {
-        public BadTileTextures m_BadTileTextures;
+        [SerializeField]
+        private BadTileTextures m_BadTileTextures;
 
         private static readonly Dictionary<string, int> m_NamesToHash = new Dictionary<string, int>();
 
