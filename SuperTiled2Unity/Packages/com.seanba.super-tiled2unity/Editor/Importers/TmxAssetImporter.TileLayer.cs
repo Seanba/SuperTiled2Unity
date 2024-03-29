@@ -194,7 +194,7 @@ namespace SuperTiled2Unity.Editor
             }
             else
             {
-                ReportError("Unhandled encoding type ({0}) used for map layer data.", chunk.Encoding);
+                ReportGenericError($"Unhandled encoding type ({chunk.Encoding}) used for map layer data.");
             }
 
             return tileIds;
@@ -230,7 +230,7 @@ namespace SuperTiled2Unity.Editor
                     }
                     else if (!badTiles.Contains(tileId.JustTileId))
                     {
-                        ReportError("Could not find tile {0}. Make sure the tilesets were successfully imported.", tileId.JustTileId);
+                        ReportGenericError($"Could not find tile '{tileId.JustTileId}'. Make sure the tilesets were successfully imported.");
                         badTiles.Add(tileId.JustTileId);
                     }
                 }
@@ -390,7 +390,7 @@ namespace SuperTiled2Unity.Editor
                 catch
                 {
                     tileIds.Clear();
-                    ReportError("Gzip compression is not supported on your development platform. Change Tile Layer Format to another type in Tiled.");
+                    ReportGenericError("Gzip compression is not supported on your development platform. Change Tile Layer Format to another type in Tiled.");
                 }
             }
             else if (compression == DataCompression.Zlib)
@@ -402,12 +402,12 @@ namespace SuperTiled2Unity.Editor
                 catch
                 {
                     tileIds.Clear();
-                    ReportError("zlib compression is not supported on your development platform. Change Tile Layer Format to another type in Tiled.");
+                    ReportGenericError("zlib compression is not supported on your development platform. Change Tile Layer Format to another type in Tiled.");
                 }
             }
             else
             {
-                ReportError("Unhandled compression type ({0}) used for map layer data", compression);
+                ReportGenericError($"Unhandled compression type ({compression}) used for map layer data");
             }
         }
     }

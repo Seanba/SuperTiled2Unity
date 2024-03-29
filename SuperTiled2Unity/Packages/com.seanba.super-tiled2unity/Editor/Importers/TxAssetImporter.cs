@@ -48,7 +48,7 @@ namespace SuperTiled2Unity.Editor
             }
             else
             {
-                ReportError("Template file does not contain an object element.");
+                ReportGenericError("Template file does not contain an object element.");
             }
         }
 
@@ -86,14 +86,13 @@ namespace SuperTiled2Unity.Editor
                 var tileId = new TileIdMath(gId);
 
                 // Store a reference to the tile
-                SuperTile tile;
-                if (m_GlobalTileDatabase.TryGetTile(tileId.JustTileId, out tile))
+                if (m_GlobalTileDatabase.TryGetTile(tileId.JustTileId, out SuperTile tile))
                 {
                     m_ObjectTemplate.m_Tile = tile;
                 }
                 else
                 {
-                    ReportError("Could not find tile '{0}' in tileset", tileId.JustTileId);
+                    ReportGenericError($"Could not find tile '{tileId.JustTileId}' in tileset");
                 }
             }
         }

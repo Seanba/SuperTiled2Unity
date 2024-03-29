@@ -402,11 +402,11 @@ namespace SuperTiled2Unity.Editor
                     {
                         if (collision.m_Size.x == 0)
                         {
-                            m_Importer.ReportError("Invalid ellipse (Tile ID ='{0}') in tileset '{1}' has zero width", tile.m_TileId, m_SuperTileset.name);
+                            m_Importer.ReportGenericError($"Invalid ellipse (Tile ID ='{tile.m_TileId}') in tileset '{m_SuperTileset.name}' has zero width");
                         }
                         else if (collision.m_Size.y == 0)
                         {
-                            m_Importer.ReportError("Invalid ellipse (Tile ID ='{0}') in tileset '{1}' has zero height", tile.m_TileId, m_SuperTileset.name);
+                            m_Importer.ReportGenericError($"Invalid ellipse (Tile ID ='{tile.m_TileId}') in tileset '{m_SuperTileset.name}' has zero height");
                         }
                         else
                         {
@@ -422,11 +422,11 @@ namespace SuperTiled2Unity.Editor
                         // By default, objects are rectangles
                         if (collision.m_Size.x == 0)
                         {
-                            m_Importer.ReportError("Invalid rectangle (Tile ID ='{0}') in tileset '{1}' has zero width", tile.m_TileId, m_SuperTileset.name);
+                            m_Importer.ReportGenericError($"Invalid rectangle (Tile ID ='{tile.m_TileId}') in tileset '{m_SuperTileset.name}' has zero width");
                         }
                         else if (collision.m_Size.y == 0)
                         {
-                            m_Importer.ReportError("Invalid rectangle (Tile ID ='{0}') in tileset '{1}' has zero height", tile.m_TileId, m_SuperTileset.name);
+                            m_Importer.ReportGenericError($"Invalid rectangle (Tile ID ='{tile.m_TileId}') in tileset '{m_SuperTileset.name}' has zero height");
                         }
                         else
                         {
