@@ -31,6 +31,8 @@ namespace SuperTiled2Unity.Editor
                 DisplayDependencyErrors(ui, importErrors);
                 DisplayMissingSprites(ui, importErrors);
                 DisplayMissingTags(editor, ui, importErrors);
+                DisplayMissingLayers(editor, ui, importErrors);
+                DisplayMissingSortingLayers(editor, ui, importErrors);
                 DisplayGenericErrors(ui, importErrors);
             }
         }
@@ -158,6 +160,70 @@ namespace SuperTiled2Unity.Editor
                 foreach (var tag in importErrors.m_MissingTags)
                 {
                     msg.AppendLine(tag);
+                }
+
+                ui.HelpBox(msg.ToString());
+
+                using (new GuiScopedBackgroundColor(NamedColors.LightPink))
+                {
+                    if (GUILayout.Button("Open Tag Manager"))
+                    {
+                        SettingsService.OpenProjectSettings("Project/Tags and Layers");
+                    }
+
+                    if (GUILayout.Button($"Reimport"))
+                    {
+                        editor.ReimportAsset();
+                    }
+                }
+            }
+        }
+
+        private static void DisplayMissingLayers<T>(SuperImporterEditor<T> editor, MessageBuilderUI ui, ImportErrors importErrors) where T : SuperImporter
+        {
+            if (importErrors.m_MissingLayers.Count > 0)
+            {
+                ui.BoldLabel("Missing Layers - Fix in Tag Manager");
+
+                StringBuilder msg = new StringBuilder(1024 * 4);
+                msg.AppendLine("The following layers are missing in the Tag Manager.");
+                msg.AppendLine("Open the Tag Manager, add the missing layers, and reimport.");
+
+                foreach (var layer in importErrors.m_MissingLayers)
+                {
+                    msg.AppendLine(layer);
+                }
+
+                ui.HelpBox(msg.ToString());
+
+                using (new GuiScopedBackgroundColor(NamedColors.LightPink))
+                {
+                    if (GUILayout.Button("Open Tag Manager"))
+                    {
+                        SettingsService.OpenProjectSettings("Project/Tags and Layers");
+                    }
+
+                    if (GUILayout.Button($"Reimport"))
+                    {
+                        editor.ReimportAsset();
+                    }
+                }
+            }
+        }
+
+        private static void DisplayMissingSortingLayers<T>(SuperImporterEditor<T> editor, MessageBuilderUI ui, ImportErrors importErrors) where T : SuperImporter
+        {
+            if (importErrors.m_MissingSortingLayers.Count > 0)
+            {
+                ui.BoldLabel("Missing Sorting Layers - Fix in Tag Manager");
+
+                StringBuilder msg = new StringBuilder(1024 * 4);
+                msg.AppendLine("The following sorting layers are missing in the Tag Manager.");
+                msg.AppendLine("Open the Tag Manager, add the missing sorting layers, and reimport.");
+
+                foreach (var sortingLayer in importErrors.m_MissingSortingLayers)
+                {
+                    msg.AppendLine(sortingLayer);
                 }
 
                 ui.HelpBox(msg.ToString());

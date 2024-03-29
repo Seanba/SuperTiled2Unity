@@ -30,10 +30,6 @@ namespace SuperTiled2Unity.Editor
         {
             if (assetTarget != null)
             {
-                // If we have importer errors then they should be front and center
-                DisplayErrors();
-                DisplayTagManagerErrors();
-
                 // Do we have any import errors to report?
                 var importErrors = AssetDatabase.LoadAssetAtPath<ImportErrors>(TargetAssetImporter.assetPath);
                 if (importErrors != null)
@@ -103,101 +99,6 @@ namespace SuperTiled2Unity.Editor
         }
 
         protected abstract void InternalOnInspectorGUI();
-
-        private void DisplayErrors()
-        {
-            var asset = Path.GetFileName(TargetAssetImporter.assetPath);
-
-            using (new GuiScopedBackgroundColor(Color.red))
-            {
-                if (TargetAssetImporter.Errors.Any())
-                {
-                    EditorGUILayout.LabelField("There were errors importing " + asset, EditorStyles.boldLabel);
-
-                    var msg = new StringBuilder();
-                    msg.AppendLine(TargetAssetImporter.GetReportHeader());
-                    msg.AppendLine(string.Join("\n", TargetAssetImporter.Errors.Take(10).ToArray()));
-
-                    EditorGUILayout.HelpBox(msg.ToString(), MessageType.Error);
-
-                    if (GUILayout.Button("Copy Error Message to Clipboard"))
-                    {
-                        msg.ToString().CopyToClipboard();
-                    }
-
-                    EditorGUILayout.Separator();
-                }
-            }
-        }
-
-        private void DisplayTagManagerErrors()
-        {
-            bool missingSortingLayers = TargetAssetImporter.MissingSortingLayers.Any();
-            bool missingLayers = TargetAssetImporter.MissingLayers.Any();
-
-            if (!missingSortingLayers && !missingLayers)
-            {
-                return;
-            }
-
-            EditorGUILayout.TextArea("", GUI.skin.horizontalSlider);
-
-            using (new GuiScopedBackgroundColor(Color.yellow))
-            {
-                if (missingSortingLayers)
-                {
-                    EditorGUILayout.LabelField("Missing Sorting Layers!", EditorStyles.boldLabel);
-
-                    using (new GuiScopedIndent())
-                    {
-                        StringBuilder message = new StringBuilder("Sorting Layers are missing in your project settings. Open the Tag Manager, add these missing sorting layers, and reimport:");
-                        message.AppendLine();
-                        message.AppendLine();
-
-                        foreach (var layer in TargetAssetImporter.MissingSortingLayers)
-                        {
-                            message.AppendFormat("    {0}\n", layer);
-                        }
-
-                        EditorGUILayout.HelpBox(message.ToString(), MessageType.Warning);
-                    }
-                }
-
-                if (missingLayers)
-                {
-                    EditorGUILayout.LabelField("Missing Layers!", EditorStyles.boldLabel);
-
-                    using (new GuiScopedIndent())
-                    {
-                        StringBuilder message = new StringBuilder("Layers are missing in your project settings. Open the Tag Manager, add these missing layers, and reimport:");
-                        message.AppendLine();
-                        message.AppendLine();
-
-                        foreach (var layer in TargetAssetImporter.MissingLayers)
-                        {
-                            message.AppendFormat("    {0}\n", layer);
-                        }
-
-                        EditorGUILayout.HelpBox(message.ToString(), MessageType.Warning);
-                    }
-                }
-            }
-
-            using (new GUILayout.HorizontalScope())
-            {
-                if (GUILayout.Button("Open Tag Manager"))
-                {
-                    SettingsService.OpenProjectSettings("Project/Tags and Layers");
-                }
-
-                if (GUILayout.Button("Reimport"))
-                {
-                    ReimportAsset();
-                }
-            }
-
-            EditorGUILayout.TextArea("", GUI.skin.horizontalSlider);
-        }
 
         private void DisplayDependencies()
         {

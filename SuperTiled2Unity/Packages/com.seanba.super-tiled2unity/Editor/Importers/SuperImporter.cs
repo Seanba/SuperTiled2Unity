@@ -12,19 +12,6 @@ namespace SuperTiled2Unity.Editor
 {
     public abstract class SuperImporter : ScriptedImporter
     {
-        // fixit - all these missing, errors, warnings, ect lists won't be needed
-        [SerializeField]
-        private List<string> m_Errors = new List<string>();
-        public IEnumerable<string> Errors => m_Errors;
-
-        [SerializeField]
-        private List<string> m_MissingSortingLayers = new List<string>();
-        public IEnumerable<string> MissingSortingLayers => m_MissingSortingLayers;
-
-        [SerializeField]
-        private List<string> m_MissingLayers = new List<string>();
-        public IEnumerable<string> MissingLayers => m_MissingLayers;
-
         // Keep track of our importer version so that we may handle converions from old imports
         [SerializeField]
         private int m_ImporterVersion = 0;
@@ -48,9 +35,6 @@ namespace SuperTiled2Unity.Editor
         public override sealed void OnImportAsset(AssetImportContext ctx)
         {
             m_CachedDatabase.Clear();
-            m_Errors.Clear();
-            m_MissingSortingLayers.Clear();
-            m_MissingLayers.Clear();
             m_SuperAsset = null;
             ImportErrors = null;
             AssetImportContext = ctx;
@@ -141,27 +125,11 @@ namespace SuperTiled2Unity.Editor
             return null;
         }
 
-        public void ReportError(string fmt, params object[] args)
-        {
-            string error = string.Format(fmt, args);
-            m_Errors.Add(error);
-        }
-
-        public string GetReportHeader() // fixit - won't need this eventually
-        {
-            return string.Format("SuperTiled2Unity version: {0}, Unity version: {1}", SuperTiled2Unity_Config.Version, Application.unityVersion);
-        }
-
         public bool CheckSortingLayerName(string sortName)
         {
             if (!sortName.Equals("Default", StringComparison.OrdinalIgnoreCase) && SortingLayer.NameToID(sortName) == 0)
             {
-                if (!m_MissingSortingLayers.Contains(sortName))
-                {
-                    //Debug.LogWarningFormat("Sorting layer name '{0}' not found in Tag Manager. Tiled map layers and objects may be drawn out of order.", sortName);
-                    m_MissingSortingLayers.Add(sortName);
-                }
-
+                ReportMissingSortingLayer(sortName);
                 return false;
             }
 
@@ -170,14 +138,9 @@ namespace SuperTiled2Unity.Editor
 
         public bool CheckLayerName(string layerName)
         {
-            if (LayerMask.NameToLayer(layerName) == -1)
+            if (!UnityEditorInternal.InternalEditorUtility.layers.Contains(layerName))
             {
-                if (!m_MissingLayers.Contains(layerName))
-                {
-                    //Debug.LogWarningFormat("Layer name '{0}' not found in Tag Manager. Colliders may not work as expected", layerName);
-                    m_MissingLayers.Add(layerName);
-                }
-
+                ReportMissingLayer(layerName);
                 return false;
             }
 
@@ -223,6 +186,18 @@ namespace SuperTiled2Unity.Editor
         {
             AddImportErrorsScriptableObjectIfNeeded();
             ImportErrors.ReportMissingTag(tag);
+        }
+
+        public void ReportMissingLayer(string layer)
+        {
+            AddImportErrorsScriptableObjectIfNeeded();
+            ImportErrors.ReportMissingLayer(layer);
+        }
+
+        public void ReportMissingSortingLayer(string sortingLayer)
+        {
+            AddImportErrorsScriptableObjectIfNeeded();
+            ImportErrors.ReportMissingSortingLayer(sortingLayer);
         }
 
         public void ReportGenericError(string error)

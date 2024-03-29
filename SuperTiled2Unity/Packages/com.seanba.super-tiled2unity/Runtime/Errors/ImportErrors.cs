@@ -20,6 +20,8 @@ namespace SuperTiled2Unity
         public List<WrongPixelsPerUnit> m_WrongPixelsPerUnits = new List<WrongPixelsPerUnit>();
 
         public List<string> m_MissingTags = new List<string>();
+        public List<string> m_MissingLayers = new List<string>();
+        public List<string> m_MissingSortingLayers = new List<string>();
 
         public List<string> m_GenericErrors = new List<string>();
 
@@ -73,6 +75,22 @@ namespace SuperTiled2Unity
             if (!m_MissingTags.Contains(tag))
             {
                 m_MissingTags.Add(tag);
+            }
+        }
+
+        public void ReportMissingLayer(string layer)
+        {
+            if (!m_MissingLayers.Contains(layer))
+            {
+                m_MissingLayers.Add(layer);
+            }
+        }
+
+        public void ReportMissingSortingLayer(string sortingLayer)
+        {
+            if (!m_MissingSortingLayers.Contains(sortingLayer))
+            {
+                m_MissingSortingLayers.Add(sortingLayer);
             }
         }
 

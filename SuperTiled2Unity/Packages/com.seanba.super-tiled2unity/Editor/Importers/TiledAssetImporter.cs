@@ -146,8 +146,10 @@ namespace SuperTiled2Unity.Editor
             if (properties.TryGetCustomProperty(StringConstants.Unity_Tag, out prop))
             {
                 string tag = prop.m_Value;
-                CheckTagName(tag);
-                properties.gameObject.tag = tag;
+                if (CheckTagName(tag))
+                {
+                    properties.gameObject.tag = tag;
+                }
             }
         }
 
@@ -157,12 +159,7 @@ namespace SuperTiled2Unity.Editor
             if (properties.TryGetCustomProperty(StringConstants.Unity_Layer, out CustomProperty prop))
             {
                 string layer = prop.m_Value;
-                if (!UnityEditorInternal.InternalEditorUtility.layers.Contains(layer))
-                {
-                    string report = string.Format("Layer '{0}' is not defined in the Tags and Layers settings.", layer);
-                    ReportError(report);
-                }
-                else
+                if (CheckLayerName(layer))
                 {
                     properties.gameObject.layer = LayerMask.NameToLayer(layer);
                 }
