@@ -245,6 +245,11 @@ namespace SuperTiled2Unity.Editor
                 tile.m_TileRenderSize = m_SuperTileset.m_TileRenderSize;
                 tile.m_FillMode = m_SuperTileset.m_FillMode;
 
+                if (m_Importer is TsxAssetImporter tsxAssetImporter)
+                {
+                    tile.m_ColliderType = tsxAssetImporter.m_ColliderType;
+                }
+
                 m_SuperTileset.m_Tiles.Add(tile);
                 m_Importer.SuperImportContext.AddObjectToAsset($"Tile{tileId}_spriteName", tile);
                 return true;

@@ -51,6 +51,9 @@ namespace SuperTiled2Unity
         [ReadOnly]
         public FillMode m_FillMode;
 
+        [ReadOnly]
+        public Tile.ColliderType m_ColliderType;
+
         public List<CustomProperty> m_CustomProperties;
 
         public List<CollisionObject> m_CollisionObjects;
@@ -182,6 +185,7 @@ namespace SuperTiled2Unity
         public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData)
         {
             tileData.sprite = m_Sprite;
+            tileData.colliderType = m_ColliderType;
         }
 
         public override bool GetTileAnimationData(Vector3Int position, ITilemap tilemap, ref TileAnimationData tileAnimationData)

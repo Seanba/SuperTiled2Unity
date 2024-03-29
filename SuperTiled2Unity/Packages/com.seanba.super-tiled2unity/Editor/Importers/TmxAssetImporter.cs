@@ -25,15 +25,15 @@ namespace SuperTiled2Unity.Editor
 
         [SerializeField]
         private bool m_TilesAsObjects = false;
-        public bool TilesAsObjects { get { return m_TilesAsObjects; } }
+        public bool TilesAsObjects => m_TilesAsObjects;
 
         [SerializeField]
         private SortingMode m_SortingMode = SortingMode.Stacked;
-        public SortingMode SortingMode { get { return m_SortingMode; } }
+        public SortingMode SortingMode => m_SortingMode;
 
         [SerializeField]
         private bool m_IsIsometric = false;
-        public bool IsIsometric { get { return m_IsIsometric; } }
+        public bool IsIsometric => m_IsIsometric;
 
         [SerializeField]
         private string m_CustomImporterClassName = string.Empty;

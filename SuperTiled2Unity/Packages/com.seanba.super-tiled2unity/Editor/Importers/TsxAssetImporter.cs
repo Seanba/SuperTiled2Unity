@@ -2,12 +2,17 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEditor.AssetImporters;
+using UnityEngine.Tilemaps;
 
 namespace SuperTiled2Unity.Editor
 {
     [ScriptedImporter(ImporterConstants.TilesetVersion, ImporterConstants.TilesetExtension, ImporterConstants.TilesetImportOrder)]
     public class TsxAssetImporter : TiledAssetImporter
     {
+        public const string ColliderTypeSerializedName = nameof(m_ColliderType);
+
+        public Tile.ColliderType m_ColliderType;
+
         public SuperTileset Tileset { get; private set; }
 
         protected override void InternalOnImportAsset()
