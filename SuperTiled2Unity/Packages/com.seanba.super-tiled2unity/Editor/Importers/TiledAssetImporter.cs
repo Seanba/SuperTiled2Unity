@@ -154,8 +154,7 @@ namespace SuperTiled2Unity.Editor
         protected void AssignUnityLayer(SuperCustomProperties properties)
         {
             // Do we have a 'unity:layer' property?
-            CustomProperty prop;
-            if (properties.TryGetCustomProperty(StringConstants.Unity_Layer, out prop))
+            if (properties.TryGetCustomProperty(StringConstants.Unity_Layer, out CustomProperty prop))
             {
                 string layer = prop.m_Value;
                 if (!UnityEditorInternal.InternalEditorUtility.layers.Contains(layer))

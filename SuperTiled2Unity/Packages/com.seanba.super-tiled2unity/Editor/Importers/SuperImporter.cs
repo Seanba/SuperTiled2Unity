@@ -25,10 +25,6 @@ namespace SuperTiled2Unity.Editor
         private List<string> m_MissingLayers = new List<string>();
         public IEnumerable<string> MissingLayers => m_MissingLayers;
 
-        [SerializeField]
-        private List<string> m_MissingTags = new List<string>();
-        public IEnumerable<string> MissingTags => m_MissingTags;
-
         // Keep track of our importer version so that we may handle converions from old imports
         [SerializeField]
         private int m_ImporterVersion = 0;
@@ -55,7 +51,6 @@ namespace SuperTiled2Unity.Editor
             m_Errors.Clear();
             m_MissingSortingLayers.Clear();
             m_MissingLayers.Clear();
-            m_MissingTags.Clear();
             m_SuperAsset = null;
             ImportErrors = null;
             AssetImportContext = ctx;
@@ -193,11 +188,7 @@ namespace SuperTiled2Unity.Editor
         {
             if (!UnityEditorInternal.InternalEditorUtility.tags.Contains(tagName))
             {
-                if (!m_MissingTags.Contains(tagName))
-                {
-                    m_MissingTags.Add(tagName);
-                }
-
+                ReportMissingTag(tagName);
                 return false;
             }
 
@@ -226,6 +217,12 @@ namespace SuperTiled2Unity.Editor
         {
             AddImportErrorsScriptableObjectIfNeeded();
             ImportErrors.ReportWrongPixelsPerUnit(dependencyAssetPath, dependencyPPU, ourPPU);
+        }
+
+        public void ReportMissingTag(string tag)
+        {
+            AddImportErrorsScriptableObjectIfNeeded();
+            ImportErrors.ReportMissingTag(tag);
         }
 
         public void ReportGenericError(string error)

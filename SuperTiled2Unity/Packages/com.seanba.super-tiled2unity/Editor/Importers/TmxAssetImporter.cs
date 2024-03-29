@@ -14,6 +14,10 @@ namespace SuperTiled2Unity.Editor
     [ScriptedImporter(ImporterConstants.MapVersion, ImporterConstants.MapExtension, ImporterConstants.MapImportOrder)]
     public partial class TmxAssetImporter : TiledAssetImporter
     {
+        public const string TilesAsObjectsSerializedName = nameof(m_TilesAsObjects);
+        public const string SortingModeSerializedName = nameof(m_SortingMode);
+        public const string CustomImporterClassNameSerializedName = nameof(m_CustomImporterClassName);
+
         private SuperMap m_MapComponent;
         private Grid m_GridComponent;
 

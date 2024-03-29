@@ -11,13 +11,8 @@ namespace SuperTiled2Unity.Editor
     [CustomEditor(typeof(TmxAssetImporter))]
     class TmxAssetImporterEditor : TiledAssetImporterEditor<TmxAssetImporter>
     {
-        private SerializedProperty m_TilesAsObjects;
-        private readonly GUIContent m_TilesAsObjectsContent = new GUIContent("Tiles as Objects", "Place each tile as separate game object. Uses more resources but gives you more control. This is ignored for Isometric maps that are forced to use game objects.");
-
-        private SerializedProperty m_SortingMode;
-        private readonly GUIContent m_SortingModeContent = new GUIContent("Layer/Object Sorting", "Choose the sorting order scheme applied to imported layers and objects.");
-
-        private SerializedProperty m_CustomImporterClassName;
+        private static readonly GUIContent TilesAsObjectsContent = new GUIContent("Tiles as Objects", "Place each tile as separate game object. Uses more resources but gives you more control. This is ignored for Isometric maps that are forced to use game objects.");
+        private static readonly GUIContent SortingModeContent = new GUIContent("Layer/Object Sorting", "Choose the sorting order scheme applied to imported layers and objects.");
 
         private string[] m_CustomImporterNames;
         private string[] m_CustomImporterTypes;
@@ -25,41 +20,26 @@ namespace SuperTiled2Unity.Editor
 
         private bool m_ShowAutoImporters;
 
-        protected override string EditorLabel
-        {
-            get { return "Tiled Map Importer (.tmx files)"; }
-        }
-
-        protected override string EditorDefinition
-        {
-            get { return "This imports Tiled map files (*.tmx) and creates a prefab of your map to be added to your scenes."; }
-        }
-
-        public override void OnEnable()
-        {
-            CacheSerializedProperites();
-            EnumerateCustomImporterClasses();
-            base.OnEnable();
-        }
-
-#if UNITY_2022_2_OR_NEWER
-        public override void DiscardChanges()
-        {
-            base.DiscardChanges();
-            CacheSerializedProperites();
-        }
-#endif
+        protected override string EditorLabel => "Tiled Map Importer (.tmx files)";
+        protected override string EditorDefinition => "This imports Tiled map files (*.tmx) and creates a prefab of your map to be added to your scenes.";
 
         protected override void InternalOnInspectorGUI()
         {
+            if (m_CustomImporterNames == null || m_CustomImporterTypes == null)
+            {
+                EnumerateCustomImporterClasses();
+            }
+
             EditorGUILayout.LabelField("Tiled Map Importer Settings", EditorStyles.boldLabel);
             ShowTiledAssetGui();
 
-            EditorGUILayout.PropertyField(m_TilesAsObjects, m_TilesAsObjectsContent);
+            var tilesAsObjects = serializedObject.FindProperty(TmxAssetImporter.TilesAsObjectsSerializedName);
+            Assert.IsNotNull(tilesAsObjects);
+            EditorGUILayout.PropertyField(tilesAsObjects, TilesAsObjectsContent);
 
-            m_SortingMode.intValue = (int)(SortingMode)EditorGUILayout.EnumPopup(m_SortingModeContent, (SortingMode)m_SortingMode.intValue);
-
-            if (m_SortingMode.intValue == (int)SortingMode.CustomSortAxis)
+            var sortingMode = serializedObject.FindProperty(TmxAssetImporter.SortingModeSerializedName);
+            Assert.IsNotNull(sortingMode);
+            if (sortingMode.intValue == (int)SortingMode.CustomSortAxis)
             {
                 EditorGUILayout.HelpBox("Tip: Custom Sort Axis may require you to set a Transparency Sort Axis for cameras in your project Graphics settings.", MessageType.Info);
             }
@@ -70,28 +50,11 @@ namespace SuperTiled2Unity.Editor
             InternalApplyRevertGUI();
         }
 
-#if !UNITY_2022_2_OR_NEWER
-        protected override void ResetValues()
-        {
-            base.ResetValues();
-            CacheSerializedProperites();
-        }
-#endif
-
-        private void CacheSerializedProperites()
-        {
-            m_TilesAsObjects = serializedObject.FindProperty("m_TilesAsObjects");
-            Assert.IsNotNull(m_TilesAsObjects);
-
-            m_SortingMode = serializedObject.FindProperty("m_SortingMode");
-            Assert.IsNotNull(m_SortingMode);
-
-            m_CustomImporterClassName = serializedObject.FindProperty("m_CustomImporterClassName");
-            Assert.IsNotNull(m_CustomImporterClassName);
-        }
-
         private void EnumerateCustomImporterClasses()
         {
+            var customImporterClassName = serializedObject.FindProperty(TmxAssetImporter.CustomImporterClassNameSerializedName);
+            Assert.IsNotNull(customImporterClassName);
+
             var importerNames = new List<string>();
             var importerTypes = new List<string>();
 
@@ -113,16 +76,19 @@ namespace SuperTiled2Unity.Editor
             m_CustomImporterNames = importerNames.ToArray();
             m_CustomImporterTypes = importerTypes.ToArray();
 
-            m_SelectedCustomImporter = importerTypes.IndexOf(m_CustomImporterClassName.stringValue);
+            m_SelectedCustomImporter = importerTypes.IndexOf(customImporterClassName.stringValue);
             if (m_SelectedCustomImporter == -1)
             {
                 m_SelectedCustomImporter = 0;
-                m_CustomImporterClassName.stringValue = string.Empty;
+                customImporterClassName.stringValue = string.Empty;
             }
         }
 
         private void ShowCustomImporterGui()
         {
+            var customImporterClassName = serializedObject.FindProperty(TmxAssetImporter.CustomImporterClassNameSerializedName);
+            Assert.IsNotNull(customImporterClassName);
+
             // Show the user-selected custom importer
             EditorGUILayout.LabelField("Custom Importer Settings", EditorStyles.boldLabel);
             var selected = EditorGUILayout.Popup("Custom Importer", m_SelectedCustomImporter, m_CustomImporterNames);
@@ -130,7 +96,7 @@ namespace SuperTiled2Unity.Editor
             if (selected != m_SelectedCustomImporter)
             {
                 m_SelectedCustomImporter = selected;
-                m_CustomImporterClassName.stringValue = m_CustomImporterTypes.ElementAtOrDefault(selected);
+                customImporterClassName.stringValue = m_CustomImporterTypes.ElementAtOrDefault(selected);
             }
 
             EditorGUILayout.HelpBox("Custom Importers are an advanced feature that require scripting. Create a class inherited from CustomTmxImporter and select it from the list above.", MessageType.None);

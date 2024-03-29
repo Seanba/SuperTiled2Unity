@@ -9,7 +9,7 @@ namespace SuperTiled2Unity.Editor
 {
     public static class ImportErrorsEditor
     {
-        public static void ImportErrorsGui(ImportErrors importErrors)
+        public static void ImportErrorsGui<T>(SuperImporterEditor<T> editor, ImportErrors importErrors) where T : SuperImporter
         {
             if (importErrors == null)
             {
@@ -30,6 +30,7 @@ namespace SuperTiled2Unity.Editor
 
                 DisplayDependencyErrors(ui, importErrors);
                 DisplayMissingSprites(ui, importErrors);
+                DisplayMissingTags(editor, ui, importErrors);
                 DisplayGenericErrors(ui, importErrors);
             }
         }
@@ -139,6 +140,38 @@ namespace SuperTiled2Unity.Editor
                         {
                             Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(missing.m_TextureAssetPath);
                         }
+                    }
+                }
+            }
+        }
+
+        private static void DisplayMissingTags<T>(SuperImporterEditor<T> editor, MessageBuilderUI ui, ImportErrors importErrors) where T : SuperImporter
+        {
+            if (importErrors.m_MissingTags.Count > 0)
+            {
+                ui.BoldLabel("Missing Tags - Fix in Tag Manager");
+
+                StringBuilder msg = new StringBuilder(1024 * 4);
+                msg.AppendLine("The following tags are missing in the Tag Manager.");
+                msg.AppendLine("Open the Tag Manager, add the missing tags, and reimport.");
+
+                foreach (var tag in importErrors.m_MissingTags)
+                {
+                    msg.AppendLine(tag);
+                }
+
+                ui.HelpBox(msg.ToString());
+
+                using (new GuiScopedBackgroundColor(NamedColors.LightPink))
+                {
+                    if (GUILayout.Button("Open Tag Manager"))
+                    {
+                        SettingsService.OpenProjectSettings("Project/Tags and Layers");
+                    }
+
+                    if (GUILayout.Button($"Reimport"))
+                    {
+                        editor.ReimportAsset();
                     }
                 }
             }

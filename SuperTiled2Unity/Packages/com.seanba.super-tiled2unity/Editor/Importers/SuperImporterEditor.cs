@@ -17,6 +17,15 @@ namespace SuperTiled2Unity.Editor
         protected abstract string EditorLabel { get; }
         protected abstract string EditorDefinition { get; }
 
+        public void ReimportAsset()
+        {
+#if UNITY_2022_2_OR_NEWER
+            SaveChanges();
+#else
+            ApplyAndImport();
+#endif
+        }
+
         public override sealed void OnInspectorGUI()
         {
             if (assetTarget != null)
@@ -29,7 +38,7 @@ namespace SuperTiled2Unity.Editor
                 var importErrors = AssetDatabase.LoadAssetAtPath<ImportErrors>(TargetAssetImporter.assetPath);
                 if (importErrors != null)
                 {
-                    ImportErrorsEditor.ImportErrorsGui(importErrors);
+                    ImportErrorsEditor.ImportErrorsGui(this, importErrors);
                     EditorGUILayout.Separator();
                 }
 
@@ -125,9 +134,8 @@ namespace SuperTiled2Unity.Editor
         {
             bool missingSortingLayers = TargetAssetImporter.MissingSortingLayers.Any();
             bool missingLayers = TargetAssetImporter.MissingLayers.Any();
-            bool missingTags = TargetAssetImporter.MissingTags.Any();
 
-            if (!missingSortingLayers && !missingLayers && !missingTags)
+            if (!missingSortingLayers && !missingLayers)
             {
                 return;
             }
@@ -173,25 +181,6 @@ namespace SuperTiled2Unity.Editor
                         EditorGUILayout.HelpBox(message.ToString(), MessageType.Warning);
                     }
                 }
-
-                if (missingTags)
-                {
-                    EditorGUILayout.LabelField("Missing Tags!", EditorStyles.boldLabel);
-
-                    using (new GuiScopedIndent())
-                    {
-                        StringBuilder message = new StringBuilder("Tags are missing in your project settings. Open the Tag Manager, add these missing tags, and reimport:");
-                        message.AppendLine();
-                        message.AppendLine();
-
-                        foreach (var tag in TargetAssetImporter.MissingTags)
-                        {
-                            message.AppendFormat("    {0}\n", tag);
-                        }
-
-                        EditorGUILayout.HelpBox(message.ToString(), MessageType.Warning);
-                    }
-                }
             }
 
             using (new GUILayout.HorizontalScope())
@@ -203,7 +192,7 @@ namespace SuperTiled2Unity.Editor
 
                 if (GUILayout.Button("Reimport"))
                 {
-                    InternalSaveChanges();
+                    ReimportAsset();
                 }
             }
 
@@ -328,15 +317,6 @@ namespace SuperTiled2Unity.Editor
             // This is unfortunate but necessary under re-import edge conditions
             Selection.objects = new UnityEngine.Object[0];
             GUIUtility.ExitGUI();
-        }
-
-        private void InternalSaveChanges()
-        {
-#if UNITY_2022_2_OR_NEWER
-            SaveChanges();
-#else
-            ApplyAndImport();
-#endif
         }
     }
 }

@@ -19,6 +19,8 @@ namespace SuperTiled2Unity
         // Dependency assets that are using the wrong pixels per unit. Maps, tilesets, and textures must use matching pixels per unit.
         public List<WrongPixelsPerUnit> m_WrongPixelsPerUnits = new List<WrongPixelsPerUnit>();
 
+        public List<string> m_MissingTags = new List<string>();
+
         public List<string> m_GenericErrors = new List<string>();
 
         public void ReportMissingDependency(string assetPath)
@@ -63,6 +65,14 @@ namespace SuperTiled2Unity
                 };
 
                 m_WrongPixelsPerUnits.Add(wrongPPU);
+            }
+        }
+
+        public void ReportMissingTag(string tag)
+        {
+            if (!m_MissingTags.Contains(tag))
+            {
+                m_MissingTags.Add(tag);
             }
         }
 
