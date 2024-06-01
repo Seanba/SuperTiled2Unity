@@ -12,37 +12,13 @@ namespace SuperTiled2Unity.Editor
 {
     public abstract class SuperImporter : ScriptedImporter
     {
-        [SerializeField]
-        private List<string> m_MissingFiles = new List<string>();
-        public IEnumerable<string> MissingFiles => m_MissingFiles;
-
-        [SerializeField]
-        private List<string> m_Errors = new List<string>();
-        public IEnumerable<string> Errors => m_Errors;
-
-        [SerializeField]
-        private List<string> m_Warnings = new List<string>();
-        public IEnumerable<string> Warnings => m_Warnings;
-
-        [SerializeField]
-        private List<string> m_MissingSortingLayers = new List<string>();
-        public IEnumerable<string> MissingSortingLayers => m_MissingSortingLayers;
-
-        [SerializeField]
-        private List<string> m_MissingLayers = new List<string>();
-        public IEnumerable<string> MissingLayers => m_MissingLayers;
-
-        [SerializeField]
-        private List<string> m_MissingTags = new List<string>();
-        public IEnumerable<string> MissingTags => m_MissingTags;
-
         // Keep track of our importer version so that we may handle converions from old imports
         [SerializeField]
         private int m_ImporterVersion = 0;
         public int ImporterVersion
         {
-            get { return m_ImporterVersion; }
-            protected set { m_ImporterVersion = value; }
+            get => m_ImporterVersion;
+            protected set => m_ImporterVersion = value;
         }
 
         // Keep track of loaded database objects by type
@@ -51,18 +27,16 @@ namespace SuperTiled2Unity.Editor
         // For tracking assets and dependencies imported by SuperTiled2Unity
         private SuperAsset m_SuperAsset;
 
+        // For keeping track of errors while our asset and dependencies are being imported
+        protected ImportErrors ImportErrors { get; private set; }
+
         protected AssetImportContext AssetImportContext { get; private set; }
 
         public override sealed void OnImportAsset(AssetImportContext ctx)
         {
             m_CachedDatabase.Clear();
-            m_MissingFiles.Clear();
-            m_Errors.Clear();
-            m_Warnings.Clear();
-            m_MissingSortingLayers.Clear();
-            m_MissingLayers.Clear();
-            m_MissingTags.Clear();
             m_SuperAsset = null;
+            ImportErrors = null;
             AssetImportContext = ctx;
 
 #if UNITY_2020_3_OR_NEWER
@@ -71,36 +45,25 @@ namespace SuperTiled2Unity.Editor
                 InternalOnImportAsset();
                 InternalOnImportAssetCompleted();
             }
-            catch (TiledException tiled)
-            {
-                // Exceptions that SuperTiled2Unity is aware of
-                // These are the kind of errors a user should be able to fix
-                m_Errors.Add(tiled.Message);
-            }
             catch (XmlException xml)
             {
                 // Xml exceptions are common if the Tiled data file somehow becomes corrupted
-                m_Errors.Add("Asset file may contained corrupted XML data. Trying opening in Tiled Map Editor to resolve.");
-                m_Errors.Add(xml.Message);
+                ReportGenericError($"Asset file may contain corrupted XML data. Trying opening in Tiled Map Editor to resolve.\n{xml.Message}");
             }
             catch (Exception ex)
             {
-                // Last-chance collection of unknown errors while importing
-                // This should be reported for bug fixing
-                m_Errors.Add("Unknown error encountered. Please report as bug. Stack track is in the console output.");
-                m_Errors.Add(ex.Message);
-                Debug.LogErrorFormat("Unknown error of type importing '{0}': {1}\nStack Trace:\n{2}", assetPath, ex.Message, ex.StackTrace);
+                // These errors should be reported for bug fixing
+                ReportGenericError($"Unknown error encountered. Please report as a bug.\nUnknown error importing '{assetPath}'\n{ex.Message}\nStack Trace:\n{ex.StackTrace}");
             }
 #else
             {
                 string error = SuperTiled2Unity_Config.GetVersionError();
-                ReportError(error);
                 Debug.LogError(error);
             }
 #endif
         }
 
-        public T RequestAssetAtPath<T>(string path) where T : UnityEngine.Object
+        public T RequestDependencyAssetAtPath<T>(string path) where T : UnityEngine.Object
         {
             Assert.IsNotNull(m_SuperAsset, "Must be a SuperAsset type if we are requesting dependencies.");
 
@@ -130,11 +93,12 @@ namespace SuperTiled2Unity.Editor
             string requestedAssetPath = absPath;
             if (!AssetPath.TryAbsoluteToAsset(ref requestedAssetPath))
             {
-                ReportError($"Could not generate asset path for '{path}'");
+                ReportMissingDependency(absPath);
                 return null;
             }
 
-            // Keep track that the the asset is a dependency
+            // Keep track that the asset is a dependency
+            // We do this even if the asset doesn't exist (as long as we have a valid asset path)
             m_SuperAsset.AddDependency(AssetImportContext, requestedAssetPath);
 
             // In most cases our dependency is already known by the AssetDatabase
@@ -143,48 +107,29 @@ namespace SuperTiled2Unity.Editor
             {
                 // Add the asset to our cache for next time it is requested
                 m_CachedDatabase[key] = asset;
+
+                // We also need to know if the dependency asset itself has errors
+                var errors = AssetDatabase.LoadAssetAtPath<ImportErrors>(requestedAssetPath);
+                if (errors != null)
+                {
+                    ReportErrorsInDependency(requestedAssetPath);
+                }
+
                 return asset;
             }
             else
             {
-                ReportMissingFile(path);
+                ReportMissingDependency(path);
             }
 
             return null;
-        }
-
-        public void ReportMissingFile(string path)
-        {
-            m_MissingFiles.Add(path);
-        }
-
-        public void ReportError(string fmt, params object[] args)
-        {
-            string error = string.Format(fmt, args);
-            m_Errors.Add(error);
-        }
-
-        public void ReportWarning(string fmt, params object[] args)
-        {
-            string warning = string.Format(fmt, args);
-            m_Warnings.Add(warning);
-        }
-
-        public string GetReportHeader()
-        {
-            return string.Format("SuperTiled2Unity version: {0}, Unity version: {1}", SuperTiled2Unity_Config.Version, Application.unityVersion);
         }
 
         public bool CheckSortingLayerName(string sortName)
         {
             if (!sortName.Equals("Default", StringComparison.OrdinalIgnoreCase) && SortingLayer.NameToID(sortName) == 0)
             {
-                if (!m_MissingSortingLayers.Contains(sortName))
-                {
-                    //Debug.LogWarningFormat("Sorting layer name '{0}' not found in Tag Manager. Tiled map layers and objects may be drawn out of order.", sortName);
-                    m_MissingSortingLayers.Add(sortName);
-                }
-
+                ReportMissingSortingLayer(sortName);
                 return false;
             }
 
@@ -193,14 +138,9 @@ namespace SuperTiled2Unity.Editor
 
         public bool CheckLayerName(string layerName)
         {
-            if (LayerMask.NameToLayer(layerName) == -1)
+            if (!UnityEditorInternal.InternalEditorUtility.layers.Contains(layerName))
             {
-                if (!m_MissingLayers.Contains(layerName))
-                {
-                    //Debug.LogWarningFormat("Layer name '{0}' not found in Tag Manager. Colliders may not work as expected", layerName);
-                    m_MissingLayers.Add(layerName);
-                }
-
+                ReportMissingLayer(layerName);
                 return false;
             }
 
@@ -211,15 +151,70 @@ namespace SuperTiled2Unity.Editor
         {
             if (!UnityEditorInternal.InternalEditorUtility.tags.Contains(tagName))
             {
-                if (!m_MissingTags.Contains(tagName))
-                {
-                    m_MissingTags.Add(tagName);
-                }
-
+                ReportMissingTag(tagName);
                 return false;
             }
 
             return true;
+        }
+
+        public void ReportMissingDependency(string dependencyAssetPath)
+        {
+            AddImportErrorsScriptableObjectIfNeeded();
+            ImportErrors.ReportMissingDependency(dependencyAssetPath);
+        }
+
+        public void ReportErrorsInDependency(string dependencyAssetPath)
+        {
+            AddImportErrorsScriptableObjectIfNeeded();
+            ImportErrors.ReportErrorsInDependency(dependencyAssetPath);
+        }
+
+        public void ReportMissingSprite(string textureAssetPath, int spriteId, int x, int y, int w, int h)
+        {
+            AddImportErrorsScriptableObjectIfNeeded();
+            ImportErrors.ReportMissingSprite(textureAssetPath, spriteId, x, y, w, h);
+        }
+
+        public void ReportWrongPixelsPerUnit(string dependencyAssetPath, float dependencyPPU, float ourPPU)
+        {
+            AddImportErrorsScriptableObjectIfNeeded();
+            ImportErrors.ReportWrongPixelsPerUnit(dependencyAssetPath, dependencyPPU, ourPPU);
+        }
+
+        public void ReportMissingTag(string tag)
+        {
+            AddImportErrorsScriptableObjectIfNeeded();
+            ImportErrors.ReportMissingTag(tag);
+        }
+
+        public void ReportMissingLayer(string layer)
+        {
+            AddImportErrorsScriptableObjectIfNeeded();
+            ImportErrors.ReportMissingLayer(layer);
+        }
+
+        public void ReportMissingSortingLayer(string sortingLayer)
+        {
+            AddImportErrorsScriptableObjectIfNeeded();
+            ImportErrors.ReportMissingSortingLayer(sortingLayer);
+        }
+
+        public void ReportGenericError(string error)
+        {
+            Debug.LogError(error);
+            AddImportErrorsScriptableObjectIfNeeded();
+            ImportErrors.ReportGenericError(error);
+        }
+
+        private void AddImportErrorsScriptableObjectIfNeeded()
+        {
+            if (ImportErrors == null)
+            {
+                ImportErrors = ScriptableObject.CreateInstance<ImportErrors>();
+                ImportErrors.name = "import-errors";
+                AssetImportContext.AddObjectToAsset("_import-errors", ImportErrors);
+            }
         }
 
         protected void AddSuperAsset<T>() where T : SuperAsset

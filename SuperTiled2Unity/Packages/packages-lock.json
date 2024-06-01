@@ -5,10 +5,18 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
+        "com.unity.2d.sprite": "1.0.0",
+        "com.unity.2d.tilemap": "1.0.0",
         "com.unity.modules.animation": "1.0.0",
         "com.unity.modules.physics2d": "1.0.0",
         "com.unity.modules.tilemap": "1.0.0"
       }
+    },
+    "com.unity.2d.sprite": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {}
     },
     "com.unity.2d.tilemap": {
       "version": "1.0.0",
@@ -27,7 +35,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.18",
+      "version": "2.0.21",
       "depth": 0,
       "source": "registry",
       "dependencies": {

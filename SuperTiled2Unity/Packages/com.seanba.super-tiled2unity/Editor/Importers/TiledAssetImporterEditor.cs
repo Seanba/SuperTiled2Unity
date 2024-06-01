@@ -4,60 +4,31 @@ using UnityEngine.Assertions;
 
 namespace SuperTiled2Unity.Editor
 {
-    public abstract class TiledAssetImporterEditor<T> : SuperImporterEditor<T> where T : SuperImporter
+    public abstract class TiledAssetImporterEditor<T> : SuperImporterEditor<T> where T : TiledAssetImporter
     {
-        private SerializedProperty m_PixelsPerUnit;
-        private readonly GUIContent m_PixelsPerUnitContent = new GUIContent("Pixels Per Unit", "How many pixels in the sprite correspond to one unit in the world.");
-
-        private SerializedProperty m_EdgesPerEllipse;
-        private readonly GUIContent m_EdgesPerEllipseContent = new GUIContent("Edges Per Ellipse", "How many edges to use when appromixating ellipse/circle colliders.");
-
-        public override void OnEnable()
-        {
-            CacheSerializedProperites();
-            base.OnEnable();
-        }
-
-#if UNITY_2022_2_OR_NEWER
-        public override void DiscardChanges()
-        {
-            base.DiscardChanges();
-            CacheSerializedProperites();
-        }
-#endif
+        private static readonly GUIContent PixelsPerUnitContent = new GUIContent("Pixels Per Unit", "How many pixels in the sprite correspond to one unit in the world.");
+        private static readonly GUIContent EdgesPerEllipseContent = new GUIContent("Edges Per Ellipse", "How many edges to use when appromixating ellipse/circle colliders.");
 
         protected void ShowTiledAssetGui()
         {
+            var pixelsPerUnit = serializedObject.FindProperty(TiledAssetImporter.PixelsPerUnitSerializedName);
+            var edgesPerEllipse = serializedObject.FindProperty(TiledAssetImporter.EdgesPerEllipseSerializedName);
+            Assert.IsNotNull(pixelsPerUnit);
+            Assert.IsNotNull(edgesPerEllipse);
+
             EditorGUI.BeginChangeCheck();
-            EditorGUILayout.PropertyField(m_PixelsPerUnit, m_PixelsPerUnitContent);
+            EditorGUILayout.PropertyField(pixelsPerUnit, PixelsPerUnitContent);
             if (EditorGUI.EndChangeCheck())
             {
-                m_PixelsPerUnit.floatValue = Mathf.Clamp(m_PixelsPerUnit.floatValue, 0.01f, 2048);
+                pixelsPerUnit.floatValue = Mathf.Clamp(pixelsPerUnit.floatValue, 0.01f, 2048);
             }
 
             EditorGUI.BeginChangeCheck();
-            EditorGUILayout.PropertyField(m_EdgesPerEllipse, m_EdgesPerEllipseContent);
+            EditorGUILayout.PropertyField(edgesPerEllipse, EdgesPerEllipseContent);
             if (EditorGUI.EndChangeCheck())
             {
-                m_EdgesPerEllipse.intValue = Mathf.Clamp(m_EdgesPerEllipse.intValue, 6, 256);
+                edgesPerEllipse.intValue = Mathf.Clamp(edgesPerEllipse.intValue, 6, 256);
             }
-        }
-
-#if !UNITY_2022_2_OR_NEWER
-        protected override void ResetValues()
-        {
-            base.ResetValues();
-            CacheSerializedProperites();
-        }
-#endif
-
-        private void CacheSerializedProperites()
-        {
-            m_PixelsPerUnit = serializedObject.FindProperty("m_PixelsPerUnit");
-            Assert.IsNotNull(m_PixelsPerUnit);
-
-            m_EdgesPerEllipse = serializedObject.FindProperty("m_EdgesPerEllipse");
-            Assert.IsNotNull(m_EdgesPerEllipse);
         }
     }
 }

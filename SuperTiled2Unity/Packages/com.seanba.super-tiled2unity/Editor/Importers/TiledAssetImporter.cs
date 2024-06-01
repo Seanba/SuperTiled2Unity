@@ -10,6 +10,9 @@ namespace SuperTiled2Unity.Editor
 {
     public abstract class TiledAssetImporter : SuperImporter
     {
+        public const string PixelsPerUnitSerializedName = nameof(m_PixelsPerUnit);
+        public const string EdgesPerEllipseSerializedName = nameof(m_EdgesPerEllipse);
+
         [SerializeField]
         private float m_PixelsPerUnit = 0.0f;
         public float PixelsPerUnit => m_PixelsPerUnit;
@@ -95,14 +98,10 @@ namespace SuperTiled2Unity.Editor
             var template = xObject.GetAttributeAs("template", "");
             if (!string.IsNullOrEmpty(template))
             {
-                var asset = RequestAssetAtPath<ObjectTemplate>(template);
+                var asset = RequestDependencyAssetAtPath<ObjectTemplate>(template);
                 if (asset != null)
                 {
                     xObject.CombineWithTemplate(asset.m_ObjectXml);
-                }
-                else
-                {
-                    ReportError("Missing template file: {0}", template);
                 }
             }
         }
@@ -147,24 +146,20 @@ namespace SuperTiled2Unity.Editor
             if (properties.TryGetCustomProperty(StringConstants.Unity_Tag, out prop))
             {
                 string tag = prop.m_Value;
-                CheckTagName(tag);
-                properties.gameObject.tag = tag;
+                if (CheckTagName(tag))
+                {
+                    properties.gameObject.tag = tag;
+                }
             }
         }
 
         protected void AssignUnityLayer(SuperCustomProperties properties)
         {
             // Do we have a 'unity:layer' property?
-            CustomProperty prop;
-            if (properties.TryGetCustomProperty(StringConstants.Unity_Layer, out prop))
+            if (properties.TryGetCustomProperty(StringConstants.Unity_Layer, out CustomProperty prop))
             {
                 string layer = prop.m_Value;
-                if (!UnityEditorInternal.InternalEditorUtility.layers.Contains(layer))
-                {
-                    string report = string.Format("Layer '{0}' is not defined in the Tags and Layers settings.", layer);
-                    ReportError(report);
-                }
-                else
+                if (CheckLayerName(layer))
                 {
                     properties.gameObject.layer = LayerMask.NameToLayer(layer);
                 }

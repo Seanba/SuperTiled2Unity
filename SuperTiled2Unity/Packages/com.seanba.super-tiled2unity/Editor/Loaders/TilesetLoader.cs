@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using SuperTiled2Unity.Editor.Diablo404;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,19 +10,21 @@ namespace SuperTiled2Unity.Editor
     // This helper loader class gives us the flexibility we need to load tileset data
     public class TilesetLoader
     {
-        private readonly SuperTileset m_TilesetScript;
+        private readonly SuperTileset m_SuperTileset;
         private readonly TiledAssetImporter m_Importer;
-        private readonly bool m_UseSpriteAtlas;
-        private readonly int m_AtlasWidth;
-        private readonly int m_AtlasHeight;
 
-        public TilesetLoader(SuperTileset tileset, TiledAssetImporter importer, bool useAtlas, int atlasWidth, int atlasHeight)
+        public const string SpriteNameRoot = "st2u_";
+
+        // Make this an ugly name that shouldn't collide with sprites named by the user
+        internal static string RectToSpriteName(Rect rect)
         {
-            m_TilesetScript = tileset;
+            return $"{SpriteNameRoot}x{rect.x}y{rect.y}-w{rect.width}h{rect.height}";
+        }
+
+        public TilesetLoader(SuperTileset tileset, TiledAssetImporter importer)
+        {
+            m_SuperTileset = tileset;
             m_Importer = importer;
-            m_UseSpriteAtlas = useAtlas;
-            m_AtlasWidth = atlasWidth;
-            m_AtlasHeight = atlasHeight;
         }
 
         public bool LoadFromXml(XElement xTileset)
@@ -32,50 +32,48 @@ namespace SuperTiled2Unity.Editor
             // There are attributes we *must* have that older versions of Tiled did not serialize
             if (xTileset.Attribute("tilecount") == null || xTileset.Attribute("columns") == null)
             {
-                m_Importer.ReportError("Old file format detected. You must save this file with a newer verion of Tiled.");
-                m_TilesetScript.m_HasErrors = true;
+                m_Importer.ReportGenericError("Old Tiled file format detected. You must save this file with a newer verion of Tiled (At least 0.15).");
                 return false;
             }
 
             ProcessAttributes(xTileset);
             BuildTileset(xTileset);
             ProcessTileElements(xTileset);
-
             return true;
         }
 
         private void ProcessAttributes(XElement xTileset)
         {
-            m_TilesetScript.name = xTileset.GetAttributeAs<string>("name");
-            m_TilesetScript.m_TileWidth = xTileset.GetAttributeAs<int>("tilewidth");
-            m_TilesetScript.m_TileHeight = xTileset.GetAttributeAs<int>("tileheight");
-            m_TilesetScript.m_Spacing = xTileset.GetAttributeAs<int>("spacing");
-            m_TilesetScript.m_Margin = xTileset.GetAttributeAs<int>("margin");
-            m_TilesetScript.m_TileCount = xTileset.GetAttributeAs<int>("tilecount");
-            m_TilesetScript.m_TileColumns = xTileset.GetAttributeAs<int>("columns");
-            m_TilesetScript.m_ObjectAlignment = xTileset.GetAttributeAs<ObjectAlignment>("objectalignment", ObjectAlignment.Unspecified);
-            m_TilesetScript.m_TileRenderSize = xTileset.GetAttributeAs<TileRenderSize>("tilerendersize", TileRenderSize.Tile);
-            m_TilesetScript.m_FillMode = xTileset.GetAttributeAs<FillMode>("fillmode", FillMode.Stretch);
+            m_SuperTileset.name = xTileset.GetAttributeAs<string>("name");
+            m_SuperTileset.m_TileWidth = xTileset.GetAttributeAs<int>("tilewidth");
+            m_SuperTileset.m_TileHeight = xTileset.GetAttributeAs<int>("tileheight");
+            m_SuperTileset.m_Spacing = xTileset.GetAttributeAs<int>("spacing");
+            m_SuperTileset.m_Margin = xTileset.GetAttributeAs<int>("margin");
+            m_SuperTileset.m_TileCount = xTileset.GetAttributeAs<int>("tilecount");
+            m_SuperTileset.m_TileColumns = xTileset.GetAttributeAs<int>("columns");
+            m_SuperTileset.m_ObjectAlignment = xTileset.GetAttributeAs<ObjectAlignment>("objectalignment", ObjectAlignment.Unspecified);
+            m_SuperTileset.m_TileRenderSize = xTileset.GetAttributeAs<TileRenderSize>("tilerendersize", TileRenderSize.Tile);
+            m_SuperTileset.m_FillMode = xTileset.GetAttributeAs<FillMode>("fillmode", FillMode.Stretch);
 
             var xTileOffset = xTileset.Element("tileoffset");
             if (xTileOffset != null)
             {
                 var x = xTileOffset.GetAttributeAs<float>("x", 0.0f);
                 var y = xTileOffset.GetAttributeAs<float>("y", 0.0f);
-                m_TilesetScript.m_TileOffset = new Vector2(x, y);
+                m_SuperTileset.m_TileOffset = new Vector2(x, y);
             }
 
             var xGrid = xTileset.Element("grid");
             if (xGrid != null)
             {
-                m_TilesetScript.m_GridOrientation = xGrid.GetAttributeAs<GridOrientation>("orientation");
+                m_SuperTileset.m_GridOrientation = xGrid.GetAttributeAs<GridOrientation>("orientation");
 
                 var w = xGrid.GetAttributeAs<float>("width", 0.0f);
                 var h = xGrid.GetAttributeAs<float>("height", 0.0f);
-                m_TilesetScript.m_GridSize = new Vector2(w, h);
+                m_SuperTileset.m_GridSize = new Vector2(w, h);
             }
 
-            m_TilesetScript.m_CustomProperties = CustomPropertyLoader.LoadCustomPropertyList(xTileset.Element("properties"));
+            m_SuperTileset.m_CustomProperties = CustomPropertyLoader.LoadCustomPropertyList(xTileset.Element("properties"));
         }
 
         private void BuildTileset(XElement xTileset)
@@ -84,97 +82,91 @@ namespace SuperTiled2Unity.Editor
             // There are two ways that our collection of tiles can be created from images
             // 1) From one image broken down into parts (many tiles in one image)
             // 2) From a collection of images (one tile per image)
-
-            var atlas = new AtlasBuilder(m_Importer, m_UseSpriteAtlas, (int)m_AtlasWidth, (int)m_AtlasHeight, m_TilesetScript);
-
             if (xTileset.Element("image") != null)
             {
-                BuildTilesetFromImage(xTileset, atlas);
+                BuildTilesetFromImage(xTileset);
             }
             else
             {
-                BuildTilesetFromCollection(xTileset, atlas);
+                BuildTilesetFromCollection(xTileset);
             }
-
-            // We're done collecting all the tile data. Build our atlas.
-            // (Note that we call build even if we are not using texture atlases)
-            atlas.Build(m_Importer.PixelsPerUnit);
         }
 
-        private void BuildTilesetFromImage(XElement xTileset, AtlasBuilder atlas)
+        private void BuildTilesetFromImage(XElement xTileset)
         {
-            m_TilesetScript.m_IsImageCollection = false;
+            m_SuperTileset.m_IsImageCollection = false;
 
             XElement xImage = xTileset.Element("image");
-            string textureAssetPath = xImage.GetAttributeAs<string>("source");
+            string textureLocalPath = xImage.GetAttributeAs<string>("source");
             int textureWidth = xImage.GetAttributeAs<int>("width");
             int textureHeight = xImage.GetAttributeAs<int>("height");
 
+            bool forceErrorTiles = false;
+
             // Load the texture. We will make sprites and tiles out of this image.
-            var tex2d = m_Importer.RequestAssetAtPath<Texture2D>(textureAssetPath);
+            var tex2d = m_Importer.RequestDependencyAssetAtPath<Texture2D>(textureLocalPath);
+            var textureAssetPath = string.Empty;
+            var sprites = new Dictionary<(Rect, Vector2), Sprite>();
+
             if (tex2d == null)
             {
-                // Texture was not found so report the error to the importer UI and bail
-                m_Importer.ReportError("Missing texture asset: {0}", textureAssetPath);
-                m_TilesetScript.m_HasErrors = true;
-                return;
+                m_Importer.ReportMissingDependency(textureLocalPath);
+                forceErrorTiles = true;
             }
-
-            // This is annoying but a tileset may have recently changed but Tiled hasn't been updated on the status yet
-            var texAssetPath = AssetDatabase.GetAssetPath(tex2d);
-            var texFullPath = Path.GetFullPath(texAssetPath);
-            var imgHeaderDims = ImageHeader.GetDimensions(texFullPath);
-            if (imgHeaderDims.x != textureWidth || imgHeaderDims.y != textureHeight)
+            else
             {
-                // Tileset needs to be resaved in Tiled
-                m_Importer.ReportError("Mismatching width/height detected. Tileset = ({0}, {1}), image = {2}. This may happen when a tileset image has been resized. Open map and tileset in Tiled Map Editor and resave.", textureWidth, textureHeight, imgHeaderDims);
-                m_TilesetScript.m_HasErrors = true;
-                return;
+                textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
+
+                // The pixels per unit of the sprites must match the pixels per unit of the tileset
+                sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().SafeToDictionary(s => (s.rect, s.pivot), s => s);
+                if (sprites.Any())
+                {
+                    var firstSprite = sprites.First().Value;
+                    if (firstSprite.pixelsPerUnit != m_SuperTileset.m_PixelsPerUnit)
+                    {
+                        m_Importer.ReportWrongPixelsPerUnit(textureAssetPath, firstSprite.pixelsPerUnit, m_SuperTileset.m_PixelsPerUnit);
+                        forceErrorTiles = true;
+                    }
+                }
             }
 
-            if (tex2d.width < textureWidth || tex2d.height < textureHeight)
-            {
-                // Texture was not imported into Unity correctly
-                var max = Mathf.Max(textureWidth, textureHeight);
-                m_Importer.ReportError("Texture was imported at a smaller size. Make sure 'Max Size' on '{0}' is at least '{1}'", textureAssetPath, max);
-                m_TilesetScript.m_HasErrors = true;
-                return;
-            }
-
-            for (int i = 0; i < m_TilesetScript.m_TileCount; i++)
+            for (int i = 0; i < m_SuperTileset.m_TileCount; i++)
             {
                 // Get grid x,y coords
-                int x = i % m_TilesetScript.m_TileColumns;
-                int y = i / m_TilesetScript.m_TileColumns;
+                int x = i % m_SuperTileset.m_TileColumns;
+                int y = i / m_SuperTileset.m_TileColumns;
+
+                int tileWidth = m_SuperTileset.m_TileWidth;
+                int tileHeight = m_SuperTileset.m_TileHeight;
 
                 // Get x source on texture
-                int srcx = x * m_TilesetScript.m_TileWidth;
-                srcx += x * m_TilesetScript.m_Spacing;
-                srcx += m_TilesetScript.m_Margin;
+                int srcx = x * tileWidth;
+                srcx += x * m_SuperTileset.m_Spacing;
+                srcx += m_SuperTileset.m_Margin;
 
                 // Get y source on texture
-                int srcy = y * m_TilesetScript.m_TileHeight;
-                srcy += y * m_TilesetScript.m_Spacing;
-                srcy += m_TilesetScript.m_Margin;
+                int srcy = y * tileHeight;
+                srcy += y * m_SuperTileset.m_Spacing;
+                srcy += m_SuperTileset.m_Margin;
 
                 // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
-                srcy = (textureHeight - srcy) - m_TilesetScript.m_TileHeight;
+                srcy = (textureHeight - srcy) - tileHeight;
 
-                if (srcy < 0)
+                if (forceErrorTiles || !TryAddTile(i, srcx, srcy, tileWidth, tileHeight, sprites))
                 {
-                    // This is an edge condition in Tiled if a tileset's texture may have been resized
-                    break;
-                }
+                    if (!string.IsNullOrEmpty(textureAssetPath))
+                    {
+                        m_Importer.ReportMissingSprite(textureAssetPath, i, srcx, srcy, tileWidth, tileHeight);
+                    }
 
-                // Add the tile to our atlas
-                Rect rcSource = new Rect(srcx, srcy, m_TilesetScript.m_TileWidth, m_TilesetScript.m_TileHeight);
-                atlas.AddTile(i, tex2d, rcSource);
+                    AddErrorTile(i, NamedColors.HotPink, tileWidth, tileHeight);
+                }
             }
         }
 
-        private void BuildTilesetFromCollection(XElement xTileset, AtlasBuilder atlas)
+        private void BuildTilesetFromCollection(XElement xTileset)
         {
-            m_TilesetScript.m_IsImageCollection = true;
+            m_SuperTileset.m_IsImageCollection = true;
 
             foreach (var xTile in xTileset.Elements("tile"))
             {
@@ -183,27 +175,37 @@ namespace SuperTiled2Unity.Editor
 
                 if (xImage != null)
                 {
-                    string textureAssetPath = xImage.GetAttributeAs<string>("source");
+                    string textureLocalPath = xImage.GetAttributeAs<string>("source");
                     int texture_w = xImage.GetAttributeAs<int>("width");
                     int texture_h = xImage.GetAttributeAs<int>("height");
 
+                    bool forceErrorTiles = false;
+
+                    var tex2d = m_Importer.RequestDependencyAssetAtPath<Texture2D>(textureLocalPath);
+                    var textureAssetPath = string.Empty;
+                    var sprites = new Dictionary<(Rect, Vector2), Sprite>();
+
                     // Load the texture. We will make sprites and tiles out of this image.
-                    var tex2d = m_Importer.RequestAssetAtPath<Texture2D>(textureAssetPath);
                     if (tex2d == null)
                     {
-                        // Texture was not found yet so report the error to the importer UI and bail
-                        m_Importer.ReportError("Missing texture asset for tile {0}: {1}", tileIndex, textureAssetPath);
-                        m_TilesetScript.m_HasErrors = true;
-                        return;
+                        m_Importer.ReportMissingDependency(textureLocalPath);
+                        forceErrorTiles = true;
                     }
-
-                    if (tex2d.width < texture_w || tex2d.height < texture_h)
+                    else
                     {
-                        // Texture was not imported into Unity correctly
-                        var max = Mathf.Max(texture_w, texture_h);
-                        m_Importer.ReportError("Texture was imported at a smaller size. Make sure 'Max Size' on '{0}' is at least '{1}'", textureAssetPath, max);
-                        m_TilesetScript.m_HasErrors = true;
-                        return;
+                        textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
+
+                        // The pixels per unit of the sprites must match the pixels per unit of the tileset
+                        sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().SafeToDictionary(s => (s.rect, s.pivot), s => s);
+                        if (sprites.Any())
+                        {
+                            var firstSprite = sprites.First().Value;
+                            if (firstSprite.pixelsPerUnit != m_SuperTileset.m_PixelsPerUnit)
+                            {
+                                m_Importer.ReportWrongPixelsPerUnit(textureAssetPath, firstSprite.pixelsPerUnit, m_SuperTileset.m_PixelsPerUnit);
+                                forceErrorTiles = true;
+                            }
+                        }
                     }
 
                     int tile_x = xTile.GetAttributeAs<int>("x", 0);
@@ -211,11 +213,63 @@ namespace SuperTiled2Unity.Editor
                     int tile_w = xTile.GetAttributeAs<int>("width", texture_w);
                     int tile_h = xTile.GetAttributeAs<int>("height", texture_h);
 
-                    var rcSource = new Rect(tile_x, tile_y, tile_w, tile_h);
-                    atlas.AddTile(tileIndex, tex2d, rcSource);
+                    if (forceErrorTiles || !TryAddTile(tileIndex, tile_x, tile_y, tile_w, tile_h, sprites))
+                    {
+                        if (!string.IsNullOrEmpty(textureAssetPath))
+                        {
+                            m_Importer.ReportMissingSprite(textureAssetPath, tileIndex, tile_x, tile_y, tile_w, tile_h);
+                        }
+
+                        AddErrorTile(tileIndex, NamedColors.DeepPink, tile_w, tile_h);
+                    }
                 }
             }
         }
+
+        private bool TryAddTile(int tileId, int x, int y, int width, int height, Dictionary<(Rect, Vector2), Sprite> sprites)
+        {
+            var rect = new Rect(x, y, width, height);
+            if (sprites.TryGetValue((rect, Vector2.zero), out Sprite tileSprite))
+            {
+                // Create the tile that uses the sprite
+                var tile = SuperTile.CreateSuperTile();
+                tile.m_TileId = tileId;
+                tile.name = tileSprite.name;
+                tile.hideFlags = HideFlags.HideInHierarchy;
+                tile.m_Sprite = tileSprite;
+                tile.m_Width = rect.width;
+                tile.m_Height = rect.height;
+                tile.m_TileOffsetX = m_SuperTileset.m_TileOffset.x;
+                tile.m_TileOffsetY = m_SuperTileset.m_TileOffset.y;
+                tile.m_ObjectAlignment = m_SuperTileset.m_ObjectAlignment;
+                tile.m_TileRenderSize = m_SuperTileset.m_TileRenderSize;
+                tile.m_FillMode = m_SuperTileset.m_FillMode;
+
+                if (m_Importer is TsxAssetImporter tsxAssetImporter)
+                {
+                    tile.m_ColliderType = tsxAssetImporter.m_ColliderType;
+                }
+
+                m_SuperTileset.m_Tiles.Add(tile);
+                m_Importer.SuperImportContext.AddObjectToAsset($"Tile{tileId}_spriteName", tile);
+                return true;
+            }
+
+            return false;
+        }
+
+        private void AddErrorTile(int tileId, Color tint, int width, int height)
+        {
+            BadTileSpriteProvider.instance.CreateSpriteAndTile(tileId, tint, width, height, m_SuperTileset, out Sprite sprite, out SuperBadTile tile);
+
+            sprite.hideFlags = HideFlags.HideInHierarchy;
+            tile.hideFlags = HideFlags.HideInHierarchy;
+
+            m_SuperTileset.m_Tiles.Add(tile);
+            m_Importer.SuperImportContext.AddObjectToAsset(sprite.name, sprite);
+            m_Importer.SuperImportContext.AddObjectToAsset(tile.name, tile);
+        }
+
 
         private void ProcessTileElements(XElement xTileset)
         {
@@ -230,8 +284,7 @@ namespace SuperTiled2Unity.Editor
         {
             int index = xTile.GetAttributeAs<int>("id", -1);
 
-            SuperTile tile;
-            if (m_TilesetScript.TryGetTile(index, out tile))
+            if (m_SuperTileset.TryGetTile(index, out SuperTile tile))
             {
                 // A tile may have a class associated with it
                 tile.m_Type = xTile.GetAttributeAs("class", "");
@@ -273,8 +326,7 @@ namespace SuperTiled2Unity.Editor
                 var frameId = xFrame.GetAttributeAs<int>("tileid");
                 var frameDuration = xFrame.GetAttributeAs<int>("duration") / 1000.0f;
 
-                SuperTile frame;
-                if (m_TilesetScript.TryGetTile(frameId, out frame))
+                if (m_SuperTileset.TryGetTile(frameId, out SuperTile frame))
                 {
                     animations.AddFrames(frame.m_Sprite, frameDuration);
                 }
@@ -350,13 +402,11 @@ namespace SuperTiled2Unity.Editor
                     {
                         if (collision.m_Size.x == 0)
                         {
-                            m_Importer.ReportError("Invalid ellipse (Tile ID ='{0}') in tileset '{1}' has zero width", tile.m_TileId, m_TilesetScript.name);
-                            m_TilesetScript.m_HasErrors = true;
+                            m_Importer.ReportGenericError($"Invalid ellipse (Tile ID ='{tile.m_TileId}') in tileset '{m_SuperTileset.name}' has zero width");
                         }
                         else if (collision.m_Size.y == 0)
                         {
-                            m_Importer.ReportError("Invalid ellipse (Tile ID ='{0}') in tileset '{1}' has zero height", tile.m_TileId, m_TilesetScript.name);
-                            m_TilesetScript.m_HasErrors = true;
+                            m_Importer.ReportGenericError($"Invalid ellipse (Tile ID ='{tile.m_TileId}') in tileset '{m_SuperTileset.name}' has zero height");
                         }
                         else
                         {
@@ -372,13 +422,11 @@ namespace SuperTiled2Unity.Editor
                         // By default, objects are rectangles
                         if (collision.m_Size.x == 0)
                         {
-                            m_Importer.ReportError("Invalid rectangle (Tile ID ='{0}') in tileset '{1}' has zero width", tile.m_TileId, m_TilesetScript.name);
-                            m_TilesetScript.m_HasErrors = true;
+                            m_Importer.ReportGenericError($"Invalid rectangle (Tile ID ='{tile.m_TileId}') in tileset '{m_SuperTileset.name}' has zero width");
                         }
                         else if (collision.m_Size.y == 0)
                         {
-                            m_Importer.ReportError("Invalid rectangle (Tile ID ='{0}') in tileset '{1}' has zero height", tile.m_TileId, m_TilesetScript.name);
-                            m_TilesetScript.m_HasErrors = true;
+                            m_Importer.ReportGenericError($"Invalid rectangle (Tile ID ='{tile.m_TileId}') in tileset '{m_SuperTileset.name}' has zero height");
                         }
                         else
                         {
@@ -391,7 +439,7 @@ namespace SuperTiled2Unity.Editor
                     {
                         AssignCollisionObjectProperties(collision, tile);
 
-                        collision.RenderPoints(tile, m_TilesetScript.m_GridOrientation, m_TilesetScript.m_GridSize);
+                        collision.RenderPoints(tile, m_SuperTileset.m_GridOrientation, m_SuperTileset.m_GridSize);
                         tile.m_CollisionObjects.Add(collision);
                     }
                 }
@@ -447,7 +495,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             // Inherit property from the tileset
-            if (m_TilesetScript.m_CustomProperties.TryGetProperty(propertyName, out property))
+            if (m_SuperTileset.m_CustomProperties.TryGetProperty(propertyName, out property))
             {
                 return property;
             }

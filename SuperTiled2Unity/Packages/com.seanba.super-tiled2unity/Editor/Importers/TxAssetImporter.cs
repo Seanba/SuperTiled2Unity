@@ -48,27 +48,22 @@ namespace SuperTiled2Unity.Editor
             }
             else
             {
-                ReportError("Template file does not contain an object element.");
+                ReportGenericError("Template file does not contain an object element.");
             }
         }
 
         private void ProcessTileset(XElement xTileset)
         {
+            m_GlobalTileDatabase = new GlobalTileDatabase();
+
             var firstId = xTileset.GetAttributeAs<int>("firstgid");
             var source = xTileset.GetAttributeAs<string>("source");
 
             // Load the tileset and process the tiles inside
-            var tileset = RequestAssetAtPath<SuperTileset>(source);
-
-            if (tileset == null)
-            {
-                // Tileset is either missing or is not yet ready
-                ReportError("Missing tileset asset: {0}", this.assetPath);
-            }
-            else
+            var tileset = RequestDependencyAssetAtPath<SuperTileset>(source);
+            if (tileset != null)
             {
                 // Register all the tiles with the tile database for this map
-                m_GlobalTileDatabase = new GlobalTileDatabase();
                 m_GlobalTileDatabase.RegisterTileset(firstId, tileset);
             }
         }
@@ -91,14 +86,13 @@ namespace SuperTiled2Unity.Editor
                 var tileId = new TileIdMath(gId);
 
                 // Store a reference to the tile
-                SuperTile tile;
-                if (m_GlobalTileDatabase.TryGetTile(tileId.JustTileId, out tile))
+                if (m_GlobalTileDatabase.TryGetTile(tileId.JustTileId, out SuperTile tile))
                 {
                     m_ObjectTemplate.m_Tile = tile;
                 }
                 else
                 {
-                    ReportError("Could not find tile '{0}' in tileset", tileId.JustTileId);
+                    ReportGenericError($"Could not find tile '{tileId.JustTileId}' in tileset");
                 }
             }
         }

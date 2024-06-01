@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.2.0] - 2024-06-01
+- No longer creating and managing embedded sprite atlases. This allows uses to put tile sheets into sprite altases of their choosing. ST2U now uses the original textures to make tiles.
+- Improved error and warning reporting
+- ST2U now uses "error tiles" when something goes wrong with importing textures or tilesets.
+- Bug fix: Packaged zip is now compatible with Linux
+
 ## [2.1.1] - 2023-09-14
 - Bug fix: Compile errors in Collider2DExtensions.cs fixed for Unity 2022.3.9
 

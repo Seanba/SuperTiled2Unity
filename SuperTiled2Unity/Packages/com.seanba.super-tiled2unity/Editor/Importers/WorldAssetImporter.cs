@@ -60,7 +60,7 @@ namespace SuperTiled2Unity.Editor
             SuperImportContext.AddObjectToAsset("_world", goWorld, icon);
             SuperImportContext.SetMainObject(goWorld);
 
-            goWorld.AddComponent<SuperWorld>();
+            var superWorld = goWorld.AddComponent<SuperWorld>();
 
             try
             {
@@ -68,8 +68,11 @@ namespace SuperTiled2Unity.Editor
             }
             catch (Exception ex)
             {
-                ReportError("Unknown error importing World file: {0}\n{1}\n{2}", assetPath, ex.Message, ex.StackTrace);
+                ReportGenericError($"Unknown error importing World file: {assetPath}\n{ex.Message}\n{ex.StackTrace}");
             }
+
+            // Were any import errors captured along the way?
+            superWorld.m_ImportErrors = ImportErrors;
         }
 
         private void ParseJsonAsset(GameObject goWorld)
@@ -83,7 +86,7 @@ namespace SuperTiled2Unity.Editor
             }
             catch (Exception ex)
             {
-                ReportError("World file has broken JSON syntax.\n{0}", ex.Message);
+                ReportGenericError($"World file has broken JSON syntax.\n{ex.Message}");
                 return;
             }
 
@@ -102,7 +105,7 @@ namespace SuperTiled2Unity.Editor
         private void InstantiateMap(GameObject goWorld, JsonMap jsonMap)
         {
             var path = jsonMap.fileName;
-            var superMap = RequestAssetAtPath<SuperMap>(path);
+            var superMap = RequestDependencyAssetAtPath<SuperMap>(path);
 
             if (superMap != null)
             {

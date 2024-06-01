@@ -13,14 +13,10 @@ try
     Write-Host Packaging Super Tiled2Unity version $version
     Write-Host $output
 
-    $compress = @{
-        Path = "$package_dir/*"
-        CompressionLevel = "Fastest"
-        DestinationPath = $output
-    }
-
-    Compress-Archive @compress -Force
-    Write-Host "Done compressing '$output'"
+    # Note: Zip files made with Compress-Archive are not compatible with Linux
+    # Use 7-Zip instead
+    & "C:\Program Files\7-Zip\7z.exe" a -tzip -o".\" "$output" "$package_dir\*" -aoa
+    Write-Host "Done zipping '$output'"
 }
 finally
 {

@@ -17,14 +17,26 @@ namespace SuperTiled2Unity.Editor
         protected abstract string EditorLabel { get; }
         protected abstract string EditorDefinition { get; }
 
+        public void ReimportAsset()
+        {
+#if UNITY_2022_2_OR_NEWER
+            SaveChanges();
+#else
+            ApplyAndImport();
+#endif
+        }
+
         public override sealed void OnInspectorGUI()
         {
             if (assetTarget != null)
             {
-                // If we have importer errors then they should be front and center
-                DisplayMissingFileErrors();
-                DisplayErrorsAndWarnings();
-                DisplayTagManagerErrors();
+                // Do we have any import errors to report?
+                var importErrors = AssetDatabase.LoadAssetAtPath<ImportErrors>(TargetAssetImporter.assetPath);
+                if (importErrors != null)
+                {
+                    ImportErrorsEditor.ImportErrorsGui(this, importErrors);
+                    EditorGUILayout.Separator();
+                }
 
                 EditorGUILayout.LabelField(EditorLabel, EditorStyles.boldLabel);
                 EditorGUILayout.HelpBox(EditorDefinition, MessageType.None);
@@ -87,177 +99,6 @@ namespace SuperTiled2Unity.Editor
         }
 
         protected abstract void InternalOnInspectorGUI();
-
-        private void DisplayMissingFileErrors()
-        {
-            using (new GuiScopedBackgroundColor(Color.magenta))
-            {
-                if (TargetAssetImporter.MissingFiles.Any())
-                {
-                    var asset = Path.GetFileName(TargetAssetImporter.assetPath);
-                    EditorGUILayout.LabelField("Missing or misplaced assets!", EditorStyles.boldLabel);
-
-                    var msg = new StringBuilder();
-
-                    msg.AppendLine(TargetAssetImporter.GetReportHeader());
-                    msg.AppendLine("This asset is dependent on other files that either cannot be found or they failed to be imported.");
-                    msg.AppendLine("Note that all Tiled assets must be imported to Unity in folder locations that keep their relative paths intact.");
-                    msg.AppendLine("Reimport this asset once fixes are made.\n");
-                    msg.AppendFormat("Tip: Try opening {0} in Tiled to resolve location of missing assets.\n\n", asset);
-
-                    msg.AppendLine(string.Join("\n", TargetAssetImporter.MissingFiles.ToArray()));
-
-                    EditorGUILayout.HelpBox(msg.ToString(), MessageType.Error);
-
-                    using (new GUILayout.HorizontalScope())
-                    {
-                        if (GUILayout.Button("Copy Message to Clipboard"))
-                        {
-                            msg.ToString().CopyToClipboard();
-                        }
-
-                        if (GUILayout.Button("Reimport"))
-                        {
-                            InternalSaveChanges();
-                        }
-                    }
-
-                    EditorGUILayout.Separator();
-                }
-            }
-        }
-
-        private void DisplayErrorsAndWarnings()
-        {
-            var asset = Path.GetFileName(TargetAssetImporter.assetPath);
-
-            using (new GuiScopedBackgroundColor(Color.red))
-            {
-                if (TargetAssetImporter.Errors.Any())
-                {
-                    EditorGUILayout.LabelField("There were errors importing " + asset, EditorStyles.boldLabel);
-
-                    var msg = new StringBuilder();
-                    msg.AppendLine(TargetAssetImporter.GetReportHeader());
-                    msg.AppendLine(string.Join("\n", TargetAssetImporter.Errors.Take(10).ToArray()));
-
-                    EditorGUILayout.HelpBox(msg.ToString(), MessageType.Error);
-
-                    if (GUILayout.Button("Copy Error Message to Clipboard"))
-                    {
-                        msg.ToString().CopyToClipboard();
-                    }
-
-                    EditorGUILayout.Separator();
-                }
-            }
-
-            using (new GuiScopedBackgroundColor(Color.yellow))
-            {
-                if (TargetAssetImporter.Warnings.Any())
-                {
-                    EditorGUILayout.LabelField("There were warnings importing " + asset, EditorStyles.boldLabel);
-                    var msg = string.Join("\n\n", TargetAssetImporter.Warnings.Take(10).ToArray());
-                    EditorGUILayout.HelpBox(msg, MessageType.Warning);
-
-                    if (GUILayout.Button("Copy Warning Message to Clipboard"))
-                    {
-                        msg.ToString().CopyToClipboard();
-                    }
-
-                    EditorGUILayout.Separator();
-                }
-            }
-        }
-
-        private void DisplayTagManagerErrors()
-        {
-            bool missingSortingLayers = TargetAssetImporter.MissingSortingLayers.Any();
-            bool missingLayers = TargetAssetImporter.MissingLayers.Any();
-            bool missingTags = TargetAssetImporter.MissingTags.Any();
-
-            if (!missingSortingLayers && !missingLayers && !missingTags)
-            {
-                return;
-            }
-
-            EditorGUILayout.TextArea("", GUI.skin.horizontalSlider);
-
-            using (new GuiScopedBackgroundColor(Color.yellow))
-            {
-                if (missingSortingLayers)
-                {
-                    EditorGUILayout.LabelField("Missing Sorting Layers!", EditorStyles.boldLabel);
-
-                    using (new GuiScopedIndent())
-                    {
-                        StringBuilder message = new StringBuilder("Sorting Layers are missing in your project settings. Open the Tag Manager, add these missing sorting layers, and reimport:");
-                        message.AppendLine();
-                        message.AppendLine();
-
-                        foreach (var layer in TargetAssetImporter.MissingSortingLayers)
-                        {
-                            message.AppendFormat("    {0}\n", layer);
-                        }
-
-                        EditorGUILayout.HelpBox(message.ToString(), MessageType.Warning);
-                    }
-                }
-
-                if (missingLayers)
-                {
-                    EditorGUILayout.LabelField("Missing Layers!", EditorStyles.boldLabel);
-
-                    using (new GuiScopedIndent())
-                    {
-                        StringBuilder message = new StringBuilder("Layers are missing in your project settings. Open the Tag Manager, add these missing layers, and reimport:");
-                        message.AppendLine();
-                        message.AppendLine();
-
-                        foreach (var layer in TargetAssetImporter.MissingLayers)
-                        {
-                            message.AppendFormat("    {0}\n", layer);
-                        }
-
-                        EditorGUILayout.HelpBox(message.ToString(), MessageType.Warning);
-                    }
-                }
-
-                if (missingTags)
-                {
-                    EditorGUILayout.LabelField("Missing Tags!", EditorStyles.boldLabel);
-
-                    using (new GuiScopedIndent())
-                    {
-                        StringBuilder message = new StringBuilder("Tags are missing in your project settings. Open the Tag Manager, add these missing tags, and reimport:");
-                        message.AppendLine();
-                        message.AppendLine();
-
-                        foreach (var tag in TargetAssetImporter.MissingTags)
-                        {
-                            message.AppendFormat("    {0}\n", tag);
-                        }
-
-                        EditorGUILayout.HelpBox(message.ToString(), MessageType.Warning);
-                    }
-                }
-            }
-
-            using (new GUILayout.HorizontalScope())
-            {
-                if (GUILayout.Button("Open Tag Manager"))
-                {
-                    SettingsService.OpenProjectSettings("Project/Tags and Layers");
-                }
-
-                if (GUILayout.Button("Reimport"))
-                {
-                    InternalSaveChanges();
-                }
-            }
-
-            EditorGUILayout.TextArea("", GUI.skin.horizontalSlider);
-        }
 
         private void DisplayDependencies()
         {
@@ -377,15 +218,6 @@ namespace SuperTiled2Unity.Editor
             // This is unfortunate but necessary under re-import edge conditions
             Selection.objects = new UnityEngine.Object[0];
             GUIUtility.ExitGUI();
-        }
-
-        private void InternalSaveChanges()
-        {
-#if UNITY_2022_2_OR_NEWER
-            SaveChanges();
-#else
-            ApplyAndImport();
-#endif
         }
     }
 }

@@ -190,17 +190,16 @@ namespace SuperTiled2Unity.Editor
             var template = xObject.GetAttributeAs("template", "");
             if (!string.IsNullOrEmpty(template))
             {
-                var asset = Importer.RequestAssetAtPath<ObjectTemplate>(template);
+                var asset = Importer.RequestDependencyAssetAtPath<ObjectTemplate>(template);
                 if (asset == null)
                 {
-                    Importer.ReportError("Template file '{0}' was not found.", template);
                     return;
                 }
 
                 tile = asset.m_Tile;
                 if (tile == null)
                 {
-                    Importer.ReportError("Missing tile '{0}' from template '{1}' on tile object '{2}'", justTileId, template, superObject.name);
+                    Importer.ReportGenericError($"Missing tile '{justTileId}' from template '{template}' on tile object '{superObject.name}'");
                     return;
                 }
             }
@@ -212,7 +211,7 @@ namespace SuperTiled2Unity.Editor
 
                 if (tile == null)
                 {
-                    Importer.ReportError("Missing tile '{0}' on tile object '{1}'", justTileId, template, superObject.name);
+                    Importer.ReportGenericError($"Missing tile '{justTileId}' on tile object '{superObject.name}'");
                     return;
                 }
             }

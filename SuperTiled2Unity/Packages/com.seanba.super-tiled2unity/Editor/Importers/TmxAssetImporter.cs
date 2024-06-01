@@ -14,6 +14,10 @@ namespace SuperTiled2Unity.Editor
     [ScriptedImporter(ImporterConstants.MapVersion, ImporterConstants.MapExtension, ImporterConstants.MapImportOrder)]
     public partial class TmxAssetImporter : TiledAssetImporter
     {
+        public const string TilesAsObjectsSerializedName = nameof(m_TilesAsObjects);
+        public const string SortingModeSerializedName = nameof(m_SortingMode);
+        public const string CustomImporterClassNameSerializedName = nameof(m_CustomImporterClassName);
+
         private SuperMap m_MapComponent;
         private Grid m_GridComponent;
 
@@ -25,15 +29,15 @@ namespace SuperTiled2Unity.Editor
 
         [SerializeField]
         private bool m_TilesAsObjects = false;
-        public bool TilesAsObjects { get { return m_TilesAsObjects; } }
+        public bool TilesAsObjects => m_TilesAsObjects;
 
         [SerializeField]
         private SortingMode m_SortingMode = SortingMode.Stacked;
-        public SortingMode SortingMode { get { return m_SortingMode; } }
+        public SortingMode SortingMode => m_SortingMode;
 
         [SerializeField]
         private bool m_IsIsometric = false;
-        public bool IsIsometric { get { return m_IsIsometric; } }
+        public bool IsIsometric => m_IsIsometric;
 
         [SerializeField]
         private string m_CustomImporterClassName = string.Empty;
@@ -64,8 +68,7 @@ namespace SuperTiled2Unity.Editor
                 // Early out if Zstd compression is used. This simply isn't supported by Unity.
                 if (doc.Descendants("data").Where(x => ((string)x.Attribute("compression")) == "zstd").Count() > 0)
                 {
-                    ReportError("Unity does not support Zstandard compression.");
-                    ReportError("Select a different 'Tile Layer Format' in your map settings in Tiled and resave.");
+                    ReportGenericError("Unity does not support Zstandard compression.\nSelect a different 'Tile Layer Format' in your map settings in Tiled and resave.");
                     return;
                 }
 
@@ -75,6 +78,9 @@ namespace SuperTiled2Unity.Editor
 
             DoPrefabReplacements();
             DoCustomImporting();
+
+            // Were any import errors captured along the way?
+            m_MapComponent.m_ImportErrors = ImportErrors;
         }
 
         private void ProcessMap(XElement xMap)
@@ -286,32 +292,19 @@ namespace SuperTiled2Unity.Editor
             // JSON customized assets are not supported as Unity has the *.json extension reserved
             if (string.Equals(Path.GetExtension(source), ".json", StringComparison.OrdinalIgnoreCase))
             {
-                ReportError("JSON tilesets are not supported by Unity. Use TSX files instead. Tileset: {0}", source);
+                ReportGenericError($"JSON tilesets are not supported by Unity. Use TSX files instead. Tileset: {source}");
                 return false;
             }
 
             // Load the tileset and process the tiles inside
-            var tileset = RequestAssetAtPath<SuperTileset>(source);
-
+            var tileset = RequestDependencyAssetAtPath<SuperTileset>(source);
             if (tileset == null)
             {
-                // Tileset is either missing or is not yet ready
-                ReportError("Missing tileset asset: {0}", source);
+                // Tileset is missing or was not imported properly
                 return false;
             }
             else
             {
-                // Warn the user of mismatching pixels per units
-                if (PixelsPerUnit != tileset.m_PixelsPerUnit)
-                {
-                    ReportWarning("Pixels Per Unit mismatch between map ({0}) and tileset '{1}' ({2})", PixelsPerUnit, source, tileset.m_PixelsPerUnit);
-                }
-
-                if (tileset.m_HasErrors)
-                {
-                    ReportError("Errors detected in tileset '{0}'. Check the tileset inspector for more details. Your map may be broken until these are fixed.", source);
-                }
-
                 // Register all the tiles with the tile database for this map
                 m_GlobalTileDatabase.RegisterTileset(firstId, tileset);
             }
@@ -327,19 +320,16 @@ namespace SuperTiled2Unity.Editor
             var tileset = ScriptableObject.CreateInstance<SuperTileset>();
             tileset.m_IsInternal = true;
             tileset.name = name;
+            tileset.m_PixelsPerUnit = PixelsPerUnit;
             m_InternalTilesets.Add(tileset);
 
             string assetName = string.Format("_TilesetScriptObjectInternal_{0}", m_InternalTilesets.Count);
             SuperImportContext.AddObjectToAsset(assetName, tileset);
 
-            // In the case of internal tilesets, only use an atlas if it will help with seams
-            bool useAtlas = xTileset.Element("image") != null;
-            var loader = new TilesetLoader(tileset, this, useAtlas, 2048, 2048);
-
+            var loader = new TilesetLoader(tileset, this);
             if (loader.LoadFromXml(xTileset))
             {
                 m_GlobalTileDatabase.RegisterTileset(firstId, tileset);
-                ReportWarning("Tileset '{0}' is an embedded tileset. Exported tilesets are preferred.", tileset.name);
                 return true;
             }
 
@@ -395,6 +385,39 @@ namespace SuperTiled2Unity.Editor
             foreach (var tilemap in goParent.GetComponentsInChildren<Tilemap>())
             {
                 tilemap.RefreshAllTiles();
+                CalculateChunkCullingBounds(tilemap);
+            }
+        }
+
+        private static void CalculateChunkCullingBounds(Tilemap tilemap)
+        {
+            // Each tilemap gameobject should have a tilemap renderer
+            // Set the chunk culling bounds of the renderer using the size of the largest sprite in the tilemap
+            var tilemapRenderer = tilemap.gameObject.GetComponent<TilemapRenderer>();
+            if (tilemapRenderer != null)
+            {
+                tilemapRenderer.detectChunkCullingBounds = TilemapRenderer.DetectChunkCullingBounds.Manual;
+                float maxWidth = 0;
+                float maxHeight = 0;
+
+                var allTiles = tilemap.GetTilesBlock(tilemap.cellBounds);
+                foreach (var tile in allTiles.OfType<SuperTile>())
+                {
+                    maxWidth = Mathf.Max(tile.m_Sprite.bounds.size.x, maxWidth);
+                    maxHeight = Mathf.Max(tile.m_Sprite.bounds.size.y, maxHeight);
+
+                    // Look out for animated tiles
+                    if (!tile.m_AnimationSprites.IsEmpty())
+                    {
+                        foreach (var sprite in tile.m_AnimationSprites)
+                        {
+                            maxWidth = Mathf.Max(sprite.bounds.size.x, maxWidth);
+                            maxHeight = Mathf.Max(sprite.bounds.size.y, maxHeight);
+                        }
+                    }
+                }
+
+                tilemapRenderer.chunkCullingBounds = new Vector3(maxWidth, maxHeight, 0);
             }
         }
 
@@ -461,7 +484,7 @@ namespace SuperTiled2Unity.Editor
 
                 if (type == null)
                 {
-                    ReportError("Custom Importer error. Class type '{0}' is missing.", m_CustomImporterClassName);
+                    ReportGenericError($"Custom Importer error. Class type '{m_CustomImporterClassName}' is missing.");
                     return;
                 }
 
@@ -487,7 +510,7 @@ namespace SuperTiled2Unity.Editor
             }
             catch (Exception e)
             {
-                ReportError("Error creating custom importer class. Message = '{0}'", e.Message);
+                ReportGenericError($"Error creating custom importer class. Message = '{e.Message}'\n{e.StackTrace}");
                 return;
             }
 
@@ -501,12 +524,12 @@ namespace SuperTiled2Unity.Editor
             }
             catch (CustomImporterException cie)
             {
-                ReportError("Custom Importer error: \n  Importer: {0}\n  Message: {1}", customImporter.GetType().Name, cie.Message);
+                ReportGenericError($"Custom Importer error: \n  Importer: {customImporter.GetType().Name}\n  Message: {cie.Message}");
                 Debug.LogErrorFormat("Custom Importer ({0}) exception: {1}", customImporter.GetType().Name, cie.Message);
             }
             catch (Exception e)
             {
-                ReportError("Custom importer '{0}' threw an exception. Message = '{1}', Stack:\n{2}", customImporter.GetType().Name, e.Message, e.StackTrace);
+                ReportGenericError($"Custom importer '{customImporter.GetType().Name}' threw an exception. Message = '{e.Message}', Stack:\n{e.StackTrace}");
                 Debug.LogErrorFormat("Custom importer general exception: {0}", e.Message);
             }
         }

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 050151f50f49c88428b22f5fdfbed9b3, type: 3}
+  m_Name: BadTileTextures
+  m_EditorClassIdentifier: 
+  m_Textures:
+  - {fileID: 2800000, guid: ca712c4c891c0cf46b952232e36416c1, type: 3}
+  - {fileID: 2800000, guid: dc3a3046af387194bb098815b68cd744, type: 3}
+  - {fileID: 2800000, guid: 5b982321c0b47c940b0368a0bb7bb2e3, type: 3}
+  - {fileID: 2800000, guid: 61e1ef0b70b79694598e593358b1992b, type: 3}
+  - {fileID: 2800000, guid: 4979b2c9a532e1642b8347a0edd3a63a, type: 3}
+  - {fileID: 2800000, guid: d4373ac0588568b459b58415a1081f13, type: 3}
+  - {fileID: 2800000, guid: 7d59d292c52f8b44580cc8d8360d16e0, type: 3}
+  - {fileID: 2800000, guid: 96a30657241ae064d875b236b27454da, type: 3}
+  - {fileID: 2800000, guid: 87e64a59e9b58eb4bb68dedd6ccfe547, type: 3}
+  - {fileID: 2800000, guid: ac1ec9e7af65e4e45923fd42327326db, type: 3}
+  - {fileID: 2800000, guid: 10679414c404ccc499ad2abe31eac35f, type: 3}
