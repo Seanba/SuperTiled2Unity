@@ -195,6 +195,7 @@ namespace SuperTiled2Unity.Editor
 
         private void ImportTiledFile(string path)
         {
+            // fixit - path is an asset path (not absolute)
             ProcessTiledFile(path);
 
             // Does the tiled file we've just imported require textures to have sprites in them?
@@ -233,14 +234,14 @@ namespace SuperTiled2Unity.Editor
 
             // Maps (tmx) and tilesets (tsx) may contain tiles and will instruct us on how a texture is to be cut up into sprites
             // We have to look by file extension and not by asset type because these files may not yet be imported
-            var tmxFiles = Directory.EnumerateFiles(Application.dataPath, "*.tmx", SearchOption.AllDirectories).ToList();
+            var tmxFiles = Directory.EnumerateFiles(Application.dataPath, "*.tmx", SearchOption.AllDirectories).ToList(); // fixit - returns absolute paths
             foreach (string file in tmxFiles)
             {
                 var path = file.SanitizePath();
                 instance.ProcessTiledFile(path);
             }
 
-            var tsxFiles = Directory.EnumerateFiles(Application.dataPath, "*.tsx", SearchOption.AllDirectories).ToList();
+            var tsxFiles = Directory.EnumerateFiles(Application.dataPath, "*.tsx", SearchOption.AllDirectories).ToList(); // fixit - returns absolute paths
             foreach (string file in tsxFiles)
             {
                 var path = file.SanitizePath();

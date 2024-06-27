@@ -16,11 +16,7 @@ MonoBehaviour:
   m_DefaultEdgesPerEllipse: 32
   m_AnimationFramerate: 20
   m_DefaultMaterial: {fileID: 0}
-  m_MaterialMatchings:
-  - m_LayerName: 
-    m_Material: {fileID: 0}
-  - m_LayerName: 
-    m_Material: {fileID: 0}
+  m_MaterialMatchings: []
   m_ObjectTypesXml: {fileID: 0}
   m_ParseXmlError: 
   m_CollisionGeometryType: 1

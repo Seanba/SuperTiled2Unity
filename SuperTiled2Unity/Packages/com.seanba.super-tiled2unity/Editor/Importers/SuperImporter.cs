@@ -21,9 +21,6 @@ namespace SuperTiled2Unity.Editor
             protected set => m_ImporterVersion = value;
         }
 
-        // Keep track of loaded database objects by type
-        private readonly Dictionary<KeyValuePair<string, Type>, UnityEngine.Object> m_CachedDatabase = new Dictionary<KeyValuePair<string, Type>, UnityEngine.Object>();
-
         // For tracking assets and dependencies imported by SuperTiled2Unity
         private SuperAsset m_SuperAsset;
 
@@ -34,7 +31,6 @@ namespace SuperTiled2Unity.Editor
 
         public override sealed void OnImportAsset(AssetImportContext ctx)
         {
-            m_CachedDatabase.Clear();
             m_SuperAsset = null;
             ImportErrors = null;
             AssetImportContext = ctx;
@@ -67,31 +63,23 @@ namespace SuperTiled2Unity.Editor
         {
             Assert.IsNotNull(m_SuperAsset, "Must be a SuperAsset type if we are requesting dependencies.");
 
-            // Is the asset in our cache?
-            path = path.SanitizePath();
-            var key = new KeyValuePair<string, Type>(path.ToLower(), typeof(T));
-            if (m_CachedDatabase.TryGetValue(key, out UnityEngine.Object cachedObject))
-            {
-                return cachedObject as T;
-            }
-
             // Asset is not in our cache so load it from the asset database
             string absPath;
-            if (Path.IsPathRooted(path))
+            if (Path.IsPathFullyQualified(path))
             {
-                // Rooted paths baked into Tiled files are not recommended but if they resolve to a Unity asset then so be it.
+                // Fully qualified (absolute) paths baked into Tiled files are not recommended but if they resolve to a Unity asset then so be it.
                 absPath = Path.GetFullPath(path);
             }
             else
             {
                 // Passed-in path should be relative to this asset
                 var thisAssetFolder = Path.GetDirectoryName(assetPath);
-                var combiedPath = Path.Combine(thisAssetFolder, path);
-                absPath = Path.GetFullPath(combiedPath);
+                var combinedPath = Path.Combine(thisAssetFolder, path);
+                absPath = Path.GetFullPath(combinedPath);
             }
 
             string requestedAssetPath = absPath;
-            if (!AssetPath.TryAbsoluteToAsset(ref requestedAssetPath))
+            if (!AssetPath.TryAbsoluteToAsset(ref requestedAssetPath)) // fixit - work on this function. Have it return a "sanitized" path (current sanitization will change)
             {
                 ReportMissingDependency(absPath);
                 return null;
@@ -105,9 +93,6 @@ namespace SuperTiled2Unity.Editor
             T asset = AssetDatabase.LoadAssetAtPath<T>(requestedAssetPath);
             if (asset != null)
             {
-                // Add the asset to our cache for next time it is requested
-                m_CachedDatabase[key] = asset;
-
                 // We also need to know if the dependency asset itself has errors
                 var errors = AssetDatabase.LoadAssetAtPath<ImportErrors>(requestedAssetPath);
                 if (errors != null)

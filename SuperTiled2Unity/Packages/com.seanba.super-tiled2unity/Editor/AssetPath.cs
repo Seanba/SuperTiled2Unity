@@ -7,15 +7,15 @@ namespace SuperTiled2Unity.Editor
     public static class AssetPath
     {
         // Transform an absolute path into Assets/Path/To/Asset.ext
-        public static bool TryAbsoluteToAsset(ref string path)
+        public static bool TryAbsoluteToAsset(ref string absPath)
         {
-            path = path.SanitizePath();
+            absPath = absPath.SanitizePath(); // fixit - watch out for these sanitize path calls. They don't work in Linux/MacOS
 
-            if (path.StartsWith(Application.dataPath, StringComparison.OrdinalIgnoreCase))
+            if (absPath.StartsWith(Application.dataPath, StringComparison.OrdinalIgnoreCase))
             {
-                path = path.Remove(0, Application.dataPath.Length + 1);
-                path = Path.Combine("Assets/", path);
-                path = path.SanitizePath();
+                absPath = absPath.Remove(0, Application.dataPath.Length + 1);
+                absPath = Path.Combine("Assets/", absPath);
+                absPath = absPath.SanitizePath();
                 return true;
             }
 
