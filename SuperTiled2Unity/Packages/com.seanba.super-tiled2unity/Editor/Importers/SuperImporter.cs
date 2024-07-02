@@ -79,7 +79,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             string requestedAssetPath = absPath;
-            if (!AssetPath.TryAbsoluteToAsset(ref requestedAssetPath)) // fixit - work on this function. Have it return a "sanitized" path (current sanitization will change)
+            if (!AssetPath.TryAbsoluteToAsset(ref requestedAssetPath))
             {
                 ReportMissingDependency(absPath);
                 return null;

@@ -37,22 +37,6 @@ namespace SuperTiled2Unity.Editor
             return bytes;
         }
 
-        public static string SanitizePath(this string path)
-        {
-            if (string.IsNullOrEmpty(path))
-            {
-                return string.Empty;
-            }
-
-            // Only forward slashes
-            path = path.Replace('\\', '/');
-
-            // Remove repeated slashes, slash at start, and slash at end
-            path = string.Join("/", path.Split(SeparatorArray, StringSplitOptions.RemoveEmptyEntries));
-
-            return path;
-        }
-
         public static void CopyToClipboard(this string str)
         {
             TextEditor te = new TextEditor
