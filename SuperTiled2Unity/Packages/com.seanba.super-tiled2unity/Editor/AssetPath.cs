@@ -7,15 +7,17 @@ namespace SuperTiled2Unity.Editor
     public static class AssetPath
     {
         // Transform an absolute path into Assets/Path/To/Asset.ext
-        public static bool TryAbsoluteToAsset(ref string path)
+        public static bool TryAbsoluteToAsset(ref string absPath)
         {
-            path = path.SanitizePath();
+            // Application.dataPath is the path to whatever/Project/Assets
+            var absPathAssets = Path.GetFullPath(Application.dataPath).Replace('\\', '/');
+            var thisPath = Path.GetFullPath(absPath).Replace('\\', '/');
 
-            if (path.StartsWith(Application.dataPath, StringComparison.OrdinalIgnoreCase))
+            // Is the absolute path passed in in our Assets folder?
+            if (thisPath.StartsWith(absPathAssets, StringComparison.OrdinalIgnoreCase))
             {
-                path = path.Remove(0, Application.dataPath.Length + 1);
-                path = Path.Combine("Assets/", path);
-                path = path.SanitizePath();
+                absPath = thisPath.Remove(0, absPathAssets.Length + 1);
+                absPath = Path.Combine("Assets/", absPath).Replace('\\', '/');
                 return true;
             }
 

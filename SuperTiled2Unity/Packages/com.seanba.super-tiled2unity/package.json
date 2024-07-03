@@ -1,6 +1,6 @@
 {
   "name": "com.seanba.super-tiled2unity",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "displayName": "Super Tiled2Unity",
   "description": "Imports Tiled Map Editor assets into Unity",
   "unity": "2020.3",
