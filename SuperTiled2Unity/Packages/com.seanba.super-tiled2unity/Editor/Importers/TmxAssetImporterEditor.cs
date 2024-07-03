@@ -33,12 +33,15 @@ namespace SuperTiled2Unity.Editor
             EditorGUILayout.LabelField("Tiled Map Importer Settings", EditorStyles.boldLabel);
             ShowTiledAssetGui();
 
+            // Tiles As Objects GUI
             var tilesAsObjects = serializedObject.FindProperty(TmxAssetImporter.TilesAsObjectsSerializedName);
             Assert.IsNotNull(tilesAsObjects);
             EditorGUILayout.PropertyField(tilesAsObjects, TilesAsObjectsContent);
 
+            // Sorting Mode GUI
             var sortingMode = serializedObject.FindProperty(TmxAssetImporter.SortingModeSerializedName);
             Assert.IsNotNull(sortingMode);
+            sortingMode.intValue = (int)(SortingMode)EditorGUILayout.EnumPopup(SortingModeContent, (SortingMode)sortingMode.intValue);
             if (sortingMode.intValue == (int)SortingMode.CustomSortAxis)
             {
                 EditorGUILayout.HelpBox("Tip: Custom Sort Axis may require you to set a Transparency Sort Axis for cameras in your project Graphics settings.", MessageType.Info);
