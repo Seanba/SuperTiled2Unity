@@ -1,5 +1,8 @@
 # Changelog
 
+## [2.2.1] - 2024-07-02
+- Bug fix: Resolved issue with the way asset paths were used within ST2U. That had broken importing in the MacOS and Linux versions of the Unity Editor
+
 ## [2.2.0] - 2024-06-01
 - No longer creating and managing embedded sprite atlases. This allows uses to put tile sheets into sprite altases of their choosing. ST2U now uses the original textures to make tiles.
 - Improved error and warning reporting

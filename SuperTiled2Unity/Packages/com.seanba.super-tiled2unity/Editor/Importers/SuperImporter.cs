@@ -65,9 +65,9 @@ namespace SuperTiled2Unity.Editor
 
             // Asset is not in our cache so load it from the asset database
             string absPath;
-            if (Path.IsPathFullyQualified(path))
+            if (Path.IsPathRooted(path))
             {
-                // Fully qualified (absolute) paths baked into Tiled files are not recommended but if they resolve to a Unity asset then so be it.
+                // Rooted (and absolute) paths baked into Tiled files are not recommended but if they resolve to a Unity asset then so be it.
                 absPath = Path.GetFullPath(path);
             }
             else
