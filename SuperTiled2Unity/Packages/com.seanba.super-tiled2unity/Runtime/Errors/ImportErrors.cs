@@ -19,6 +19,9 @@ namespace SuperTiled2Unity
         // Dependency assets that are using the wrong pixels per unit. Maps, tilesets, and textures must use matching pixels per unit.
         public List<WrongPixelsPerUnit> m_WrongPixelsPerUnits = new List<WrongPixelsPerUnit>();
 
+        // Textures that were imported at the wrong size
+        public List<WrongTextureSize> m_WrongTextureSizes = new List<WrongTextureSize>();
+
         public List<string> m_MissingTags = new List<string>();
         public List<string> m_MissingLayers = new List<string>();
         public List<string> m_MissingSortingLayers = new List<string>();
@@ -52,6 +55,24 @@ namespace SuperTiled2Unity
             }
 
             missing.AddMissingSprite(spriteId, x, y, w, h);
+        }
+
+        public void ReportWrongTextureSize(string textureAssetPath, int expected_w, int expected_h, int actual_w, int actual_h)
+        {
+            var wrongSize = m_WrongTextureSizes.FirstOrDefault(w => w.m_TextureAssetPath == textureAssetPath);
+            if (wrongSize == null)
+            {
+                wrongSize = new WrongTextureSize
+                {
+                    m_TextureAssetPath = textureAssetPath,
+                    m_ExpectedWidth = expected_w,
+                    m_ExpectedHeight = expected_h,
+                    m_ActualWidth = actual_w,
+                    m_ActualHeight = actual_h,
+                };
+
+                m_WrongTextureSizes.Add(wrongSize);
+            }
         }
 
         public void ReportWrongPixelsPerUnit(string dependencyAssetPath, float dependencyPPU, float ourPPU)
@@ -135,5 +156,14 @@ namespace SuperTiled2Unity
             public float m_ExpectingPPU;
         }
 
+        [Serializable]
+        public class WrongTextureSize
+        {
+            public string m_TextureAssetPath;
+            public int m_ExpectedWidth;
+            public int m_ExpectedHeight;
+            public int m_ActualWidth;
+            public int m_ActualHeight;
+        }
     }
 }

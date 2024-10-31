@@ -22,6 +22,12 @@ namespace SuperTiled2Unity.Editor
 
                 DisplayMissingDependencies(ui, importErrors);
 
+                if (DisplayWrongTextureSize(ui, importErrors))
+                {
+                    // Stop here as it must be fixed. Other errors will have to wait.
+                    return;
+                }
+
                 if (DisplayWrongPixelsPerUnit(ui, importErrors))
                 {
                     // Stop here as it must be fixed. Other errors will have to wait.
@@ -57,6 +63,30 @@ namespace SuperTiled2Unity.Editor
 
                 ui.HelpBox(msg.ToString());
             }
+        }
+
+        private static bool DisplayWrongTextureSize(MessageBuilderUI ui, ImportErrors importErrors)
+        {
+            if (importErrors.m_WrongTextureSizes.Count > 0)
+            {
+                ui.BoldLabel("Mismatched Texture Sizes");
+                foreach (var wrongSize in importErrors.m_WrongTextureSizes)
+                {
+                    var assetName = Path.GetFileName(wrongSize.m_TextureAssetPath);
+                    ui.HelpBox($"Expected texture size: {wrongSize.m_ExpectedWidth}x{wrongSize.m_ExpectedHeight}\nActual texture size: {wrongSize.m_ActualWidth}x{wrongSize.m_ActualHeight}\nCheck import settings for '{assetName}'.\nMax Size may be too small.");
+                    using (new GuiScopedBackgroundColor(NamedColors.LightPink))
+                    {
+                        if (GUILayout.Button($"Inspect '{assetName}'"))
+                        {
+                            Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(wrongSize.m_TextureAssetPath);
+                        }
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         private static bool DisplayWrongPixelsPerUnit(MessageBuilderUI ui, ImportErrors importErrors)

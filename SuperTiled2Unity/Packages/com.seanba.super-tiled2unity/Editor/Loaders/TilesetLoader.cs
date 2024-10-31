@@ -32,7 +32,7 @@ namespace SuperTiled2Unity.Editor
             // There are attributes we *must* have that older versions of Tiled did not serialize
             if (xTileset.Attribute("tilecount") == null || xTileset.Attribute("columns") == null)
             {
-                m_Importer.ReportGenericError("Old Tiled file format detected. You must save this file with a newer verion of Tiled (At least 0.15).");
+                m_Importer.ReportGenericError($"Old Tiled file format detected. Try resaving file '{m_Importer.assetPath}' with a newer verion of Tiled (At least 0.15).");
                 return false;
             }
 
@@ -117,16 +117,24 @@ namespace SuperTiled2Unity.Editor
             {
                 textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
 
-                // The pixels per unit of the sprites must match the pixels per unit of the tileset
-                sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().SafeToDictionary(s => (s.rect, s.pivot), s => s);
-                if (sprites.Any())
+                if (AssetImporter.GetAtPath(textureAssetPath) is TextureImporter textureImporter)
                 {
-                    var firstSprite = sprites.First().Value;
-                    if (firstSprite.pixelsPerUnit != m_SuperTileset.m_PixelsPerUnit)
+                    textureImporter.GetSourceTextureWidthAndHeight(out int sourceWidth, out int sourceHeight);
+                    if (tex2d.width != sourceWidth || tex2d.height != sourceHeight)
                     {
-                        m_Importer.ReportWrongPixelsPerUnit(textureAssetPath, firstSprite.pixelsPerUnit, m_SuperTileset.m_PixelsPerUnit);
                         forceErrorTiles = true;
+                        m_Importer.ReportWrongTextureSize(textureAssetPath, sourceWidth, sourceHeight, tex2d.width, tex2d.height);
                     }
+                    else if (textureImporter.spritePixelsPerUnit != m_SuperTileset.m_PixelsPerUnit)
+                    {
+                        forceErrorTiles = true;
+                        m_Importer.ReportWrongPixelsPerUnit(textureAssetPath, textureImporter.spritePixelsPerUnit, m_SuperTileset.m_PixelsPerUnit);
+                    }
+                }
+
+                if (!forceErrorTiles)
+                {
+                    sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().SafeToDictionary(s => (s.rect, s.pivot), s => s);
                 }
             }
 
