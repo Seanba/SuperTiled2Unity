@@ -296,6 +296,18 @@ namespace SuperTiled2Unity.Editor
                 return false;
             }
 
+            // Is the source tileset a "special" tileset embedded into Tiled?
+            if (source == ":/automap-tiles.tsx")
+            {
+                // automap-tiles.tsx currently has 5 tiles used by automapping. These are ignored in Unity.
+                m_GlobalTileDatabase.RegisterIgnorableTile(firstId + 0);
+                m_GlobalTileDatabase.RegisterIgnorableTile(firstId + 1);
+                m_GlobalTileDatabase.RegisterIgnorableTile(firstId + 2);
+                m_GlobalTileDatabase.RegisterIgnorableTile(firstId + 3);
+                m_GlobalTileDatabase.RegisterIgnorableTile(firstId + 4);
+                return true;
+            }
+
             // Load the tileset and process the tiles inside
             var tileset = RequestDependencyAssetAtPath<SuperTileset>(source);
             if (tileset == null)
