@@ -2,7 +2,7 @@
 {
     public static class ImporterConstants
     {
-        public const int TilesetVersion = 17;
+        public const int TilesetVersion = 18;
         public const int TemplateVersion = 6;
         public const int MapVersion = 29;
         public const int WorldVersion = 1;

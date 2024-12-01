@@ -496,7 +496,7 @@ namespace SuperTiled2Unity.Editor
 
                 if (type == null)
                 {
-                    ReportGenericError($"Custom Importer error. Class type '{m_CustomImporterClassName}' is missing.");
+                    ReportGenericError($"Custom Importer error. Class type '{m_CustomImporterClassName}' is missing. Error importing '{assetPath}'");
                     return;
                 }
 

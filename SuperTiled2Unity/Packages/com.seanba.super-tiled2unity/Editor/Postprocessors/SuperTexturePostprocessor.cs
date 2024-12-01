@@ -15,7 +15,7 @@ namespace SuperTiled2Unity.Editor
     {
         public const int MaxNumberOfImportingSpriteRects = 1024 * 2;
 
-        private static ProfilerMarker ProfilerMarker_AddSprites = new ProfilerMarker("AddSprites");
+        private static readonly ProfilerMarker ProfilerMarker_AddSprites = new ProfilerMarker("AddSprites");
 
         private void OnPreprocessTexture()
         {
@@ -43,8 +43,24 @@ namespace SuperTiled2Unity.Editor
 #endif
         }
 
-#if ST2U_CLEAR_SPRITES_TESTING
-        private void ClearAllSprites()
+        [MenuItem("Assets/Super Tiled2Unity/Remove Sprites from Texture")]
+        private static void RemoveSpritesFromTexture()
+        {
+            if (Selection.activeObject is Texture2D texture2d)
+            {
+                var assetPath = AssetDatabase.GetAssetPath(texture2d);
+                var assetImporter = AssetImporter.GetAtPath(assetPath);
+                ClearAllSprites(assetImporter);
+            }
+        }
+
+        [MenuItem("Assets/Super Tiled2Unity/Remove Sprites from Texture", validate = true)]
+        private static bool ValidateRemoveSpritesFromTexture()
+        {
+            return Selection.activeObject is Texture2D;
+        }
+
+        private static void ClearAllSprites(AssetImporter assetImporter)
         {
             var factory = new SpriteDataProviderFactories();
             factory.Init();
@@ -59,7 +75,6 @@ namespace SuperTiled2Unity.Editor
 #endif
             dataProvider.Apply();
         }
-#endif
 
         private void AddSpritesFromTiledFiles()
         {
