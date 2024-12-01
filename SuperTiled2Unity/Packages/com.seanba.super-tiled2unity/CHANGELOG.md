@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.2.1] - 2024-01-01
+- Bug fix: Automapping tiles no longer break the tileset importer
+- Bug fix: Textures that were imported at a smaller than expected size were triggering the wrong error. The user is now presented with the right error information.
+
 ## [2.2.1] - 2024-07-02
 - Bug fix: Resolved issue with the way asset paths were used within ST2U. That had broken importing in the MacOS and Linux versions of the Unity Editor
 - Bug fix: "Layer/Object Sorting" option has been added back to the Tiled Map Importer Settings
