@@ -50,7 +50,7 @@ namespace SuperTiled2Unity.Editor
             SuperImportContext.AddObjectToAsset("_TilesetScriptObject", Tileset, icon);
             SuperImportContext.SetMainObject(Tileset);
 
-            var loader = new TilesetLoader(Tileset, this);
+            var loader = new TilesetLoader(Tileset, this, 0);
             loader.LoadFromXml(xTileset);
         }
     }

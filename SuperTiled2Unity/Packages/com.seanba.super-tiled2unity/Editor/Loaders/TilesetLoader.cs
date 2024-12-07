@@ -12,6 +12,7 @@ namespace SuperTiled2Unity.Editor
     {
         private readonly SuperTileset m_SuperTileset;
         private readonly TiledAssetImporter m_Importer;
+        private readonly int m_InternalId;
 
         public const string SpriteNameRoot = "st2u_";
 
@@ -21,10 +22,11 @@ namespace SuperTiled2Unity.Editor
             return $"{SpriteNameRoot}x{rect.x}y{rect.y}-w{rect.width}h{rect.height}";
         }
 
-        public TilesetLoader(SuperTileset tileset, TiledAssetImporter importer)
+        public TilesetLoader(SuperTileset tileset, TiledAssetImporter importer, int internalId)
         {
             m_SuperTileset = tileset;
             m_Importer = importer;
+            m_InternalId = internalId;
         }
 
         public bool LoadFromXml(XElement xTileset)
@@ -259,7 +261,11 @@ namespace SuperTiled2Unity.Editor
                 }
 
                 m_SuperTileset.m_Tiles.Add(tile);
-                m_Importer.SuperImportContext.AddObjectToAsset($"Tile{tileId}_spriteName", tile);
+
+                // The identifier for the tile *must* be unique amoung all other objects that are added to the same import context
+                string uniqueId = $"Tile.{tileSprite.name}.{m_InternalId}.{tileId}";
+                m_Importer.SuperImportContext.AddObjectToAsset(uniqueId, tile);
+
                 return true;
             }
 

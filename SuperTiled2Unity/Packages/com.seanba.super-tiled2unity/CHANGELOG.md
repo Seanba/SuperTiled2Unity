@@ -1,6 +1,10 @@
 # Changelog
 
-## [2.2.1] - 2024-01-01
+## [2.2.3] - 2024-01-01
+- Bug fix: Fixed bug where TMX files with multiple internal tilesets could not be imported
+- Improvement: Zipped package renamed to com.seanba.super-tiled2unity.zip to match Unity 6 expected embedded package name.
+
+## [2.2.2] - 2024-01-01
 - Bug fix: Automapping tiles no longer break the tileset importer
 - Bug fix: Textures that were imported at a smaller than expected size were triggering the wrong error. The user is now presented with the right error information.
 

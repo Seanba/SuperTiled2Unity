@@ -338,7 +338,7 @@ namespace SuperTiled2Unity.Editor
             string assetName = string.Format("_TilesetScriptObjectInternal_{0}", m_InternalTilesets.Count);
             SuperImportContext.AddObjectToAsset(assetName, tileset);
 
-            var loader = new TilesetLoader(tileset, this);
+            var loader = new TilesetLoader(tileset, this, firstId);
             if (loader.LoadFromXml(xTileset))
             {
                 m_GlobalTileDatabase.RegisterTileset(firstId, tileset);

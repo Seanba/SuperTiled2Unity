@@ -49,7 +49,7 @@ namespace SuperTiled2Unity.Editor
             catch (Exception ex)
             {
                 // These errors should be reported for bug fixing
-                ReportGenericError($"Unknown error encountered. Please report as a bug.\nUnknown error importing '{assetPath}'\n{ex.Message}\nStack Trace:\n{ex.StackTrace}");
+                ReportGenericError($"Unknown error encountered ({ex.GetType().Name}). Please report as a bug.\nUnknown error importing '{assetPath}'\n{ex.Message}\nStack Trace:\n{ex.StackTrace}");
             }
 #else
             {
