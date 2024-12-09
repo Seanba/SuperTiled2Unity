@@ -470,7 +470,7 @@ namespace SuperTiled2Unity.Editor
                 {
                     foreach (var p in props.m_Properties)
                     {
-                        m_ObjectsById[so.m_Id].BroadcastProperty(p, m_ObjectsById);
+                        m_ObjectsById[so.m_Id].BroadcastProperty(p, m_ObjectsById, ReportGenericError);
                     }
                 }
             }
