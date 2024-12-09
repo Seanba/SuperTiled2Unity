@@ -1,10 +1,15 @@
 # Changelog
 
-## [2.2.3] - 2024-01-01
+## [2.2.3] - 2024-12-08
+- Bug fix: Infinite maps no longer break inheritance of Unity layer assignment
+- Feature: Better reporting when Prefab Replacements invokes user code that throws exceptions
+- Feature: Custom properties on Prefab Replacements supports enum values that are saved as integers in Tiled files
+
+## [2.2.3] - 2024-12-06
 - Bug fix: Fixed bug where TMX files with multiple internal tilesets could not be imported
 - Improvement: Zipped package renamed to com.seanba.super-tiled2unity.zip to match Unity 6 expected embedded package name.
 
-## [2.2.2] - 2024-01-01
+## [2.2.2] - 2024-12-01
 - Bug fix: Automapping tiles no longer break the tileset importer
 - Bug fix: Textures that were imported at a smaller than expected size were triggering the wrong error. The user is now presented with the right error information.
 
