@@ -10,7 +10,7 @@ These custom properties always have a :code:`unity:` prefix so that they do not 
    :widths: auto
    :header: "Property Name", "Value Type", "Used On", "Purpose"
 
-   ":code:`unity:ignore`", ":code:`string`", "Layers", "Portions of the Tiled layer can be ignored during the import process. This is useful if you tiles to appear for a layer but not the colliders, for instance.
+   ":code:`unity:ignore`", ":code:`string`", "Layers", "Portions of the Tiled layer can be ignored during the import process. This is useful if you want tiles to appear for a layer but not the colliders, for instance.
 
    Acceptable values:
       * **False**: The layer is imported in full (default)
