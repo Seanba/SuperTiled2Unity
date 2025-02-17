@@ -80,15 +80,16 @@ namespace SuperTiled2Unity.Editor
         {
             using (ProfilerMarker_AddSprites.Auto())
             {
+                TextureImporter textureImporter = assetImporter as TextureImporter;
+
                 var tilesetRects = SpriteRectsManager.Instance.GetSpriteRectsForTexture(assetPath);
-                if (!tilesetRects.Any())
+                if (tilesetRects.Count() <= 1 && textureImporter.spriteImportMode == SpriteImportMode.Single)
                 {
-                    // This texture is not (currently) used by Tiled files (maps or tilesets)
+                    // This texture cannot be split up into sprites by ST2U. If needed the tileset will store an additional sprite for textures that use "Single Sprite" mode.
                     return;
                 }
 
-                // Texture must be imported so that it is made up of multiple sprites
-                TextureImporter textureImporter = assetImporter as TextureImporter;
+                // Texture must be imported so that it is made up of sprites
                 textureImporter.textureType = TextureImporterType.Sprite;
                 textureImporter.spriteImportMode = SpriteImportMode.Multiple;
 

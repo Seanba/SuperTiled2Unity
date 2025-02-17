@@ -6,6 +6,17 @@ namespace SuperTiled2Unity
 {
     public static class EnumerableExtensions
     {
+        public static int GetOrderIndependentHashCode<T>(this IEnumerable<T> source)
+        {
+            int hash = 0;
+            foreach (T element in source)
+            {
+                hash ^= EqualityComparer<T>.Default.GetHashCode(element);
+            }
+
+            return hash;
+        }
+
         public static bool IsEmpty<T>(this IEnumerable<T> array)
         {
             if (array == null)

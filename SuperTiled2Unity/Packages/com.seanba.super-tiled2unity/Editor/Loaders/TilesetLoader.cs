@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using UnityEditor;
@@ -222,6 +223,32 @@ namespace SuperTiled2Unity.Editor
                     int tile_y = xTile.GetAttributeAs<int>("y", 0);
                     int tile_w = xTile.GetAttributeAs<int>("width", texture_w);
                     int tile_h = xTile.GetAttributeAs<int>("height", texture_h);
+
+                    // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
+                    if (tex2d != null)
+                    {
+                        tile_y = (tex2d.height - tile_y) - tile_h;
+                    }
+
+                    if (!forceErrorTiles && sprites.Count == 1)
+                        if (AssetImporter.GetAtPath(textureAssetPath) is TextureImporter importer && importer.spriteImportMode == SpriteImportMode.Single)
+                        {
+                            var rect = new Rect(tile_x, tile_y, tile_w, tile_h);
+                            if (!sprites.TryGetValue((rect, Vector2.zero), out Sprite tileSprite))
+                            {
+                                // Annoying special case where the source texture is imported as a single sprite
+                                // This may be because the user wants to use the texture both as a native Unity sprite and as part of a Tiled tileset
+                                // In this case we cannot have ST2U split up the texture into sprite rectangles
+                                // We have to create a new sprite with the pivot and size we want and store it in the imported asset
+                                tileSprite = Sprite.Create(tex2d, rect, Vector2.zero, importer.spritePixelsPerUnit);
+                                tileSprite.name = $"Sprite.{Path.GetFileNameWithoutExtension(textureAssetPath)}";
+                                tileSprite.hideFlags = HideFlags.HideInHierarchy;
+                                string uniqueId = $"{tileSprite.name}.{tileIndex}.{m_InternalId}";
+                                m_Importer.SuperImportContext.AddObjectToAsset(uniqueId, tileSprite);
+                                sprites.Add((tileSprite.rect, tileSprite.pivot), tileSprite);
+                            }
+                        }
+                    }
 
                     if (forceErrorTiles || !TryAddTile(tileIndex, tile_x, tile_y, tile_w, tile_h, sprites))
                     {

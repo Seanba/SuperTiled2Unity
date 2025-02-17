@@ -283,8 +283,9 @@ namespace SuperTiled2Unity.Editor
                 foreach (var error in importErrors.m_GenericErrors)
                 {
                     msg.AppendLine(error);
-                    ui.HelpBox(msg.ToString());
                 }
+
+                ui.HelpBox(msg.ToString());
             }
         }
 

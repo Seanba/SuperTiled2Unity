@@ -1,10 +1,10 @@
-﻿using System.IO;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using UnityEngine;
-using UnityEditor;
 using System.Xml.Linq;
-using System;
+using UnityEditor;
+using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
 {
@@ -12,9 +12,9 @@ namespace SuperTiled2Unity.Editor
     {
         internal static SpriteRectsManager Instance { get; }
 
-        private SpriteRectangles m_SpriteRectangles = new SpriteRectangles();
+        private readonly SpriteRectangles m_SpriteRectangles = new SpriteRectangles();
 
-        private readonly List<string> m_TextureAssetsReimported = new List<string>();
+        private readonly Dictionary<string, int> m_TextureAssetsReimportedWithHash = new Dictionary<string, int>();
 
         static SpriteRectsManager()
         {
@@ -140,6 +140,15 @@ namespace SuperTiled2Unity.Editor
                     int tile_w = xTile.GetAttributeAs<int>("width", texture_w);
                     int tile_h = xTile.GetAttributeAs<int>("height", texture_h);
 
+                    // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
+                    tile_y = (texture_h - tile_y) - tile_h;
+
+                    if (tile_y < 0)
+                    {
+                        // This is an edge condition in Tiled if a tileset's texture has been resized
+                        break;
+                    }
+
                     m_SpriteRectangles.AddSpriteRectangle(pathTsx, absolutePathTexture, tile_x, tile_y, tile_w, tile_h);
                 }
             }
@@ -158,12 +167,24 @@ namespace SuperTiled2Unity.Editor
                     // Do we have any errors of the missing sprite variety?
                     foreach (var missing in importErrors.m_MissingTileSprites)
                     {
-                        // Only try to reimport these textures once
+                        // Only try to reimport these textures once (unless the hash of their sprite rectangles changes)
                         // Otherwise we may introduce a cyclic depenency chain
                         var textureAssetPath = missing.m_TextureAssetPath.ToLower();
-                        if (!m_TextureAssetsReimported.Contains(textureAssetPath))
+                        int newHash = GetSpriteRectsForTexture(textureAssetPath).GetOrderIndependentHashCode();
+
+                        if (m_TextureAssetsReimportedWithHash.TryGetValue(textureAssetPath, out int oldHash))
                         {
-                            m_TextureAssetsReimported.Add(textureAssetPath);
+                            if (newHash != oldHash)
+                            {
+                                // Import hash for texture hash changed, re-import
+                                m_TextureAssetsReimportedWithHash[textureAssetPath] = newHash;
+                                AssetDatabase.ImportAsset(textureAssetPath);
+                            }
+                        }
+                        else
+                        {
+                            // Texture has not yet been re-imported
+                            m_TextureAssetsReimportedWithHash[textureAssetPath] = newHash;
                             AssetDatabase.ImportAsset(textureAssetPath);
                         }
                     }
@@ -183,7 +204,7 @@ namespace SuperTiled2Unity.Editor
             CheckForTextureReimports(assetPath);
         }
 
-        private void ImportImageFile(string path)
+        private void ImportImageFile(string assetPath)
         {
         }
 
