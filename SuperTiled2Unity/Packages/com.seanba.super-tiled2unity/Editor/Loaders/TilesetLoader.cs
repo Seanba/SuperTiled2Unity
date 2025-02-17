@@ -231,6 +231,7 @@ namespace SuperTiled2Unity.Editor
                     }
 
                     if (!forceErrorTiles && sprites.Count == 1)
+                    {
                         if (AssetImporter.GetAtPath(textureAssetPath) is TextureImporter importer && importer.spriteImportMode == SpriteImportMode.Single)
                         {
                             var rect = new Rect(tile_x, tile_y, tile_w, tile_h);
