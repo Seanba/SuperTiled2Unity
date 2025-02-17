@@ -1,6 +1,9 @@
 # Changelog
 
-## [2.2.3] - 2024-12-08
+## [2.2.5] - 2025-02-17
+- Bug fix: Now support textures that the user wants imported as "Single Mode" sprites.
+
+## [2.2.4] - 2024-12-08
 - Bug fix: Infinite maps no longer break inheritance of Unity layer assignment
 - Feature: Better reporting when Prefab Replacements invokes user code that throws exceptions
 - Feature: Custom properties on Prefab Replacements supports enum values that are saved as integers in Tiled files
