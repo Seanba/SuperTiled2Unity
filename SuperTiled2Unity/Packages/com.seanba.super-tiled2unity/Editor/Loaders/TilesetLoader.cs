@@ -9,19 +9,12 @@ namespace SuperTiled2Unity.Editor
 {
     // Tilesets can be stand-alone TSX files (preferred) or embedded in Tiled Map Editor files (TMX)
     // This helper loader class gives us the flexibility we need to load tileset data
+    // Tileset assets will have a Unity Sprite and a Unity Tile for each tile in tileset
     public class TilesetLoader
     {
         private readonly SuperTileset m_SuperTileset;
         private readonly TiledAssetImporter m_Importer;
         private readonly int m_InternalId;
-
-        public const string SpriteNameRoot = "st2u_";
-
-        // Make this an ugly name that shouldn't collide with sprites named by the user
-        internal static string RectToSpriteName(Rect rect)
-        {
-            return $"{SpriteNameRoot}x{rect.x}y{rect.y}-w{rect.width}h{rect.height}";
-        }
 
         public TilesetLoader(SuperTileset tileset, TiledAssetImporter importer, int internalId)
         {
@@ -95,7 +88,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private void BuildTilesetFromImage(XElement xTileset)
+        private void BuildTilesetFromImage(XElement xTileset) // fixit - add support for aseprite as image input
         {
             m_SuperTileset.m_IsImageCollection = false;
 
@@ -107,9 +100,8 @@ namespace SuperTiled2Unity.Editor
             bool forceErrorTiles = false;
 
             // Load the texture. We will make sprites and tiles out of this image.
-            var tex2d = m_Importer.RequestDependencyAssetAtPath<Texture2D>(textureLocalPath);
+            var tex2d = m_Importer.RequestDependencyAssetAtPath<Texture2D>(textureLocalPath); // fixit - do ase files at least find a texture?
             var textureAssetPath = string.Empty;
-            var sprites = new Dictionary<(Rect, Vector2), Sprite>();
 
             if (tex2d == null)
             {
@@ -128,16 +120,11 @@ namespace SuperTiled2Unity.Editor
                         forceErrorTiles = true;
                         m_Importer.ReportWrongTextureSize(textureAssetPath, sourceWidth, sourceHeight, tex2d.width, tex2d.height);
                     }
-                    else if (textureImporter.spritePixelsPerUnit != m_SuperTileset.m_PixelsPerUnit)
-                    {
-                        forceErrorTiles = true;
-                        m_Importer.ReportWrongPixelsPerUnit(textureAssetPath, textureImporter.spritePixelsPerUnit, m_SuperTileset.m_PixelsPerUnit);
-                    }
-                }
-
-                if (!forceErrorTiles)
-                {
-                    sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().SafeToDictionary(s => (s.rect, s.pivot), s => s);
+                    //else if (textureImporter.spritePixelsPerUnit != m_SuperTileset.m_PixelsPerUnit) // fixit - does this matter?
+                    //{
+                    //    forceErrorTiles = true;
+                    //    m_Importer.ReportWrongPixelsPerUnit(textureAssetPath, textureImporter.spritePixelsPerUnit, m_SuperTileset.m_PixelsPerUnit);
+                    //}
                 }
             }
 
@@ -163,7 +150,7 @@ namespace SuperTiled2Unity.Editor
                 // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
                 srcy = (textureHeight - srcy) - tileHeight;
 
-                if (forceErrorTiles || !TryAddTile(i, srcx, srcy, tileWidth, tileHeight, sprites))
+                if (forceErrorTiles || !AddSpriteAndTile(tex2d, i, srcx, srcy, tileWidth, tileHeight))
                 {
                     if (!string.IsNullOrEmpty(textureAssetPath))
                     {
@@ -175,7 +162,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private void BuildTilesetFromCollection(XElement xTileset)
+        private void BuildTilesetFromCollection(XElement xTileset) // fixit - add support for aseprite files
         {
             m_SuperTileset.m_IsImageCollection = true;
 
@@ -194,7 +181,6 @@ namespace SuperTiled2Unity.Editor
 
                     var tex2d = m_Importer.RequestDependencyAssetAtPath<Texture2D>(textureLocalPath);
                     var textureAssetPath = string.Empty;
-                    var sprites = new Dictionary<(Rect, Vector2), Sprite>();
 
                     // Load the texture. We will make sprites and tiles out of this image.
                     if (tex2d == null)
@@ -205,18 +191,6 @@ namespace SuperTiled2Unity.Editor
                     else
                     {
                         textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
-
-                        // The pixels per unit of the sprites must match the pixels per unit of the tileset
-                        sprites = AssetDatabase.LoadAllAssetsAtPath(textureAssetPath).OfType<Sprite>().SafeToDictionary(s => (s.rect, s.pivot), s => s);
-                        if (sprites.Any())
-                        {
-                            var firstSprite = sprites.First().Value;
-                            if (firstSprite.pixelsPerUnit != m_SuperTileset.m_PixelsPerUnit)
-                            {
-                                m_Importer.ReportWrongPixelsPerUnit(textureAssetPath, firstSprite.pixelsPerUnit, m_SuperTileset.m_PixelsPerUnit);
-                                forceErrorTiles = true;
-                            }
-                        }
                     }
 
                     int tile_x = xTile.GetAttributeAs<int>("x", 0);
@@ -230,30 +204,9 @@ namespace SuperTiled2Unity.Editor
                         tile_y = (tex2d.height - tile_y) - tile_h;
                     }
 
-                    if (!forceErrorTiles && sprites.Count == 1)
+                    if (forceErrorTiles || !AddSpriteAndTile(tex2d, tileIndex, tile_x, tile_y, tile_w, tile_h))
                     {
-                        if (AssetImporter.GetAtPath(textureAssetPath) is TextureImporter importer && importer.spriteImportMode == SpriteImportMode.Single)
-                        {
-                            var rect = new Rect(tile_x, tile_y, tile_w, tile_h);
-                            if (!sprites.TryGetValue((rect, Vector2.zero), out Sprite tileSprite))
-                            {
-                                // Annoying special case where the source texture is imported as a single sprite
-                                // This may be because the user wants to use the texture both as a native Unity sprite and as part of a Tiled tileset
-                                // In this case we cannot have ST2U split up the texture into sprite rectangles
-                                // We have to create a new sprite with the pivot and size we want and store it in the imported asset
-                                tileSprite = Sprite.Create(tex2d, rect, Vector2.zero, importer.spritePixelsPerUnit);
-                                tileSprite.name = $"Sprite.{Path.GetFileNameWithoutExtension(textureAssetPath)}";
-                                tileSprite.hideFlags = HideFlags.HideInHierarchy;
-                                string uniqueId = $"{tileSprite.name}.{tileIndex}.{m_InternalId}";
-                                m_Importer.SuperImportContext.AddObjectToAsset(uniqueId, tileSprite);
-                                sprites.Add((tileSprite.rect, tileSprite.pivot), tileSprite);
-                            }
-                        }
-                    }
-
-                    if (forceErrorTiles || !TryAddTile(tileIndex, tile_x, tile_y, tile_w, tile_h, sprites))
-                    {
-                        if (!string.IsNullOrEmpty(textureAssetPath))
+                        if (!string.IsNullOrEmpty(textureAssetPath)) // fixit - do we need this now?
                         {
                             m_Importer.ReportMissingSprite(textureAssetPath, tileIndex, tile_x, tile_y, tile_w, tile_h);
                         }
@@ -264,42 +217,61 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private bool TryAddTile(int tileId, int x, int y, int width, int height, Dictionary<(Rect, Vector2), Sprite> sprites)
+        private bool AddSpriteAndTile(Texture2D tex2d, int tileId, int x, int y, int width, int height)
         {
+            var assetName = Path.GetFileNameWithoutExtension(m_Importer.assetPath);
+            var spriteName = $"{assetName}.Sprite.{tileId}";
+            var tileName = $"{assetName}.Tile.{tileId}";
             var rect = new Rect(x, y, width, height);
-            if (sprites.TryGetValue((rect, Vector2.zero), out Sprite tileSprite))
+
+            Sprite spriteToAdd;
+            SuperTile tileToAdd;
+
+            // Create and add the sprite that the tile is based off of
             {
-                // Create the tile that uses the sprite
-                var tile = SuperTile.CreateSuperTile();
-                tile.m_TileId = tileId;
-                tile.name = tileSprite.name;
-                tile.hideFlags = HideFlags.HideInHierarchy;
-                tile.m_Sprite = tileSprite;
-                tile.m_Width = rect.width;
-                tile.m_Height = rect.height;
-                tile.m_TileOffsetX = m_SuperTileset.m_TileOffset.x;
-                tile.m_TileOffsetY = m_SuperTileset.m_TileOffset.y;
-                tile.m_ObjectAlignment = m_SuperTileset.m_ObjectAlignment;
-                tile.m_TileRenderSize = m_SuperTileset.m_TileRenderSize;
-                tile.m_FillMode = m_SuperTileset.m_FillMode;
+                spriteToAdd = Sprite.Create(tex2d, rect, Vector2.zero, m_SuperTileset.m_PixelsPerUnit);
+                spriteToAdd.name = spriteName;
+            }
+
+            // Create and add the tile
+            {
+                tileToAdd = SuperTile.CreateSuperTile();
+                tileToAdd.m_TileId = tileId;
+                tileToAdd.name = tileName;
+                tileToAdd.m_Sprite = spriteToAdd;
+                tileToAdd.m_Width = rect.width;
+                tileToAdd.m_Height = rect.height;
+                tileToAdd.m_TileOffsetX = m_SuperTileset.m_TileOffset.x;
+                tileToAdd.m_TileOffsetY = m_SuperTileset.m_TileOffset.y;
+                tileToAdd.m_ObjectAlignment = m_SuperTileset.m_ObjectAlignment;
+                tileToAdd.m_TileRenderSize = m_SuperTileset.m_TileRenderSize;
+                tileToAdd.m_FillMode = m_SuperTileset.m_FillMode;
 
                 if (m_Importer is TsxAssetImporter tsxAssetImporter)
                 {
-                    tile.m_ColliderType = tsxAssetImporter.m_ColliderType;
+                    tileToAdd.m_ColliderType = tsxAssetImporter.m_ColliderType;
                 }
 
-                m_SuperTileset.m_Tiles.Add(tile);
-
-                // The identifier for the tile *must* be unique amoung all other objects that are added to the same import context
-                string uniqueId = $"Tile.{tileSprite.name}.{m_InternalId}.{tileId}";
-                m_Importer.SuperImportContext.AddObjectToAsset(uniqueId, tile);
-
-                return true;
+                m_SuperTileset.m_Tiles.Add(tileToAdd);
             }
 
-            return false;
+            // The identifier for the sprite and tile *must* be unique amoung all other objects that are added to the same import context
+            if (spriteToAdd)
+            {
+                string uniqueId = $"{spriteName}.{m_InternalId}";
+                m_Importer.SuperImportContext.AddObjectToAsset(uniqueId, spriteToAdd);
+            }
+
+            if (tileToAdd)
+            {
+                string uniqueId = $"{tileName}.{m_InternalId}";
+                m_Importer.SuperImportContext.AddObjectToAsset(uniqueId, tileToAdd);
+            }
+
+            return true;
         }
 
+        // fixit - how do we see error tiles now?
         private void AddErrorTile(int tileId, Color tint, int width, int height)
         {
             BadTileSpriteProvider.instance.CreateSpriteAndTile(tileId, tint, width, height, m_SuperTileset, out Sprite sprite, out SuperBadTile tile);

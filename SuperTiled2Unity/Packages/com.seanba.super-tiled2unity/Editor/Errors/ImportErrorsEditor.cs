@@ -134,7 +134,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private static void DisplayMissingSprites(MessageBuilderUI ui, ImportErrors importErrors)
+        private static void DisplayMissingSprites(MessageBuilderUI ui, ImportErrors importErrors) // fixit - do we need this now?
         {
             if (importErrors.m_MissingTileSprites.Count > 0)
             {
@@ -157,17 +157,10 @@ namespace SuperTiled2Unity.Editor
                         msg.AppendLine($"An additional {missing.m_MissingSprites.Count - reportCount} sprites are missing. Total = {missing.m_MissingSprites.Count}");
                     }
 
-                    msg.AppendLine($"Super Tiled2Unity will attempt to automatically add these missing sprites on import.\nTry selecting *Add Sprites To '{assetName}'* below.");
-
                     ui.HelpBox(msg.ToString());
 
                     using (new GuiScopedBackgroundColor(NamedColors.LightPink))
                     {
-                        if (GUILayout.Button($"Add Sprites To '{assetName}'"))
-                        {
-                            AddST2USpritesToTexture.AddSpritesToTextureAsset(missing.m_TextureAssetPath, missing.m_MissingSprites.Select(m => m.m_Rect));
-                        }
-
                         if (GUILayout.Button($"Inspect '{assetName}'"))
                         {
                             Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(missing.m_TextureAssetPath);
