@@ -112,6 +112,14 @@ namespace SuperTiled2Unity.Editor
             {
                 textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
 
+                //{
+                //    var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(textureAssetPath);
+                //    var bindings = AnimationUtility.GetObjectReferenceCurveBindings(clip);
+                //    var keys = AnimationUtility.GetObjectReferenceCurve(clip, bindings[0]);
+                //    // Keys are the sprites and the times they change. Look out for repeats.
+                //    Debug.LogError($"fixit - found clip {clip.name}");
+                //}
+
                 if (AssetImporter.GetAtPath(textureAssetPath) is TextureImporter textureImporter)
                 {
                     textureImporter.GetSourceTextureWidthAndHeight(out int sourceWidth, out int sourceHeight);
@@ -314,7 +322,7 @@ namespace SuperTiled2Unity.Editor
                 tile.m_CustomProperties = CustomPropertyLoader.LoadCustomPropertyList(xTile.Element("properties"));
                 tile.m_CustomProperties.AddPropertiesFromType(tile.m_Type, m_Importer.SuperImportContext);
 
-                // Does the tile have any animation data?
+                // Does the tile have any animation data? // fixit - look into aseprite solution for this
                 var xAnimation = xTile.Element("animation");
                 if (xAnimation != null)
                 {
