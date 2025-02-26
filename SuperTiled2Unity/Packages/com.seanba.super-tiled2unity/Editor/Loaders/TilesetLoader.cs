@@ -88,11 +88,17 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private void BuildTilesetFromImage(XElement xTileset) // fixit - add support for aseprite as image input
+        private void BuildTilesetFromImage(XElement xTileset)
         {
             m_SuperTileset.m_IsImageCollection = false;
 
             XElement xImage = xTileset.Element("image");
+            // fixit - source may be a texture or an aseprite file
+            //  - need different ways to get at the texture
+            //  - use DependsOnArtifact because file may not yet be imported
+            //  - Don't use RequestDependencyAssetAtPath, we need something specific
+            //  - Do we even care about PPU? It doesn't matter for raw textures. Does it for aseprites?
+            //  - width and height won't match for aseprite texture (which is an atlas of sorts)
             string textureLocalPath = xImage.GetAttributeAs<string>("source");
             int textureWidth = xImage.GetAttributeAs<int>("width");
             int textureHeight = xImage.GetAttributeAs<int>("height");
@@ -100,7 +106,7 @@ namespace SuperTiled2Unity.Editor
             bool forceErrorTiles = false;
 
             // Load the texture. We will make sprites and tiles out of this image.
-            var tex2d = m_Importer.RequestDependencyAssetAtPath<Texture2D>(textureLocalPath); // fixit - do ase files at least find a texture?
+            var tex2d = m_Importer.RequestDependencyAssetAtPath<Texture2D>(textureLocalPath);
             var textureAssetPath = string.Empty;
 
             if (tex2d == null)
@@ -112,15 +118,15 @@ namespace SuperTiled2Unity.Editor
             {
                 textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
 
+                // fixit - clues on how to use the animation clip in aseprite files
                 //{
                 //    var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(textureAssetPath);
                 //    var bindings = AnimationUtility.GetObjectReferenceCurveBindings(clip);
                 //    var keys = AnimationUtility.GetObjectReferenceCurve(clip, bindings[0]);
                 //    // Keys are the sprites and the times they change. Look out for repeats.
-                //    Debug.LogError($"fixit - found clip {clip.name}");
                 //}
 
-                if (AssetImporter.GetAtPath(textureAssetPath) is TextureImporter textureImporter)
+                if (AssetImporter.GetAtPath(textureAssetPath) is TextureImporter textureImporter) // fixit - move this to something that only cares about textures (not aseprite)
                 {
                     textureImporter.GetSourceTextureWidthAndHeight(out int sourceWidth, out int sourceHeight);
                     if (tex2d.width != sourceWidth || tex2d.height != sourceHeight)
@@ -128,11 +134,6 @@ namespace SuperTiled2Unity.Editor
                         forceErrorTiles = true;
                         m_Importer.ReportWrongTextureSize(textureAssetPath, sourceWidth, sourceHeight, tex2d.width, tex2d.height);
                     }
-                    //else if (textureImporter.spritePixelsPerUnit != m_SuperTileset.m_PixelsPerUnit) // fixit - does this matter?
-                    //{
-                    //    forceErrorTiles = true;
-                    //    m_Importer.ReportWrongPixelsPerUnit(textureAssetPath, textureImporter.spritePixelsPerUnit, m_SuperTileset.m_PixelsPerUnit);
-                    //}
                 }
             }
 
@@ -214,7 +215,7 @@ namespace SuperTiled2Unity.Editor
 
                     if (forceErrorTiles || !AddSpriteAndTile(tex2d, tileIndex, tile_x, tile_y, tile_w, tile_h))
                     {
-                        if (!string.IsNullOrEmpty(textureAssetPath)) // fixit - do we need this now?
+                        if (!string.IsNullOrEmpty(textureAssetPath))
                         {
                             m_Importer.ReportMissingSprite(textureAssetPath, tileIndex, tile_x, tile_y, tile_w, tile_h);
                         }
@@ -279,7 +280,6 @@ namespace SuperTiled2Unity.Editor
             return true;
         }
 
-        // fixit - how do we see error tiles now?
         private void AddErrorTile(int tileId, Color tint, int width, int height)
         {
             BadTileSpriteProvider.instance.CreateSpriteAndTile(tileId, tint, width, height, m_SuperTileset, out Sprite sprite, out SuperBadTile tile);
@@ -322,7 +322,7 @@ namespace SuperTiled2Unity.Editor
                 tile.m_CustomProperties = CustomPropertyLoader.LoadCustomPropertyList(xTile.Element("properties"));
                 tile.m_CustomProperties.AddPropertiesFromType(tile.m_Type, m_Importer.SuperImportContext);
 
-                // Does the tile have any animation data? // fixit - look into aseprite solution for this
+                // Does the tile have any animation data? // fixit - ignore this for aseprites?
                 var xAnimation = xTile.Element("animation");
                 if (xAnimation != null)
                 {
