@@ -14,7 +14,7 @@
       }
     },
     "com.unity.2d.aseprite": {
-      "version": "1.1.6",
+      "version": "1.1.8",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -26,7 +26,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.common": {
-      "version": "8.0.3",
+      "version": "8.0.4",
       "depth": 2,
       "source": "registry",
       "dependencies": {
@@ -54,7 +54,7 @@
       }
     },
     "com.unity.burst": {
-      "version": "1.8.18",
+      "version": "1.8.19",
       "depth": 3,
       "source": "registry",
       "dependencies": {
