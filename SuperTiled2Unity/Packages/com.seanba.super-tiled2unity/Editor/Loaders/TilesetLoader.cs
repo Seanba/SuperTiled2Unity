@@ -161,11 +161,7 @@ namespace SuperTiled2Unity.Editor
 
                 if (forceErrorTiles || !AddSpriteAndTile(tex2d, i, srcx, srcy, tileWidth, tileHeight))
                 {
-                    if (!string.IsNullOrEmpty(textureAssetPath))
-                    {
-                        m_Importer.ReportMissingSprite(textureAssetPath, i, srcx, srcy, tileWidth, tileHeight);
-                    }
-
+                    m_Importer.ReportMissingSprite(textureAssetPath, i, srcx, srcy, tileWidth, tileHeight);
                     AddErrorTile(i, NamedColors.HotPink, tileWidth, tileHeight);
                 }
             }
@@ -215,11 +211,7 @@ namespace SuperTiled2Unity.Editor
 
                     if (forceErrorTiles || !AddSpriteAndTile(tex2d, tileIndex, tile_x, tile_y, tile_w, tile_h))
                     {
-                        if (!string.IsNullOrEmpty(textureAssetPath))
-                        {
-                            m_Importer.ReportMissingSprite(textureAssetPath, tileIndex, tile_x, tile_y, tile_w, tile_h);
-                        }
-
+                         m_Importer.ReportMissingSprite(textureAssetPath, tileIndex, tile_x, tile_y, tile_w, tile_h);
                         AddErrorTile(tileIndex, NamedColors.DeepPink, tile_w, tile_h);
                     }
                 }
@@ -236,6 +228,8 @@ namespace SuperTiled2Unity.Editor
             Sprite spriteToAdd;
             SuperTile tileToAdd;
 
+            // fixit - might have multiple sprites (for animating tiles in aseprite files)
+            //      Add them all at the end once we determine this will succeed
             // Create and add the sprite that the tile is based off of
             {
                 spriteToAdd = Sprite.Create(tex2d, rect, Vector2.zero, m_SuperTileset.m_PixelsPerUnit);
