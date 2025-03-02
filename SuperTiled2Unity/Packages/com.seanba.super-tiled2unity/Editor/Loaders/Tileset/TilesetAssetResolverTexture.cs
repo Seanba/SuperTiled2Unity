@@ -9,6 +9,7 @@ namespace SuperTiled2Unity.Editor
         public TextureImporter TextureImporter { get; }
 
         private Texture2D m_Texture;
+        private bool m_IsSizeValid;
 
         public TilesetAssetResolverTexture(string sourceAssetPath, TiledAssetImporter tiledImporter, SuperTileset superTileset, TextureImporter textureImporter)
             : base(sourceAssetPath, tiledImporter, superTileset)
@@ -19,6 +20,11 @@ namespace SuperTiled2Unity.Editor
         public override bool AddSpritesAndTile(int tileId, int srcx, int srcy, int tileWidth, int tileHeight)
         {
             if (m_Texture == null)
+            {
+                return false;
+            }
+
+            if (!m_IsSizeValid)
             {
                 return false;
             }
@@ -72,10 +78,24 @@ namespace SuperTiled2Unity.Editor
 
         protected override void OnPrepare()
         {
-            // fixit - error checking (size of texture, import settings too low?)
-            // fixit - what if texture doesn't exist?
-            // fixit - TiledImporter.ReportWrongTextureSize
             m_Texture = AssetDatabase.LoadAssetAtPath<Texture2D>(SourceAssetPath);
+
+            if (m_Texture == null)
+            {
+                TiledAssetImporter.ReportGenericError($"Failed to load texture from: {SourceAssetPath}");
+                return;
+            }
+
+            if (m_Texture.width != ExpectedWidth || m_Texture.height != ExpectedHeight)
+            {
+                m_IsSizeValid = false;
+                TiledAssetImporter.ReportWrongTextureSize(SourceAssetPath, ExpectedWidth, ExpectedHeight, m_Texture.width, m_Texture.height);
+                return;
+            }
+            else
+            {
+                m_IsSizeValid = true;
+            }
         }
     }
 }

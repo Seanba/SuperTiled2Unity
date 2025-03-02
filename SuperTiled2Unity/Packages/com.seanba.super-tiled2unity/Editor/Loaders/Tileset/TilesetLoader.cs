@@ -196,8 +196,6 @@ namespace SuperTiled2Unity.Editor
             Sprite spriteToAdd;
             SuperTile tileToAdd;
 
-            // fixit - might have multiple sprites (for animating tiles in aseprite files)
-            //      Add them all at the end once we determine this will succeed
             // Create and add the sprite that the tile is based off of
             {
                 spriteToAdd = Sprite.Create(tex2d, rect, Vector2.zero, m_SuperTileset.m_PixelsPerUnit);
@@ -284,7 +282,7 @@ namespace SuperTiled2Unity.Editor
                 tile.m_CustomProperties = CustomPropertyLoader.LoadCustomPropertyList(xTile.Element("properties"));
                 tile.m_CustomProperties.AddPropertiesFromType(tile.m_Type, m_Importer.SuperImportContext);
 
-                // Does the tile have any animation data? // fixit - ignore this for aseprites?
+                // Does the tile have any animation data?
                 var xAnimation = xTile.Element("animation");
                 if (xAnimation != null)
                 {
