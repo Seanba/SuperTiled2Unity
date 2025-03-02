@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -21,13 +20,13 @@ namespace SuperTiled2Unity.Editor
             protected set => m_ImporterVersion = value;
         }
 
+        public AssetImportContext AssetImportContext { get; private set; }
+
         // For tracking assets and dependencies imported by SuperTiled2Unity
         private SuperAsset m_SuperAsset;
 
         // For keeping track of errors while our asset and dependencies are being imported
         protected ImportErrors ImportErrors { get; private set; }
-
-        protected AssetImportContext AssetImportContext { get; private set; }
 
         public override sealed void OnImportAsset(AssetImportContext ctx)
         {

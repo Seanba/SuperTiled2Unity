@@ -93,49 +93,12 @@ namespace SuperTiled2Unity.Editor
             m_SuperTileset.m_IsImageCollection = false;
 
             XElement xImage = xTileset.Element("image");
-            // fixit - source may be a texture or an aseprite file
-            //  - need different ways to get at the texture
-            //  - use DependsOnArtifact because file may not yet be imported
-            //  - Don't use RequestDependencyAssetAtPath, we need something specific
-            //  - Do we even care about PPU? It doesn't matter for raw textures. Does it for aseprites?
-            //  - width and height won't match for aseprite texture (which is an atlas of sorts)
-            string textureLocalPath = xImage.GetAttributeAs<string>("source");
-            int textureWidth = xImage.GetAttributeAs<int>("width");
-            int textureHeight = xImage.GetAttributeAs<int>("height");
+            string sourceRelativePath = xImage.GetAttributeAs<string>("source");
+            int expectedWidth = xImage.GetAttributeAs<int>("width");
+            int expectedHeight = xImage.GetAttributeAs<int>("height");
 
-            bool forceErrorTiles = false;
-
-            // Load the texture. We will make sprites and tiles out of this image.
-            var tex2d = m_Importer.RequestDependencyAssetAtPath<Texture2D>(textureLocalPath);
-            var textureAssetPath = string.Empty;
-
-            if (tex2d == null)
-            {
-                m_Importer.ReportMissingDependency(textureLocalPath);
-                forceErrorTiles = true;
-            }
-            else
-            {
-                textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
-
-                // fixit - clues on how to use the animation clip in aseprite files
-                //{
-                //    var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(textureAssetPath);
-                //    var bindings = AnimationUtility.GetObjectReferenceCurveBindings(clip);
-                //    var keys = AnimationUtility.GetObjectReferenceCurve(clip, bindings[0]);
-                //    // Keys are the sprites and the times they change. Look out for repeats.
-                //}
-
-                if (AssetImporter.GetAtPath(textureAssetPath) is TextureImporter textureImporter) // fixit - move this to something that only cares about textures (not aseprite)
-                {
-                    textureImporter.GetSourceTextureWidthAndHeight(out int sourceWidth, out int sourceHeight);
-                    if (tex2d.width != sourceWidth || tex2d.height != sourceHeight)
-                    {
-                        forceErrorTiles = true;
-                        m_Importer.ReportWrongTextureSize(textureAssetPath, sourceWidth, sourceHeight, tex2d.width, tex2d.height);
-                    }
-                }
-            }
+            var tilesetAssetResolver = TilesetAssetResolverFactory.CreateFromRelativeAssetPath(m_Importer, sourceRelativePath);
+            tilesetAssetResolver.Prepare(expectedWidth, expectedHeight);
 
             for (int i = 0; i < m_SuperTileset.m_TileCount; i++)
             {
@@ -157,11 +120,11 @@ namespace SuperTiled2Unity.Editor
                 srcy += m_SuperTileset.m_Margin;
 
                 // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
-                srcy = (textureHeight - srcy) - tileHeight;
+                srcy = (expectedHeight - srcy) - tileHeight;
 
-                if (forceErrorTiles || !AddSpriteAndTile(tex2d, i, srcx, srcy, tileWidth, tileHeight))
+                if (!tilesetAssetResolver.AddSpritesAndTile(i, srcx, srcy, tileWidth, tileHeight))
                 {
-                    m_Importer.ReportMissingSprite(textureAssetPath, i, srcx, srcy, tileWidth, tileHeight);
+                    m_Importer.ReportMissingSprite(tilesetAssetResolver.SourceAssetPath, i, srcx, srcy, tileWidth, tileHeight);
                     AddErrorTile(i, NamedColors.HotPink, tileWidth, tileHeight);
                 }
             }
