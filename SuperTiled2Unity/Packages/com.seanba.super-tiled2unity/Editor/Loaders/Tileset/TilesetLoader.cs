@@ -124,9 +124,6 @@ namespace SuperTiled2Unity.Editor
                 srcy += y * m_SuperTileset.m_Spacing;
                 srcy += m_SuperTileset.m_Margin;
 
-                // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
-                srcy = (expectedHeight - srcy) - tileHeight; // fixit - shouldn't do this transform here
-
                 if (!tilesetAssetResolver.AddSpritesAndTile(i, srcx, srcy, tileWidth, tileHeight))
                 {
                     m_Importer.ReportMissingSprite(tilesetAssetResolver.SourceAssetPath, i, srcx, srcy, tileWidth, tileHeight);
@@ -135,7 +132,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private void BuildTilesetFromCollection(XElement xTileset) // fixit - add support for aseprite files
+        private void BuildTilesetFromCollection(XElement xTileset)
         {
             m_SuperTileset.m_IsImageCollection = true;
 
@@ -146,40 +143,24 @@ namespace SuperTiled2Unity.Editor
 
                 if (xImage != null)
                 {
-                    string textureLocalPath = xImage.GetAttributeAs<string>("source");
+                    string sourceRelativePath = xImage.GetAttributeAs<string>("source");
                     int texture_w = xImage.GetAttributeAs<int>("width");
                     int texture_h = xImage.GetAttributeAs<int>("height");
 
-                    bool forceErrorTiles = false;
+                    var tilesetAssetResolver = TilesetAssetResolverFactory.CreateFromRelativeAssetPath(m_Importer, m_SuperTileset, sourceRelativePath);
+                    tilesetAssetResolver.InternalId = m_InternalId;
+                    tilesetAssetResolver.ColliderType = ColliderType;
+                    tilesetAssetResolver.Prepare(texture_w, texture_h);
 
-                    var tex2d = m_Importer.RequestDependencyAssetAtPath<Texture2D>(textureLocalPath);
-                    var textureAssetPath = string.Empty;
-
-                    // Load the texture. We will make sprites and tiles out of this image.
-                    if (tex2d == null)
-                    {
-                        m_Importer.ReportMissingDependency(textureLocalPath);
-                        forceErrorTiles = true;
-                    }
-                    else
-                    {
-                        textureAssetPath = AssetDatabase.GetAssetPath(tex2d);
-                    }
-
+                    // The tile may be a subset of the texture
                     int tile_x = xTile.GetAttributeAs<int>("x", 0);
                     int tile_y = xTile.GetAttributeAs<int>("y", 0);
                     int tile_w = xTile.GetAttributeAs<int>("width", texture_w);
                     int tile_h = xTile.GetAttributeAs<int>("height", texture_h);
 
-                    // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
-                    if (tex2d != null)
+                    if (!tilesetAssetResolver.AddSpritesAndTile(tileIndex, tile_x, tile_y, tile_w, tile_h))
                     {
-                        tile_y = (tex2d.height - tile_y) - tile_h;
-                    }
-
-                    if (forceErrorTiles || !AddSpriteAndTile(tex2d, tileIndex, tile_x, tile_y, tile_w, tile_h))
-                    {
-                         m_Importer.ReportMissingSprite(textureAssetPath, tileIndex, tile_x, tile_y, tile_w, tile_h);
+                         m_Importer.ReportMissingSprite(tilesetAssetResolver.SourceAssetPath, tileIndex, tile_x, tile_y, tile_w, tile_h);
                         AddErrorTile(tileIndex, NamedColors.DeepPink, tile_w, tile_h);
                     }
                 }

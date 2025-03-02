@@ -29,6 +29,9 @@ namespace SuperTiled2Unity.Editor
                 return false;
             }
 
+            // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
+            srcy = (ExpectedHeight - srcy) - tileHeight;
+
             var assetName = Path.GetFileNameWithoutExtension(TiledAssetImporter.assetPath);
             var spriteName = $"{assetName}.Sprite.{tileId}";
             var tileName = $"{assetName}.Tile.{tileId}";
