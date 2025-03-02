@@ -3,7 +3,8 @@
     // The resolver to use when we have an issue with the source asset for tilesets
     internal sealed class TilesetAssetResolverError : TilesetAssetResolver
     {
-        public TilesetAssetResolverError(string sourceAssetPath) : base(sourceAssetPath)
+        public TilesetAssetResolverError(string sourceAssetPath, TiledAssetImporter tiledAssetImporter, SuperTileset superTileset)
+            : base(sourceAssetPath, tiledAssetImporter, superTileset)
         {
         }
 

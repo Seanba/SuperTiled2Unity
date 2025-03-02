@@ -97,8 +97,8 @@ namespace SuperTiled2Unity.Editor
             int expectedWidth = xImage.GetAttributeAs<int>("width");
             int expectedHeight = xImage.GetAttributeAs<int>("height");
 
-            var tilesetAssetResolver = TilesetAssetResolverFactory.CreateFromRelativeAssetPath(m_Importer, sourceRelativePath);
-            tilesetAssetResolver.Prepare(expectedWidth, expectedHeight);
+            var tilesetAssetResolver = TilesetAssetResolverFactory.CreateFromRelativeAssetPath(m_Importer, m_SuperTileset, sourceRelativePath);
+            tilesetAssetResolver.Prepare(expectedWidth, expectedHeight, m_InternalId);
 
             for (int i = 0; i < m_SuperTileset.m_TileCount; i++)
             {
@@ -120,7 +120,7 @@ namespace SuperTiled2Unity.Editor
                 srcy += m_SuperTileset.m_Margin;
 
                 // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
-                srcy = (expectedHeight - srcy) - tileHeight;
+                srcy = (expectedHeight - srcy) - tileHeight; // fixit - shouldn't do this transform here
 
                 if (!tilesetAssetResolver.AddSpritesAndTile(i, srcx, srcy, tileWidth, tileHeight))
                 {

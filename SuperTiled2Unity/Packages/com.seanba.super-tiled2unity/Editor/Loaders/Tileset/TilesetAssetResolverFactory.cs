@@ -6,7 +6,7 @@ namespace SuperTiled2Unity.Editor
 {
     internal static class TilesetAssetResolverFactory
     {
-        internal static TilesetAssetResolver CreateFromRelativeAssetPath(TiledAssetImporter tiledAssetImporter, string relativeAssetPath)
+        internal static TilesetAssetResolver CreateFromRelativeAssetPath(TiledAssetImporter tiledAssetImporter, SuperTileset superTileset, string relativeAssetPath)
         {
             // The relative path passed in is relative to the asset path of the Tiled Asset
             // Asset is not in our cache so load it from the asset database
@@ -30,7 +30,7 @@ namespace SuperTiled2Unity.Editor
             if (!AssetPath.TryAbsoluteToAsset(ref requestedAssetPath))
             {
                 tiledAssetImporter.ReportMissingDependency(absPath);
-                return new TilesetAssetResolverError(requestedAssetPath);
+                return new TilesetAssetResolverError(requestedAssetPath, tiledAssetImporter, superTileset);
             }
 
             // Keep track that the asset is a dependency
@@ -45,15 +45,15 @@ namespace SuperTiled2Unity.Editor
 
             if (dependencyImporter is TextureImporter textureImporter)
             {
-                return new TilesetAssetResolverTexture(requestedAssetPath, textureImporter);
+                return new TilesetAssetResolverTexture(requestedAssetPath, tiledAssetImporter, superTileset, textureImporter);
             }
             else if (dependencyImporter is AsepriteImporter)
             {
-                return new TilesetAssetResolverAseprite(requestedAssetPath);
+                return new TilesetAssetResolverAseprite(requestedAssetPath, tiledAssetImporter, superTileset);
             }
 
             tiledAssetImporter.ReportGenericError($"Unknown asset importer for '{requestedAssetPath}'");
-            return new TilesetAssetResolverError(requestedAssetPath);
+            return new TilesetAssetResolverError(requestedAssetPath, tiledAssetImporter, superTileset);
         }
     }
 }

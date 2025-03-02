@@ -2,7 +2,8 @@
 {
     internal sealed class TilesetAssetResolverAseprite : TilesetAssetResolver
     {
-        public TilesetAssetResolverAseprite(string sourceAssetPath) : base(sourceAssetPath)
+        public TilesetAssetResolverAseprite(string sourceAssetPath, TiledAssetImporter tiledAssetImporter, SuperTileset superTileset)
+            : base(sourceAssetPath, tiledAssetImporter, superTileset)
         {
         }
 

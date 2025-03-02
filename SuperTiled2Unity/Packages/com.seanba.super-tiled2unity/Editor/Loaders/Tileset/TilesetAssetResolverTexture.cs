@@ -10,9 +10,10 @@ namespace SuperTiled2Unity.Editor
 
         private Texture2D m_Texture;
 
-        public TilesetAssetResolverTexture(string sourceAssetPath, TextureImporter textureImporter) : base(sourceAssetPath)
+        public TilesetAssetResolverTexture(string sourceAssetPath, TiledAssetImporter tiledImporter, SuperTileset superTileset, TextureImporter textureImporter)
+            : base(sourceAssetPath, tiledImporter, superTileset)
         {
-            TextureImporter = TextureImporter;
+            TextureImporter = textureImporter;
         }
 
         public override bool AddSpritesAndTile(int tileId, int srcx, int srcy, int tileWidth, int tileHeight)
@@ -22,10 +23,10 @@ namespace SuperTiled2Unity.Editor
                 return false;
             }
 
-            var assetName = Path.GetFileNameWithoutExtension(m_Importer.assetPath); // fixit - assetPath of TiledAsset, not the source
+            var assetName = Path.GetFileNameWithoutExtension(TiledAssetImporter.assetPath);
             var spriteName = $"{assetName}.Sprite.{tileId}";
             var tileName = $"{assetName}.Tile.{tileId}";
-            var rect = new Rect(src, srcy, tileWidth, tileHeight);
+            var rect = new Rect(srcx, srcy, tileWidth, tileHeight);
 
             Sprite spriteToAdd;
             SuperTile tileToAdd;
@@ -34,7 +35,7 @@ namespace SuperTiled2Unity.Editor
             //      Add them all at the end once we determine this will succeed
             // Create and add the sprite that the tile is based off of
             {
-                spriteToAdd = Sprite.Create(m_Texture, rect, Vector2.zero, m_SuperTileset.m_PixelsPerUnit);
+                spriteToAdd = Sprite.Create(m_Texture, rect, Vector2.zero, SuperTileset.m_PixelsPerUnit);
                 spriteToAdd.name = spriteName;
             }
 
@@ -46,31 +47,31 @@ namespace SuperTiled2Unity.Editor
                 tileToAdd.m_Sprite = spriteToAdd;
                 tileToAdd.m_Width = rect.width;
                 tileToAdd.m_Height = rect.height;
-                tileToAdd.m_TileOffsetX = m_SuperTileset.m_TileOffset.x;
-                tileToAdd.m_TileOffsetY = m_SuperTileset.m_TileOffset.y;
-                tileToAdd.m_ObjectAlignment = m_SuperTileset.m_ObjectAlignment;
-                tileToAdd.m_TileRenderSize = m_SuperTileset.m_TileRenderSize;
-                tileToAdd.m_FillMode = m_SuperTileset.m_FillMode;
+                tileToAdd.m_TileOffsetX = SuperTileset.m_TileOffset.x;
+                tileToAdd.m_TileOffsetY = SuperTileset.m_TileOffset.y;
+                tileToAdd.m_ObjectAlignment = SuperTileset.m_ObjectAlignment;
+                tileToAdd.m_TileRenderSize = SuperTileset.m_TileRenderSize;
+                tileToAdd.m_FillMode = SuperTileset.m_FillMode;
 
-                if (m_Importer is TsxAssetImporter tsxAssetImporter)
+                if (TiledAssetImporter is TsxAssetImporter tsxAssetImporter)
                 {
                     tileToAdd.m_ColliderType = tsxAssetImporter.m_ColliderType;
                 }
 
-                m_SuperTileset.m_Tiles.Add(tileToAdd);
+                SuperTileset.m_Tiles.Add(tileToAdd);
             }
 
             // The identifier for the sprite and tile *must* be unique amoung all other objects that are added to the same import context
             if (spriteToAdd)
             {
-                string uniqueId = $"{spriteName}.{m_InternalId}";
-                m_Importer.SuperImportContext.AddObjectToAsset(uniqueId, spriteToAdd);
+                string uniqueId = $"{spriteName}.{InternalId}";
+                TiledAssetImporter.SuperImportContext.AddObjectToAsset(uniqueId, spriteToAdd);
             }
 
             if (tileToAdd)
             {
-                string uniqueId = $"{tileName}.{m_InternalId}";
-                m_Importer.SuperImportContext.AddObjectToAsset(uniqueId, tileToAdd);
+                string uniqueId = $"{tileName}.{InternalId}";
+                TiledAssetImporter.SuperImportContext.AddObjectToAsset(uniqueId, tileToAdd);
             }
 
             return true;
