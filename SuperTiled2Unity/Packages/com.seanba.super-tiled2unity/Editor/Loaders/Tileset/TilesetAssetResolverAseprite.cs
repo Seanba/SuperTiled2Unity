@@ -1,6 +1,6 @@
 ﻿namespace SuperTiled2Unity.Editor
 {
-    internal sealed class TilesetAssetResolverAseprite : TilesetAssetResolver // fixit - get working for aseprite
+    internal sealed class TilesetAssetResolverAseprite : TilesetAssetResolver
     {
         public TilesetAssetResolverAseprite(string sourceAssetPath, TiledAssetImporter tiledAssetImporter, SuperTileset superTileset)
             : base(sourceAssetPath, tiledAssetImporter, superTileset)
@@ -14,6 +14,8 @@
 
         protected override void OnPrepare()
         {
+            // fixit - here's where the real work begings for Aseprite support
+            // fixit - individual layers not supported
         }
     }
 }
