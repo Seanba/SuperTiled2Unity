@@ -1,4 +1,6 @@
-﻿namespace SuperTiled2Unity.Editor
+﻿using UnityEngine.Tilemaps;
+
+namespace SuperTiled2Unity.Editor
 {
     // Interface for resolving assets (textures, sprites, tiles) for importing tilesets
     internal abstract class TilesetAssetResolver
@@ -9,7 +11,9 @@
 
         public int ExpectedWidth { get; private set; }
         public int ExpectedHeight { get; private set; }
-        public int InternalId { get; private set; }
+
+        public int InternalId { get; set; }
+        public Tile.ColliderType ColliderType { get; set; }
 
         public TilesetAssetResolver(string sourceAssetPath, TiledAssetImporter tiledAssetImporter, SuperTileset superTileset)
         {
@@ -18,11 +22,10 @@
             SuperTileset = superTileset;
         }
 
-        public virtual void Prepare(int expectedWidth, int expectedHeight, int internalId)
+        public virtual void Prepare(int expectedWidth, int expectedHeight)
         {
             ExpectedWidth = expectedWidth;
             ExpectedHeight = expectedHeight;
-            InternalId = internalId;
             OnPrepare();
         }
 

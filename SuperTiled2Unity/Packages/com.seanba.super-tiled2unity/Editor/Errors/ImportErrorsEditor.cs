@@ -134,7 +134,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private static void DisplayMissingSprites(MessageBuilderUI ui, ImportErrors importErrors) // fixit - do we need this now?
+        private static void DisplayMissingSprites(MessageBuilderUI ui, ImportErrors importErrors)
         {
             if (importErrors.m_MissingTileSprites.Count > 0)
             {

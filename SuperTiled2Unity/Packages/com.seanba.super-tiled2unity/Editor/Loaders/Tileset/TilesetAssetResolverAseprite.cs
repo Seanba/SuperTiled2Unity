@@ -1,6 +1,6 @@
 ﻿namespace SuperTiled2Unity.Editor
 {
-    internal sealed class TilesetAssetResolverAseprite : TilesetAssetResolver
+    internal sealed class TilesetAssetResolverAseprite : TilesetAssetResolver // fixit - get working for aseprite
     {
         public TilesetAssetResolverAseprite(string sourceAssetPath, TiledAssetImporter tiledAssetImporter, SuperTileset superTileset)
             : base(sourceAssetPath, tiledAssetImporter, superTileset)
@@ -9,12 +9,11 @@
 
         public override bool AddSpritesAndTile(int tileId, int srcx, int srcy, int tileWidth, int tileHeight)
         {
-            return false; // fixit - add sprites and tile for aseprite
+            return false;
         }
 
         protected override void OnPrepare()
         {
-            // fixit - get aseprite internal we need
         }
     }
 }

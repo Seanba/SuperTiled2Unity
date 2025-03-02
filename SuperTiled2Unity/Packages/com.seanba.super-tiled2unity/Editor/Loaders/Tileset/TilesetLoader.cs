@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace SuperTiled2Unity.Editor
 {
@@ -15,6 +16,8 @@ namespace SuperTiled2Unity.Editor
         private readonly SuperTileset m_SuperTileset;
         private readonly TiledAssetImporter m_Importer;
         private readonly int m_InternalId;
+
+        public Tile.ColliderType ColliderType { get; set; }
 
         public TilesetLoader(SuperTileset tileset, TiledAssetImporter importer, int internalId)
         {
@@ -98,7 +101,9 @@ namespace SuperTiled2Unity.Editor
             int expectedHeight = xImage.GetAttributeAs<int>("height");
 
             var tilesetAssetResolver = TilesetAssetResolverFactory.CreateFromRelativeAssetPath(m_Importer, m_SuperTileset, sourceRelativePath);
-            tilesetAssetResolver.Prepare(expectedWidth, expectedHeight, m_InternalId);
+            tilesetAssetResolver.InternalId = m_InternalId;
+            tilesetAssetResolver.ColliderType = ColliderType;
+            tilesetAssetResolver.Prepare(expectedWidth, expectedHeight);
 
             for (int i = 0; i < m_SuperTileset.m_TileCount; i++)
             {

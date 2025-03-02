@@ -31,8 +31,6 @@ namespace SuperTiled2Unity.Editor
             Sprite spriteToAdd;
             SuperTile tileToAdd;
 
-            // fixit - might have multiple sprites (for animating tiles in aseprite files)
-            //      Add them all at the end once we determine this will succeed
             // Create and add the sprite that the tile is based off of
             {
                 spriteToAdd = Sprite.Create(m_Texture, rect, Vector2.zero, SuperTileset.m_PixelsPerUnit);
@@ -52,11 +50,6 @@ namespace SuperTiled2Unity.Editor
                 tileToAdd.m_ObjectAlignment = SuperTileset.m_ObjectAlignment;
                 tileToAdd.m_TileRenderSize = SuperTileset.m_TileRenderSize;
                 tileToAdd.m_FillMode = SuperTileset.m_FillMode;
-
-                if (TiledAssetImporter is TsxAssetImporter tsxAssetImporter)
-                {
-                    tileToAdd.m_ColliderType = tsxAssetImporter.m_ColliderType;
-                }
 
                 SuperTileset.m_Tiles.Add(tileToAdd);
             }
