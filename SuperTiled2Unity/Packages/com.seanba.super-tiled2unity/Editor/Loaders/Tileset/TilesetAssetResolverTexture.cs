@@ -6,15 +6,12 @@ namespace SuperTiled2Unity.Editor
 {
     internal sealed class TilesetAssetResolverTexture : TilesetAssetResolver
     {
-        public TextureImporter TextureImporter { get; }
-
         private Texture2D m_Texture;
         private bool m_IsSizeValid;
 
-        public TilesetAssetResolverTexture(string sourceAssetPath, TiledAssetImporter tiledImporter, SuperTileset superTileset, TextureImporter textureImporter)
+        public TilesetAssetResolverTexture(string sourceAssetPath, TiledAssetImporter tiledImporter, SuperTileset superTileset)
             : base(sourceAssetPath, tiledImporter, superTileset)
         {
-            TextureImporter = textureImporter;
         }
 
         public override bool AddSpritesAndTile(int tileId, int srcx, int srcy, int tileWidth, int tileHeight)

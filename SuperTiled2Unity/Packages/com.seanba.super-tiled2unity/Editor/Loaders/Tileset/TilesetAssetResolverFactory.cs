@@ -43,13 +43,13 @@ namespace SuperTiled2Unity.Editor
             // This will tell us which kind of resolver to create
             var dependencyImporter = AssetImporter.GetAtPath(requestedAssetPath);
 
-            if (dependencyImporter is TextureImporter textureImporter)
+            if (dependencyImporter is TextureImporter)
             {
-                return new TilesetAssetResolverTexture(requestedAssetPath, tiledAssetImporter, superTileset, textureImporter);
+                return new TilesetAssetResolverTexture(requestedAssetPath, tiledAssetImporter, superTileset);
             }
-            else if (dependencyImporter is AsepriteImporter)
+            else if (dependencyImporter is AsepriteImporter asepriteImporter)
             {
-                return new TilesetAssetResolverAseprite(requestedAssetPath, tiledAssetImporter, superTileset);
+                return new TilesetAssetResolverAseprite(requestedAssetPath, tiledAssetImporter, superTileset, asepriteImporter);
             }
 
             tiledAssetImporter.ReportGenericError($"Unknown asset importer for '{requestedAssetPath}'");

@@ -118,16 +118,25 @@ namespace SuperTiled2Unity.Editor
             if (importErrors.m_ErrorsInAssetDependencies.Count > 0)
             {
                 ui.BoldLabel("Dependency Errors - Inspect Assets For Further Details");
-                foreach (var assetPath in importErrors.m_ErrorsInAssetDependencies)
+                foreach (var dependencyErrors in importErrors.m_ErrorsInAssetDependencies)
                 {
-                    ui.HelpBox($"Errors found in file '{assetPath}'\nInspect asset for details.");
+                    StringBuilder builder = new StringBuilder();
+                    builder.AppendLine($"Errors found in file '{dependencyErrors.m_DependencyAssetPath}'");
+
+                    foreach (var reason in dependencyErrors.m_Reasons)
+                    {
+                        builder.AppendLine(reason);
+                    }
+
+                    builder.AppendLine("Inspect asset for details.");
+                    ui.HelpBox(builder.ToString());
 
                     using (new GuiScopedBackgroundColor(NamedColors.LightPink))
                     {
-                        var assetName = Path.GetFileName(assetPath);
+                        var assetName = Path.GetFileName(dependencyErrors.m_DependencyAssetPath);
                         if (GUILayout.Button($"Inspect '{assetName}'"))
                         {
-                            Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(assetPath);
+                            Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(dependencyErrors.m_DependencyAssetPath);
                         }
                     }
                 }

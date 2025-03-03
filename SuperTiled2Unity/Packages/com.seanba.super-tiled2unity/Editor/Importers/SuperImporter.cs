@@ -150,8 +150,13 @@ namespace SuperTiled2Unity.Editor
 
         public void ReportErrorsInDependency(string dependencyAssetPath)
         {
+            ReportErrorsInDependency(dependencyAssetPath, string.Empty);
+        }
+
+        public void ReportErrorsInDependency(string dependencyAssetPath, string reason)
+        {
             AddImportErrorsScriptableObjectIfNeeded();
-            ImportErrors.ReportErrorsInDependency(dependencyAssetPath);
+            ImportErrors.ReportErrorsInDependency(dependencyAssetPath, reason);
         }
 
         public void ReportMissingSprite(string textureAssetPath, int spriteId, int x, int y, int w, int h)
