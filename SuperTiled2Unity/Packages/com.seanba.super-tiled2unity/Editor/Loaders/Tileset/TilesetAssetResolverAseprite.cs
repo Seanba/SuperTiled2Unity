@@ -97,7 +97,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             // There should only be one animation clip. This is how we know which frames are visible when and for how long.
-            m_AseAnimationClip = allObjects.OfType<AnimationClip>().FirstOrDefault(); // fixit - does this need to be a data member?
+            m_AseAnimationClip = allObjects.OfType<AnimationClip>().FirstOrDefault(); // fixit - does this even need to be a data member?
             if (m_AseAnimationClip == null)
             {
                 TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not load Animation Clip");
@@ -105,6 +105,7 @@ namespace SuperTiled2Unity.Editor
             else
             {
                 // fixit - every sprite must be big enough (check for that here?)
+                // fixit - I think every sprite *must* be the same size. Especially if we are using tilesheets.
                 var bindings = AnimationUtility.GetObjectReferenceCurveBindings(m_AseAnimationClip);
                 if (bindings?.Any() != true)
                 {
@@ -122,7 +123,7 @@ namespace SuperTiled2Unity.Editor
                     else
                     {
                         // Finally have the animation data we need
-                        // 1 / m_AseAnimationClip.frameRate = the time of the final frame, I think // fixit
+                        // 1 / m_AseAnimationClip.frameRate == the time of the final frame, I think // fixit
                         //keys[0].time  // absolute start time
                         //keys[1].value // Sprite type expeted
                         Debug.LogError($"fixit - found keys: {keys.Length}");
