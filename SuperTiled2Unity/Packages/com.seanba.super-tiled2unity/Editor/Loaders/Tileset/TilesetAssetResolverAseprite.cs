@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.U2D.Aseprite;
@@ -8,6 +9,47 @@ namespace SuperTiled2Unity.Editor
 {
     internal sealed class TilesetAssetResolverAseprite : TilesetAssetResolver
     {
+        private class Frame
+        {
+            public Sprite Sprite { get; set; }
+            public float Timestamp { get; set; }
+            public float Duration { get; set; }
+        }
+
+        private class FrameManager
+        {
+            public List<Frame> Frames { get; } = new List<Frame>();
+
+            public void AddKey(float timestamp, Sprite sprite, float initialDuration)
+            {
+                // Can we merge with a privous frame? This will close out the animation data.
+                if (Frames.LastOrDefault(f => f.Sprite == sprite) != null)
+                {
+                    var frame = Frames.Last();
+                    frame.Duration = (timestamp + initialDuration) - frame.Timestamp;
+                }
+                else
+                {
+                    if (Frames.Any())
+                    {
+                        // Close the last frame
+                        var lastFrame = Frames.Last();
+                        lastFrame.Duration = timestamp - lastFrame.Timestamp;
+                    }
+
+                    // Add the new frame
+                    var frame = new Frame
+                    {
+                        Sprite = sprite,
+                        Timestamp = timestamp,
+                        Duration = initialDuration,
+                    };
+
+                    Frames.Add(frame);
+                }
+            }
+        }
+
         public AsepriteImporter AsepriteImporter { get; }
 
         private Texture2D m_AseTexture;
@@ -15,6 +57,7 @@ namespace SuperTiled2Unity.Editor
         private List<Sprite> m_AseSprites;
 
         private bool m_WasSuccessfullyImported;
+        private FrameManager m_FrameManager = new FrameManager();
 
         public TilesetAssetResolverAseprite(string sourceAssetPath, TiledAssetImporter tiledAssetImporter, SuperTileset superTileset, AsepriteImporter asepriteImporter)
             : base(sourceAssetPath, tiledAssetImporter, superTileset)
@@ -44,12 +87,54 @@ namespace SuperTiled2Unity.Editor
                 return false;
             }
 
-            // fixit - add sprites for each frame
+            // Add sprites for each frame
+            for (int i = 0; i < m_FrameManager.Frames.Count; i++)
+            {
+                var frame = m_FrameManager.Frames[i];
 
-            // fixit - add the tile
-            // fixit - The tile must have animation sprites (created just above)
+                var sourceTexture = m_AseTexture;
+                var sourceSprite = frame.Sprite;
 
-            return false;
+                // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
+                srcy = (ExpectedHeight - srcy) - tileHeight;
+
+                var assetName = Path.GetFileNameWithoutExtension(TiledAssetImporter.assetPath);
+                var spriteName = $"{assetName}.Sprite.{tileId}.f{i}";
+                var rect = new Rect(srcx, srcy, tileWidth, tileHeight);
+                rect.x += sourceSprite.rect.x;
+                rect.y += sourceSprite.rect.y;
+
+                // Create and add the sprite that the tile is based off of
+                var spriteToAdd = Sprite.Create(sourceTexture, rect, Vector2.zero, SuperTileset.m_PixelsPerUnit);
+                spriteToAdd.name = spriteName;
+
+                string spriteUniqueId = $"{spriteName}.{InternalId}";
+                TiledAssetImporter.SuperImportContext.AddObjectToAsset(spriteUniqueId, spriteToAdd);
+            
+                // Create and add the tile (only for the first sprite) // fixit - add the rest as animation sprites
+                if (i == 0)
+                {
+                    var tileName = $"{assetName}.Tile.{tileId}";
+                    SuperTile tileToAdd = SuperTile.CreateSuperTile();
+                    tileToAdd.m_TileId = tileId;
+                    tileToAdd.name = tileName;
+                    tileToAdd.m_Sprite = spriteToAdd;
+                    tileToAdd.m_Width = rect.width;
+                    tileToAdd.m_Height = rect.height;
+                    tileToAdd.m_TileOffsetX = SuperTileset.m_TileOffset.x;
+                    tileToAdd.m_TileOffsetY = SuperTileset.m_TileOffset.y;
+                    tileToAdd.m_ObjectAlignment = SuperTileset.m_ObjectAlignment;
+                    tileToAdd.m_TileRenderSize = SuperTileset.m_TileRenderSize;
+                    tileToAdd.m_FillMode = SuperTileset.m_FillMode;
+
+                    SuperTileset.m_Tiles.Add(tileToAdd);
+
+                    string tileUniqueId = $"{tileName}.{InternalId}";
+                    TiledAssetImporter.SuperImportContext.AddObjectToAsset(tileUniqueId, tileToAdd);
+                }
+            }
+
+            return true;
         }
 
         protected override void OnPrepare()
@@ -104,8 +189,7 @@ namespace SuperTiled2Unity.Editor
             }
             else
             {
-                // fixit - every sprite must be big enough (check for that here?)
-                // fixit - I think every sprite *must* be the same size. Especially if we are using tilesheets.
+                // fixit - every sprite must be big enough. And be the same size.
                 var bindings = AnimationUtility.GetObjectReferenceCurveBindings(m_AseAnimationClip);
                 if (bindings?.Any() != true)
                 {
@@ -120,13 +204,19 @@ namespace SuperTiled2Unity.Editor
                         m_WasSuccessfullyImported = false;
                         TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not find animation curve keys.");
                     }
+                    if (keys.Any(k => !(k.value is Sprite)))
+                    {
+                        m_WasSuccessfullyImported = false;
+                        TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Animation curve keys do not have sprites");
+                    }
                     else
                     {
                         // Finally have the animation data we need
-                        // 1 / m_AseAnimationClip.frameRate == the time of the final frame, I think // fixit
-                        //keys[0].time  // absolute start time
-                        //keys[1].value // Sprite type expeted
-                        Debug.LogError($"fixit - found keys: {keys.Length}");
+                        float initialDuration = 1.0f / m_AseAnimationClip.frameRate;
+                        foreach (var key in keys)
+                        {
+                            m_FrameManager.AddKey(key.time, key.value as Sprite, initialDuration); // fixit - get this working
+                        }
                     }
                 }
             }
