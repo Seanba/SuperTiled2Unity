@@ -167,60 +167,6 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        private bool AddSpriteAndTile(Texture2D tex2d, int tileId, int x, int y, int width, int height)
-        {
-            var assetName = Path.GetFileNameWithoutExtension(m_Importer.assetPath);
-            var spriteName = $"{assetName}.Sprite.{tileId}";
-            var tileName = $"{assetName}.Tile.{tileId}";
-            var rect = new Rect(x, y, width, height);
-
-            Sprite spriteToAdd;
-            SuperTile tileToAdd;
-
-            // Create and add the sprite that the tile is based off of
-            {
-                spriteToAdd = Sprite.Create(tex2d, rect, Vector2.zero, m_SuperTileset.m_PixelsPerUnit);
-                spriteToAdd.name = spriteName;
-            }
-
-            // Create and add the tile
-            {
-                tileToAdd = SuperTile.CreateSuperTile();
-                tileToAdd.m_TileId = tileId;
-                tileToAdd.name = tileName;
-                tileToAdd.m_Sprite = spriteToAdd;
-                tileToAdd.m_Width = rect.width;
-                tileToAdd.m_Height = rect.height;
-                tileToAdd.m_TileOffsetX = m_SuperTileset.m_TileOffset.x;
-                tileToAdd.m_TileOffsetY = m_SuperTileset.m_TileOffset.y;
-                tileToAdd.m_ObjectAlignment = m_SuperTileset.m_ObjectAlignment;
-                tileToAdd.m_TileRenderSize = m_SuperTileset.m_TileRenderSize;
-                tileToAdd.m_FillMode = m_SuperTileset.m_FillMode;
-
-                if (m_Importer is TsxAssetImporter tsxAssetImporter)
-                {
-                    tileToAdd.m_ColliderType = tsxAssetImporter.m_ColliderType;
-                }
-
-                m_SuperTileset.m_Tiles.Add(tileToAdd);
-            }
-
-            // The identifier for the sprite and tile *must* be unique amoung all other objects that are added to the same import context
-            if (spriteToAdd)
-            {
-                string uniqueId = $"{spriteName}.{m_InternalId}";
-                m_Importer.SuperImportContext.AddObjectToAsset(uniqueId, spriteToAdd);
-            }
-
-            if (tileToAdd)
-            {
-                string uniqueId = $"{tileName}.{m_InternalId}";
-                m_Importer.SuperImportContext.AddObjectToAsset(uniqueId, tileToAdd);
-            }
-
-            return true;
-        }
-
         private void AddErrorTile(int tileId, Color tint, int width, int height)
         {
             BadTileSpriteProvider.instance.CreateSpriteAndTile(tileId, tint, width, height, m_SuperTileset, out Sprite sprite, out SuperBadTile tile);

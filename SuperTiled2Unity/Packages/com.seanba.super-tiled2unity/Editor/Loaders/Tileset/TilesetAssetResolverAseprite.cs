@@ -8,9 +8,7 @@ using UnityEngine;
 namespace SuperTiled2Unity.Editor
 {
     // fixit - additional testing
-    // PPU settings for ASE, TSX, and TMX
-    // Mosaic padding (ASE) is not updating?
-    // Can animations last longer than a second?
+    // PPU settings. TSX and TMX must match. TSX doesn't have to match texture.
     internal sealed class TilesetAssetResolverAseprite : TilesetAssetResolver
     {
         private class Frame
@@ -202,14 +200,13 @@ namespace SuperTiled2Unity.Editor
             }
 
             // There should only be one animation clip. This is how we know which frames are visible when and for how long.
-            var animationClip = allObjects.OfType<AnimationClip>().FirstOrDefault(); // fixit - does this even need to be a data member?
+            var animationClip = allObjects.OfType<AnimationClip>().FirstOrDefault();
             if (animationClip == null)
             {
                 TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not load Animation Clip");
             }
             else
             {
-                // fixit - every sprite must be big enough. And be the same size.
                 var bindings = AnimationUtility.GetObjectReferenceCurveBindings(animationClip);
                 if (bindings?.Any() != true)
                 {
@@ -224,10 +221,15 @@ namespace SuperTiled2Unity.Editor
                         m_WasSuccessfullyImported = false;
                         TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not find animation curve keys.");
                     }
-                    if (keys.Any(k => !(k.value is Sprite)))
+                    else if (keys.Any(k => !(k.value is Sprite)))
                     {
                         m_WasSuccessfullyImported = false;
-                        TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Animation curve keys do not have sprites");
+                        TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Animation curve keys do not have sprites.");
+                    }
+                    else if (keys.Select(k => ((Sprite)k.value).rect.size).Distinct().Count() > 1)
+                    {
+                        m_WasSuccessfullyImported = false;
+                        TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "All frames of the animation must be the same size.");
                     }
                     else
                     {

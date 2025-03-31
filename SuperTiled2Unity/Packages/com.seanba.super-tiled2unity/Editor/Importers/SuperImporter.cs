@@ -200,7 +200,6 @@ namespace SuperTiled2Unity.Editor
 
         public void ReportGenericError(string error)
         {
-            Debug.LogError(error);
             AddImportErrorsScriptableObjectIfNeeded();
             ImportErrors.ReportGenericError(error);
         }
