@@ -7,6 +7,10 @@ using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
 {
+    // fixit - additional testing
+    // PPU settings for ASE, TSX, and TMX
+    // Mosaic padding (ASE) is not updating?
+    // Can animations last longer than a second?
     internal sealed class TilesetAssetResolverAseprite : TilesetAssetResolver
     {
         private class Frame
@@ -82,25 +86,39 @@ namespace SuperTiled2Unity.Editor
                 return false;
             }
 
+            if (m_FrameManager.Frames.Count == 0)
+            {
+                return false;
+            }
+
             if (m_AseAnimationClip == null)
             {
                 return false;
             }
 
+            // We only add one tile but many sprites
+            SuperTile tileToAdd = null;
+            var fps = ST2USettings.instance.m_AnimationFramerate;
+            var animationBuilder = new AnimationBuilder(fps);
+
             // Add sprites for each frame
             for (int i = 0; i < m_FrameManager.Frames.Count; i++)
             {
+                int x = srcx;
+                int y = srcy;
+
+                // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
+                y = (ExpectedHeight - y) - tileHeight;
+
                 var frame = m_FrameManager.Frames[i];
 
                 var sourceTexture = m_AseTexture;
                 var sourceSprite = frame.Sprite;
 
-                // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
-                srcy = (ExpectedHeight - srcy) - tileHeight;
-
                 var assetName = Path.GetFileNameWithoutExtension(TiledAssetImporter.assetPath);
                 var spriteName = $"{assetName}.Sprite.{tileId}.f{i}";
-                var rect = new Rect(srcx, srcy, tileWidth, tileHeight);
+
+                var rect = new Rect(x, y, tileWidth, tileHeight);
                 rect.x += sourceSprite.rect.x;
                 rect.y += sourceSprite.rect.y;
 
@@ -110,12 +128,15 @@ namespace SuperTiled2Unity.Editor
 
                 string spriteUniqueId = $"{spriteName}.{InternalId}";
                 TiledAssetImporter.SuperImportContext.AddObjectToAsset(spriteUniqueId, spriteToAdd);
-            
-                // Create and add the tile (only for the first sprite) // fixit - add the rest as animation sprites
-                if (i == 0)
+
+                // Keep track of the frame time on this sprite
+                animationBuilder.AddFrames(spriteToAdd, frame.Duration);
+
+                // Create and add the tile (only for the first sprite)
+                if (i == 0) // fixit - was zero
                 {
                     var tileName = $"{assetName}.Tile.{tileId}";
-                    SuperTile tileToAdd = SuperTile.CreateSuperTile();
+                    tileToAdd = SuperTile.CreateSuperTile();
                     tileToAdd.m_TileId = tileId;
                     tileToAdd.name = tileName;
                     tileToAdd.m_Sprite = spriteToAdd;
@@ -132,6 +153,11 @@ namespace SuperTiled2Unity.Editor
                     string tileUniqueId = $"{tileName}.{InternalId}";
                     TiledAssetImporter.SuperImportContext.AddObjectToAsset(tileUniqueId, tileToAdd);
                 }
+            }
+
+            if (tileToAdd != null)
+            {
+                tileToAdd.m_AnimationSprites = animationBuilder.Sprites.ToArray(); // fixit - this isn't working. The offsets are off or something.
             }
 
             return true;
@@ -215,7 +241,7 @@ namespace SuperTiled2Unity.Editor
                         float initialDuration = 1.0f / m_AseAnimationClip.frameRate;
                         foreach (var key in keys)
                         {
-                            m_FrameManager.AddKey(key.time, key.value as Sprite, initialDuration); // fixit - get this working
+                            m_FrameManager.AddKey(key.time, key.value as Sprite, initialDuration);
                         }
                     }
                 }
