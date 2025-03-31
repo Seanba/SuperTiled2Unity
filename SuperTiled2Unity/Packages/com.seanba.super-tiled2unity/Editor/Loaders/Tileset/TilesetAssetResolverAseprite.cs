@@ -57,7 +57,6 @@ namespace SuperTiled2Unity.Editor
         public AsepriteImporter AsepriteImporter { get; }
 
         private Texture2D m_AseTexture;
-        private AnimationClip m_AseAnimationClip;
         private List<Sprite> m_AseSprites;
 
         private bool m_WasSuccessfullyImported;
@@ -87,11 +86,6 @@ namespace SuperTiled2Unity.Editor
             }
 
             if (m_FrameManager.Frames.Count == 0)
-            {
-                return false;
-            }
-
-            if (m_AseAnimationClip == null)
             {
                 return false;
             }
@@ -133,7 +127,7 @@ namespace SuperTiled2Unity.Editor
                 animationBuilder.AddFrames(spriteToAdd, frame.Duration);
 
                 // Create and add the tile (only for the first sprite)
-                if (i == 0) // fixit - was zero
+                if (i == 0)
                 {
                     var tileName = $"{assetName}.Tile.{tileId}";
                     tileToAdd = SuperTile.CreateSuperTile();
@@ -157,7 +151,7 @@ namespace SuperTiled2Unity.Editor
 
             if (tileToAdd != null)
             {
-                tileToAdd.m_AnimationSprites = animationBuilder.Sprites.ToArray(); // fixit - this isn't working. The offsets are off or something.
+                tileToAdd.m_AnimationSprites = animationBuilder.Sprites.ToArray();
             }
 
             return true;
@@ -208,15 +202,15 @@ namespace SuperTiled2Unity.Editor
             }
 
             // There should only be one animation clip. This is how we know which frames are visible when and for how long.
-            m_AseAnimationClip = allObjects.OfType<AnimationClip>().FirstOrDefault(); // fixit - does this even need to be a data member?
-            if (m_AseAnimationClip == null)
+            var animationClip = allObjects.OfType<AnimationClip>().FirstOrDefault(); // fixit - does this even need to be a data member?
+            if (animationClip == null)
             {
                 TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not load Animation Clip");
             }
             else
             {
                 // fixit - every sprite must be big enough. And be the same size.
-                var bindings = AnimationUtility.GetObjectReferenceCurveBindings(m_AseAnimationClip);
+                var bindings = AnimationUtility.GetObjectReferenceCurveBindings(animationClip);
                 if (bindings?.Any() != true)
                 {
                     m_WasSuccessfullyImported = false;
@@ -224,7 +218,7 @@ namespace SuperTiled2Unity.Editor
                 }
                 else
                 {
-                    var keys = AnimationUtility.GetObjectReferenceCurve(m_AseAnimationClip, bindings[0]);
+                    var keys = AnimationUtility.GetObjectReferenceCurve(animationClip, bindings[0]);
                     if (keys?.Any() != true)
                     {
                         m_WasSuccessfullyImported = false;
@@ -238,7 +232,7 @@ namespace SuperTiled2Unity.Editor
                     else
                     {
                         // Finally have the animation data we need
-                        float initialDuration = 1.0f / m_AseAnimationClip.frameRate;
+                        float initialDuration = 1.0f / animationClip.frameRate;
                         foreach (var key in keys)
                         {
                             m_FrameManager.AddKey(key.time, key.value as Sprite, initialDuration);
