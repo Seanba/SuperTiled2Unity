@@ -15,6 +15,11 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
+        public void RegisterTile(int firstId, SuperTile tile)
+        {
+            m_Tiles[firstId + tile.m_TileId] = tile;
+        }
+
         public void RegisterIgnorableTile(int tileId)
         {
             m_IgnorableTileIds.Add(tileId);

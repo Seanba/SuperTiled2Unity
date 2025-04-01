@@ -317,15 +317,20 @@ namespace SuperTiled2Unity.Editor
             }
             else if (tileset.m_PixelsPerUnit != PixelsPerUnit)
             {
-                // fixit - PPU doesn't match. We need error tiles for this. Just one tile? Added to the TMX?
-                //BadTileSpriteProvider.instance.CreateSpriteAndTile(tileId, tint, width, height, m_SuperTileset, out Sprite sprite, out SuperBadTile tile);
+                // The Pixles Per Unit doesn't match between the TMX and TSX
+                // When this happens we want to report the error and add error tiles to the database
+                foreach (var tile in tileset.m_Tiles)
+                {
+                    BadTileSpriteProvider.instance.CreateSpriteAndTile(tile.m_TileId, Color.yellow, (int)tile.m_Width, (int)tile.m_Height, tileset, PixelsPerUnit, out Sprite badSprite, out SuperBadTile badTile);
 
-                //sprite.hideFlags = HideFlags.HideInHierarchy;
-                //tile.hideFlags = HideFlags.HideInHierarchy;
+                    badSprite.hideFlags = HideFlags.HideInHierarchy;
+                    badTile.hideFlags = HideFlags.HideInHierarchy;
 
-                //m_SuperTileset.m_Tiles.Add(tile);
-                //m_Importer.SuperImportContext.AddObjectToAsset(sprite.name, sprite);
-                //m_Importer.SuperImportContext.AddObjectToAsset(tile.name, tile);
+                    SuperImportContext.AddObjectToAsset(badSprite.name, badSprite);
+                    SuperImportContext.AddObjectToAsset(badTile.name, badTile);
+                    m_GlobalTileDatabase.RegisterTile(firstId, badTile);
+                    ReportWrongPixelsPerUnit(AssetDatabase.GetAssetPath(tileset), tileset.m_PixelsPerUnit, PixelsPerUnit);
+                }
             }
             else
             {

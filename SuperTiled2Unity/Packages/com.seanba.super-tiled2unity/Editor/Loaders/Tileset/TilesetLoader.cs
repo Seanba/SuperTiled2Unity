@@ -167,7 +167,7 @@ namespace SuperTiled2Unity.Editor
 
         private void AddErrorTile(int tileId, Color tint, int width, int height)
         {
-            BadTileSpriteProvider.instance.CreateSpriteAndTile(tileId, tint, width, height, m_SuperTileset, out Sprite sprite, out SuperBadTile tile);
+            BadTileSpriteProvider.instance.CreateSpriteAndTile(tileId, tint, width, height, m_SuperTileset, m_SuperTileset.m_PixelsPerUnit, out Sprite sprite, out SuperBadTile tile);
 
             sprite.hideFlags = HideFlags.HideInHierarchy;
             tile.hideFlags = HideFlags.HideInHierarchy;

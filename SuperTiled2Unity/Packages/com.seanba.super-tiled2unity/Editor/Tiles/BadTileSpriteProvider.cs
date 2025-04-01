@@ -12,7 +12,7 @@ namespace SuperTiled2Unity.Editor
 
         private static readonly Dictionary<string, int> m_NamesToHash = new Dictionary<string, int>();
 
-        internal bool CreateSpriteAndTile(int tileId, Color tint, int width, int height, SuperTileset superTileset, out Sprite sprite, out SuperBadTile tile)
+        internal bool CreateSpriteAndTile(int tileId, Color tint, int width, int height, SuperTileset superTileset, float ppu, out Sprite sprite, out SuperBadTile tile)
         {
             // We can't take for granted that the collection of bad textures is always serialized even though that is my expectation, ffs
             if (m_BadTileTextures == null)
@@ -32,7 +32,7 @@ namespace SuperTiled2Unity.Editor
             var badTileTexture = m_BadTileTextures.m_Textures[(tileId + hash) % m_BadTileTextures.m_Textures.Length];
 
             var spriteRect = Rect.MinMaxRect(0, 0, Mathf.Min(width, badTileTexture.width), Mathf.Min(height, badTileTexture.height));
-            sprite = Sprite.Create(badTileTexture, spriteRect, Vector2.zero, superTileset.m_PixelsPerUnit);
+            sprite = Sprite.Create(badTileTexture, spriteRect, Vector2.zero, ppu);
             sprite.name = $"error-sprite-{tileId}";
 
             tile = ScriptableObject.CreateInstance<SuperBadTile>();
