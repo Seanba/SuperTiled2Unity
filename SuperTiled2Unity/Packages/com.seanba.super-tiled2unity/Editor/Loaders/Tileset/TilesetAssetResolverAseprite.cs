@@ -9,6 +9,7 @@ namespace SuperTiled2Unity.Editor
 {
     // fixit - additional testing
     // PPU settings. TSX and TMX must match. TSX doesn't have to match texture.
+    // What's this?: Artifact Garbage Collection - Removed 39 unused hashed content files
     internal sealed class TilesetAssetResolverAseprite : TilesetAssetResolver
     {
         private class Frame

@@ -315,6 +315,18 @@ namespace SuperTiled2Unity.Editor
                 // Tileset is missing or was not imported properly
                 return false;
             }
+            else if (tileset.m_PixelsPerUnit != PixelsPerUnit)
+            {
+                // fixit - PPU doesn't match. We need error tiles for this. Just one tile? Added to the TMX?
+                //BadTileSpriteProvider.instance.CreateSpriteAndTile(tileId, tint, width, height, m_SuperTileset, out Sprite sprite, out SuperBadTile tile);
+
+                //sprite.hideFlags = HideFlags.HideInHierarchy;
+                //tile.hideFlags = HideFlags.HideInHierarchy;
+
+                //m_SuperTileset.m_Tiles.Add(tile);
+                //m_Importer.SuperImportContext.AddObjectToAsset(sprite.name, sprite);
+                //m_Importer.SuperImportContext.AddObjectToAsset(tile.name, tile);
+            }
             else
             {
                 // Register all the tiles with the tile database for this map
