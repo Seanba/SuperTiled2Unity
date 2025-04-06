@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
 {
+    // fixit - uniqueness problem if we have two (or more) tilesets with the wrong PPU
     internal sealed class TilesetAssetResolverAseprite : TilesetAssetResolver
     {
         private class Frame
