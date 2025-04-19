@@ -253,7 +253,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 112
+  orthographic size: 224
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -278,7 +278,7 @@ Transform:
   m_GameObject: {fileID: 2037948279}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 128, y: -112, z: -10}
+  m_LocalPosition: {x: 256, y: -224, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -296,8 +296,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f1eeafaeded752429eca0551f582aa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MinCameraSize: 108
-  MaxCameraSize: 112
+  MinCameraSize: 218
+  MaxCameraSize: 224
   Duration: 4
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
