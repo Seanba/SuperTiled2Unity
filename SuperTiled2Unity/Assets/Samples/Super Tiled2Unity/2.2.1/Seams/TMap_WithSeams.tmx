@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.11" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="32" height="28" tilewidth="8" tileheight="8" infinite="0" nextlayerid="6" nextobjectid="1">
- <tileset firstgid="1" source="TSX_Light_Letters.tsx"/>
+ <tileset firstgid="1" source="TTiles_Letters.tsx"/>
  <layer id="1" name="White" width="32" height="28">
   <data encoding="csv">
 44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,
