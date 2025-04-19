@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.11" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="64" height="28" tilewidth="8" tileheight="8" infinite="0" nextlayerid="11" nextobjectid="1">
- <tileset firstgid="1" source="TTiles_Letters.tsx"/>
+ <tileset firstgid="1" source="TTiles_Letters_PutInAtlas.tsx"/>
  <layer id="7" name="Background" width="64" height="28">
   <data encoding="csv">
 44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,
