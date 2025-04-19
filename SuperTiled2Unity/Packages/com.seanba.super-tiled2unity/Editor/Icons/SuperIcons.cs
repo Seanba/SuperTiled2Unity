@@ -10,5 +10,6 @@ namespace SuperTiled2Unity.Editor
         public Texture2D m_TsxIcon;
         public Texture2D m_TxIcon;
         public Texture2D m_WorldIcon;
+        public Texture2D m_TilesetAtlasIcon;
     }
 }
