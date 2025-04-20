@@ -321,13 +321,13 @@ namespace SuperTiled2Unity.Editor
                 // When this happens we want to report the error and add error tiles to the database
                 foreach (var tile in tileset.m_Tiles)
                 {
-                    BadTileSpriteProvider.instance.CreateSpriteAndTile(tile.m_TileId, Color.yellow, (int)tile.m_Width, (int)tile.m_Height, tileset, PixelsPerUnit, out Sprite badSprite, out SuperBadTile badTile);
+                    BadTileSpriteProvider.instance.CreateSpriteAndTile(tile.m_TileId, NamedColors.LightYellow, (int)tile.m_Width, (int)tile.m_Height, tileset, PixelsPerUnit, out Sprite badSprite, out SuperBadTile badTile);
 
                     badSprite.hideFlags = HideFlags.HideInHierarchy;
                     badTile.hideFlags = HideFlags.HideInHierarchy;
 
-                    SuperImportContext.AddObjectToAsset(badSprite.name, badSprite);
-                    SuperImportContext.AddObjectToAsset(badTile.name, badTile);
+                    SuperImportContext.AddObjectToAsset($"{badSprite.name}.{firstId}", badSprite);
+                    SuperImportContext.AddObjectToAsset($"{badTile.name}.{firstId}", badTile);
                     m_GlobalTileDatabase.RegisterTile(firstId, badTile);
                     ReportWrongPixelsPerUnit(AssetDatabase.GetAssetPath(tileset), tileset.m_PixelsPerUnit, PixelsPerUnit);
                 }
