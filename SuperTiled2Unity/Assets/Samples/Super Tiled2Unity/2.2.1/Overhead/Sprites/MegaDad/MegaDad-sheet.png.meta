@@ -33,7 +33,7 @@ TextureImporter:
       213: 21300018
     second: MegaDad-sheet_9
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -157,7 +157,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 72
+        y: 104
         width: 16
         height: 24
       alignment: 9
@@ -177,8 +177,8 @@ TextureImporter:
       name: MegaDad-sheet_1
       rect:
         serializedVersion: 2
-        x: 16
-        y: 72
+        x: 17
+        y: 104
         width: 16
         height: 24
       alignment: 9
@@ -198,8 +198,8 @@ TextureImporter:
       name: MegaDad-sheet_2
       rect:
         serializedVersion: 2
-        x: 32
-        y: 72
+        x: 34
+        y: 104
         width: 16
         height: 24
       alignment: 9
@@ -220,7 +220,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 48
+        y: 79
         width: 16
         height: 24
       alignment: 9
@@ -240,8 +240,8 @@ TextureImporter:
       name: MegaDad-sheet_4
       rect:
         serializedVersion: 2
-        x: 16
-        y: 48
+        x: 17
+        y: 79
         width: 16
         height: 24
       alignment: 9
@@ -261,8 +261,8 @@ TextureImporter:
       name: MegaDad-sheet_5
       rect:
         serializedVersion: 2
-        x: 32
-        y: 48
+        x: 34
+        y: 79
         width: 16
         height: 24
       alignment: 9
@@ -282,8 +282,8 @@ TextureImporter:
       name: MegaDad-sheet_6
       rect:
         serializedVersion: 2
-        x: 16
-        y: 24
+        x: 17
+        y: 54
         width: 16
         height: 24
       alignment: 9
@@ -303,8 +303,8 @@ TextureImporter:
       name: MegaDad-sheet_7
       rect:
         serializedVersion: 2
-        x: 32
-        y: 24
+        x: 34
+        y: 54
         width: 16
         height: 24
       alignment: 9
@@ -324,8 +324,8 @@ TextureImporter:
       name: MegaDad-sheet_8
       rect:
         serializedVersion: 2
-        x: 16
-        y: 0
+        x: 17
+        y: 30
         width: 16
         height: 24
       alignment: 9
@@ -345,8 +345,8 @@ TextureImporter:
       name: MegaDad-sheet_9
       rect:
         serializedVersion: 2
-        x: 32
-        y: 0
+        x: 34
+        y: 30
         width: 16
         height: 24
       alignment: 9

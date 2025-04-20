@@ -15,10 +15,11 @@ namespace MegaDad
 
         private State m_State;
 
-        private const float MovementBlockSize = 8.0f;
+        private const float MovementBlockSize = 8.5f; // fixit - was 8.0
         private const float MovingSpeedPPS = 64.0f;
         private const float TimeToMoveOneBlock = MovementBlockSize / MovingSpeedPPS;
 
+        public GameObject m_RaycastPositionChildObject;
         public GameObject m_SplashPrefab;
 
         private Vector2 m_Facing = Vector2.down;
@@ -134,10 +135,9 @@ namespace MegaDad
                 // We are attempting to move so we want to animate
                 m_Animator.SetBool("Moving", true);
 
-                // fixit - there are cases where this doesn't work well (maybe use a box collider that is centered on Mega Dad?)
-                // fixit - sorting with the columns isn't always working either
+                // fixit - can we not just re-use the water collider?
                 // We may not be allowed to move, however, if that would cause a collision with the default colliders
-                var pos = gameObject.transform.position;
+                var pos = m_RaycastPositionChildObject.gameObject.transform.position;
                 var hit = Physics2D.Raycast(pos, m_Facing, MovementBlockSize, 1 << LayerMask.NameToLayer("Default"));
 
                 if (hit)
