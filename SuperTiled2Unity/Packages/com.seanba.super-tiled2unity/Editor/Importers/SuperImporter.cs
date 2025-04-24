@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -21,13 +20,13 @@ namespace SuperTiled2Unity.Editor
             protected set => m_ImporterVersion = value;
         }
 
+        public AssetImportContext AssetImportContext { get; private set; }
+
         // For tracking assets and dependencies imported by SuperTiled2Unity
         private SuperAsset m_SuperAsset;
 
         // For keeping track of errors while our asset and dependencies are being imported
         protected ImportErrors ImportErrors { get; private set; }
-
-        protected AssetImportContext AssetImportContext { get; private set; }
 
         public override sealed void OnImportAsset(AssetImportContext ctx)
         {
@@ -151,14 +150,22 @@ namespace SuperTiled2Unity.Editor
 
         public void ReportErrorsInDependency(string dependencyAssetPath)
         {
+            ReportErrorsInDependency(dependencyAssetPath, string.Empty);
+        }
+
+        public void ReportErrorsInDependency(string dependencyAssetPath, string reason)
+        {
             AddImportErrorsScriptableObjectIfNeeded();
-            ImportErrors.ReportErrorsInDependency(dependencyAssetPath);
+            ImportErrors.ReportErrorsInDependency(dependencyAssetPath, reason);
         }
 
         public void ReportMissingSprite(string textureAssetPath, int spriteId, int x, int y, int w, int h)
         {
-            AddImportErrorsScriptableObjectIfNeeded();
-            ImportErrors.ReportMissingSprite(textureAssetPath, spriteId, x, y, w, h);
+            if (!string.IsNullOrEmpty(textureAssetPath))
+            {
+                AddImportErrorsScriptableObjectIfNeeded();
+                ImportErrors.ReportMissingSprite(textureAssetPath, spriteId, x, y, w, h);
+            }
         }
 
         public void ReportWrongTextureSize(string textureAssetPath, int expected_w, int expected_h, int actual_w, int actual_h)
@@ -193,7 +200,6 @@ namespace SuperTiled2Unity.Editor
 
         public void ReportGenericError(string error)
         {
-            Debug.LogError(error);
             AddImportErrorsScriptableObjectIfNeeded();
             ImportErrors.ReportGenericError(error);
         }

@@ -7,7 +7,7 @@ namespace SuperTiled2Unity.Editor
 {
     public class AnimationBuilder
     {
-        private float m_Fps;
+        private readonly float m_Fps;
         private float m_Remainder;
 
         public AnimationBuilder(float fps)

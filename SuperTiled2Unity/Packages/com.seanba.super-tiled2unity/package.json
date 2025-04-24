@@ -1,15 +1,16 @@
 {
   "name": "com.seanba.super-tiled2unity",
-  "version": "2.2.5",
+  "version": "2.3.0",
   "displayName": "Super Tiled2Unity",
   "description": "Imports Tiled Map Editor assets into Unity",
-  "unity": "2020.3",
+  "unity": "2021.3",
   "dependencies": {
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.tilemap": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
     "com.unity.modules.physics2d": "1.0.0",
-    "com.unity.modules.tilemap": "1.0.0"
+    "com.unity.modules.tilemap": "1.0.0",
+    "com.unity.2d.aseprite": "1.0.0"
   },
   "keywords": [
     "Tiled",
@@ -29,6 +30,17 @@
       "displayName": "Overhead",
       "description": "Simple overhead map. Uses a custom depth sort axis for sprite that can move behind columns.",
       "path": "Samples~/Overhead"
-    }
-  ]
+    },
+	{
+      "displayName": "Aseprite",
+      "description": "Tiled map using tiles animated by Aseprite.",
+      "path": "Samples~/Aseprite"
+	},
+	{
+      "displayName": "Tileset Atlas (Fixing Seams)",
+      "description": "Uses a Tileset Atlas to easily add tiles (and their sprites) to a Unity sprite atlas. Use this to resolve seams in-between tiles.",
+      "path": "Samples~/Seams"		
+	}	
+  ],
+  "unityRelease": "15f1"
 }

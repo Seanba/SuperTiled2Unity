@@ -1,7 +1,7 @@
 ﻿using System.Xml.Linq;
+using UnityEditor.AssetImporters;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEditor.AssetImporters;
 using UnityEngine.Tilemaps;
 
 namespace SuperTiled2Unity.Editor
@@ -51,6 +51,7 @@ namespace SuperTiled2Unity.Editor
             SuperImportContext.SetMainObject(Tileset);
 
             var loader = new TilesetLoader(Tileset, this, 0);
+            loader.ColliderType = m_ColliderType;
             loader.LoadFromXml(xTileset);
         }
     }

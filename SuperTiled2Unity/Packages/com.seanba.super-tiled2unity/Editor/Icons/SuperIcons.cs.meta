@@ -8,6 +8,8 @@ MonoImporter:
   - m_TsxIcon: {fileID: 2800000, guid: 456cd7fe3f53df64da488af63fed1de2, type: 3}
   - m_TxIcon: {fileID: 2800000, guid: 8917742d33b8e744f91ec41c4dbb44bc, type: 3}
   - m_WorldIcon: {fileID: 2800000, guid: f7af46740b1964f4ab9520d050bdde12, type: 3}
+  - m_TilesetAtlasIcon: {fileID: 2800000, guid: 781491a88c638dc4c8258a8075583e90,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

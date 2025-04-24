@@ -11,7 +11,7 @@ namespace SuperTiled2Unity
         public List<string> m_MissingDependencies = new List<string>();
 
         // Depenency assets that have errors
-        public List<string> m_ErrorsInAssetDependencies = new List<string>();
+        public List<ErrorsInDependency> m_ErrorsInAssetDependencies = new List<ErrorsInDependency>();
 
         // Missing sprites in this import
         public List<MissingTileSprites> m_MissingTileSprites = new List<MissingTileSprites>();
@@ -36,11 +36,19 @@ namespace SuperTiled2Unity
             }
         }
 
-        public void ReportErrorsInDependency(string assetPath)
+        public void ReportErrorsInDependency(string assetPath, string reason)
         {
-            if (!m_ErrorsInAssetDependencies.Contains(assetPath))
+            var errors = m_ErrorsInAssetDependencies.FirstOrDefault(e => e.m_DependencyAssetPath == assetPath);
+            if (errors == null)
             {
-                m_ErrorsInAssetDependencies.Add(assetPath);
+                errors = new ErrorsInDependency();
+                errors.m_DependencyAssetPath = assetPath;
+                m_ErrorsInAssetDependencies.Add(errors);
+            }
+
+            if (!string.IsNullOrEmpty(reason))
+            {
+                errors.m_Reasons.Add(reason);
             }
         }
 
@@ -121,6 +129,13 @@ namespace SuperTiled2Unity
             {
                 m_GenericErrors.Add(error);
             }
+        }
+
+        [Serializable]
+        public class ErrorsInDependency
+        {
+            public string m_DependencyAssetPath;
+            public List<string> m_Reasons = new List<string>();
         }
 
         [Serializable]
