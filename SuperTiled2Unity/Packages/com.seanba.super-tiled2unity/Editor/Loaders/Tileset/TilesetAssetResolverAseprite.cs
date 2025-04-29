@@ -158,16 +158,17 @@ namespace SuperTiled2Unity.Editor
         {
             m_WasSuccessfullyImported = true;
 
-            if (AsepriteImporter.importMode != FileImportModes.AnimatedSprite)
+            if (AsepriteImporter.importMode != FileImportModes.AnimatedSprite &&
+                AsepriteImporter.importMode != FileImportModes.SpriteSheet)
             {
                 m_WasSuccessfullyImported = false;
-                TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "File import mode must be Animated Sprite");
+                TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "File import mode must be Animated Sprite or Sprite Sheet.");
             }
 
             if (AsepriteImporter.layerImportMode != LayerImportModes.MergeFrame)
             {
                 m_WasSuccessfullyImported = false;
-                TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Layer import mode must be Merge Frame");
+                TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Layer import mode must be Merge Frame.");
             }
 
             if (AsepriteImporter.spritePadding != 0)
@@ -186,12 +187,18 @@ namespace SuperTiled2Unity.Editor
                 TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not load Texture2D");
             }
 
-            // Each sprite is a frame into the texture
+            if (!m_WasSuccessfullyImported)
+            {
+                // Stop trying to import. We don't have enough to work with.
+                return;
+            }
+
+            // Each sprite is a frame into the texture // fixit - if we don't have a sprite then use the source texture without sprite offsets. The resulting tileset will not be animating.
             m_AseSprites = allObjects.OfType<Sprite>().ToList();
             if (!m_AseSprites.Any())
             {
                 m_WasSuccessfullyImported = false;
-                TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not load any Sprites");
+                TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not load any Sprites.");
             }
 
             // There should only be one animation clip. This is how we know which frames are visible when and for how long.
