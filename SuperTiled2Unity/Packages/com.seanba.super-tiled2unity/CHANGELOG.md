@@ -2,8 +2,8 @@
 
 ## [2.3.0] - 2025-04-21
 - New Feature: Now supports Aseprite files for animated tiles.
-- New Feature: New Tileset Atlas asset type added. This allows us to easily add all sprites in a TSX tileset to a Unity Sprite Atlas, elimating any visual seams between tiles.
-- Bug fix; Super Tiled2Unity no longer tries to automatically chop up source textes into sprites. This was leading to too many issues.
+- New Feature: New Tileset Atlas asset type added. This allows us to easily add all sprites in a TSX tileset to a Unity Sprite Atlas, eliminating any visual seams between tiles.
+- Bug fix: Super Tiled2Unity no longer tries to automatically chop up source textures into sprites. This was leading to too many issues.
 
 ## [2.2.5] - 2025-02-17
 - Bug fix: Now support textures that the user wants imported as "Single Mode" sprites.
