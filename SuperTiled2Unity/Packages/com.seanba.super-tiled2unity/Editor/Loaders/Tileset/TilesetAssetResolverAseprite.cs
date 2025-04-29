@@ -145,7 +145,8 @@ namespace SuperTiled2Unity.Editor
                 }
             }
 
-            if (tileToAdd != null)
+            // Only animate if we have more than one frame
+            if (tileToAdd != null && m_FrameManager.Frames.Count > 1)
             {
                 tileToAdd.m_AnimationSprites = animationBuilder.Sprites.ToArray();
             }
@@ -169,12 +170,6 @@ namespace SuperTiled2Unity.Editor
                 TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Layer import mode must be Merge Frame");
             }
 
-            if (AsepriteImporter.generateAnimationClips == false)
-            {
-                m_WasSuccessfullyImported = false;
-                TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Must generate Animation Clips");
-            }
-
             if (AsepriteImporter.spritePadding != 0)
             {
                 m_WasSuccessfullyImported = false;
@@ -187,6 +182,7 @@ namespace SuperTiled2Unity.Editor
             m_AseTexture = allObjects.OfType<Texture2D>().FirstOrDefault();
             if (m_AseTexture == null)
             {
+                m_WasSuccessfullyImported = false;
                 TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not load Texture2D");
             }
 
@@ -194,6 +190,7 @@ namespace SuperTiled2Unity.Editor
             m_AseSprites = allObjects.OfType<Sprite>().ToList();
             if (!m_AseSprites.Any())
             {
+                m_WasSuccessfullyImported = false;
                 TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not load any Sprites");
             }
 
@@ -201,7 +198,18 @@ namespace SuperTiled2Unity.Editor
             var animationClip = allObjects.OfType<AnimationClip>().FirstOrDefault();
             if (animationClip == null)
             {
-                TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not load Animation Clip");
+                // Just use the first sprite. We won't be animating.
+                var firstSprite = m_AseSprites.FirstOrDefault();
+                if (firstSprite != null)
+                {
+                    m_FrameManager.AddKey(0.0f, firstSprite, 1.0f);
+                }
+                else
+                {
+                    // Do animation clip and no sprites? How can we handle this? Can we take a best guess at the texture that was generated without guidance from sprites?
+                    m_WasSuccessfullyImported = false;
+                    TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not load Animation Clip or sprites.");
+                }
             }
             else
             {
