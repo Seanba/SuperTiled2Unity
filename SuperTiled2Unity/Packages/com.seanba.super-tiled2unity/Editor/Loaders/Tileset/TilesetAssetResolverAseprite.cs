@@ -193,7 +193,7 @@ namespace SuperTiled2Unity.Editor
                 return;
             }
 
-            // Each sprite is a frame into the texture // fixit - if we don't have a sprite then use the source texture without sprite offsets. The resulting tileset will not be animating.
+            // Each sprite is a frame into the texture
             m_AseSprites = allObjects.OfType<Sprite>().ToList();
             if (!m_AseSprites.Any())
             {
@@ -213,7 +213,7 @@ namespace SuperTiled2Unity.Editor
                 }
                 else
                 {
-                    // Do animation clip and no sprites? How can we handle this? Can we take a best guess at the texture that was generated without guidance from sprites?
+                    // Do animation clip and no sprites? How is this possible? The AsepriteAssetPostprocessor should make sure we have one.
                     m_WasSuccessfullyImported = false;
                     TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not load Animation Clip or sprites.");
                 }

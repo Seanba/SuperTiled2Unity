@@ -81,7 +81,7 @@ ScriptedImporter:
     mosaicPadding: 0
     spritePadding: 0
     generateModelPrefab: 1
-    generateAnimationClips: 0
+    generateAnimationClips: 1
     addSortingGroup: 1
     addShadowCasters: 0
   asepriteImporterSettings:
@@ -94,11 +94,11 @@ ScriptedImporter:
     mosaicPadding: 0
     spritePadding: 0
     generateModelPrefab: 1
-    generateAnimationClips: 0
+    generateAnimationClips: 1
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 638814767019489170
+  platformSettingsDirtyTick: 638815673403750993
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -122,7 +122,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: Layer 1_Frame_0
+  - name: Frame_0
     originalName: 
     pivot: {x: 0.5, y: 0}
     alignment: 9
@@ -142,7 +142,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Layer 1_Frame_1
+  - name: Frame_1
     originalName: 
     pivot: {x: 0.5, y: 0}
     alignment: 9
@@ -162,7 +162,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 192}
-  - name: Layer 1_Frame_2
+  - name: Frame_2
     originalName: 
     pivot: {x: 0.5, y: 0}
     alignment: 9
@@ -182,7 +182,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 192, y: 0}
-  - name: Layer 1_Frame_3
+  - name: Frame_3
     originalName: 
     pivot: {x: 0.5, y: 0}
     alignment: 9
