@@ -14,8 +14,8 @@
       }
     },
     "com.unity.2d.aseprite": {
-      "version": "1.1.8",
-      "depth": 1,
+      "version": "1.1.9",
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.2d.common": "6.0.6",
@@ -27,7 +27,7 @@
     },
     "com.unity.2d.common": {
       "version": "8.0.4",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.burst": "1.7.3",
@@ -55,7 +55,7 @@
     },
     "com.unity.burst": {
       "version": "1.8.19",
-      "depth": 3,
+      "depth": 2,
       "source": "registry",
       "dependencies": {
         "com.unity.mathematics": "1.2.1",
@@ -81,7 +81,7 @@
     },
     "com.unity.mathematics": {
       "version": "1.2.6",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"

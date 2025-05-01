@@ -15,8 +15,14 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [
-        "UNITY_2020_3_OR_NEWER"
+        "UNITY_2021_3_OR_NEWER"
     ],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.2d.aseprite",
+            "expression": "1.2.0",
+            "define": "ST2U_WITH_ASEPRITE_IMPORT_MODE_TILESET"
+        }
+    ],
     "noEngineReferences": false
 }
