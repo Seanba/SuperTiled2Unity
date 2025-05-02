@@ -78,7 +78,7 @@ ScriptedImporter:
     defaultPivotSpace: 0
     defaultPivotAlignment: 7
     customPivotPosition: {x: 0.5, y: 0.5}
-    mosaicPadding: 0
+    mosaicPadding: 4
     spritePadding: 0
     generateModelPrefab: 1
     generateAnimationClips: 1
@@ -91,14 +91,14 @@ ScriptedImporter:
     defaultPivotSpace: 0
     defaultPivotAlignment: 7
     customPivotPosition: {x: 0.5, y: 0.5}
-    mosaicPadding: 0
+    mosaicPadding: 4
     spritePadding: 0
     generateModelPrefab: 1
     generateAnimationClips: 1
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 638815673403750993
+  platformSettingsDirtyTick: 638789699962254401
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -129,11 +129,11 @@ ScriptedImporter:
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
-      x: 0
-      y: 0
+      x: 4
+      y: 4
       width: 192
       height: 192
-    spriteID: 87ea75bb62de9c24abf78940609159ae
+    spriteID: 3be8c5433b287104cb15c50d2af7a95a
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -141,7 +141,7 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 0, y: 0}
+    uvTransform: {x: 4, y: 4}
   - name: Frame_1
     originalName: 
     pivot: {x: 0.5, y: 0}
@@ -149,11 +149,11 @@ ScriptedImporter:
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
-      x: 0
-      y: 192
+      x: 4
+      y: 204
       width: 192
       height: 192
-    spriteID: f5fe77c342b27924390bfec94be39358
+    spriteID: 9a8e0c73ab8d67a43929f38a1f49a2c4
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -161,7 +161,7 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 0, y: 192}
+    uvTransform: {x: 4, y: 204}
   - name: Frame_2
     originalName: 
     pivot: {x: 0.5, y: 0}
@@ -169,11 +169,11 @@ ScriptedImporter:
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
-      x: 192
-      y: 0
+      x: 204
+      y: 4
       width: 192
       height: 192
-    spriteID: 2a6ed20e48478024c9625f745f43d9e6
+    spriteID: 2c23942a8ef24d543b344e6ae1934998
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -181,7 +181,7 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 192, y: 0}
+    uvTransform: {x: 204, y: 4}
   - name: Frame_3
     originalName: 
     pivot: {x: 0.5, y: 0}
@@ -189,11 +189,11 @@ ScriptedImporter:
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
-      x: 192
-      y: 192
+      x: 204
+      y: 204
       width: 192
       height: 192
-    spriteID: b564b3160e5f3eb4d80e9a04fec70c6d
+    spriteID: c9f347aa1314bb3469ce80eae9da0e9f
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -201,13 +201,13 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 192, y: 192}
+    uvTransform: {x: 204, y: 204}
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    guid: -7500616
-    name: Layer 1
-    layerFlags: 3
+    guid: -252055504
+    name: numbers
+    layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
@@ -219,7 +219,7 @@ ScriptedImporter:
         y: 0
         width: 192
         height: 192
-      spriteId: 87ea75bb62de9c24abf78940609159ae
+      spriteId: 3be8c5433b287104cb15c50d2af7a95a
     - name: Frame_1
       frameIndex: 1
       additiveSortOrder: 0
@@ -228,7 +228,7 @@ ScriptedImporter:
         y: 0
         width: 192
         height: 192
-      spriteId: f5fe77c342b27924390bfec94be39358
+      spriteId: 9a8e0c73ab8d67a43929f38a1f49a2c4
     - name: Frame_2
       frameIndex: 2
       additiveSortOrder: 0
@@ -237,7 +237,7 @@ ScriptedImporter:
         y: 0
         width: 192
         height: 192
-      spriteId: 2a6ed20e48478024c9625f745f43d9e6
+      spriteId: 2c23942a8ef24d543b344e6ae1934998
     - name: Frame_3
       frameIndex: 3
       additiveSortOrder: 0
@@ -246,7 +246,7 @@ ScriptedImporter:
         y: 0
         width: 192
         height: 192
-      spriteId: b564b3160e5f3eb4d80e9a04fec70c6d
+      spriteId: c9f347aa1314bb3469ce80eae9da0e9f
     linkedCells: []
     parentIndex: -1
   platformSettings:
