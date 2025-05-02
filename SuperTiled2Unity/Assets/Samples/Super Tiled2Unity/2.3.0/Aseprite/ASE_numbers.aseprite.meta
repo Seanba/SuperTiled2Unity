@@ -133,7 +133,7 @@ ScriptedImporter:
       y: 4
       width: 192
       height: 192
-    spriteID: 3be8c5433b287104cb15c50d2af7a95a
+    spriteID: 5f2adabd36bd3c44d9945bea3fb83d74
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -153,7 +153,7 @@ ScriptedImporter:
       y: 204
       width: 192
       height: 192
-    spriteID: 9a8e0c73ab8d67a43929f38a1f49a2c4
+    spriteID: 440fa7a2c9f51e64b8a31433eb5ea256
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -173,7 +173,7 @@ ScriptedImporter:
       y: 4
       width: 192
       height: 192
-    spriteID: 2c23942a8ef24d543b344e6ae1934998
+    spriteID: ed723093ee8c9d048bf9baabbf3b1eda
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -193,7 +193,7 @@ ScriptedImporter:
       y: 204
       width: 192
       height: 192
-    spriteID: c9f347aa1314bb3469ce80eae9da0e9f
+    spriteID: 23815627b46ae94468fd3b751bdefb80
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -205,20 +205,14 @@ ScriptedImporter:
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-<<<<<<< HEAD
-    guid: -252055504
-    name: numbers
-    layerFlags: 0
-=======
     uuid:
-      value0: 4287466680
+      value0: 0
       value1: 0
       value2: 0
       value3: 0
-    guid: -7500616
-    name: Layer 1
-    layerFlags: 3
->>>>>>> 0834f3350463fdea68f54142c748ef91b55e4d07
+    guid: 0
+    name: 
+    layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
@@ -230,7 +224,7 @@ ScriptedImporter:
         y: 0
         width: 192
         height: 192
-      spriteId: 3be8c5433b287104cb15c50d2af7a95a
+      spriteId: 5f2adabd36bd3c44d9945bea3fb83d74
     - name: Frame_1
       frameIndex: 1
       additiveSortOrder: 0
@@ -239,7 +233,7 @@ ScriptedImporter:
         y: 0
         width: 192
         height: 192
-      spriteId: 9a8e0c73ab8d67a43929f38a1f49a2c4
+      spriteId: 440fa7a2c9f51e64b8a31433eb5ea256
     - name: Frame_2
       frameIndex: 2
       additiveSortOrder: 0
@@ -248,7 +242,7 @@ ScriptedImporter:
         y: 0
         width: 192
         height: 192
-      spriteId: 2c23942a8ef24d543b344e6ae1934998
+      spriteId: ed723093ee8c9d048bf9baabbf3b1eda
     - name: Frame_3
       frameIndex: 3
       additiveSortOrder: 0
@@ -257,7 +251,7 @@ ScriptedImporter:
         y: 0
         width: 192
         height: 192
-      spriteId: c9f347aa1314bb3469ce80eae9da0e9f
+      spriteId: 23815627b46ae94468fd3b751bdefb80
     linkedCells: []
     parentIndex: -1
   platformSettings:
@@ -265,30 +259,6 @@ ScriptedImporter:
     overridden: 0
     ignorePlatformSupport: 0
     maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    androidETC2FallbackOverride: 0
-  - name: DefaultTexturePlatform
-    overridden: 0
-    ignorePlatformSupport: 0
-    maxTextureSize: 16384
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    androidETC2FallbackOverride: 0
-  - name: Standalone
-    overridden: 0
-    ignorePlatformSupport: 0
-    maxTextureSize: 16384
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
