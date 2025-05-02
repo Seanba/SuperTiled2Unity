@@ -193,8 +193,25 @@ namespace SuperTiled2Unity.Editor
                 return;
             }
 
-            // Each sprite is a frame into the texture
+            // Get all the sprites that the Aseprite importer created
             m_AseSprites = allObjects.OfType<Sprite>().ToList();
+
+            if (m_AseSprites.Count == 0 && AsepriteImporter.importMode == FileImportModes.SpriteSheet)
+            {
+                // The Aseprite editor created only a texture
+                // We will build our own sprite to use for making tiles and store it in our asset
+                float x = AsepriteImporter.mosaicPadding;
+                float y = AsepriteImporter.mosaicPadding;
+                float w = AsepriteImporter.canvasSize.x;
+                float h = AsepriteImporter.canvasSize.y;
+                var rect = new Rect(x, y, w, h);
+                var sprite = Sprite.Create(m_AseTexture, rect, Vector2.zero);
+                sprite.name = "_st2u.aseprite.SpriteSheet";
+
+                m_AseSprites.Add(sprite);
+                TiledAssetImporter.SuperImportContext.AddObjectToAsset(sprite.name, sprite);
+            }
+
             if (!m_AseSprites.Any())
             {
                 m_WasSuccessfullyImported = false;
