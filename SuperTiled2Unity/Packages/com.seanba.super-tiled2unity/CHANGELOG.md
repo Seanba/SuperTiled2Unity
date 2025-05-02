@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.3.1] - 2025-05-02
+- Bug fix: Can now import Aseprite tilesets that do not export an animation clip.
+- Bug fix: Can now import Aseprite tilesets that only have one frame (and do not animate).
+
 ## [2.3.0] - 2025-04-21
 - New Feature: Now supports Aseprite files for animated tiles.
 - New Feature: New Tileset Atlas asset type added. This allows us to easily add all sprites in a TSX tileset to a Unity Sprite Atlas, eliminating any visual seams between tiles.
