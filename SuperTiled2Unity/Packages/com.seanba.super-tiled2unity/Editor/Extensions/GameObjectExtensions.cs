@@ -126,7 +126,15 @@ namespace SuperTiled2Unity.Editor
         public static void BroadcastProperty(this GameObject go, CustomProperty property, Dictionary<int, GameObject> objectsById, Action<string> ErrorCallback)
         {
             object objValue;
-
+			if (property.m_Type == "class")
+            {
+                var classProperty = (ClassCustomProperty)property;
+                foreach (var entry in classProperty.m_CustomProperties) 
+                {
+                    BroadcastProperty(go, entry.Value, objectsById);
+                }
+                return;
+            }
             if (property.m_Type == "bool")
             {
                 objValue = property.GetValueAsBool();
