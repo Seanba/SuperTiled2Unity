@@ -8,7 +8,7 @@ This is achieved  through `Scripted Importers <https://docs.unity3d.com/Manual/S
 
 Every game is different, however, and for projects of some complexity you'll want to extend the SuperTiled2Unity import pipeline to fit your needs.
 
-SuperTiled2Unity gives you two ways to modify generated prefabs. Once hooked up these modifications will become an itegral part of the import process.
+SuperTiled2Unity gives you two ways to modify generated prefabs. Once hooked up these modifications will become an integral part of the import process.
 This means the same modifications will applied to your maps, automatically, every time you resave in Tiled.
 
 .. tip::
