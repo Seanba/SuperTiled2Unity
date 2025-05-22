@@ -9,7 +9,7 @@ This is achieved  through `Scripted Importers <https://docs.unity3d.com/Manual/S
 Every game is different, however, and for projects of some complexity you'll want to extend the SuperTiled2Unity import pipeline to fit your needs.
 
 SuperTiled2Unity gives you two ways to modify generated prefabs. Once hooked up these modifications will become an integral part of the import process.
-This means the same modifications will applied to your maps, automatically, every time you resave in Tiled.
+This means the same modifications will be applied to your maps automatically, every time you resave in Tiled.
 
 .. tip::
    If you find you have to modify your imported Tiled maps by hand after every save then this is for you. Automating the pipeline saves you time and frustration.
@@ -37,7 +37,7 @@ Custom Importers
 **Custom Importers** are the most powerful way to modify your imported prefabs.
 They give you a place (in code) in the import process where you can completely transform the generated prefab.
 This power does come at a cost though as it requires you to write some code.
-This may be intimidating to people new to computer programming but if your project requires the kind of specialization affored by custom importers
+This may be intimidating to people new to computer programming but if your project requires the kind of specialization afforded by custom importers
 then it is highly recommended you invest the time needed to up your coding skills.
 
 .. code-block:: csharp
