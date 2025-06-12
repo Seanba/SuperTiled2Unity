@@ -22,6 +22,12 @@ namespace SuperTiled2Unity.Editor
 
                 DisplayMissingDependencies(ui, importErrors);
 
+                if (DisplayWrongTextureSize(ui, importErrors))
+                {
+                    // Stop here as it must be fixed. Other errors will have to wait.
+                    return;
+                }
+
                 if (DisplayWrongPixelsPerUnit(ui, importErrors))
                 {
                     // Stop here as it must be fixed. Other errors will have to wait.
@@ -59,6 +65,30 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
+        private static bool DisplayWrongTextureSize(MessageBuilderUI ui, ImportErrors importErrors)
+        {
+            if (importErrors.m_WrongTextureSizes.Count > 0)
+            {
+                ui.BoldLabel("Mismatched Texture Sizes");
+                foreach (var wrongSize in importErrors.m_WrongTextureSizes)
+                {
+                    var assetName = Path.GetFileName(wrongSize.m_TextureAssetPath);
+                    ui.HelpBox($"Expected texture size: {wrongSize.m_ExpectedWidth}x{wrongSize.m_ExpectedHeight}\nActual texture size: {wrongSize.m_ActualWidth}x{wrongSize.m_ActualHeight}\nCheck import settings for '{assetName}'.\nMax Size may be too small.");
+                    using (new GuiScopedBackgroundColor(NamedColors.LightPink))
+                    {
+                        if (GUILayout.Button($"Inspect '{assetName}'"))
+                        {
+                            Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(wrongSize.m_TextureAssetPath);
+                        }
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
         private static bool DisplayWrongPixelsPerUnit(MessageBuilderUI ui, ImportErrors importErrors)
         {
             if (importErrors.m_WrongPixelsPerUnits.Count > 0)
@@ -88,16 +118,25 @@ namespace SuperTiled2Unity.Editor
             if (importErrors.m_ErrorsInAssetDependencies.Count > 0)
             {
                 ui.BoldLabel("Dependency Errors - Inspect Assets For Further Details");
-                foreach (var assetPath in importErrors.m_ErrorsInAssetDependencies)
+                foreach (var dependencyErrors in importErrors.m_ErrorsInAssetDependencies)
                 {
-                    ui.HelpBox($"Errors found in file '{assetPath}'\nInspect asset for details.");
+                    StringBuilder builder = new StringBuilder();
+                    builder.AppendLine($"Errors found in file '{dependencyErrors.m_DependencyAssetPath}'");
+
+                    foreach (var reason in dependencyErrors.m_Reasons)
+                    {
+                        builder.AppendLine(reason);
+                    }
+
+                    builder.AppendLine("Inspect asset for details.");
+                    ui.HelpBox(builder.ToString());
 
                     using (new GuiScopedBackgroundColor(NamedColors.LightPink))
                     {
-                        var assetName = Path.GetFileName(assetPath);
+                        var assetName = Path.GetFileName(dependencyErrors.m_DependencyAssetPath);
                         if (GUILayout.Button($"Inspect '{assetName}'"))
                         {
-                            Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(assetPath);
+                            Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(dependencyErrors.m_DependencyAssetPath);
                         }
                     }
                 }
@@ -127,17 +166,10 @@ namespace SuperTiled2Unity.Editor
                         msg.AppendLine($"An additional {missing.m_MissingSprites.Count - reportCount} sprites are missing. Total = {missing.m_MissingSprites.Count}");
                     }
 
-                    msg.AppendLine($"Super Tiled2Unity will attempt to automatically add these missing sprites on import.\nTry selecting *Add Sprites To '{assetName}'* below.");
-
                     ui.HelpBox(msg.ToString());
 
                     using (new GuiScopedBackgroundColor(NamedColors.LightPink))
                     {
-                        if (GUILayout.Button($"Add Sprites To '{assetName}'"))
-                        {
-                            AddST2USpritesToTexture.AddSpritesToTextureAsset(missing.m_TextureAssetPath, missing.m_MissingSprites.Select(m => m.m_Rect));
-                        }
-
                         if (GUILayout.Button($"Inspect '{assetName}'"))
                         {
                             Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(missing.m_TextureAssetPath);
@@ -253,8 +285,9 @@ namespace SuperTiled2Unity.Editor
                 foreach (var error in importErrors.m_GenericErrors)
                 {
                     msg.AppendLine(error);
-                    ui.HelpBox(msg.ToString());
                 }
+
+                ui.HelpBox(msg.ToString());
             }
         }
 

@@ -92,6 +92,9 @@ namespace SuperTiled2Unity.Editor
                     GameObject goChunk = new GameObject(string.Format("Chunk ({0},{1})", chunk.X, chunk.Y));
                     goLayer.AddChildWithUniqueName(goChunk);
 
+                    // The chunk must inherit its parent collision layer to pass on to its own children
+                    goChunk.layer = goLayer.layer;
+
                     ProcessLayerDataChunk(goChunk, chunk);
                 }
             }
@@ -217,8 +220,13 @@ namespace SuperTiled2Unity.Editor
 
                     Vector3Int int3 = m_MapComponent.TiledIndexToGridCell(i, chunk.X, chunk.Y, chunk.Width);
 
-                    SuperTile tile;
-                    if (m_GlobalTileDatabase.TryGetTile(tileId.JustTileId, out tile))
+                    if (m_GlobalTileDatabase.IsIgnorableTileId(tileId.JustTileId))
+                    {
+                        // Do not place this tile
+                        continue;
+                    }
+
+                    if (m_GlobalTileDatabase.TryGetTile(tileId.JustTileId, out SuperTile tile))
                     {
                         var cx = i % chunk.Width;
                         var cy = i / chunk.Width;

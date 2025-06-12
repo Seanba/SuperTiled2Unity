@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -21,13 +20,13 @@ namespace SuperTiled2Unity.Editor
             protected set => m_ImporterVersion = value;
         }
 
+        public AssetImportContext AssetImportContext { get; private set; }
+
         // For tracking assets and dependencies imported by SuperTiled2Unity
         private SuperAsset m_SuperAsset;
 
         // For keeping track of errors while our asset and dependencies are being imported
         protected ImportErrors ImportErrors { get; private set; }
-
-        protected AssetImportContext AssetImportContext { get; private set; }
 
         public override sealed void OnImportAsset(AssetImportContext ctx)
         {
@@ -49,7 +48,7 @@ namespace SuperTiled2Unity.Editor
             catch (Exception ex)
             {
                 // These errors should be reported for bug fixing
-                ReportGenericError($"Unknown error encountered. Please report as a bug.\nUnknown error importing '{assetPath}'\n{ex.Message}\nStack Trace:\n{ex.StackTrace}");
+                ReportGenericError($"Unknown error encountered ({ex.GetType().Name}). Please report as a bug.\nUnknown error importing '{assetPath}'\n{ex.Message}\nStack Trace:\n{ex.StackTrace}");
             }
 #else
             {
@@ -65,9 +64,9 @@ namespace SuperTiled2Unity.Editor
 
             // Asset is not in our cache so load it from the asset database
             string absPath;
-            if (Path.IsPathFullyQualified(path))
+            if (Path.IsPathRooted(path))
             {
-                // Fully qualified (absolute) paths baked into Tiled files are not recommended but if they resolve to a Unity asset then so be it.
+                // Rooted (and absolute) paths baked into Tiled files are not recommended but if they resolve to a Unity asset then so be it.
                 absPath = Path.GetFullPath(path);
             }
             else
@@ -151,14 +150,28 @@ namespace SuperTiled2Unity.Editor
 
         public void ReportErrorsInDependency(string dependencyAssetPath)
         {
+            ReportErrorsInDependency(dependencyAssetPath, string.Empty);
+        }
+
+        public void ReportErrorsInDependency(string dependencyAssetPath, string reason)
+        {
             AddImportErrorsScriptableObjectIfNeeded();
-            ImportErrors.ReportErrorsInDependency(dependencyAssetPath);
+            ImportErrors.ReportErrorsInDependency(dependencyAssetPath, reason);
         }
 
         public void ReportMissingSprite(string textureAssetPath, int spriteId, int x, int y, int w, int h)
         {
+            if (!string.IsNullOrEmpty(textureAssetPath))
+            {
+                AddImportErrorsScriptableObjectIfNeeded();
+                ImportErrors.ReportMissingSprite(textureAssetPath, spriteId, x, y, w, h);
+            }
+        }
+
+        public void ReportWrongTextureSize(string textureAssetPath, int expected_w, int expected_h, int actual_w, int actual_h)
+        {
             AddImportErrorsScriptableObjectIfNeeded();
-            ImportErrors.ReportMissingSprite(textureAssetPath, spriteId, x, y, w, h);
+            ImportErrors.ReportWrongTextureSize(textureAssetPath, expected_w, expected_h, actual_w, actual_h);
         }
 
         public void ReportWrongPixelsPerUnit(string dependencyAssetPath, float dependencyPPU, float ourPPU)
@@ -187,7 +200,6 @@ namespace SuperTiled2Unity.Editor
 
         public void ReportGenericError(string error)
         {
-            Debug.LogError(error);
             AddImportErrorsScriptableObjectIfNeeded();
             ImportErrors.ReportGenericError(error);
         }

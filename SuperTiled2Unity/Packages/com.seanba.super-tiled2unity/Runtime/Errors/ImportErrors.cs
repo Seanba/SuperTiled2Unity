@@ -11,13 +11,16 @@ namespace SuperTiled2Unity
         public List<string> m_MissingDependencies = new List<string>();
 
         // Depenency assets that have errors
-        public List<string> m_ErrorsInAssetDependencies = new List<string>();
+        public List<ErrorsInDependency> m_ErrorsInAssetDependencies = new List<ErrorsInDependency>();
 
         // Missing sprites in this import
         public List<MissingTileSprites> m_MissingTileSprites = new List<MissingTileSprites>();
 
         // Dependency assets that are using the wrong pixels per unit. Maps, tilesets, and textures must use matching pixels per unit.
         public List<WrongPixelsPerUnit> m_WrongPixelsPerUnits = new List<WrongPixelsPerUnit>();
+
+        // Textures that were imported at the wrong size
+        public List<WrongTextureSize> m_WrongTextureSizes = new List<WrongTextureSize>();
 
         public List<string> m_MissingTags = new List<string>();
         public List<string> m_MissingLayers = new List<string>();
@@ -33,11 +36,19 @@ namespace SuperTiled2Unity
             }
         }
 
-        public void ReportErrorsInDependency(string assetPath)
+        public void ReportErrorsInDependency(string assetPath, string reason)
         {
-            if (!m_ErrorsInAssetDependencies.Contains(assetPath))
+            var errors = m_ErrorsInAssetDependencies.FirstOrDefault(e => e.m_DependencyAssetPath == assetPath);
+            if (errors == null)
             {
-                m_ErrorsInAssetDependencies.Add(assetPath);
+                errors = new ErrorsInDependency();
+                errors.m_DependencyAssetPath = assetPath;
+                m_ErrorsInAssetDependencies.Add(errors);
+            }
+
+            if (!string.IsNullOrEmpty(reason))
+            {
+                errors.m_Reasons.Add(reason);
             }
         }
 
@@ -52,6 +63,24 @@ namespace SuperTiled2Unity
             }
 
             missing.AddMissingSprite(spriteId, x, y, w, h);
+        }
+
+        public void ReportWrongTextureSize(string textureAssetPath, int expected_w, int expected_h, int actual_w, int actual_h)
+        {
+            var wrongSize = m_WrongTextureSizes.FirstOrDefault(w => w.m_TextureAssetPath == textureAssetPath);
+            if (wrongSize == null)
+            {
+                wrongSize = new WrongTextureSize
+                {
+                    m_TextureAssetPath = textureAssetPath,
+                    m_ExpectedWidth = expected_w,
+                    m_ExpectedHeight = expected_h,
+                    m_ActualWidth = actual_w,
+                    m_ActualHeight = actual_h,
+                };
+
+                m_WrongTextureSizes.Add(wrongSize);
+            }
         }
 
         public void ReportWrongPixelsPerUnit(string dependencyAssetPath, float dependencyPPU, float ourPPU)
@@ -103,6 +132,13 @@ namespace SuperTiled2Unity
         }
 
         [Serializable]
+        public class ErrorsInDependency
+        {
+            public string m_DependencyAssetPath;
+            public List<string> m_Reasons = new List<string>();
+        }
+
+        [Serializable]
         public class MissingTileSprites
         {
             public string m_TextureAssetPath;
@@ -135,5 +171,14 @@ namespace SuperTiled2Unity
             public float m_ExpectingPPU;
         }
 
+        [Serializable]
+        public class WrongTextureSize
+        {
+            public string m_TextureAssetPath;
+            public int m_ExpectedWidth;
+            public int m_ExpectedHeight;
+            public int m_ActualWidth;
+            public int m_ActualHeight;
+        }
     }
 }

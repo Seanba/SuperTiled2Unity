@@ -275,6 +275,7 @@ namespace SuperTiled2Unity.Editor
                 var renderer = goTile.AddComponent<SpriteRenderer>();
                 renderer.sprite = tile.m_Sprite;
                 renderer.color = superObject.CalculateColor();
+                renderer.spriteSortPoint = SpriteSortPoint.Pivot;
                 Importer.AssignMaterial(renderer, m_ObjectLayer.m_TiledName);
                 Importer.AssignSpriteSorting(renderer);
 

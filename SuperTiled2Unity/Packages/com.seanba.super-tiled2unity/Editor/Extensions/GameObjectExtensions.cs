@@ -11,8 +11,7 @@ namespace SuperTiled2Unity.Editor
     {
         public static float GetSuperPropertyValueFloat(this GameObject go, string propName, float defaultValue)
         {
-            CustomProperty property;
-            if (go.TryGetCustomPropertySafe(propName, out property))
+            if (go.TryGetCustomPropertySafe(propName, out CustomProperty property))
             {
                 return property.GetValueAsFloat();
             }
@@ -22,8 +21,7 @@ namespace SuperTiled2Unity.Editor
 
         public static int GetSuperPropertyValueInt(this GameObject go, string propName, int defaultValue)
         {
-            CustomProperty property;
-            if (go.TryGetCustomPropertySafe(propName, out property))
+            if (go.TryGetCustomPropertySafe(propName, out CustomProperty property))
             {
                 return property.GetValueAsInt();
             }
@@ -33,8 +31,7 @@ namespace SuperTiled2Unity.Editor
 
         public static bool GetSuperPropertyValueBool(this GameObject go, string propName, bool defaultValue)
         {
-            CustomProperty property;
-            if (go.TryGetCustomPropertySafe(propName, out property))
+            if (go.TryGetCustomPropertySafe(propName, out CustomProperty property))
             {
                 return property.GetValueAsBool();
             }
@@ -44,8 +41,7 @@ namespace SuperTiled2Unity.Editor
 
         public static Color GetSuperPropertyValueColor(this GameObject go, string propName, Color defaultValue)
         {
-            CustomProperty property;
-            if (go.TryGetCustomPropertySafe(propName, out property))
+            if (go.TryGetCustomPropertySafe(propName, out CustomProperty property))
             {
                 return property.GetValueAsColor();
             }
@@ -55,8 +51,7 @@ namespace SuperTiled2Unity.Editor
 
         public static T GetSuperPropertyValueEnum<T>(this GameObject go, string propName, T defaultValue)
         {
-            CustomProperty property;
-            if (go.TryGetCustomPropertySafe(propName, out property))
+            if (go.TryGetCustomPropertySafe(propName, out CustomProperty property))
             {
                 return property.GetValueAsEnum<T>();
             }
@@ -66,8 +61,7 @@ namespace SuperTiled2Unity.Editor
 
         public static string GetSuperPropertyValueString(this GameObject go, string propName, string defaultValue)
         {
-            CustomProperty property;
-            if (go.TryGetCustomPropertySafe(propName, out property))
+            if (go.TryGetCustomPropertySafe(propName, out CustomProperty property))
             {
                 return property.GetValueAsString();
             }
@@ -129,7 +123,7 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        public static void BroadcastProperty(this GameObject go, CustomProperty property, Dictionary<int, GameObject> objectsById)
+        public static void BroadcastProperty(this GameObject go, CustomProperty property, Dictionary<int, GameObject> objectsById, Action<string> ErrorCallback)
         {
             object objValue;
 
@@ -152,10 +146,9 @@ namespace SuperTiled2Unity.Editor
             else if (property.m_Type == "object")
             {
                 var objectId = property.GetValueAsInt();
-                GameObject gameObject;
-                if (!objectsById.TryGetValue(objectId, out gameObject))
+                if (!objectsById.TryGetValue(objectId, out GameObject gameObject))
                 {
-                    Debug.LogErrorFormat("Object property refers to invalid ID {0}", objectId);
+                    ErrorCallback($"Object property refers to invalid ID {objectId}");
                     return;
                 }
                 else
@@ -176,7 +169,18 @@ namespace SuperTiled2Unity.Editor
                 var method = FindMethodBySignature(comp, property.m_Name, objValue.GetType());
                 if (method != null)
                 {
-                    method.Invoke(comp, new object[1] { objValue });
+                    try
+                    {
+                        method.Invoke(comp, new object[1] { objValue });
+                    }
+                    catch (TargetInvocationException tie)
+                    {
+                        ErrorCallback($"Error invoking '{comp.GetType()}.{method.Name}({objValue})' method. Exception = '{tie.InnerException.Message}'");
+                    }
+                    catch (Exception e)
+                    {
+                        ErrorCallback($"Component method '{comp.GetType()}.{method.Name}({objValue})' threw an exception: '{e.Message}'");
+                    }
                     continue;
                 }
 
@@ -192,7 +196,14 @@ namespace SuperTiled2Unity.Editor
                 var csfield = FindFieldBySignature(comp, property.m_Name, objValue.GetType());
                 if (csfield != null)
                 {
-                    csfield.SetValue(comp, objValue);
+                    try
+                    {
+                        csfield.SetValue(comp, objValue);
+                    }
+                    catch (Exception e)
+                    {
+                        ErrorCallback($"Error setting '{comp.GetType()}.{csfield.Name} = {objValue}' method. Exception = '{e.Message}'");
+                    }
                     continue;
                 }
             }
@@ -221,13 +232,21 @@ namespace SuperTiled2Unity.Editor
                     return false;
                 }
 
-                // Parameter type must match
-                if (parameters[0].ParameterType != paramType)
+                // Parameter type must match (or be implicitly convertable)
+                var pinfo = parameters[0];
+                if (pinfo.ParameterType == paramType)
                 {
-                    return false;
+                    // Exact match
+                    return true;
                 }
 
-                return true;
+                if (pinfo.ParameterType.IsEnum && paramType == typeof(int))
+                {
+                    // ints are converted to enums automatically
+                    return true;
+                }
+
+                return false;
             }).FirstOrDefault();
         }
 
@@ -238,7 +257,7 @@ namespace SuperTiled2Unity.Editor
                 info =>
                 info.CanWrite &&
                 info.Name == name &&
-                info.PropertyType == valueType
+                ((info.PropertyType == valueType) || (info.PropertyType.IsEnum && valueType == typeof(int)))
                 ).FirstOrDefault();
         }
 
@@ -248,7 +267,7 @@ namespace SuperTiled2Unity.Editor
                 info =>
                 !info.IsInitOnly &&
                 info.Name == name &&
-                info.FieldType == valueType
+                ((info.FieldType == valueType) || (info.FieldType.IsEnum && valueType == typeof(int)))
                 ).FirstOrDefault();
         }
     }
