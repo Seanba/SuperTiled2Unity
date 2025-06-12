@@ -1,9 +1,10 @@
 ﻿using System.IO;
 using UnityEditor;
-using UnityEditor.U2D.Aseprite;
 
 namespace SuperTiled2Unity.Editor
 {
+    // fixit - notes
+    // Will need Burst compiler
     internal static class TilesetAssetResolverFactory
     {
         internal static TilesetAssetResolver CreateFromRelativeAssetPath(TiledAssetImporter tiledAssetImporter, SuperTileset superTileset, string relativeAssetPath)
@@ -47,10 +48,10 @@ namespace SuperTiled2Unity.Editor
             {
                 return new TilesetAssetResolverTexture(requestedAssetPath, tiledAssetImporter, superTileset);
             }
-            else if (dependencyImporter is AsepriteImporter asepriteImporter)
-            {
-                return new TilesetAssetResolverAseprite(requestedAssetPath, tiledAssetImporter, superTileset, asepriteImporter);
-            }
+            //else if (dependencyImporter is AsepriteImporter asepriteImporter) // fixit - how to figure out how to use an aseprite resolver?
+            //{
+            //    return new TilesetAssetResolverAseprite(requestedAssetPath, tiledAssetImporter, superTileset, asepriteImporter);
+            //}
 
             tiledAssetImporter.ReportGenericError($"Unknown asset importer for '{requestedAssetPath}'");
             return new TilesetAssetResolverError(requestedAssetPath, tiledAssetImporter, superTileset);

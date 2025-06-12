@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
@@ -50,22 +49,18 @@ namespace SuperTiled2Unity.Editor
             }
         }
 
-        public AsepriteImporter AsepriteImporter { get; }
+        //private FrameManager m_FrameManager = new FrameManager(); // fixit - still need this?
 
-        private Texture2D m_AseTexture;
-        private List<Sprite> m_AseSprites;
-
-        private bool m_WasSuccessfullyImported;
-        private FrameManager m_FrameManager = new FrameManager();
-
-        public TilesetAssetResolverAseprite(string sourceAssetPath, TiledAssetImporter tiledAssetImporter, SuperTileset superTileset, AsepriteImporter asepriteImporter)
+        public TilesetAssetResolverAseprite(string sourceAssetPath, TiledAssetImporter tiledAssetImporter, SuperTileset superTileset)
             : base(sourceAssetPath, tiledAssetImporter, superTileset)
         {
-            AsepriteImporter = asepriteImporter;
         }
 
         public override bool AddSpritesAndTile(int tileId, int srcx, int srcy, int tileWidth, int tileHeight)
         {
+            return false;
+
+            /*
             if (!m_WasSuccessfullyImported)
             {
                 return false;
@@ -152,126 +147,12 @@ namespace SuperTiled2Unity.Editor
             }
 
             return true;
+            */
         }
 
         protected override void OnPrepare()
         {
-            m_WasSuccessfullyImported = true;
-
-            if (AsepriteImporter.importMode != FileImportModes.AnimatedSprite &&
-                AsepriteImporter.importMode != FileImportModes.SpriteSheet)
-            {
-                m_WasSuccessfullyImported = false;
-                TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "File import mode must be Animated Sprite or Sprite Sheet.");
-            }
-
-            if (AsepriteImporter.layerImportMode != LayerImportModes.MergeFrame)
-            {
-                m_WasSuccessfullyImported = false;
-                TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Layer import mode must be Merge Frame.");
-            }
-
-            if (AsepriteImporter.spritePadding != 0)
-            {
-                m_WasSuccessfullyImported = false;
-                TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Must have Sprite Padding of 0");
-            }
-
-            var allObjects = AssetDatabase.LoadAllAssetsAtPath(SourceAssetPath);
-
-            // There should only be one texture (acting as an atlas of all the animation frames)
-            m_AseTexture = allObjects.OfType<Texture2D>().FirstOrDefault();
-            if (m_AseTexture == null)
-            {
-                m_WasSuccessfullyImported = false;
-                TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not load Texture2D");
-            }
-
-            if (!m_WasSuccessfullyImported)
-            {
-                // Stop trying to import. We don't have enough to work with.
-                return;
-            }
-
-            // Get all the sprites that the Aseprite importer created
-            m_AseSprites = allObjects.OfType<Sprite>().ToList();
-
-            if (m_AseSprites.Count == 0 && AsepriteImporter.importMode == FileImportModes.SpriteSheet)
-            {
-                // The Aseprite editor created only a texture
-                // We will build our own sprite to use for making tiles and store it in our asset
-                float x = AsepriteImporter.mosaicPadding;
-                float y = AsepriteImporter.mosaicPadding;
-                float w = AsepriteImporter.canvasSize.x;
-                float h = AsepriteImporter.canvasSize.y;
-                var rect = new Rect(x, y, w, h);
-                var sprite = Sprite.Create(m_AseTexture, rect, Vector2.zero);
-                sprite.name = "_st2u.aseprite.SpriteSheet";
-
-                m_AseSprites.Add(sprite);
-                TiledAssetImporter.SuperImportContext.AddObjectToAsset(sprite.name, sprite);
-            }
-
-            if (!m_AseSprites.Any())
-            {
-                m_WasSuccessfullyImported = false;
-                TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not load any Sprites.");
-            }
-
-            // There should only be one animation clip. This is how we know which frames are visible when and for how long.
-            var animationClip = allObjects.OfType<AnimationClip>().FirstOrDefault();
-            if (animationClip == null)
-            {
-                // Just use the first sprite. We won't be animating.
-                var firstSprite = m_AseSprites.FirstOrDefault();
-                if (firstSprite != null)
-                {
-                    m_FrameManager.AddKey(0.0f, firstSprite, 1.0f);
-                }
-                else
-                {
-                    // Do animation clip and no sprites? How is this possible? The AsepriteAssetPostprocessor should make sure we have one.
-                    m_WasSuccessfullyImported = false;
-                    TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not load Animation Clip or sprites.");
-                }
-            }
-            else
-            {
-                var bindings = AnimationUtility.GetObjectReferenceCurveBindings(animationClip);
-                if (bindings?.Any() != true)
-                {
-                    m_WasSuccessfullyImported = false;
-                    TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not find animation curve bindings.");
-                }
-                else
-                {
-                    var keys = AnimationUtility.GetObjectReferenceCurve(animationClip, bindings[0]);
-                    if (keys?.Any() != true)
-                    {
-                        m_WasSuccessfullyImported = false;
-                        TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Could not find animation curve keys.");
-                    }
-                    else if (keys.Any(k => !(k.value is Sprite)))
-                    {
-                        m_WasSuccessfullyImported = false;
-                        TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "Animation curve keys do not have sprites.");
-                    }
-                    else if (keys.Select(k => ((Sprite)k.value).rect.size).Distinct().Count() > 1)
-                    {
-                        m_WasSuccessfullyImported = false;
-                        TiledAssetImporter.ReportErrorsInDependency(SourceAssetPath, "All frames of the animation must be the same size.");
-                    }
-                    else
-                    {
-                        // Finally have the animation data we need
-                        float initialDuration = 1.0f / animationClip.frameRate;
-                        foreach (var key in keys)
-                        {
-                            m_FrameManager.AddKey(key.time, key.value as Sprite, initialDuration);
-                        }
-                    }
-                }
-            }
+            //m_WasSuccessfullyImported = true; // fixit - what to do here?
         }
     }
 }
