@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UnityEditor;
 
 namespace SuperTiled2Unity.Editor
@@ -48,10 +49,10 @@ namespace SuperTiled2Unity.Editor
             {
                 return new TilesetAssetResolverTexture(requestedAssetPath, tiledAssetImporter, superTileset);
             }
-            //else if (dependencyImporter is AsepriteImporter asepriteImporter) // fixit - how to figure out how to use an aseprite resolver?
-            //{
-            //    return new TilesetAssetResolverAseprite(requestedAssetPath, tiledAssetImporter, superTileset, asepriteImporter);
-            //}
+            else if (requestedAssetPath.EndsWith(".aseprite", StringComparison.OrdinalIgnoreCase) || requestedAssetPath.EndsWith(".ase", StringComparison.OrdinalIgnoreCase))
+            {
+                return new TilesetAssetResolverAseprite(requestedAssetPath, tiledAssetImporter, superTileset);
+            }
 
             tiledAssetImporter.ReportGenericError($"Unknown asset importer for '{requestedAssetPath}'");
             return new TilesetAssetResolverError(requestedAssetPath, tiledAssetImporter, superTileset);
