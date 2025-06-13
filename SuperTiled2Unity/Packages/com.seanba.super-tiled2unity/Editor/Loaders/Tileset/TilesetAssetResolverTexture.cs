@@ -39,7 +39,12 @@ namespace SuperTiled2Unity.Editor
 
             // Create and add the sprite that the tile is based off of
             {
-                spriteToAdd = Sprite.Create(m_Texture, rect, Vector2.zero, SuperTileset.m_PixelsPerUnit);
+                var originalSprite = AssetDatabase.LoadAssetAtPath<Sprite>(SourceAssetPath);
+                var count = originalSprite.GetSecondaryTextureCount();
+                var secondaryTextures = new SecondarySpriteTexture[count];
+                originalSprite.GetSecondaryTextures(secondaryTextures);
+
+                spriteToAdd = Sprite.Create(m_Texture, rect, Vector2.zero, SuperTileset.m_PixelsPerUnit, 0, SpriteMeshType.FullRect, Vector4.zero, false, secondaryTextures);
                 spriteToAdd.name = spriteName;
             }
 
