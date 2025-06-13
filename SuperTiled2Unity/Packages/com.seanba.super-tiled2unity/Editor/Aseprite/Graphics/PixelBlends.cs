@@ -2,7 +2,7 @@
 using Unity.Burst;
 
 //namespace UnityEditor.U2D.Aseprite // Note: Code originally found in Unity's Aseprite Importer
-namespace Aseprite2Unity.Editor
+namespace SuperTiled2Unity.Ase.Editor
 {
     [BurstCompile]
     internal static class PixelBlends

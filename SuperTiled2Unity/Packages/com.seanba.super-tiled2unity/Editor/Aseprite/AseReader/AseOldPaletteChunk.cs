@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aseprite2Unity.Editor
+namespace SuperTiled2Unity.Ase.Editor
 {
     public class AseOldPaletteChunk : AseChunk
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Aseprite2Unity.Editor
+namespace SuperTiled2Unity.Ase.Editor
 {
     public class AsePaletteChunk : AseChunk
     {

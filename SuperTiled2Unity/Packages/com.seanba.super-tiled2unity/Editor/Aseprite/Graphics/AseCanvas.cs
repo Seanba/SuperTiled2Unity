@@ -2,7 +2,7 @@
 using Unity.Collections;
 using UnityEngine;
 
-namespace Aseprite2Unity.Editor
+namespace SuperTiled2Unity.Ase.Editor
 {
     // Drawing board for aseprite pixels, blend operations, etc.
     internal class AseCanvas : IDisposable

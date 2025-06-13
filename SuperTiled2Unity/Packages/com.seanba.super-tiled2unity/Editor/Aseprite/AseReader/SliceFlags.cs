@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Aseprite2Unity.Editor
+namespace SuperTiled2Unity.Ase.Editor
 {
     public enum SliceFlags : uint
     {

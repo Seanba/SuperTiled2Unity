@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Aseprite2Unity.Editor
+namespace SuperTiled2Unity.Ase.Editor
 {
     public class AseHeader
     {

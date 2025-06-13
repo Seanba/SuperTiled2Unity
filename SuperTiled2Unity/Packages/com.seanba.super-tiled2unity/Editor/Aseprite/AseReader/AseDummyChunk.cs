@@ -1,4 +1,4 @@
-﻿namespace Aseprite2Unity.Editor
+﻿namespace SuperTiled2Unity.Ase.Editor
 {
     // For chunks that are ignored (but still advance read pointer)
     public class AseDummyChunk : AseChunk

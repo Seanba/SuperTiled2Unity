@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Aseprite2Unity.Editor
+namespace SuperTiled2Unity.Ase.Editor
 {
     // Reads the binary *.ase/*.aseprite format
     public class AseReader : IDisposable

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aseprite2Unity.Editor
+namespace SuperTiled2Unity.Ase.Editor
 {
     [Flags]
     public enum HeaderFlags : uint
