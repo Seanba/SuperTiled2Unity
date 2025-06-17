@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using SuperTiled2Unity.Ase.Editor;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
 namespace SuperTiled2Unity.Editor
@@ -152,7 +152,21 @@ namespace SuperTiled2Unity.Editor
 
         protected override void OnPrepare()
         {
-            //m_WasSuccessfullyImported = true; // fixit - what to do here?
+            var assetName = Path.GetFileNameWithoutExtension(SourceAssetPath);
+
+            using (var reader = new AseReader(SourceAssetPath))
+            using (var visitor = new AseFileVisitor())
+            {
+                var aseFile = new AseFile(reader);
+                aseFile.VisitContents(visitor);
+
+                var textures = visitor.FetchFrameTextures().ToArray();
+                for (int i = 0; i < textures.Length; i++)
+                {
+                    textures[i].name = $"{assetName}.AseFrame.f{i}";
+                    TiledAssetImporter.SuperImportContext.AddObjectToAsset(textures[i].name, textures[i]);
+                }
+            }
         }
     }
 }
