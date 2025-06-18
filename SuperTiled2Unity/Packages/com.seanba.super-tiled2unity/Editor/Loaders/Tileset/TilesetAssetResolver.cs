@@ -1,9 +1,10 @@
-﻿using UnityEngine.Tilemaps;
+﻿using System;
+using UnityEngine.Tilemaps;
 
 namespace SuperTiled2Unity.Editor
 {
     // Interface for resolving assets (textures, sprites, tiles) for importing tilesets
-    internal abstract class TilesetAssetResolver
+    internal abstract class TilesetAssetResolver : IDisposable
     {
         public string SourceAssetPath { get; }
         public TiledAssetImporter TiledAssetImporter { get; }
@@ -29,8 +30,14 @@ namespace SuperTiled2Unity.Editor
             OnPrepare();
         }
 
+        public void Dispose()
+        {
+            OnDispose();
+        }
+
         public abstract bool AddSpritesAndTile(int tileId, int srcx, int srcy, int tileWidth, int tileHeight);
 
         protected abstract void OnPrepare();
+        protected abstract void OnDispose();
     }
 }

@@ -8,49 +8,6 @@ namespace SuperTiled2Unity.Editor
 {
     internal sealed class TilesetAssetResolverAseprite : TilesetAssetResolver
     {
-        private class Frame
-        {
-            public Sprite Sprite { get; set; }
-            public float Timestamp { get; set; }
-            public float Duration { get; set; }
-        }
-
-        private class FrameManager
-        {
-            public List<Frame> Frames { get; } = new List<Frame>();
-
-            public void AddKey(float timestamp, Sprite sprite, float initialDuration)
-            {
-                // Can we merge with a privous frame? This will close out the animation data.
-                if (Frames.LastOrDefault(f => f.Sprite == sprite) != null)
-                {
-                    var frame = Frames.Last();
-                    frame.Duration = (timestamp + initialDuration) - frame.Timestamp;
-                }
-                else
-                {
-                    if (Frames.Any())
-                    {
-                        // Close the last frame
-                        var lastFrame = Frames.Last();
-                        lastFrame.Duration = timestamp - lastFrame.Timestamp;
-                    }
-
-                    // Add the new frame
-                    var frame = new Frame
-                    {
-                        Sprite = sprite,
-                        Timestamp = timestamp,
-                        Duration = initialDuration,
-                    };
-
-                    Frames.Add(frame);
-                }
-            }
-        }
-
-        //private FrameManager m_FrameManager = new FrameManager(); // fixit - still need this?
-
         public TilesetAssetResolverAseprite(string sourceAssetPath, TiledAssetImporter tiledAssetImporter, SuperTileset superTileset)
             : base(sourceAssetPath, tiledAssetImporter, superTileset)
         {
@@ -167,6 +124,11 @@ namespace SuperTiled2Unity.Editor
                     TiledAssetImporter.SuperImportContext.AddObjectToAsset(textures[i].name, textures[i]);
                 }
             }
+        }
+
+        protected override void OnDispose()
+        {
+            // fixit - cleanup visitor
         }
     }
 }

@@ -8,13 +8,25 @@ namespace SuperTiled2Unity.Ase.Editor
 {
     internal class AseFileVisitor : IAseVisitor, IDisposable
     {
+        public class FrameCanvas
+        {
+            public AseCanvas Canvas { get; }
+            public int DurationMs { get; }
+
+            public FrameCanvas(AseCanvas canvas, int durationMs)
+            {
+                Canvas = canvas;
+                DurationMs = durationMs;
+            }
+        }
+
         public int CanvasWidth => m_AseFile.Header.Width;
         public int CanvasHeight => m_AseFile.Header.Height;
         public ColorDepth ColorDepth => m_AseFile.Header.ColorDepth;
         public int TransparentIndex => m_AseFile.Header.TransparentIndex;
 
         private AseFile m_AseFile;
-        private readonly Stack<AseCanvas> m_FrameCanvases = new Stack<AseCanvas>();
+        private readonly Stack<FrameCanvas> m_FrameCanvases = new Stack<FrameCanvas>();
         private readonly List<AseLayerChunk> m_LayerChunks = new List<AseLayerChunk>();
         private readonly List<AseTilesetChunk> m_TilesetChunks = new List<AseTilesetChunk>();
         private readonly AseGraphics.GetPixelArgs m_GetPixelArgs = new AseGraphics.GetPixelArgs();
@@ -22,17 +34,17 @@ namespace SuperTiled2Unity.Ase.Editor
         // It is the responsibility of the caller to manage these textures
         public IEnumerable<Texture2D> FetchFrameTextures()
         {
-            foreach (var canvas in m_FrameCanvases)
+            foreach (var frame in m_FrameCanvases)
             {
-                yield return canvas.ToTexture2D();
+                yield return frame.Canvas.ToTexture2D();
             }
         }
 
         public void Dispose()
         {
-            foreach (var canvas in m_FrameCanvases)
+            foreach (var frame in m_FrameCanvases)
             {
-                canvas.Dispose();
+                frame.Canvas.Dispose();
             }
         }
 
@@ -50,7 +62,8 @@ namespace SuperTiled2Unity.Ase.Editor
         public void BeginFrameVisit(AseFrame frame)
         {
             // Create a new blank canvas to be written to for the frame
-            m_FrameCanvases.Push(new AseCanvas(CanvasWidth, CanvasHeight));
+            var canvas = new AseCanvas(CanvasWidth, CanvasHeight);
+            m_FrameCanvases.Push(new FrameCanvas(canvas, frame.FrameDurationMs));
         }
 
         public void EndFrameVisit(AseFrame frame)
@@ -82,7 +95,7 @@ namespace SuperTiled2Unity.Ase.Editor
                 // Get the pixels from this cel and blend them into the canvas for this frame
                 unsafe
                 {
-                    var canvas = m_FrameCanvases.Peek();
+                    var canvas = m_FrameCanvases.Peek().Canvas;
                     var canvasPixels = (Color32*)canvas.Pixels.GetUnsafePtr();
 
                     m_GetPixelArgs.PixelBytes = cel.PixelBytes;
@@ -116,7 +129,7 @@ namespace SuperTiled2Unity.Ase.Editor
                 {
                     unsafe
                     {
-                        var canvas = m_FrameCanvases.Peek();
+                        var canvas = m_FrameCanvases.Peek().Canvas;
                         var canvasPixels = (Color32*)canvas.Pixels.GetUnsafePtr();
 
                         m_GetPixelArgs.PixelBytes = tileset.PixelBytes;

@@ -16,5 +16,9 @@
         protected override void OnPrepare()
         {
         }
+
+        protected override void OnDispose()
+        {
+        }
     }
 }
