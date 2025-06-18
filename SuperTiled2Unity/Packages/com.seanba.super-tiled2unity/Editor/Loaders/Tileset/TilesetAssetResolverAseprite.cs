@@ -13,31 +13,13 @@ namespace SuperTiled2Unity.Editor
         {
         }
 
+        private AseFileVisitor m_AseFileVisitor;
+
         public override bool AddSpritesAndTile(int tileId, int srcx, int srcy, int tileWidth, int tileHeight)
         {
             return false;
 
             /*
-            if (!m_WasSuccessfullyImported)
-            {
-                return false;
-            }
-
-            if (m_AseTexture == null)
-            {
-                return false;
-            }
-
-            if (m_AseSprites?.Any() != true)
-            {
-                return false;
-            }
-
-            if (m_FrameManager.Frames.Count == 0)
-            {
-                return false;
-            }
-
             // We only add one tile but many sprites
             SuperTile tileToAdd = null;
             var fps = ST2USettings.instance.m_AnimationFramerate;
@@ -110,14 +92,15 @@ namespace SuperTiled2Unity.Editor
         protected override void OnPrepare()
         {
             var assetName = Path.GetFileNameWithoutExtension(SourceAssetPath);
-
             using (var reader = new AseReader(SourceAssetPath))
-            using (var visitor = new AseFileVisitor())
             {
                 var aseFile = new AseFile(reader);
-                aseFile.VisitContents(visitor);
 
-                var textures = visitor.FetchFrameTextures().ToArray();
+                m_AseFileVisitor = new AseFileVisitor();
+                aseFile.VisitContents(m_AseFileVisitor);
+
+                // fixit - textures are added here but sprites (and tiles) are added in AddSpritesAndTile
+                var textures = m_AseFileVisitor.FetchFrameTextures().ToArray();
                 for (int i = 0; i < textures.Length; i++)
                 {
                     textures[i].name = $"{assetName}.AseFrame.f{i}";
@@ -128,7 +111,7 @@ namespace SuperTiled2Unity.Editor
 
         protected override void OnDispose()
         {
-            // fixit - cleanup visitor
+            m_AseFileVisitor?.Dispose();
         }
     }
 }
