@@ -25,24 +25,16 @@ namespace SuperTiled2Unity.Ase.Editor
         public ColorDepth ColorDepth => m_AseFile.Header.ColorDepth;
         public int TransparentIndex => m_AseFile.Header.TransparentIndex;
 
+        public Stack<FrameCanvas> FrameCanvases { get; } = new Stack<FrameCanvas>();
+
         private AseFile m_AseFile;
-        private readonly Stack<FrameCanvas> m_FrameCanvases = new Stack<FrameCanvas>();
         private readonly List<AseLayerChunk> m_LayerChunks = new List<AseLayerChunk>();
         private readonly List<AseTilesetChunk> m_TilesetChunks = new List<AseTilesetChunk>();
         private readonly AseGraphics.GetPixelArgs m_GetPixelArgs = new AseGraphics.GetPixelArgs();
 
-        // It is the responsibility of the caller to manage these textures
-        public IEnumerable<Texture2D> FetchFrameTextures()
-        {
-            foreach (var frame in m_FrameCanvases)
-            {
-                yield return frame.Canvas.ToTexture2D();
-            }
-        }
-
         public void Dispose()
         {
-            foreach (var frame in m_FrameCanvases)
+            foreach (var frame in FrameCanvases)
             {
                 frame.Canvas.Dispose();
             }
@@ -63,7 +55,7 @@ namespace SuperTiled2Unity.Ase.Editor
         {
             // Create a new blank canvas to be written to for the frame
             var canvas = new AseCanvas(CanvasWidth, CanvasHeight);
-            m_FrameCanvases.Push(new FrameCanvas(canvas, frame.FrameDurationMs));
+            FrameCanvases.Push(new FrameCanvas(canvas, frame.FrameDurationMs));
         }
 
         public void EndFrameVisit(AseFrame frame)
@@ -95,7 +87,7 @@ namespace SuperTiled2Unity.Ase.Editor
                 // Get the pixels from this cel and blend them into the canvas for this frame
                 unsafe
                 {
-                    var canvas = m_FrameCanvases.Peek().Canvas;
+                    var canvas = FrameCanvases.Peek().Canvas;
                     var canvasPixels = (Color32*)canvas.Pixels.GetUnsafePtr();
 
                     m_GetPixelArgs.PixelBytes = cel.PixelBytes;
@@ -129,7 +121,7 @@ namespace SuperTiled2Unity.Ase.Editor
                 {
                     unsafe
                     {
-                        var canvas = m_FrameCanvases.Peek().Canvas;
+                        var canvas = FrameCanvases.Peek().Canvas;
                         var canvasPixels = (Color32*)canvas.Pixels.GetUnsafePtr();
 
                         m_GetPixelArgs.PixelBytes = tileset.PixelBytes;

@@ -98,34 +98,37 @@ namespace SuperTiled2Unity.Editor
             int expectedWidth = xImage.GetAttributeAs<int>("width");
             int expectedHeight = xImage.GetAttributeAs<int>("height");
 
-            var tilesetAssetResolver = TilesetAssetResolverFactory.CreateFromRelativeAssetPath(m_Importer, m_SuperTileset, sourceRelativePath);
-            tilesetAssetResolver.InternalId = m_InternalId;
-            tilesetAssetResolver.ColliderType = ColliderType;
-            tilesetAssetResolver.Prepare(expectedWidth, expectedHeight);
 
-            for (int i = 0; i < m_SuperTileset.m_TileCount; i++)
+            using (var tilesetAssetResolver = TilesetAssetResolverFactory.CreateFromRelativeAssetPath(m_Importer, m_SuperTileset, sourceRelativePath))
             {
-                // Get grid x,y coords
-                int x = i % m_SuperTileset.m_TileColumns;
-                int y = i / m_SuperTileset.m_TileColumns;
+                tilesetAssetResolver.InternalId = m_InternalId;
+                tilesetAssetResolver.ColliderType = ColliderType;
+                tilesetAssetResolver.Prepare(expectedWidth, expectedHeight);
 
-                int tileWidth = m_SuperTileset.m_TileWidth;
-                int tileHeight = m_SuperTileset.m_TileHeight;
-
-                // Get x source on texture
-                int srcx = x * tileWidth;
-                srcx += x * m_SuperTileset.m_Spacing;
-                srcx += m_SuperTileset.m_Margin;
-
-                // Get y source on texture
-                int srcy = y * tileHeight;
-                srcy += y * m_SuperTileset.m_Spacing;
-                srcy += m_SuperTileset.m_Margin;
-
-                if (!tilesetAssetResolver.AddSpritesAndTile(i, srcx, srcy, tileWidth, tileHeight))
+                for (int i = 0; i < m_SuperTileset.m_TileCount; i++)
                 {
-                    m_Importer.ReportMissingSprite(tilesetAssetResolver.SourceAssetPath, i, srcx, srcy, tileWidth, tileHeight);
-                    AddErrorTile(i, NamedColors.HotPink, tileWidth, tileHeight);
+                    // Get grid x,y coords
+                    int x = i % m_SuperTileset.m_TileColumns;
+                    int y = i / m_SuperTileset.m_TileColumns;
+
+                    int tileWidth = m_SuperTileset.m_TileWidth;
+                    int tileHeight = m_SuperTileset.m_TileHeight;
+
+                    // Get x source on texture
+                    int srcx = x * tileWidth;
+                    srcx += x * m_SuperTileset.m_Spacing;
+                    srcx += m_SuperTileset.m_Margin;
+
+                    // Get y source on texture
+                    int srcy = y * tileHeight;
+                    srcy += y * m_SuperTileset.m_Spacing;
+                    srcy += m_SuperTileset.m_Margin;
+
+                    if (!tilesetAssetResolver.AddSpritesAndTile(i, srcx, srcy, tileWidth, tileHeight))
+                    {
+                        m_Importer.ReportMissingSprite(tilesetAssetResolver.SourceAssetPath, i, srcx, srcy, tileWidth, tileHeight);
+                        AddErrorTile(i, NamedColors.HotPink, tileWidth, tileHeight);
+                    }
                 }
             }
         }
@@ -145,21 +148,23 @@ namespace SuperTiled2Unity.Editor
                     int texture_w = xImage.GetAttributeAs<int>("width");
                     int texture_h = xImage.GetAttributeAs<int>("height");
 
-                    var tilesetAssetResolver = TilesetAssetResolverFactory.CreateFromRelativeAssetPath(m_Importer, m_SuperTileset, sourceRelativePath);
-                    tilesetAssetResolver.InternalId = m_InternalId;
-                    tilesetAssetResolver.ColliderType = ColliderType;
-                    tilesetAssetResolver.Prepare(texture_w, texture_h);
-
-                    // The tile may be a subset of the texture
-                    int tile_x = xTile.GetAttributeAs<int>("x", 0);
-                    int tile_y = xTile.GetAttributeAs<int>("y", 0);
-                    int tile_w = xTile.GetAttributeAs<int>("width", texture_w);
-                    int tile_h = xTile.GetAttributeAs<int>("height", texture_h);
-
-                    if (!tilesetAssetResolver.AddSpritesAndTile(tileIndex, tile_x, tile_y, tile_w, tile_h))
+                    using (var tilesetAssetResolver = TilesetAssetResolverFactory.CreateFromRelativeAssetPath(m_Importer, m_SuperTileset, sourceRelativePath))
                     {
-                         m_Importer.ReportMissingSprite(tilesetAssetResolver.SourceAssetPath, tileIndex, tile_x, tile_y, tile_w, tile_h);
-                        AddErrorTile(tileIndex, NamedColors.DeepPink, tile_w, tile_h);
+                        tilesetAssetResolver.InternalId = m_InternalId;
+                        tilesetAssetResolver.ColliderType = ColliderType;
+                        tilesetAssetResolver.Prepare(texture_w, texture_h);
+
+                        // The tile may be a subset of the texture
+                        int tile_x = xTile.GetAttributeAs<int>("x", 0);
+                        int tile_y = xTile.GetAttributeAs<int>("y", 0);
+                        int tile_w = xTile.GetAttributeAs<int>("width", texture_w);
+                        int tile_h = xTile.GetAttributeAs<int>("height", texture_h);
+
+                        if (!tilesetAssetResolver.AddSpritesAndTile(tileIndex, tile_x, tile_y, tile_w, tile_h))
+                        {
+                            m_Importer.ReportMissingSprite(tilesetAssetResolver.SourceAssetPath, tileIndex, tile_x, tile_y, tile_w, tile_h);
+                            AddErrorTile(tileIndex, NamedColors.DeepPink, tile_w, tile_h);
+                        }
                     }
                 }
             }

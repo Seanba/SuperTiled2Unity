@@ -13,7 +13,14 @@ namespace SuperTiled2Unity.Editor
         {
         }
 
+        private class FrameTexture
+        {
+            public Texture2D Texture { get; set; }
+            public int DurationMs { get; set; }
+        }
+
         private AseFileVisitor m_AseFileVisitor;
+        private readonly List<FrameTexture> m_FrameTextures = new List<FrameTexture>();
 
         public override bool AddSpritesAndTile(int tileId, int srcx, int srcy, int tileWidth, int tileHeight)
         {
@@ -99,12 +106,13 @@ namespace SuperTiled2Unity.Editor
                 m_AseFileVisitor = new AseFileVisitor();
                 aseFile.VisitContents(m_AseFileVisitor);
 
-                // fixit - textures are added here but sprites (and tiles) are added in AddSpritesAndTile
-                var textures = m_AseFileVisitor.FetchFrameTextures().ToArray();
-                for (int i = 0; i < textures.Length; i++)
+                m_FrameTextures.Clear();
+                m_FrameTextures.AddRange(m_AseFileVisitor.FrameCanvases.Select(f => new FrameTexture { Texture = f.Canvas.ToTexture2D(), DurationMs = f.DurationMs }));
+
+                for (int i = 0; i < m_FrameTextures.Count; i++)
                 {
-                    textures[i].name = $"{assetName}.AseFrame.f{i}";
-                    TiledAssetImporter.SuperImportContext.AddObjectToAsset(textures[i].name, textures[i]);
+                    m_FrameTextures[i].Texture.name = $"{assetName}.AseTexture.f{i}";
+                    TiledAssetImporter.SuperImportContext.AddObjectToAsset(m_FrameTextures[i].Texture.name, m_FrameTextures[i].Texture);
                 }
             }
         }
