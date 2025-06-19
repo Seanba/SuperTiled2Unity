@@ -24,16 +24,13 @@ namespace SuperTiled2Unity.Editor
 
         public override bool AddSpritesAndTile(int tileId, int srcx, int srcy, int tileWidth, int tileHeight)
         {
-            return false;
-
-            /*
             // We only add one tile but many sprites
             SuperTile tileToAdd = null;
             var fps = ST2USettings.instance.m_AnimationFramerate;
             var animationBuilder = new AnimationBuilder(fps);
 
             // Add sprites for each frame
-            for (int i = 0; i < m_FrameManager.Frames.Count; i++)
+            for (int i = 0; i < m_FrameTextures.Count; i++)
             {
                 int x = srcx;
                 int y = srcy;
@@ -41,17 +38,14 @@ namespace SuperTiled2Unity.Editor
                 // In Tiled, texture origin is the top-left. However, in Unity the origin is bottom-left.
                 y = (ExpectedHeight - y) - tileHeight;
 
-                var frame = m_FrameManager.Frames[i];
+                var frameTexture = m_FrameTextures[i];
 
-                var sourceTexture = m_AseTexture;
-                var sourceSprite = frame.Sprite;
+                var sourceTexture = frameTexture.Texture;
 
                 var assetName = Path.GetFileNameWithoutExtension(TiledAssetImporter.assetPath);
                 var spriteName = $"{assetName}.Sprite.{tileId}.f{i}";
 
                 var rect = new Rect(x, y, tileWidth, tileHeight);
-                rect.x += sourceSprite.rect.x;
-                rect.y += sourceSprite.rect.y;
 
                 // Create and add the sprite that the tile is based off of
                 var spriteToAdd = Sprite.Create(sourceTexture, rect, Vector2.zero, SuperTileset.m_PixelsPerUnit);
@@ -61,7 +55,7 @@ namespace SuperTiled2Unity.Editor
                 TiledAssetImporter.SuperImportContext.AddObjectToAsset(spriteUniqueId, spriteToAdd);
 
                 // Keep track of the frame time on this sprite
-                animationBuilder.AddFrames(spriteToAdd, frame.Duration);
+                animationBuilder.AddFrames(spriteToAdd, frameTexture.DurationMs / 1000.0f);
 
                 // Create and add the tile (only for the first sprite)
                 if (i == 0)
@@ -87,13 +81,12 @@ namespace SuperTiled2Unity.Editor
             }
 
             // Only animate if we have more than one frame
-            if (tileToAdd != null && m_FrameManager.Frames.Count > 1)
+            if (tileToAdd != null && m_FrameTextures.Count > 1)
             {
                 tileToAdd.m_AnimationSprites = animationBuilder.Sprites.ToArray();
             }
 
             return true;
-            */
         }
 
         protected override void OnPrepare()
