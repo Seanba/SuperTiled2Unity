@@ -27,14 +27,11 @@ namespace SuperTiled2Unity.Editor
             ctx.AddObjectToAsset("_tileset_sprites", tilesetSprites, icon);
             ctx.SetMainObject(tilesetSprites);
 
-            // If there is not sprite atlas then we're done
+            // If there is not a sprite atlas then we're done
             if (m_SpriteAtlas == null)
             {
                 return;
             }
-
-            // Remove all the previous sprites from the atlas
-            SpriteAtlasExtensions.Remove(m_SpriteAtlas, SpriteAtlasExtensions.GetPackables(m_SpriteAtlas));
 
             // Go through all the sprites in all our tilesets and add them to the sprite atlas
             foreach (var tileset in m_Tilesets)
@@ -49,7 +46,14 @@ namespace SuperTiled2Unity.Editor
                 }
             }
 
-            SpriteAtlasExtensions.Add(m_SpriteAtlas, tilesetSprites.m_Sprites.ToArray());
+            AssignSpritesToAtlas(tilesetSprites.m_Sprites);
+        }
+
+        private void AssignSpritesToAtlas(IEnumerable<Sprite> sprites)
+        {
+            // Remove all the previous sprites from the atlas
+            SpriteAtlasExtensions.Remove(m_SpriteAtlas, SpriteAtlasExtensions.GetPackables(m_SpriteAtlas));
+            SpriteAtlasExtensions.Add(m_SpriteAtlas, sprites.ToArray());
         }
     }
 }
