@@ -6,6 +6,10 @@ using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.U2D;
 
+// fixit - Rules
+// [2020.3-2021.3] Can only support sprite atlas v1 (anything before 2021.3)
+// Other versions: EditorSettings.spritePackerMode must match v1 or v2
+
 namespace SuperTiled2Unity.Editor
 {
     [ScriptedImporter(1, "st2U_atlas")]
@@ -51,9 +55,28 @@ namespace SuperTiled2Unity.Editor
 
         private void AssignSpritesToAtlas(IEnumerable<Sprite> sprites)
         {
-            // Remove all the previous sprites from the atlas
-            SpriteAtlasExtensions.Remove(m_SpriteAtlas, SpriteAtlasExtensions.GetPackables(m_SpriteAtlas));
-            SpriteAtlasExtensions.Add(m_SpriteAtlas, sprites.ToArray());
+            //EditorSettings.spritePackerMode == SpritePackerMode.SpriteAtlasV2;
+
+            // fixit - you cannot downgrade to version 1 of the sprite atlas, ffs
+            var spriteAtlasAssetPath = AssetDatabase.GetAssetPath(m_SpriteAtlas);
+            var oldPackables = m_SpriteAtlas.GetPackables();
+
+#if UNITY_2021_3_OR_NEWER
+            var spriteAtlasAsset = SpriteAtlasAsset.Load(spriteAtlasAssetPath);
+            if (spriteAtlasAsset != null)
+            {
+                // fixit This works for V2 in 2021.3.11 (test for minimal version)
+                spriteAtlasAsset.Remove(oldPackables);
+                spriteAtlasAsset.Add(sprites.ToArray());
+                SpriteAtlasAsset.Save(spriteAtlasAsset, spriteAtlasAssetPath);
+            }
+            else
+#endif
+            {
+                // Version 1
+                SpriteAtlasExtensions.Remove(m_SpriteAtlas, oldPackables);
+                SpriteAtlasExtensions.Add(m_SpriteAtlas, sprites.ToArray());
+            }
         }
     }
 }
