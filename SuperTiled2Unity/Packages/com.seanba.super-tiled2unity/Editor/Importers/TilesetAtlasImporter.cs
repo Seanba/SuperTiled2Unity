@@ -16,7 +16,7 @@ namespace SuperTiled2Unity.Editor
     public class TilesetAtlasImporter : ScriptedImporter
     {
         public SpriteAtlas m_SpriteAtlas;
-        public List<SuperAssetTileset> m_Tilesets = new List<SuperAssetTileset>();
+        public List<SuperTileset> m_SuperTiled2UnityTilesets = new List<SuperTileset>();
 
         [MenuItem("Assets/Create/Super Tiled2Unity/Tileset Atlas")]
         private static void CreateMaterialFile()
@@ -38,7 +38,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             // Go through all the sprites in all our tilesets and add them to the sprite atlas
-            foreach (var tileset in m_Tilesets)
+            foreach (var tileset in m_SuperTiled2UnityTilesets)
             {
                 var tilesetAssetPath = AssetDatabase.GetAssetPath(tileset);
                 if (!string.IsNullOrEmpty(tilesetAssetPath))
