@@ -43,27 +43,7 @@ SpriteAtlasAsset:
       enableTightPacking: 0
     secondaryTextureSettings: {}
     variantMultiplier: 1
-    packables:
-    - {fileID: -4951299317173216865, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: -6418628663848508520, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: 4054935005699591115, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: -3714967354049135564, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: -5227537620565921201, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: 4896369078736878384, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: 2957500367234016048, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: -5740394422565347455, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: 2749691192776484189, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: 4743613229277786019, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: -641093853183557084, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: 2461628795326635377, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: 5427003662717984424, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: 5167087548862040269, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: 4057965244228307727, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: 3464873206385232490, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: 5688161150548479241, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: -3344019080754349753, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: -1355667091750559717, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
-    - {fileID: -7772999562919264460, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
+    packables: []
     bindAsDefault: 1
     isAtlasV2: 1
     cachedData: {fileID: 0}

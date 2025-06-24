@@ -215,5 +215,5 @@ SpriteAtlas:
   - TTiles_Letters_PutInAtlas.Sprite.29
   - TTiles_Letters_PutInAtlas.Sprite.28
   m_RenderDataMap: {}
-  m_Tag: SA_Example
+  m_Tag: SA_ExampleV1
   m_IsVariant: 0
