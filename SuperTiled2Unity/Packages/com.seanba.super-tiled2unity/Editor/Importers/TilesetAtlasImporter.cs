@@ -99,9 +99,6 @@ namespace SuperTiled2Unity.Editor
 
         private void AssignSpritesToAtlas(IEnumerable<Sprite> sprites)
         {
-            //EditorSettings.spritePackerMode == SpritePackerMode.SpriteAtlasV2;
-
-            // fixit - you cannot downgrade to version 1 of the sprite atlas, ffs
             var spriteAtlasAssetPath = AssetDatabase.GetAssetPath(m_SpriteAtlas);
             var oldPackables = m_SpriteAtlas.GetPackables();
 
@@ -109,7 +106,7 @@ namespace SuperTiled2Unity.Editor
             var spriteAtlasAsset = SpriteAtlasAsset.Load(spriteAtlasAssetPath);
             if (spriteAtlasAsset != null)
             {
-                // fixit This works for V2 in 2021.3.11 (test for minimal version)
+                // Version 2
                 spriteAtlasAsset.Remove(oldPackables);
                 spriteAtlasAsset.Add(sprites.ToArray());
                 SpriteAtlasAsset.Save(spriteAtlasAsset, spriteAtlasAssetPath);
