@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.AssetImporters;
@@ -24,6 +25,41 @@ namespace SuperTiled2Unity.Editor
             ProjectWindowUtil.CreateAssetWithContent("TTileAtlas_new.st2u_atlas", "# Uses Super Tiled2Unity scripted importer for placing tileset sprites in a sprite atlas");
         }
 
+        public string GetSpriteAtlasAssetPath()
+        {
+            return AssetDatabase.GetAssetPath(m_SpriteAtlas);
+        }
+
+        public bool IsUnityVersionIncompatible()
+        {
+#if !UNITY_2021_3_OR_NEWER
+            return IsUsingSpriteAtlasV2();
+#else
+            return false;
+#endif
+        }
+
+        public bool IsEditorVersionIncompatibleV1() // fixit - support this
+        {
+            if (EditorSettings.spritePackerMode == SpritePackerMode.SpriteAtlasV2 && !IsUsingSpriteAtlasV2())
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool IsUsingSpriteAtlasV2()
+        {
+            var assetPath = AssetDatabase.GetAssetPath(m_SpriteAtlas);
+            if (string.IsNullOrEmpty(assetPath))
+            {
+                return false;
+            }
+
+            return assetPath.EndsWith(".spriteatlasv2", StringComparison.OrdinalIgnoreCase);
+        }
+
         public override void OnImportAsset(AssetImportContext ctx)
         {
             var icon = SuperIcons.instance.m_TilesetAtlasIcon;
@@ -36,6 +72,13 @@ namespace SuperTiled2Unity.Editor
             {
                 return;
             }
+
+            if (IsUnityVersionIncompatible())
+            {
+                Debug.LogError("You Unity version does not support Tileset Atlases and Sprite Packer V2. Need Unity 2021.3 or later.");
+                return;
+            }
+
 
             // Go through all the sprites in all our tilesets and add them to the sprite atlas
             foreach (var tileset in m_SuperTiled2UnityTilesets)
