@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.AssetImporters;
 using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.U2D;
-
-// fixit - Rules
-// [2020.3-2021.3] Can only support sprite atlas v1 (anything before 2021.3)
-// Other versions: EditorSettings.spritePackerMode must match v1 or v2
 
 namespace SuperTiled2Unity.Editor
 {
@@ -25,39 +22,39 @@ namespace SuperTiled2Unity.Editor
             ProjectWindowUtil.CreateAssetWithContent("TTileAtlas_new.st2u_atlas", "# Uses Super Tiled2Unity scripted importer for placing tileset sprites in a sprite atlas");
         }
 
-        public string GetSpriteAtlasAssetPath()
+        // Unity Sprite Atlas programming is tricky because of V1 and V2 and the feeling that neither is well supported by Unity APIs
+        public bool SpriteAtlasWillFail(out string reason)
         {
-            return AssetDatabase.GetAssetPath(m_SpriteAtlas);
-        }
+            string atlasAssetPath = AssetDatabase.GetAssetPath(m_SpriteAtlas);
+            string atlasAssetFileName = Path.GetFileName(atlasAssetPath);
+            string atlasAssetFileNameWithoutExtension = Path.GetFileNameWithoutExtension(atlasAssetFileName);
+            bool isV2 = atlasAssetPath.EndsWith(".spriteatlasv2", StringComparison.OrdinalIgnoreCase);
+            bool isEditorV2 = EditorSettings.spritePackerMode == SpritePackerMode.SpriteAtlasV2;
 
-        public bool IsUnityVersionIncompatible()
-        {
-#if !UNITY_2021_3_OR_NEWER
-            return IsUsingSpriteAtlasV2();
-#else
-            return false;
-#endif
-        }
-
-        public bool IsEditorVersionIncompatibleV1() // fixit - support this
-        {
-            if (EditorSettings.spritePackerMode == SpritePackerMode.SpriteAtlasV2 && !IsUsingSpriteAtlasV2())
+            if (isV2 && !isEditorV2)
             {
+                reason = $"'{atlasAssetFileNameWithoutExtension}' uses Sprite Atlas V2 but the project settings use Sprite Atlas V1.\nSee: Project Settings / Editor / Sprite Packer)";
                 return true;
             }
 
-            return false;
-        }
-
-        public bool IsUsingSpriteAtlasV2()
-        {
-            var assetPath = AssetDatabase.GetAssetPath(m_SpriteAtlas);
-            if (string.IsNullOrEmpty(assetPath))
+            if (isEditorV2 && !isV2)
             {
-                return false;
+                reason = "fixit - editor is V2 but sprite atlas is V1";
+                return true;
             }
 
-            return assetPath.EndsWith(".spriteatlasv2", StringComparison.OrdinalIgnoreCase);
+            // fixit - other rules to follow?
+
+#if !UNITY_2021_3_OR_NEWER
+            if (isV2)
+            {
+                reason = $"'{atlasAssetFileNameWithoutExtension}' uses Sprite Atlas V2.\nSprite Atlas V2 is not supported with TilesetAtlas and this version of Unity.\nUpgrade to Unity 2021.3 or use Sprite Atlas V1.\nSee: Project Settings / Editor / Sprite Packer)";
+                return true;
+            }
+#endif
+
+            reason = string.Empty;
+            return false;
         }
 
         public override void OnImportAsset(AssetImportContext ctx)
@@ -73,13 +70,6 @@ namespace SuperTiled2Unity.Editor
                 return;
             }
 
-            if (IsUnityVersionIncompatible())
-            {
-                Debug.LogError("You Unity version does not support Tileset Atlases and Sprite Packer V2. Need Unity 2021.3 or later.");
-                return;
-            }
-
-
             // Go through all the sprites in all our tilesets and add them to the sprite atlas
             foreach (var tileset in m_SuperTiled2UnityTilesets)
             {
@@ -91,6 +81,13 @@ namespace SuperTiled2Unity.Editor
                     // If the tileset changes then the atlas will be automatically updated
                     ctx.DependsOnArtifact(tilesetAssetPath);
                 }
+            }
+
+            if (SpriteAtlasWillFail(out string reason))
+            {
+                // We can't assign sprites to the sprite atlas
+                Debug.LogError(reason);
+                return;
             }
 
             AssignSpritesToAtlas(tilesetSprites.m_Sprites);
