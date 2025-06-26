@@ -34,6 +34,10 @@ namespace SuperTiled2Unity.Editor
             if (isV2 && !isEditorV2)
             {
                 reason = $"'{atlasAssetFileNameWithoutExtension}' uses Sprite Atlas V2 but the project settings use Sprite Atlas V1.\nSee: Project Settings / Editor / Sprite Packer)";
+
+#if !UNITY_2021_3_OR_NEWER
+                reason += "\n\nNote you need at least Unity 2021.3 in order to use Tileset Atlas with Sprite Atlas V2.";
+#endif
                 return true;
             }
 
