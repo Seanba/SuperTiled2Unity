@@ -37,9 +37,14 @@
       "path": "Samples~/Aseprite"
     },
     {
-      "displayName": "Tileset Atlas (Fixing Seams)",
-      "description": "Uses a Tileset Atlas to easily add tiles (and their sprites) to a Unity sprite atlas. Use this to resolve seams in-between tiles.",
-      "path": "Samples~/Seams"
+      "displayName": "Tileset Atlas (Fixing Seams with Sprite Packer V1)",
+      "description": "Uses a Tileset Atlas to easily add tiles (and their sprites) to a Unity sprite atlas (V1). Use this to resolve seams in-between tiles. Works with Unity 2020.3 and later with Sprite Packer V1.",
+      "path": "Samples~/SeamsV1"
+    },	
+    {
+      "displayName": "Tileset Atlas (Fixing Seams with Sprite Packer V2)",
+      "description": "Uses a Tileset Atlas to easily add tiles (and their sprites) to a Unity sprite atlas (V2). Use this to resolve seams in-between tiles. Requires Unity 2021.3 or later and Sprite Packer V2.",
+      "path": "Samples~/SeamsV2"
     }
   ]
 }

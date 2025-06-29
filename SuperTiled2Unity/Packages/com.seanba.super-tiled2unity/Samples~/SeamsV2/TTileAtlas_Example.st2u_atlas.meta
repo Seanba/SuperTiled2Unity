@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: dcd20ea8bffa6034395a4b7f5f6986e5
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 14bc6dd67b45d094c836611ff82ed592, type: 3}
+  spriteAtlas: {fileID: 100100200, guid: 5c8e0838a38c3234bae257b874d8c9d9, type: 3}
+  superTiled2UnityTilesets:
+  - {fileID: -7126433371136705374, guid: d60d5fd508d39f541ada8c419c413fe3, type: 3}
