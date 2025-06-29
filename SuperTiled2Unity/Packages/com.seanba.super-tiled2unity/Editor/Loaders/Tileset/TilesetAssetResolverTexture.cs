@@ -37,7 +37,8 @@ namespace SuperTiled2Unity.Editor
             Sprite spriteToAdd;
             SuperTile tileToAdd;
 
-            // Create and add the sprite that the tile is based off of
+#if UNITY_2022_2_OR_NEWER
+            // Create and add the sprite that the tile is based off of (supports secondary textures)
             {
                 var originalSprite = AssetDatabase.LoadAssetAtPath<Sprite>(SourceAssetPath);
                 var count = originalSprite.GetSecondaryTextureCount();
@@ -47,6 +48,13 @@ namespace SuperTiled2Unity.Editor
                 spriteToAdd = Sprite.Create(m_Texture, rect, Vector2.zero, SuperTileset.m_PixelsPerUnit, 0, SpriteMeshType.FullRect, Vector4.zero, false, secondaryTextures);
                 spriteToAdd.name = spriteName;
             }
+#else
+            // Create and add the sprite that the tile is based off of (no support for secondary textures)
+            {
+                spriteToAdd = Sprite.Create(m_Texture, rect, Vector2.zero, SuperTileset.m_PixelsPerUnit);
+                spriteToAdd.name = spriteName;
+            }
+#endif
 
             // Create and add the tile
             {
