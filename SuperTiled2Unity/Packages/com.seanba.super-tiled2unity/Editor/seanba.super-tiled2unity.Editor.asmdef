@@ -1,28 +1,22 @@
 {
-    "name": "Super Tiled2Unity Editor",
+    "name": "SuperTiled2UnityEditor",
     "rootNamespace": "",
     "references": [
         "GUID:06e56dbbb8dec4d43a0b85b0fe0dd0ca",
         "GUID:2c573e6b271651846a79655161004c5b",
-        "GUID:1c0efac71f61649eab4850fa3687d8a4"
+        "GUID:2665a8d13d1b3f18800f46e256720795"
     ],
     "includePlatforms": [
         "Editor"
     ],
     "excludePlatforms": [],
-    "allowUnsafeCode": false,
+    "allowUnsafeCode": true,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [
-        "UNITY_2021_3_OR_NEWER"
+        "UNITY_2020_3_OR_NEWER"
     ],
-    "versionDefines": [
-        {
-            "name": "com.unity.2d.aseprite",
-            "expression": "1.2.0",
-            "define": "ST2U_WITH_ASEPRITE_IMPORT_MODE_TILESET"
-        }
-    ],
+    "versionDefines": [],
     "noEngineReferences": false
 }

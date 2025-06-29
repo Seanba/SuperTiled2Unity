@@ -97,5 +97,9 @@ namespace SuperTiled2Unity.Editor
                 m_IsSizeValid = true;
             }
         }
+
+        protected override void OnDispose()
+        {
+        }
     }
 }
