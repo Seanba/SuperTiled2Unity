@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace SuperTiled2Unity.Sample.Seams
+namespace SuperTiled2Unity.Sample.SeamsV1
 {
     public class SeamMaker : MonoBehaviour
     {
