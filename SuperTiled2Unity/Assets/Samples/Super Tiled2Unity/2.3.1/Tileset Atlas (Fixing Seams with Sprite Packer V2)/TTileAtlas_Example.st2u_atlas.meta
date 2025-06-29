@@ -10,4 +10,4 @@ ScriptedImporter:
   script: {fileID: 11500000, guid: 14bc6dd67b45d094c836611ff82ed592, type: 3}
   spriteAtlas: {fileID: 100100200, guid: 5c8e0838a38c3234bae257b874d8c9d9, type: 3}
   superTiled2UnityTilesets:
-  - {fileID: -7126433371136705374, guid: 785f3b46764c850448cb9e9d53888dd8, type: 3}
+  - {fileID: -7126433371136705374, guid: d60d5fd508d39f541ada8c419c413fe3, type: 3}
