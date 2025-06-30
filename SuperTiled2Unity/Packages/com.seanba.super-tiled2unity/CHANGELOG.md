@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.3.1] - 2025-06-29
+- Improved feature: Aseprite support no longer depends on Unity's Aseprite Importer (which required Unity 2021.3.15 or newer).
+- Improved feature: Now support Aseprite files that have tileset layers.
+- Improved feature: All Aserptie blending modes supported.
+- Improved support: Can now support Unity 2020.3 and later again.
+- New feature: Secondary textures on sprites now supported. (Requires Unity 2022.2 or newer)
+- Bug fix: Tileset Atlas now properly supports both V1 and V2 versions of Sprite Packer. Sprite Packer V2 requries Unity version 2021.3 or newer.
+- Bug fix: ST2U does not overwrite default texture import settings if a viable preset is availble for the texture.
+
+
 ## [2.3.1] - 2025-05-02
 - Bug fix: Can now import Aseprite tilesets that do not export an animation clip.
 - Bug fix: Can now import Aseprite tilesets that only have one frame (and do not animate).
