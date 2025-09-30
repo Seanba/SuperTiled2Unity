@@ -151,15 +151,17 @@ namespace SuperTiled2Unity.Editor
         private class ScopedIsTriggerOverride : IDisposable
         {
             private readonly SuperImportContext m_SuperContext;
+            private readonly bool? m_RestoreIsTriggerOverride;
 
             public ScopedIsTriggerOverride(SuperImportContext superContext)
             {
                 m_SuperContext = superContext;
+                m_RestoreIsTriggerOverride = m_SuperContext.m_IsTriggerOverride;
             }
 
             public void Dispose()
             {
-                m_SuperContext.m_IsTriggerOverride = null;
+                m_SuperContext.m_IsTriggerOverride = m_RestoreIsTriggerOverride;
             }
         }
 

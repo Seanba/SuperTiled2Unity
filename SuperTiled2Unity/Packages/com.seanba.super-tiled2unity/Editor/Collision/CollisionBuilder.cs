@@ -97,7 +97,7 @@ namespace SuperTiled2Unity.Editor
                     // And we can have complex polygons represented by one object
                     var composite = goCollider.AddComponent<CompositeCollider2D>();
                     composite.geometryType = ST2USettings.instance.m_CollisionGeometryType;
-                    composite.isTrigger = key.IsTrigger;
+                    composite.isTrigger = m_ImportContext.GetIsTriggerOverridable(key.IsTrigger);
                     composite.generationType = CompositeCollider2D.GenerationType.Manual;
 
                     // Add polygon colliders
