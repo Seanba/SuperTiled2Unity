@@ -13,8 +13,6 @@ namespace SuperTiled2Unity.Editor
 
         private readonly AssetImportContext m_Context;
 
-        private bool? m_IsTriggerOverride;
-
         public float PixelsPerUnit { get; }
         public float InversePPU => 1.0f / PixelsPerUnit;
         public int EdgesPerEllipse { get; }
@@ -30,6 +28,7 @@ namespace SuperTiled2Unity.Editor
         }
 
         public LayerIgnoreMode LayerIgnoreMode { get; private set; }
+        public bool? IsTriggerOverride { get; set; }
 
         public Vector3 TilemapOffset { get; set; }
 
@@ -114,9 +113,9 @@ namespace SuperTiled2Unity.Editor
 
         public bool GetIsTriggerOverridable(bool defaultValue)
         {
-            if (m_IsTriggerOverride.HasValue)
+            if (IsTriggerOverride != null)
             {
-                return m_IsTriggerOverride.Value;
+                return IsTriggerOverride.Value;
             }
 
             return defaultValue;
@@ -124,15 +123,9 @@ namespace SuperTiled2Unity.Editor
 
         public IDisposable BeginIsTriggerOverride(GameObject go)
         {
-            if (m_IsTriggerOverride.HasValue)
-            {
-                return null;
-            }
-
             if (go.TryGetCustomPropertySafe(StringConstants.Unity_IsTrigger, out CustomProperty property))
             {
-                m_IsTriggerOverride = property.GetValueAsBool();
-                return new ScopedIsTriggerOverride(this);
+                return new ScopedIsTriggerOverride(this, property.GetValueAsBool());
             }
 
             return null;
@@ -153,15 +146,16 @@ namespace SuperTiled2Unity.Editor
             private readonly SuperImportContext m_SuperContext;
             private readonly bool? m_RestoreIsTriggerOverride;
 
-            public ScopedIsTriggerOverride(SuperImportContext superContext)
+            public ScopedIsTriggerOverride(SuperImportContext superContext, bool isTriggerOverride)
             {
                 m_SuperContext = superContext;
-                m_RestoreIsTriggerOverride = m_SuperContext.m_IsTriggerOverride;
+                m_RestoreIsTriggerOverride = m_SuperContext.IsTriggerOverride;
+                m_SuperContext.IsTriggerOverride = isTriggerOverride;
             }
 
             public void Dispose()
             {
-                m_SuperContext.m_IsTriggerOverride = m_RestoreIsTriggerOverride;
+                m_SuperContext.IsTriggerOverride = m_RestoreIsTriggerOverride;
             }
         }
 
