@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System;
+using System.Xml.Linq;
 using UnityEditor.AssetImporters;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -23,6 +24,7 @@ namespace SuperTiled2Unity.Editor
 
             AddSuperAsset<SuperAssetTileset>();
             ImportTsxFile();
+            DoCustomImporting();
         }
 
         private void ImportTsxFile()
@@ -53,6 +55,47 @@ namespace SuperTiled2Unity.Editor
             var loader = new TilesetLoader(Tileset, this, 0);
             loader.ColliderType = m_ColliderType;
             loader.LoadFromXml(xTileset);
+        }
+
+        private void DoCustomImporting()
+        {
+            foreach (var type in AutoCustomTsxImporterAttribute.GetOrderedAutoImportersTypes())
+            {
+                RunCustomImporterType(type);
+            }
+        }
+
+        private void RunCustomImporterType(Type type)
+        {
+            CustomTsxImporter customImporter;
+            try
+            {
+                customImporter = Activator.CreateInstance(type) as CustomTsxImporter;
+            }
+            catch (Exception e)
+            {
+                ReportGenericError($"Error creating custom importer class. Message = '{e.Message}'\n{e.StackTrace}");
+                return;
+            }
+
+            try
+            {
+                var args = new TsxAssetImportedArgs();
+                args.AssetImporter = this;
+                args.ImportedTileset = Tileset;
+
+                customImporter.TsxAssetImported(args);
+            }
+            catch (CustomImporterException cie)
+            {
+                ReportGenericError($"Custom Importer error: \n  Importer: {customImporter.GetType().Name}\n  Message: {cie.Message}");
+                Debug.LogErrorFormat("Custom Importer ({0}) exception: {1}", customImporter.GetType().Name, cie.Message);
+            }
+            catch (Exception e)
+            {
+                ReportGenericError($"Custom importer '{customImporter.GetType().Name}' threw an exception. Message = '{e.Message}', Stack:\n{e.StackTrace}");
+                Debug.LogErrorFormat("Custom importer general exception: {0}", e.Message);
+            }
         }
     }
 }

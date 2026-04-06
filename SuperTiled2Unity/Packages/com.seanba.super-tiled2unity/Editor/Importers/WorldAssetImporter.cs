@@ -11,6 +11,8 @@ namespace SuperTiled2Unity.Editor
     [ScriptedImporter(ImporterConstants.WorldVersion, ImporterConstants.WorldExtension, ImporterConstants.WorldImportOrder)]
     public class WorldAssetImporter : TiledAssetImporter
     {
+        private SuperWorld m_WorldComponent;
+
         private enum WorldType
         {
             world,
@@ -61,6 +63,7 @@ namespace SuperTiled2Unity.Editor
             SuperImportContext.SetMainObject(goWorld);
 
             var superWorld = goWorld.AddComponent<SuperWorld>();
+            m_WorldComponent = superWorld;
 
             try
             {
@@ -73,6 +76,8 @@ namespace SuperTiled2Unity.Editor
 
             // Were any import errors captured along the way?
             superWorld.m_ImportErrors = ImportErrors;
+
+            DoCustomImporting();
         }
 
         private void ParseJsonAsset(GameObject goWorld)
@@ -146,6 +151,47 @@ namespace SuperTiled2Unity.Editor
                         InstantiateMap(goWorld, map);
                     }
                 }
+            }
+        }
+
+        private void DoCustomImporting()
+        {
+            foreach (var type in AutoCustomWorldImporterAttribute.GetOrderedAutoImportersTypes())
+            {
+                RunCustomImporterType(type);
+            }
+        }
+
+        private void RunCustomImporterType(Type type)
+        {
+            CustomWorldImporter customImporter;
+            try
+            {
+                customImporter = Activator.CreateInstance(type) as CustomWorldImporter;
+            }
+            catch (Exception e)
+            {
+                ReportGenericError($"Error creating custom importer class. Message = '{e.Message}'\n{e.StackTrace}");
+                return;
+            }
+
+            try
+            {
+                var args = new WorldAssetImportedArgs();
+                args.AssetImporter = this;
+                args.ImportedSuperWorld = m_WorldComponent;
+
+                customImporter.WorldAssetImported(args);
+            }
+            catch (CustomImporterException cie)
+            {
+                ReportGenericError($"Custom Importer error: \n  Importer: {customImporter.GetType().Name}\n  Message: {cie.Message}");
+                Debug.LogErrorFormat("Custom Importer ({0}) exception: {1}", customImporter.GetType().Name, cie.Message);
+            }
+            catch (Exception e)
+            {
+                ReportGenericError($"Custom importer '{customImporter.GetType().Name}' threw an exception. Message = '{e.Message}', Stack:\n{e.StackTrace}");
+                Debug.LogErrorFormat("Custom importer general exception: {0}", e.Message);
             }
         }
     }
