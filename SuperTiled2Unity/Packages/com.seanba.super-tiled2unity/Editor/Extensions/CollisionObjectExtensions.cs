@@ -55,6 +55,10 @@ namespace SuperTiled2Unity.Editor
             var convexPolygons = composition.Compose(triangles);
 
             PolygonUtils.AddCompositePolygonCollider(go, convexPolygons, importContext);
+            foreach (var superCollider in go.GetComponentsInChildren<SuperColliderComponent>())
+            {
+                superCollider.m_ObjectType = collision.m_ObjectType;
+            }
         }
 
         private static void AddEdgeCollider(GameObject go, CollisionObject collision, SuperTile tile, SuperImportContext importContext)
@@ -62,7 +66,8 @@ namespace SuperTiled2Unity.Editor
             var edge = go.AddComponent<EdgeCollider2D>();
             edge.points = importContext.MakePointsPPU(collision.Points);
 
-            go.AddComponent<SuperColliderComponent>();
+            var superCollider = go.AddComponent<SuperColliderComponent>();
+            superCollider.m_ObjectType = collision.m_ObjectType;
         }
 
         private static void AddEllipseCollider(GameObject go, CollisionObject collision, SuperTile tile, SuperImportContext importContext)
@@ -79,7 +84,8 @@ namespace SuperTiled2Unity.Editor
                 go.transform.localPosition = new Vector3(xpos, ypos);
                 go.transform.localEulerAngles = new Vector3(0, 0, importContext.MakeRotation(collision.m_Rotation));
 
-                go.AddComponent<SuperColliderComponent>();
+                var superCollider = go.AddComponent<SuperColliderComponent>();
+                superCollider.m_ObjectType = collision.m_ObjectType;
             }
             else
             {
@@ -99,7 +105,8 @@ namespace SuperTiled2Unity.Editor
             go.transform.localPosition = new Vector3(xpos, ypos);
             go.transform.localEulerAngles = new Vector3(0, 0, importContext.MakeRotation(collision.m_Rotation));
 
-            go.AddComponent<SuperColliderComponent>();
+            var superCollider = go.AddComponent<SuperColliderComponent>();
+            superCollider.m_ObjectType = collision.m_ObjectType;
         }
 
         private static void AddPointCollider(GameObject go, CollisionObject collision, SuperImportContext importContext)
@@ -110,7 +117,8 @@ namespace SuperTiled2Unity.Editor
             go.transform.localPosition = new Vector3(xpos, ypos);
             go.transform.localEulerAngles = new Vector3(0, 0, importContext.MakeRotation(collision.m_Rotation));
 
-            go.AddComponent<SuperColliderComponent>();
+            var superCollider = go.AddComponent<SuperColliderComponent>();
+            superCollider.m_ObjectType = collision.m_ObjectType;
         }
     }
 }
