@@ -22,7 +22,7 @@ namespace SuperTiled2Unity.Editor
         private AseFileVisitor m_AseFileVisitor;
         private readonly List<FrameTexture> m_FrameTextures = new List<FrameTexture>();
 
-        public override bool AddSpritesAndTile(int tileId, int srcx, int srcy, int tileWidth, int tileHeight)
+        public override bool AddSpritesAndTile(int tileId, int srcx, int srcy, int tileWidth, int tileHeight, Vector2 tiledPivot, Vector2 unityPivot)
         {
             // We only add one tile but many sprites
             SuperTile tileToAdd = null;
@@ -48,7 +48,7 @@ namespace SuperTiled2Unity.Editor
                 var rect = new Rect(x, y, tileWidth, tileHeight);
 
                 // Create and add the sprite that the tile is based off of
-                var spriteToAdd = Sprite.Create(sourceTexture, rect, Vector2.zero, SuperTileset.m_PixelsPerUnit);
+                var spriteToAdd = Sprite.Create(sourceTexture, rect, unityPivot, SuperTileset.m_PixelsPerUnit);
                 spriteToAdd.name = spriteName;
 
                 string spriteUniqueId = $"{spriteName}.{InternalId}";
@@ -67,8 +67,9 @@ namespace SuperTiled2Unity.Editor
                     tileToAdd.m_Sprite = spriteToAdd;
                     tileToAdd.m_Width = rect.width;
                     tileToAdd.m_Height = rect.height;
-                    tileToAdd.m_TileOffsetX = SuperTileset.m_TileOffset.x;
-                    tileToAdd.m_TileOffsetY = SuperTileset.m_TileOffset.y;
+                    tileToAdd.m_HasCustomPivot = unityPivot != tiledPivot;
+                    tileToAdd.m_TileOffsetX = SuperTileset.m_TileOffset.x + (unityPivot.x * tileToAdd.m_Width);
+                    tileToAdd.m_TileOffsetY = SuperTileset.m_TileOffset.y - (unityPivot.y * tileToAdd.m_Height);
                     tileToAdd.m_ObjectAlignment = SuperTileset.m_ObjectAlignment;
                     tileToAdd.m_TileRenderSize = SuperTileset.m_TileRenderSize;
                     tileToAdd.m_FillMode = SuperTileset.m_FillMode;

@@ -14,7 +14,7 @@ namespace SuperTiled2Unity.Editor
         {
         }
 
-        public override bool AddSpritesAndTile(int tileId, int srcx, int srcy, int tileWidth, int tileHeight)
+        public override bool AddSpritesAndTile(int tileId, int srcx, int srcy, int tileWidth, int tileHeight, Vector2 tiledPivot, Vector2 unityPivot)
         {
             if (m_Texture == null)
             {
@@ -47,7 +47,7 @@ namespace SuperTiled2Unity.Editor
                     var secondaryTextures = new SecondarySpriteTexture[count];
                     originalSprite.GetSecondaryTextures(secondaryTextures);
 
-                    spriteToAdd = Sprite.Create(m_Texture, rect, Vector2.zero, SuperTileset.m_PixelsPerUnit, 0, SpriteMeshType.FullRect, Vector4.zero, false, secondaryTextures);
+                    spriteToAdd = Sprite.Create(m_Texture, rect, unityPivot, SuperTileset.m_PixelsPerUnit, 0, SpriteMeshType.FullRect, Vector4.zero, false, secondaryTextures);
                     spriteToAdd.name = spriteName;
                 }
             }
@@ -55,7 +55,7 @@ namespace SuperTiled2Unity.Editor
             // If the sprite is still null then we don't have secondary textures for it
             if (spriteToAdd == null)
             {
-                spriteToAdd = Sprite.Create(m_Texture, rect, Vector2.zero, SuperTileset.m_PixelsPerUnit);
+                spriteToAdd = Sprite.Create(m_Texture, rect, unityPivot, SuperTileset.m_PixelsPerUnit);
                 spriteToAdd.name = spriteName;
             }
 
@@ -67,8 +67,9 @@ namespace SuperTiled2Unity.Editor
                 tileToAdd.m_Sprite = spriteToAdd;
                 tileToAdd.m_Width = rect.width;
                 tileToAdd.m_Height = rect.height;
-                tileToAdd.m_TileOffsetX = SuperTileset.m_TileOffset.x;
-                tileToAdd.m_TileOffsetY = SuperTileset.m_TileOffset.y;
+                tileToAdd.m_HasCustomPivot = unityPivot != tiledPivot;
+                tileToAdd.m_TileOffsetX = SuperTileset.m_TileOffset.x + (unityPivot.x * tileToAdd.m_Width);
+                tileToAdd.m_TileOffsetY = SuperTileset.m_TileOffset.y - (unityPivot.y * tileToAdd.m_Height);
                 tileToAdd.m_ObjectAlignment = SuperTileset.m_ObjectAlignment;
                 tileToAdd.m_TileRenderSize = SuperTileset.m_TileRenderSize;
                 tileToAdd.m_FillMode = SuperTileset.m_FillMode;

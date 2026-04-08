@@ -98,6 +98,16 @@ namespace SuperTiled2Unity.Editor
             int expectedWidth = xImage.GetAttributeAs<int>("width");
             int expectedHeight = xImage.GetAttributeAs<int>("height");
 
+            // Build a lookup of tile elements by id for per-tile pivot scanning
+            var xTiles = new Dictionary<int, XElement>();
+            foreach (var xTile in xTileset.Elements("tile"))
+            {
+                xTiles[xTile.GetAttributeAs<int>("id")] = xTile;
+            }
+
+            // Compute the default pivot from the tileset's object alignment
+            var alignment = m_SuperTileset.m_ObjectAlignment;
+            var defaultPivot = (Vector2)(-ObjectAlignmentToPivot.ToVector3(1, 1, 1, MapOrientation.Orthogonal, alignment));
 
             using (var tilesetAssetResolver = TilesetAssetResolverFactory.CreateFromRelativeAssetPath(m_Importer, m_SuperTileset, sourceRelativePath))
             {
@@ -124,7 +134,14 @@ namespace SuperTiled2Unity.Editor
                     srcy += y * m_SuperTileset.m_Spacing;
                     srcy += m_SuperTileset.m_Margin;
 
-                    if (!tilesetAssetResolver.AddSpritesAndTile(i, srcx, srcy, tileWidth, tileHeight))
+                    // Get the per-tile pivot, falling back to the default alignment pivot
+                    var pivot = defaultPivot;
+                    if (xTiles.TryGetValue(i, out var xTile))
+                    {
+                        pivot = GetTilePivot(xTile, tileWidth, tileHeight, defaultPivot);
+                    }
+
+                    if (!tilesetAssetResolver.AddSpritesAndTile(i, srcx, srcy, tileWidth, tileHeight, defaultPivot, pivot))
                     {
                         m_Importer.ReportMissingSprite(tilesetAssetResolver.SourceAssetPath, i, srcx, srcy, tileWidth, tileHeight);
                         AddErrorTile(i, NamedColors.HotPink, tileWidth, tileHeight);
@@ -136,6 +153,9 @@ namespace SuperTiled2Unity.Editor
         private void BuildTilesetFromCollection(XElement xTileset)
         {
             m_SuperTileset.m_IsImageCollection = true;
+
+            var alignment = m_SuperTileset.m_ObjectAlignment;
+            var defaultPivot = (Vector2)(-ObjectAlignmentToPivot.ToVector3(1, 1, 1, MapOrientation.Orthogonal, alignment));
 
             foreach (var xTile in xTileset.Elements("tile"))
             {
@@ -160,7 +180,9 @@ namespace SuperTiled2Unity.Editor
                         int tile_w = xTile.GetAttributeAs<int>("width", texture_w);
                         int tile_h = xTile.GetAttributeAs<int>("height", texture_h);
 
-                        if (!tilesetAssetResolver.AddSpritesAndTile(tileIndex, tile_x, tile_y, tile_w, tile_h))
+                        var pivot = GetTilePivot(xTile, tile_w, tile_h, defaultPivot);
+
+                        if (!tilesetAssetResolver.AddSpritesAndTile(tileIndex, tile_x, tile_y, tile_w, tile_h, defaultPivot, pivot))
                         {
                             m_Importer.ReportMissingSprite(tilesetAssetResolver.SourceAssetPath, tileIndex, tile_x, tile_y, tile_w, tile_h);
                             AddErrorTile(tileIndex, NamedColors.DeepPink, tile_w, tile_h);
@@ -168,6 +190,32 @@ namespace SuperTiled2Unity.Editor
                     }
                 }
             }
+        }
+
+        private Vector2 GetTilePivot(XElement xTile, float tileWidth, float tileHeight, Vector2 defaultPivot)
+        {
+            var xObjectGroup = xTile.Element("objectgroup");
+            if (xObjectGroup != null)
+            {
+                foreach (var xObject in xObjectGroup.Elements("object"))
+                {
+                    var objectType = xObject.GetAttributeAs<string>("class", "");
+                    if (string.IsNullOrEmpty(objectType))
+                    {
+                        objectType = xObject.GetAttributeAs<string>("type", "");
+                    }
+
+                    if (StringConstants.Unity_Pivot.Equals(objectType, System.StringComparison.OrdinalIgnoreCase)
+                        && xObject.Element("point") != null)
+                    {
+                        float objX = xObject.GetAttributeAs<float>("x", 0f);
+                        float objY = xObject.GetAttributeAs<float>("y", 0f);
+                        return new Vector2(objX / tileWidth, 1f - (objY / tileHeight));
+                    }
+                }
+            }
+
+            return defaultPivot;
         }
 
         private void AddErrorTile(int tileId, Color tint, int width, int height)
