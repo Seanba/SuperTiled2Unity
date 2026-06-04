@@ -321,8 +321,10 @@ namespace SuperTiled2Unity.Editor
                         collision.m_ObjectType = xObject.GetAttributeAs("type", "");
                     }
 
-                    collision.m_Position.x = xObject.GetAttributeAs("x", 0.0f);
-                    collision.m_Position.y = xObject.GetAttributeAs("y", 0.0f);
+                    // Tile offset includes custom pivot compensation. Subtract it so collision
+                    // origins stay in tile-local space before later tile transforms are applied.
+                    collision.m_Position.x = xObject.GetAttributeAs("x", 0.0f) - tile.m_TileOffsetX;
+                    collision.m_Position.y = xObject.GetAttributeAs("y", 0.0f) - tile.m_TileOffsetY;
                     collision.m_Size.x = xObject.GetAttributeAs("width", 0.0f);
                     collision.m_Size.y = xObject.GetAttributeAs("height", 0.0f);
                     collision.m_Rotation = xObject.GetAttributeAs("rotation", 0.0f);
