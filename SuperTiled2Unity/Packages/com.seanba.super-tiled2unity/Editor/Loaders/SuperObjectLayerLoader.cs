@@ -260,6 +260,8 @@ namespace SuperTiled2Unity.Editor
             goCF.transform.localRotation = Quaternion.Euler(0, 0, 0);
             goCF.transform.localScale = new Vector3(flip_h ? -1 : 1, flip_v ? -1 : 1, 1);
 
+            goCF.transform.localPosition += (new Vector3(flip_h ? tileOffset.x : 0f, flip_v ? tileOffset.y : 0f, 0f)) * -2f;
+
             var fromCenter = -translateCenter;
 
             // Add another child, putting our coordinates back into the proper place
@@ -290,8 +292,13 @@ namespace SuperTiled2Unity.Editor
 
             if (Importer.SuperImportContext.LayerIgnoreMode != LayerIgnoreMode.Collision)
             {
+                var goCollisions = new GameObject();
+                goCollisions.name = string.Format("{0} (Collisions)", superObject.m_TiledName);
+                goCF.AddChildWithUniqueName(goCollisions);
+                goCollisions.transform.localPosition = fromCenter;
+
                 // Add any colliders that were set up on the tile in the collision editor
-                tile.AddCollidersForTileObject(goTile, Importer.SuperImportContext);
+                tile.AddCollidersForTileObject(goCollisions, Importer.SuperImportContext);
             }
 
             // Store a reference to our tile object

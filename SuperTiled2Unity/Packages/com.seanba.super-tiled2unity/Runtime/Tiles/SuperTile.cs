@@ -37,6 +37,9 @@ namespace SuperTiled2Unity
         public float m_Height;
 
         [ReadOnly]
+        public bool m_HasCustomPivot;
+
+        [ReadOnly]
         public float m_TileOffsetX;
 
         [ReadOnly]
@@ -267,7 +270,8 @@ namespace SuperTiled2Unity
 
             float width = m_Width * inversePPU;
             float height = m_Height * inversePPU;
-            var tileCenter = new Vector2(width, height) * 0.5f;
+            var offset = new Vector2(m_TileOffsetX * inversePPU, -m_TileOffsetY * inversePPU);
+            var tileCenter = (new Vector2(width, height) * 0.5f) - offset;
 
             Matrix4x4 matTransIn = Matrix4x4.identity;
             Matrix4x4 matFlip = Matrix4x4.identity;

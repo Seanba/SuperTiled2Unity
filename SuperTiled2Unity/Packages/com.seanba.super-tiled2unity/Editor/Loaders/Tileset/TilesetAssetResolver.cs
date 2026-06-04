@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace SuperTiled2Unity.Editor
@@ -35,7 +36,7 @@ namespace SuperTiled2Unity.Editor
             OnDispose();
         }
 
-        public abstract bool AddSpritesAndTile(int tileId, int srcx, int srcy, int tileWidth, int tileHeight);
+        public abstract bool AddSpritesAndTile(int tileId, int srcx, int srcy, int tileWidth, int tileHeight, Vector2 tiledPivot, Vector2 unityPivot);
 
         protected abstract void OnPrepare();
         protected abstract void OnDispose();

@@ -9,6 +9,7 @@
         public const string Unity_SortingLayer = Unity_Prefix + "SortingLayer";
         public const string Unity_SortingLayerName = Unity_Prefix + "SortingLayerName";
         public const string Unity_SortingOrder = Unity_Prefix + "SortingOrder";
+        public const string Unity_Pivot = Unity_Prefix + "pivot";
         public const string Unity_Tag = Unity_Prefix + "tag";
         public const string Unity_ZPosition = Unity_Prefix + "z-pos";
     }
