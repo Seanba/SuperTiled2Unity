@@ -98,6 +98,21 @@ namespace SuperTiled2Unity.Editor
             int expectedWidth = xImage.GetAttributeAs<int>("width");
             int expectedHeight = xImage.GetAttributeAs<int>("height");
 
+            int columns = m_SuperTileset.m_TileColumns;
+            int rows = (m_SuperTileset.m_TileCount + columns - 1) / columns;
+            int tileWidth = m_SuperTileset.m_TileWidth;
+            int tileHeight = m_SuperTileset.m_TileHeight;
+            int spacing = m_SuperTileset.m_Spacing;
+            int margin = m_SuperTileset.m_Margin;
+
+            int calculatedWidth = (tileWidth * columns) + (spacing * (columns - 1)) + (margin * 2);
+            int calculatedHeight = (tileHeight * rows) + (spacing * (rows - 1)) + (margin * 2);
+
+            // Report mismatch if expected and calculated sizes differ
+            if (expectedWidth != calculatedWidth || expectedHeight != calculatedHeight)
+            {
+                m_Importer.ReportGenericError($"Tileset image size mismatch: XML width/height = {expectedWidth}x{expectedHeight}, calculated = {calculatedWidth}x{calculatedHeight}. Check spacing, margin, columns, and tile size.");
+            }
 
             using (var tilesetAssetResolver = TilesetAssetResolverFactory.CreateFromRelativeAssetPath(m_Importer, m_SuperTileset, sourceRelativePath))
             {
@@ -108,21 +123,18 @@ namespace SuperTiled2Unity.Editor
                 for (int i = 0; i < m_SuperTileset.m_TileCount; i++)
                 {
                     // Get grid x,y coords
-                    int x = i % m_SuperTileset.m_TileColumns;
-                    int y = i / m_SuperTileset.m_TileColumns;
-
-                    int tileWidth = m_SuperTileset.m_TileWidth;
-                    int tileHeight = m_SuperTileset.m_TileHeight;
+                    int x = i % columns;
+                    int y = i / columns;
 
                     // Get x source on texture
                     int srcx = x * tileWidth;
-                    srcx += x * m_SuperTileset.m_Spacing;
-                    srcx += m_SuperTileset.m_Margin;
+                    srcx += x * spacing;
+                    srcx += margin;
 
                     // Get y source on texture
                     int srcy = y * tileHeight;
-                    srcy += y * m_SuperTileset.m_Spacing;
-                    srcy += m_SuperTileset.m_Margin;
+                    srcy += y * spacing;
+                    srcy += margin;
 
                     if (!tilesetAssetResolver.AddSpritesAndTile(i, srcx, srcy, tileWidth, tileHeight))
                     {
