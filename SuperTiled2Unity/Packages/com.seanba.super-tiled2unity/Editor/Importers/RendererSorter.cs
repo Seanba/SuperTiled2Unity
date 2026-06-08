@@ -46,7 +46,10 @@ namespace SuperTiled2Unity.Editor
 
         public void BeginGroupLayer(SuperGroupLayer layer)
         {
-            CurrentTileZ = 0;
+            // Do this before m_GroupDepth is incremented to see if I'm in a nested group
+            // If I am not, reset CurrentTileZ
+            if (!IsInGroup())
+                CurrentTileZ = 0;
             m_GroupDepth++;
             SortingLayerCheck(layer.gameObject);
         }
@@ -54,8 +57,10 @@ namespace SuperTiled2Unity.Editor
         public void EndGroupLayer()
         {
             m_GroupDepth--;
+            // Do not iterate m_CurrentSortOrder if in a nested group so layers contine to inherit the sorting order from their parent
+            if (IsInGroup())
+                return;
             m_CurrentSortOrder++;
-            CurrentTileZ = 0;
         }
 
         public string AssignTilemapSort(TilemapRenderer renderer)
