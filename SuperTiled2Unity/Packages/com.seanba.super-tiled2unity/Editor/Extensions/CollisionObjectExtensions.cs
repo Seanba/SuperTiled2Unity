@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using SuperTiled2Unity.Editor.Geometry;
+using System.Linq;
 
 namespace SuperTiled2Unity.Editor
 {
@@ -27,7 +28,7 @@ namespace SuperTiled2Unity.Editor
             }
             else if (collision.CollisionShapeType == CollisionShapeType.Point)
             {
-                AddPointCollider(go, collision, importContext);
+                AddPointCollider(go, collision, tile, importContext);
             }
 
             // Additional settings on the collider that was just added
@@ -55,6 +56,11 @@ namespace SuperTiled2Unity.Editor
             var convexPolygons = composition.Compose(triangles);
 
             PolygonUtils.AddCompositePolygonCollider(go, convexPolygons, importContext);
+            foreach (var superCollider in go.GetComponentsInChildren<SuperColliderComponent>())
+            {
+                superCollider.m_ObjectType = collision.m_ObjectType;
+            }
+            AddSuperCustomProperties(go, collision, tile, importContext);
         }
 
         private static void AddEdgeCollider(GameObject go, CollisionObject collision, SuperTile tile, SuperImportContext importContext)
@@ -62,7 +68,9 @@ namespace SuperTiled2Unity.Editor
             var edge = go.AddComponent<EdgeCollider2D>();
             edge.points = importContext.MakePointsPPU(collision.Points);
 
-            go.AddComponent<SuperColliderComponent>();
+            var superCollider = go.AddComponent<SuperColliderComponent>();
+            superCollider.m_ObjectType = collision.m_ObjectType;
+            AddSuperCustomProperties(go, collision, tile, importContext);
         }
 
         private static void AddEllipseCollider(GameObject go, CollisionObject collision, SuperTile tile, SuperImportContext importContext)
@@ -79,7 +87,9 @@ namespace SuperTiled2Unity.Editor
                 go.transform.localPosition = new Vector3(xpos, ypos);
                 go.transform.localEulerAngles = new Vector3(0, 0, importContext.MakeRotation(collision.m_Rotation));
 
-                go.AddComponent<SuperColliderComponent>();
+                var superCollider = go.AddComponent<SuperColliderComponent>();
+                superCollider.m_ObjectType = collision.m_ObjectType;
+                AddSuperCustomProperties(go, collision, tile, importContext);
             }
             else
             {
@@ -99,10 +109,12 @@ namespace SuperTiled2Unity.Editor
             go.transform.localPosition = new Vector3(xpos, ypos);
             go.transform.localEulerAngles = new Vector3(0, 0, importContext.MakeRotation(collision.m_Rotation));
 
-            go.AddComponent<SuperColliderComponent>();
+            var superCollider = go.AddComponent<SuperColliderComponent>();
+            superCollider.m_ObjectType = collision.m_ObjectType;
+            AddSuperCustomProperties(go, collision, tile, importContext);
         }
 
-        private static void AddPointCollider(GameObject go, CollisionObject collision, SuperImportContext importContext)
+        private static void AddPointCollider(GameObject go, CollisionObject collision, SuperTile tile, SuperImportContext importContext)
         {
             var xpos = importContext.MakeScalar(collision.m_Position.x);
             var ypos = importContext.MakeScalar(collision.m_Position.y);
@@ -110,7 +122,24 @@ namespace SuperTiled2Unity.Editor
             go.transform.localPosition = new Vector3(xpos, ypos);
             go.transform.localEulerAngles = new Vector3(0, 0, importContext.MakeRotation(collision.m_Rotation));
 
-            go.AddComponent<SuperColliderComponent>();
+            var superCollider = go.AddComponent<SuperColliderComponent>();
+            superCollider.m_ObjectType = collision.m_ObjectType;
+            AddSuperCustomProperties(go, collision, tile, importContext);
+        }
+
+        private static void AddSuperCustomProperties(GameObject go, CollisionObject collision, SuperTile tile, SuperImportContext importContext)
+        {
+            var properties = collision.m_CustomProperties.ToList();
+
+            if (tile != null)
+            {
+                properties.CombineFromSource(tile.m_CustomProperties);
+            }
+
+            properties.AddPropertiesFromType(collision.m_ObjectType, importContext);
+
+            var component = go.AddComponent<SuperCustomProperties>();
+            component.m_Properties = properties.OrderBy(p => p.m_Name).ToList();
         }
     }
 }
