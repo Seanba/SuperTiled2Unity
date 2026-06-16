@@ -181,7 +181,7 @@ namespace SuperTiled2Unity.Editor
                 using (new GUILayout.HorizontalScope())
                 {
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("Add From Object Types Xml"))
+                    if (GUILayout.Button("Add From Custom Types"))
                     {
                         ST2USettings.instance.AddObjectsToPrefabReplacements();
                         EditorUtility.SetDirty(ST2USettings.instance);
@@ -232,10 +232,14 @@ namespace SuperTiled2Unity.Editor
         private void DoCustomPropertySettings()
         {
             var xmlProperty = m_SerializedObject.FindProperty(nameof(ST2USettings.m_ObjectTypesXml));
+            var jsonProperty = m_SerializedObject.FindProperty(nameof(ST2USettings.m_ObjectTypesJson));
 
             EditorGUILayout.LabelField("Custom Property Settings", EditorStyles.boldLabel);
 
             xmlProperty.objectReferenceValue = EditorGUILayout.ObjectField(SettingsContent.ObjectTypesXmlContent, xmlProperty.objectReferenceValue, typeof(TextAsset), false);
+            jsonProperty.objectReferenceValue = EditorGUILayout.ObjectField(SettingsContent.CustomTypesJsonContent, jsonProperty.objectReferenceValue, typeof(TextAsset), false);
+
+            EditorGUILayout.HelpBox("For Tiled custom classes, export a .json file from Tiled's Custom Types Editor and assign it here. Class members become default custom properties, while class colors are used for Scene View gizmo colors. Reimport Tiled assets after changing custom type defaults.", MessageType.Info);
 
             if (!string.IsNullOrEmpty(ST2USettings.instance.m_ParseXmlError))
             {
@@ -373,7 +377,8 @@ namespace SuperTiled2Unity.Editor
             public static readonly GUIContent AnimationFramerateContent = new GUIContent("Animation Framerate", "How many frames per second for tile animations.");
             public static readonly GUIContent DefaultMaterialContent = new GUIContent("Default Material", "Set to the material you want to use for sprites and tiles imported by SuperTiled2Unity. Leave empy to use built-in sprite material.");
             public static readonly GUIContent MaterialMatchingsContent = new GUIContent("Material Matchings", "Match these materials by Tiled Layer names.");
-            public static readonly GUIContent ObjectTypesXmlContent = new GUIContent("Object Types Xml", "Set to an Object Types Xml file exported from Tiled Object Type Editor.");
+            public static readonly GUIContent ObjectTypesXmlContent = new GUIContent("Object Types XML", "Set to an Object Types XML file exported from Tiled Object Type Editor.");
+            public static readonly GUIContent CustomTypesJsonContent = new GUIContent("Custom Types JSON", "Set to a Custom Types JSON file exported from Tiled Custom Types Editor. Class members become default custom properties and class colors are used for Scene View gizmos.");
             public static readonly GUIContent PrefabReplacmentsContent = new GUIContent("Prefab Replacements", "List of prefabs to replace Tiled Object Types during import.");
             public static readonly GUIContent CollisionGeometryTypeContent = new GUIContent("Collision Geometry Type", "The type of geometry used by CompositeCollider2D components.");
             public static readonly GUIContent LayerColorsContent = new GUIContent("Layer Colors", "These colors will be used for drawing colliders in your imported Tiled maps.");

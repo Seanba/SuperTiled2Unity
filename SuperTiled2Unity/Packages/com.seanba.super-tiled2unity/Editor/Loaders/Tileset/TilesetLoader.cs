@@ -71,6 +71,7 @@ namespace SuperTiled2Unity.Editor
             }
 
             m_SuperTileset.m_CustomProperties = CustomPropertyLoader.LoadCustomPropertyList(xTileset.Element("properties"));
+            m_SuperTileset.m_CustomProperties.ResolveEnumStorageTypes(ST2USettings.instance.m_CustomEnumTypes);
         }
 
         private void BuildTileset(XElement xTileset)
@@ -211,6 +212,7 @@ namespace SuperTiled2Unity.Editor
                 // Tiles can have custom properties (and properties inherited from their Type)
                 tile.m_CustomProperties = CustomPropertyLoader.LoadCustomPropertyList(xTile.Element("properties"));
                 tile.m_CustomProperties.AddPropertiesFromType(tile.m_Type, m_Importer.SuperImportContext);
+                tile.m_CustomProperties.ResolveEnumStorageTypes(ST2USettings.instance.m_CustomEnumTypes);
 
                 // Does the tile have any animation data?
                 var xAnimation = xTile.Element("animation");
@@ -282,6 +284,7 @@ namespace SuperTiled2Unity.Editor
                     // Are there any properties on the collision object?
                     collision.m_CustomProperties = CustomPropertyLoader.LoadCustomPropertyList(xObject.Element("properties"));
                     collision.m_CustomProperties.AddPropertiesFromType(collision.m_ObjectType, m_Importer.SuperImportContext);
+                    collision.m_CustomProperties.ResolveEnumStorageTypes(ST2USettings.instance.m_CustomEnumTypes);
 
                     var xPolygon = xObject.Element("polygon");
                     var xPolyline = xObject.Element("polyline");

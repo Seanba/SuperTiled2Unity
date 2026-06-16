@@ -8,6 +8,7 @@ namespace SuperTiled2Unity
     {
         public string m_Name;
         public string m_Type;
+        public string m_PropertyType;
         public string m_Value;
 
         public bool IsEmpty => string.IsNullOrEmpty(m_Name);

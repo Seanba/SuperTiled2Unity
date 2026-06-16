@@ -56,6 +56,7 @@ namespace SuperTiled2Unity.Editor
 
             // Add properties from our object type (this should be last)
             properties.AddPropertiesFromType(typeName, SuperImportContext);
+            properties.ResolveEnumStorageTypes(ST2USettings.instance.m_CustomEnumTypes);
 
             // Sort the properties alphabetically
             component.m_Properties = properties.OrderBy(p => p.m_Name).ToList();
@@ -127,6 +128,7 @@ namespace SuperTiled2Unity.Editor
 
             RendererSorter = new RendererSorter();
             SuperImportContext = new SuperImportContext(AssetImportContext, m_PixelsPerUnit, m_EdgesPerEllipse);
+            RefreshCustomObjectTypes();
         }
 
         protected override void InternalOnImportAssetCompleted()
@@ -173,6 +175,17 @@ namespace SuperTiled2Unity.Editor
                     properties.gameObject.layer = parent.gameObject.layer;
                 }
             }
+        }
+
+        protected T GetClassPropertyAs<T>(string className, string propertyName, T defaultValue) where T : IConvertible
+        {
+            return TiledCustomTypesJson.GetClassPropertyAs(className, propertyName, defaultValue, ST2USettings.instance.m_CustomObjectTypes);
+        }
+
+        private void RefreshCustomObjectTypes()
+        {
+            ST2USettings.instance.RefreshCustomObjectTypes();
+            ST2USettings.instance.RegisterCustomTypeDependencies(AssetImportContext);
         }
     }
 }

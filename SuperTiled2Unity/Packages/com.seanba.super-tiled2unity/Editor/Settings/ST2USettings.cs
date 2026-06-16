@@ -17,6 +17,7 @@ namespace SuperTiled2Unity.Editor
         public Material m_DefaultMaterial = null;
         public List<LayerMaterialMatch> m_MaterialMatchings = new List<LayerMaterialMatch>();
         public TextAsset m_ObjectTypesXml = null;
+        public TextAsset m_ObjectTypesJson = null;
         public string m_ParseXmlError = string.Empty;
         public CompositeCollider2D.GeometryType m_CollisionGeometryType = CompositeCollider2D.GeometryType.Polygons;
 
@@ -57,51 +58,120 @@ namespace SuperTiled2Unity.Editor
         };
 
         public List<CustomObjectType> m_CustomObjectTypes;
+        public List<CustomEnumType> m_CustomEnumTypes;
 
         public List<TypePrefabReplacement> m_PrefabReplacements = new List<TypePrefabReplacement>();
 
-        // Invoke this to ensure that Xml Object Types are up-to-date
-        // Our importers that depend on Object Types from tiled will want to call this early in their import process
         internal void RefreshCustomObjectTypes()
         {
             m_CustomObjectTypes = new List<CustomObjectType>();
+            m_CustomEnumTypes = new List<CustomEnumType>();
             m_ParseXmlError = string.Empty;
 
             if (m_ObjectTypesXml != null)
             {
-                try
+                RefreshObjectTypesXml();
+            }
+
+            if (m_ObjectTypesJson != null)
+            {
+                RefreshObjectTypesJson();
+            }
+        }
+
+        internal void RegisterCustomTypeDependencies(UnityEditor.AssetImporters.AssetImportContext context)
+        {
+            RegisterTextAssetDependency(context, m_ObjectTypesXml);
+            RegisterTextAssetDependency(context, m_ObjectTypesJson);
+        }
+
+        private void RefreshObjectTypesXml()
+        {
+            try
+            {
+                XDocument xdoc = XDocument.Parse(m_ObjectTypesXml.text);
+
+                if (xdoc.Root.Name != "objecttypes")
                 {
-                    XDocument xdoc = XDocument.Parse(m_ObjectTypesXml.text);
-
-                    if (xdoc.Root.Name != "objecttypes")
-                    {
-                        m_ParseXmlError = string.Format("'{0}' is not a valid object types xml file.", m_ObjectTypesXml.name);
-                    }
-
-                    // Import the data from the objecttype elements
-                    foreach (var xObjectType in xdoc.Descendants("objecttype"))
-                    {
-                        var cot = new CustomObjectType
-                        {
-                            m_Name = xObjectType.GetAttributeAs("name", "NoName"),
-                            m_Color = xObjectType.GetAttributeAsColor("color", Color.gray),
-                            m_CustomProperties = CustomPropertyLoader.LoadCustomPropertyList(xObjectType)
-                        };
-
-                        m_CustomObjectTypes.Add(cot);
-                    }
+                    m_ParseXmlError = string.Format("'{0}' is not a valid object types xml file.", m_ObjectTypesXml.name);
                 }
-                catch (XmlException xe)
+
+                // Import the data from the objecttype elements
+                foreach (var xObjectType in xdoc.Descendants("objecttype"))
                 {
-                    m_ParseXmlError = string.Format("'{0}' is not a valid XML file.\n\nError: {1}", m_ObjectTypesXml.name, xe.Message);
-                    m_CustomObjectTypes.Clear();
-                }
-                catch (Exception e)
-                {
-                    m_ParseXmlError = e.Message;
-                    m_CustomObjectTypes.Clear();
+                    var cot = new CustomObjectType
+                    {
+                        m_Name = xObjectType.GetAttributeAs("name", "NoName"),
+                        m_Color = xObjectType.GetAttributeAsColor("color", Color.gray),
+                        m_CustomProperties = CustomPropertyLoader.LoadCustomPropertyList(xObjectType)
+                    };
+
+                    AddOrMergeCustomObjectType(cot);
                 }
             }
+            catch (XmlException xe)
+            {
+                m_ParseXmlError = string.Format("'{0}' is not a valid XML file.\n\nError: {1}", m_ObjectTypesXml.name, xe.Message);
+                m_CustomObjectTypes.Clear();
+            }
+            catch (Exception e)
+            {
+                m_ParseXmlError = e.Message;
+                m_CustomObjectTypes.Clear();
+            }
+        }
+
+        private void RefreshObjectTypesJson()
+        {
+            var customTypes = TiledCustomTypesJson.LoadCustomObjectTypes(m_ObjectTypesJson.text);
+            var customEnumTypes = TiledCustomTypesJson.LoadCustomEnumTypes(m_ObjectTypesJson.text);
+            if (customTypes.Count == 0 && customEnumTypes.Count == 0 && !string.IsNullOrWhiteSpace(m_ObjectTypesJson.text))
+            {
+                m_ParseXmlError = string.Format("'{0}' does not contain Tiled custom class or enum definitions.", m_ObjectTypesJson.name);
+            }
+
+            TiledCustomTypesJson.MergeInto(m_CustomObjectTypes, customTypes);
+            MergeCustomEnumTypes(customEnumTypes);
+        }
+
+        private void AddOrMergeCustomObjectType(CustomObjectType customObjectType)
+        {
+            if (m_CustomObjectTypes.TryGetCustomObjectType(customObjectType.m_Name, out var existingType))
+            {
+                existingType.m_CustomProperties.CombineFromSource(customObjectType.m_CustomProperties);
+            }
+            else
+            {
+                m_CustomObjectTypes.Add(customObjectType);
+            }
+        }
+
+        private void MergeCustomEnumTypes(List<CustomEnumType> customEnumTypes)
+        {
+            foreach (var customEnumType in customEnumTypes)
+            {
+                if (!m_CustomEnumTypes.TryGetCustomEnumType(customEnumType.m_Name, out _))
+                {
+                    m_CustomEnumTypes.Add(customEnumType);
+                }
+            }
+        }
+
+        private static void RegisterTextAssetDependency(UnityEditor.AssetImporters.AssetImportContext context, TextAsset textAsset)
+        {
+            if (context == null || textAsset == null)
+            {
+                return;
+            }
+
+            var path = AssetDatabase.GetAssetPath(textAsset);
+            if (string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+
+            context.DependsOnSourceAsset(path);
+            context.DependsOnArtifact(path);
         }
 
         internal void SortMaterialMatchings()

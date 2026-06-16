@@ -31,6 +31,7 @@ namespace SuperTiled2Unity.Editor
 
             property.m_Name = xProperty.GetAttributeAs("name", "");
             property.m_Type = xProperty.GetAttributeAs("type", "string");
+            property.m_PropertyType = xProperty.GetAttributeAs("propertytype", "");
 
             // In some cases, value may be in the default attribute
             property.m_Value = xProperty.GetAttributeAs("default", "");
