@@ -6,7 +6,8 @@ namespace SuperTiled2Unity.Editor
 {
     public class CustomPropertiesWindow : EditorWindow
     {
-        private static readonly GUIContent m_TitleContent = new GUIContent("Custom Object Types Properties", "These are the objects created in the Object Types Editor in Tiled.");
+        private static readonly GUIContent m_TitleContent = new GUIContent("Loaded Custom Type Properties", "These are the custom type defaults loaded from the configured Tiled type assets.");
+        private static readonly GUIContent m_EnumTitleContent = new GUIContent("Loaded Custom Enum Types", "These are the custom enum definitions loaded from the configured Tiled type assets.");
 
         private Vector2 m_ScrollPosition;
 
@@ -36,6 +37,18 @@ namespace SuperTiled2Unity.Editor
                 OnGUICustomObjectType(obj);
                 EditorGUILayout.Space();
             }
+
+            if (!ST2USettings.instance.m_CustomEnumTypes.IsEmpty())
+            {
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField(m_EnumTitleContent, EditorStyles.boldLabel);
+
+                foreach (var enumType in ST2USettings.instance.m_CustomEnumTypes)
+                {
+                    EditorGUILayout.Space();
+                    OnGUICustomEnumType(enumType);
+                }
+            }
         }
 
         private void OnGUICustomObjectType(CustomObjectType obj)
@@ -44,7 +57,7 @@ namespace SuperTiled2Unity.Editor
             {
                 EditorGUILayout.LabelField(obj.m_Name);
                 GUI.enabled = false;
-                EditorGUILayout_ColorFieldNoEdit(GUIContent.none, obj.m_Color);
+                EditorGUILayout_ColorFieldNoEdit(new GUIContent("Color"), obj.m_Color);
                 GUI.enabled = true;
 
                 EditorGUILayout.Space();
@@ -62,10 +75,25 @@ namespace SuperTiled2Unity.Editor
                                     EditorGUILayout.LabelField(customProperty.m_Name);
                                     EditorGUILayout.LabelField(customProperty.m_Value, EditorStyles.textField);
                                     EditorGUILayout.LabelField(customProperty.m_Type);
+                                    EditorGUILayout.LabelField(customProperty.m_PropertyType);
                                 }
                             }
                         }
                     }
+                }
+            }
+        }
+
+        private void OnGUICustomEnumType(CustomEnumType enumType)
+        {
+            using (new GUILayout.VerticalScope(EditorStyles.helpBox))
+            {
+                EditorGUILayout.LabelField(enumType.m_Name);
+                using (new GuiScopedIndent())
+                {
+                    EditorGUILayout.LabelField("Storage Type", enumType.m_StorageType);
+                    EditorGUILayout.Toggle("Values As Flags", enumType.m_ValuesAsFlags);
+                    EditorGUILayout.LabelField("Values", string.Join(", ", enumType.m_Values));
                 }
             }
         }
@@ -94,5 +122,6 @@ namespace SuperTiled2Unity.Editor
         {
             EditorGUILayout.ColorField(label, color, false, true, false);
         }
+
     }
 }
