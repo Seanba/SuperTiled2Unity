@@ -55,7 +55,7 @@ namespace SuperTiled2Unity.Editor
             // If the sprite is still null then we don't have secondary textures for it
             if (spriteToAdd == null)
             {
-                spriteToAdd = Sprite.Create(m_Texture, rect, Vector2.zero, SuperTileset.m_PixelsPerUnit);
+                spriteToAdd = Sprite.Create(m_Texture, rect, Vector2.zero, SuperTileset.m_PixelsPerUnit, 0, SpriteMeshType.FullRect);
                 spriteToAdd.name = spriteName;
             }
 
