@@ -17,7 +17,10 @@ namespace SuperTiled2Unity.Editor
 
         protected override void InternalLoadFromXml(GameObject go)
         {
-            // No extra data to load from the xml
+            var layer = go.GetComponent<SuperImageLayer>();
+
+            layer.m_RepeatX = Xml.GetAttributeAs("repeatx", false);
+            layer.m_RepeatY = Xml.GetAttributeAs("repeaty", false);
         }
     }
 }
