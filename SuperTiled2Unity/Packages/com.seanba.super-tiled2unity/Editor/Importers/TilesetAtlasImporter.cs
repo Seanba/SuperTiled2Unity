@@ -19,7 +19,7 @@ namespace SuperTiled2Unity.Editor
         [MenuItem("Assets/Create/Super Tiled2Unity/Tileset Atlas")]
         private static void CreateMaterialFile()
         {
-            ProjectWindowUtil.CreateAssetWithContent("TTileAtlas_new.st2u_atlas", "# Uses Super Tiled2Unity scripted importer for placing tileset sprites in a sprite atlas");
+            ProjectWindowUtil.CreateAssetWithTextContent("TTileAtlas_new.st2u_atlas", "# Uses Super Tiled2Unity scripted importer for placing tileset sprites in a sprite atlas");
         }
 
         // Unity Sprite Atlas programming is tricky because of V1 and V2 and the feeling that neither is well supported by Unity APIs
